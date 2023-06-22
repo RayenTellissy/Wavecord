@@ -1,0 +1,20 @@
+const express = require("express")
+const http = require("http")
+const cors = require("cors")
+const morgan = require("morgan")
+const { Server } = require("socket.io")
+
+const app = express()
+const PORT = 5000
+
+app.use(cors())
+app.use(morgan("dev"))
+
+app.get("/", (req,res) => res.send("")) // heartbeat route
+
+const server = http.createServer(app)
+
+const io = new Server(server)
+
+
+server.listen(PORT, () => console.log(`> Socket ready on port ${PORT}`))
