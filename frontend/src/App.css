@@ -1,0 +1,20 @@
+body {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@font-face {
+  font-family: UbuntuRegular;
+  src: url("./assets/fonts/Ubuntu/Ubuntu-Regular.ttf");
+}
+
+@font-face {
+  font-family: UbuntuBold;
+  src: url("./assets/fonts/Ubuntu/Ubuntu-Bold.ttf");
+}
+
+@font-face {
+  font-family: UbuntuMedium;
+  src: url("./assets/fonts/Ubuntu/Ubuntu-Medium.ttf");
+}
