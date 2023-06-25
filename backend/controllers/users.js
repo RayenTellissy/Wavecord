@@ -1,4 +1,10 @@
-const { createUserWithEmailAndPassword, signInWithEmailAndPassword, getAuth } = require("firebase/auth")
+const {
+   createUserWithEmailAndPassword, 
+   signInWithEmailAndPassword, 
+   getAuth,
+   sendPasswordResetEmail
+   
+  } = require("firebase/auth")
 const { app } = require("../Firebase/FirebaseApp")
 
 const { PrismaClient } = require("@prisma/client")
@@ -84,6 +90,36 @@ module.exports = {
         res.send({
           success: false,
           message: "Invalid email."
+        })
+      }
+    }
+  },
+
+  reset: async (req,res) => {
+
+    try{
+      const { email } = req.body
+
+      await sendPasswordResetEmail(auth, email)
+
+      res.send({
+        success: true,
+        message: "Reset link sent."
+      })
+    }
+    catch(error){
+      const errorCode = error.code
+
+      if(errorCode === "auth/invalid-email"){
+        res.send({
+          success: false,
+          message: "Invalid email."
+        })
+      }
+      else if(errorCode === "auth/user-not-found"){
+        res.send({
+          success: false,
+          message: "User not found."
         })
       }
     }

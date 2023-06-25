@@ -6,7 +6,7 @@ import { useToast } from "@chakra-ui/react"
 // components
 
 // common components
-import Logo from '../../Logo/Logo';
+import Logo from "../../Logo/Logo";
 import Spinner from '../../common/Spinner/Spinner';
 
 // styles
@@ -17,6 +17,7 @@ const Login = () => {
   const [username,setUsername] = useState("")
   const [password,setPassword] = useState("")
   const [isLoading,setIsLoading] = useState(false)
+  const [forgot,setForgot] = useState(false)
   const navigate = useNavigate()
   const toast = useToast()
 
@@ -64,6 +65,8 @@ const Login = () => {
         <button className='auth' id="login" onClick={handleSubmit}>Log in</button>
         <button className='auth' id="create" onClick={() => navigate("/signup")}>Create Account</button>
       </div>
+
+      <p id='forgot-password' onClick={() => navigate("/forgotpassword")}>Forgot Password</p>
 
       </div>
 

@@ -62,3 +62,8 @@
   height: 55;
 }
 
+#forgot-password{
+  cursor: pointer;
+  font-family: UbuntuBold;
+  color: #DDDEE9;
+}
