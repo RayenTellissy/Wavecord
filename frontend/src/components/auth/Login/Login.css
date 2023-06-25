@@ -36,11 +36,6 @@
 .input:focus{
   outline: none;
   caret-color: #0c6cfb;
-  caret-shape: block;
-}
-
-.input::selection{
-  background-color: #2c2f33;
 }
 
 #button-container{

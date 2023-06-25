@@ -4,6 +4,10 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+input::selection{
+  background-color: #62CAC2;
+}
+
 @font-face {
   font-family: UbuntuRegular;
   src: url("./assets/fonts/Ubuntu/Ubuntu-Regular.ttf");

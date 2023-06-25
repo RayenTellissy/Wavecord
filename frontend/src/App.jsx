@@ -6,6 +6,7 @@ import ToggleColorMode from './theme/ToggleColorMode'
 
 // route components
 import Login from './components/auth/Login/Login'
+import Signup from "./components/auth/Signup/Signup"
 
 const App = () => {
   return (
@@ -13,6 +14,7 @@ const App = () => {
       <ToggleColorMode/>
       <Routes>
         <Route path="/login" element={<Login/>}/>
+        <Route path="/signup" element={<Signup/>}/>
       </Routes>
     </>
   )
