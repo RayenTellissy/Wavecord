@@ -1,4 +1,4 @@
-#login-container{
+#signup-container{
   display: flex;
   justify-content: center;
   align-items: center;
@@ -6,24 +6,24 @@
   text-align: center;
 }
 
-#login-title{
+#signup-title{
   font-family: UbuntuBold;
   font-size: 35px;
   margin-bottom: 10px;
 }
 
-#login-all-container{
+#signup-all-container{
   align-items: center;
   justify-content: center;
   margin-bottom: 5rem;
 }
 
-#login-input-container{
+#signup-input-container{
   display: flex;
   flex-direction: column;
 }
 
-.login-input{
+.signup-input{
   margin: 5px;
   background-color: inherit;
   border: 2px solid #3F4750;
@@ -34,34 +34,32 @@
   padding-left: 20px;
 }
 
-.login-input:focus{
+.signup-input:focus{
   outline: none;
   caret-color: #0c6cfb;
 }
 
-#login-button-container{
+#signup-button-container{
   margin: 13px;
 }
 
-.login-auth{
+.signup-auth{
   font-family: UbuntuBold;
   border-radius: 11px;
   padding: 10px;
   margin: 4px;
 }
 
-#login-login{
-  color: #00262D;
+#signup-submit{
   width: 5rem;
 }
 
-#login-create{
-  color: #DDDEE9;
+#signup-back{
   width: 11rem;
   height: 55;
 }
 
-#login-forgot-password{
+#signup-forgot-password{
   cursor: pointer;
   font-family: UbuntuBold;
   color: #DDDEE9;

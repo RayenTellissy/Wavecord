@@ -1,16 +1,39 @@
 import { useState } from "react"
-import { useToast } from "@chakra-ui/react"
+import { useToast, Button } from "@chakra-ui/react"
 import axios from "axios"
+import { useNavigate } from "react-router-dom"
+import { ArrowBackIcon } from "@chakra-ui/icons"
 
 // common components
 import Logo from "../../Logo/Logo"
-import Spinner from "../../common/Spinner/Spinner"
+
+// styles
+import "./ForgotPassword.css"
 
 const ForgotPassword = () => {
 
   const [email,setEmail] = useState("")
   const [isLoading,setIsLoading] = useState(false)
+  const [isDisabled,setIsDisabled] = useState(true)
+  const navigate = useNavigate()
   const toast = useToast()
+
+  // regular expressions
+  const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g
+
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value)
+    checkInput(e.target.value)
+  }
+
+  const checkInput = (email) => {
+    if(emailRegex.test(email)){
+      setIsDisabled(false)
+    }
+    else{
+      setIsDisabled(true)
+    }
+  }
 
   const handleSubmit = async () => {
 
@@ -31,23 +54,39 @@ const ForgotPassword = () => {
   }
 
   return (
-    <div id="container">
-      <div id="all-container">
+    <div id="forgot-container">
+      <div id="forgot-all-container">
 
       <Logo style={{ height: "70%", width: "70%", margin: "auto"}}/>
-      <p id="title">Reset Password</p>
-      <div id="input-container">
-        <input className='input' type='text' placeholder='Enter email' onChange={e => setEmail(e.target.value)}/>
+      <p id="forgot-title">Reset Password</p>
+      <div id="forgot-input-container">
+        <input className='forgot-input' type='text' placeholder='Enter email' onChange={e => handleEmailChange(e)}/>
       </div>
 
-      <div id='button-container'>
-        <button className='auth' id="login" onClick={handleSubmit}>Submit</button>
+      <div id='forgot-button-container'>
+        <Button 
+          colorScheme="teal"
+          isDisabled={isDisabled}
+          isLoading={isLoading}
+          className='forgot-auth'
+          id="forgot-submit" 
+          onClick={handleSubmit}>
+          Submit
+        </Button>
+
+        <Button
+          colorScheme="gray"
+          leftIcon={<ArrowBackIcon/>}
+          className="forgot-auth"
+          onClick={() => navigate("/login")}
+        >
+          Back
+        </Button>
+        
       </div>
 
 
       </div>
-
-      {isLoading && <Spinner/>}
 
     </div>
   )

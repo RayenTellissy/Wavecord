@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from "axios"
-import { useToast } from "@chakra-ui/react"
+import { useToast, Button } from "@chakra-ui/react"
+import { ArrowForwardIcon } from "@chakra-ui/icons"
 
 // components
 
 // common components
 import Logo from "../../Logo/Logo";
-import Spinner from '../../common/Spinner/Spinner';
+import Google from '../../common/GoogleButton/Google';
+import Facebook from '../../common/FacebookButton/Facebook';
 
 // styles
 import "./Login.css"
@@ -17,7 +19,7 @@ const Login = () => {
   const [username,setUsername] = useState("")
   const [password,setPassword] = useState("")
   const [isLoading,setIsLoading] = useState(false)
-  const [forgot,setForgot] = useState(false)
+  const [isDisabled,setIsDisabled] = useState(true)
   const navigate = useNavigate()
   const toast = useToast()
 
@@ -25,10 +27,29 @@ const Login = () => {
   const usernameRegex = /^[a-zA-Z0-9]{3,20}$/
   const passwordRegex = /^.{7,}$/
 
-  const handleSubmit = async () => {
-    if(!usernameRegex.test(username) || !passwordRegex.test(password)){
-      return alert("error")
+  // handle text input functions
+  const handleUsernameChange = (e) => {
+    setUsername(e.target.value)
+    checkInput(e.target.value, password)
+  }
+
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value)
+    checkInput(username, e.target.value)
+  }
+
+  // function to validate user inputs
+  const checkInput = (username, password) => {
+    if(usernameRegex.test(username) && passwordRegex.test(password)){
+      setIsDisabled(false)
     }
+    else{
+      setIsDisabled(true)
+    }
+  }
+
+  // login function
+  const handleSubmit = async () => {
 
     setIsLoading(true)
 
@@ -41,36 +62,58 @@ const Login = () => {
 
     const result = response.data
 
+    // response alert
     toast({
       title: result.success ? "Success" : "Failed",
       description: result.message,
       status: result.success ? "success" : "error",
-      duration: 3000,
+      duration: 2000,
       isClosable: true
     })
   }
 
   return (
-    <div id="container">
-      <div id="all-container">
+    <div id="login-container">
+      <div id="login-all-container">
 
       <Logo style={{ height: "70%", width: "70%", margin: "auto"}}/>
-      <p id="title">Login</p>
-      <div id="input-container">
-        <input className='input' type='text' placeholder='Enter username' onChange={e => setUsername(e.target.value)}/>
-        <input className='input' type='password' placeholder='Enter password' onChange={e => setPassword(e.target.value)}/>
+      
+      <p id="login-title">Login</p>
+
+      <Google size="lg" />
+      <Facebook size="lg" />
+
+      <div id="login-input-container">
+        <input className='login-input' type='text' placeholder='Enter username' onChange={e => handleUsernameChange(e)}/>
+        <input className='login-input' type='password' placeholder='Enter password' onChange={e => handlePasswordChange(e)}/>
       </div>
 
-      <div id='button-container'>
-        <button className='auth' id="login" onClick={handleSubmit}>Log in</button>
-        <button className='auth' id="create" onClick={() => navigate("/signup")}>Create Account</button>
+      <div id='login-button-container'>
+
+        <Button 
+          id="login-login"
+          className='login-auth'
+          colorScheme='teal'
+          isDisabled={isDisabled}
+          isLoading={isLoading}
+          onClick={handleSubmit}>
+          Log in
+        </Button>
+
+        <Button 
+          id="login-create"
+          className='login-auth'
+          colorScheme='gray'
+          rightIcon={<ArrowForwardIcon/>}
+          onClick={() => navigate("/signup")}>
+          Create Account
+        </Button>
+
       </div>
 
-      <p id='forgot-password' onClick={() => navigate("/forgotpassword")}>Forgot Password</p>
+      <p id='login-forgot-password' onClick={() => navigate("/forgotpassword")}>Forgot Password</p>
 
       </div>
-
-      {isLoading && <Spinner/>}
 
     </div>
   );

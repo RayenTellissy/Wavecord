@@ -18,5 +18,9 @@ const server = http.createServer(app)
 
 const io = new Server(server)
 
+io.on("connect", socket => {
+  
+})
+
 
 server.listen(PORT, () => console.log(`> Socket ready on port ${PORT}`))
