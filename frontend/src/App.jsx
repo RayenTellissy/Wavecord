@@ -8,6 +8,7 @@ import ToggleColorMode from './theme/ToggleColorMode'
 import Login from './components/auth/Login/Login'
 import Signup from "./components/auth/Signup/Signup"
 import ForgotPassword from "./components/auth/ForgotPassword/ForgotPassword"
+import ProtectedRoutes from "./ProtectedRoutes"
 
 const App = () => {
   return (
@@ -16,7 +17,10 @@ const App = () => {
       <Routes>
         <Route path="/login" element={<Login/>}/>
         <Route path="/signup" element={<Signup/>}/>
-        <Route path="/forgotpassword" element={<ForgotPassword/>}/>
+        <Route element={<ProtectedRoutes/>}>
+          <Route path="/forgotpassword" element={<ForgotPassword/>}/>
+          <Route path="/home" element={<p>this is home</p>}/>
+        </Route>
       </Routes>
     </>
   )

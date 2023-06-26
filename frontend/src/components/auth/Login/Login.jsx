@@ -62,6 +62,11 @@ const Login = () => {
 
     const result = response.data
 
+    // if user has been authenticated move redirect him
+    if(result.success){
+      navigate("/home")
+    }
+
     // response alert
     toast({
       title: result.success ? "Success" : "Failed",

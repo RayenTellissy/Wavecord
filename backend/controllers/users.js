@@ -17,22 +17,50 @@ module.exports = {
   signup: async (req,res) => {
 
     try{
-      const { username, email, image, password } = req.body
+      const { username, email, password } = req.body
 
-      const response = await createUserWithEmailAndPassword(auth,email,password)
+      const response = await createUserWithEmailAndPassword(auth, email, password)
       const id = response.user.uid
+
+      console.log(id)
   
-      const user = await prisma.users.create({ data: {
+      await prisma.users.create({ data: {
         id: id,
         username: username,
         email: email,
-        image: image
       }})
-  
-      res.send(user)
+
+      // setting a cookie
+      req.session.user = {
+        id: id
+      }
+      res.send({
+        success: true,
+        message: "Signed Up."
+      })
     }
     catch(error){
-      res.send(error)
+      console.log(error)
+      const errorCode = error.code
+
+      if(errorCode === "auth/email-already-in-use"){
+        res.send({
+          success: false,
+          message: "Email already in use."
+        })
+      }
+      else if(errorCode === "auth/invalid-email"){
+        res.send({
+          success: false,
+          message: "Invalid Email."
+        })
+      }
+      else if(errorCode === "auth/weak-password"){
+        res.send({
+          success: false,
+          message: "Weak Password."
+        })
+      }
     }
   },
 
@@ -58,6 +86,14 @@ module.exports = {
       const email = user.email
   
       const response = await signInWithEmailAndPassword(auth, email, password)
+
+      // setting a cookie
+      req.session.user = {
+        id: response.user.uid
+      }
+
+      console.log(req.session)
+
       res.send({
         success: true,
         message: "Logged in.",

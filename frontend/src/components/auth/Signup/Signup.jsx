@@ -20,6 +20,7 @@ const Signup = () => {
   const [isLoading,setIsLoading] = useState(false)
   const [isDisabled,setIsDisabled] = useState(true)
   const navigate = useNavigate()
+  const toast = useToast()
 
   // regular expressions
   const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g
@@ -55,6 +56,31 @@ const Signup = () => {
 
   const handleSubmit = async () => {
 
+    setIsLoading(true)
+
+    const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/users/signup`,{
+      username: username,
+      email: email,
+      password: password
+    })
+
+    setIsLoading(false)
+
+    const result = response.data
+    
+    // if user has been authenticated move redirect him
+    if(result.success){
+      navigate("/home")
+    }
+    
+    toast({
+      title: result.success ? "Success" : "Failed",
+      description: result.message,
+      status: result.success ? "success" : "error",
+      duration: 2000,
+      isClosable: true
+    })
+    
   }
 
   return (
