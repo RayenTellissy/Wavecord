@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useContext } from 'react';
 import axios from "axios"
 import { useToast, Button } from "@chakra-ui/react"
 import { ArrowForwardIcon } from "@chakra-ui/icons"
 
 // components
+import { Context } from '../../Context/Context';
 
 // common components
 import Logo from "../../Logo/Logo";
@@ -16,6 +18,7 @@ import "./Login.css"
 
 const Login = () => {
 
+  const { setUser } = useContext(Context)
   const [username,setUsername] = useState("")
   const [password,setPassword] = useState("")
   const [isLoading,setIsLoading] = useState(false)
@@ -64,7 +67,7 @@ const Login = () => {
 
     // if user has been authenticated move redirect him
     if(result.success){
-      navigate("/home")
+      setUser({ id: result.id, loggedIn: true })
     }
 
     // response alert
