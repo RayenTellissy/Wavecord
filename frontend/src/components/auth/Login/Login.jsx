@@ -59,15 +59,17 @@ const Login = () => {
     const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/users/login`,{
       username: username,
       password: password
-    })
+    }, { withCredentials: true })
 
     setIsLoading(false)
 
     const result = response.data
+    console.log(result)
 
-    // if user has been authenticated move redirect him
+    // if user has been authenticated redirect him
     if(result.success){
-      setUser({ id: result.id, loggedIn: true })
+      setUser({ id: result.cookie.user.id, loggedIn: true })
+      navigate("/")
     }
 
     // response alert

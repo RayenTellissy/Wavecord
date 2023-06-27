@@ -88,17 +88,15 @@ module.exports = {
       const response = await signInWithEmailAndPassword(auth, email, password)
 
       // setting a cookie
+      req.session.authenticated = true
       req.session.user = {
         id: response.user.uid
       }
 
-      console.log(req.session)
-
       res.send({
+        cookie: req.session,
         success: true,
         message: "Logged in.",
-        id: response.user.uid,
-        token: response.user.stsTokenManager.accessToken
       })
     }
     catch(error){
@@ -159,5 +157,12 @@ module.exports = {
         })
       }
     }
+  },
+
+  authenticateSession: async (req,res) => {
+    if(req.session.user){
+      return res.send({ loggedIn: true, id: req.session.user.id })
+    }
+    res.send({ loggedIn: false })
   }
 }
