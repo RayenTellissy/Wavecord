@@ -9,17 +9,11 @@ export const ContextProvider = ({ children }) => {
 
   useEffect(() => {
     authenticateSession()
-
   },[])
-
-  // useEffect(() => {
-  //   console.log(user)
-  // },[user])
 
   const authenticateSession = async () => {
     const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/users/login`, { withCredentials: true })
     setUser(response.data)
-    console.log(response.data)
   }
 
   return (

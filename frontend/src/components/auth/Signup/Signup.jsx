@@ -5,7 +5,7 @@ import { useToast, Button } from "@chakra-ui/react"
 import { ArrowBackIcon } from "@chakra-ui/icons"
 
 // common components
-import Logo from "../../Logo/Logo";
+import Logo from "../../common/Logo/Logo";
 import Google from '../../common/GoogleButton/Google';
 import Facebook from '../../common/FacebookButton/Facebook';
 
@@ -14,11 +14,11 @@ import "./Signup.css"
 
 const Signup = () => {
 
-  const [username,setUsername] = useState("")
-  const [email,setEmail] = useState("")
-  const [password,setPassword] = useState("")
-  const [isLoading,setIsLoading] = useState(false)
-  const [isDisabled,setIsDisabled] = useState(true)
+  const [username, setUsername] = useState("")
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
+  const [isDisabled, setIsDisabled] = useState(true)
   const navigate = useNavigate()
   const toast = useToast()
 
@@ -45,10 +45,10 @@ const Signup = () => {
 
   // function to validate user inputs
   const checkInput = (username, email, password) => {
-    if(usernameRegex.test(username) && passwordRegex.test(password) && emailRegex.test(email)){
+    if (usernameRegex.test(username) && passwordRegex.test(password) && emailRegex.test(email)) {
       setIsDisabled(false)
     }
-    else{
+    else {
       setIsDisabled(true)
     }
   }
@@ -58,7 +58,7 @@ const Signup = () => {
 
     setIsLoading(true)
 
-    const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/users/signup`,{
+    const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/users/signup`, {
       username: username,
       email: email,
       password: password
@@ -67,12 +67,12 @@ const Signup = () => {
     setIsLoading(false)
 
     const result = response.data
-    
+
     // if user has been authenticated move redirect him
-    if(result.success){
+    if (result.success) {
       navigate("/home")
     }
-    
+
     toast({
       title: result.success ? "Success" : "Failed",
       description: result.message,
@@ -80,29 +80,29 @@ const Signup = () => {
       duration: 2000,
       isClosable: true
     })
-    
+
   }
 
   return (
     <div id="signup-container">
       <div id="signup-all-container">
 
-        <Logo style={{ height: "70%", width: "70%", margin: "auto"}}/>
-        
+        <Logo style={{ height: "70%", width: "70%", margin: "auto" }} />
+
         <p id="signup-title">Sign up</p>
 
         <Google size="lg" />
         <Facebook size="lg" />
 
         <div id="signup-input-container">
-          <input className='signup-input' type='text' placeholder='Enter username' onChange={e => handleUsernameChange(e)}/>
-          <input className='signup-input' type='text' placeholder='Enter email' onChange={e => handleEmailChange(e)}/>
-          <input className='signup-input' type='password' placeholder='Enter password' onChange={e => handlePasswordChange(e)}/>
+          <input className='signup-input' type='text' placeholder='Enter username' onChange={e => handleUsernameChange(e)} />
+          <input className='signup-input' type='text' placeholder='Enter email' onChange={e => handleEmailChange(e)} />
+          <input className='signup-input' type='password' placeholder='Enter password' onChange={e => handlePasswordChange(e)} />
         </div>
 
         <div id='signup-button-container'>
-          
-          <Button 
+
+          <Button
             id="signup-create"
             className='signup-auth'
             colorScheme='teal'
@@ -112,10 +112,10 @@ const Signup = () => {
             Create Account
           </Button>
 
-          <Button 
+          <Button
             className='signup-auth'
             colorScheme='gray'
-            leftIcon={<ArrowBackIcon/>}
+            leftIcon={<ArrowBackIcon />}
             onClick={() => navigate("/login")}>
             Back
           </Button>

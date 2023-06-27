@@ -5,16 +5,16 @@ import { useNavigate } from "react-router-dom"
 import { ArrowBackIcon } from "@chakra-ui/icons"
 
 // common components
-import Logo from "../../Logo/Logo"
+import Logo from "../../common/Logo/Logo"
 
 // styles
 import "./ForgotPassword.css"
 
 const ForgotPassword = () => {
 
-  const [email,setEmail] = useState("")
-  const [isLoading,setIsLoading] = useState(false)
-  const [isDisabled,setIsDisabled] = useState(true)
+  const [email, setEmail] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
+  const [isDisabled, setIsDisabled] = useState(true)
   const navigate = useNavigate()
   const toast = useToast()
 
@@ -27,10 +27,10 @@ const ForgotPassword = () => {
   }
 
   const checkInput = (email) => {
-    if(emailRegex.test(email)){
+    if (emailRegex.test(email)) {
       setIsDisabled(false)
     }
-    else{
+    else {
       setIsDisabled(true)
     }
   }
@@ -39,7 +39,7 @@ const ForgotPassword = () => {
 
     setIsLoading(true)
 
-    const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/users/reset`,{ email: email })
+    const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/users/reset`, { email: email })
     const result = response.data
 
     setIsLoading(false)
@@ -57,33 +57,33 @@ const ForgotPassword = () => {
     <div id="forgot-container">
       <div id="forgot-all-container">
 
-      <Logo style={{ height: "70%", width: "70%", margin: "auto"}}/>
-      <p id="forgot-title">Reset Password</p>
-      <div id="forgot-input-container">
-        <input className='forgot-input' type='text' placeholder='Enter email' onChange={e => handleEmailChange(e)}/>
-      </div>
+        <Logo style={{ height: "70%", width: "70%", margin: "auto" }} />
+        <p id="forgot-title">Reset Password</p>
+        <div id="forgot-input-container">
+          <input className='forgot-input' type='text' placeholder='Enter email' onChange={e => handleEmailChange(e)} />
+        </div>
 
-      <div id='forgot-button-container'>
-        <Button 
-          colorScheme="teal"
-          isDisabled={isDisabled}
-          isLoading={isLoading}
-          className='forgot-auth'
-          id="forgot-submit" 
-          onClick={handleSubmit}>
-          Submit
-        </Button>
+        <div id='forgot-button-container'>
+          <Button
+            colorScheme="teal"
+            isDisabled={isDisabled}
+            isLoading={isLoading}
+            className='forgot-auth'
+            id="forgot-submit"
+            onClick={handleSubmit}>
+            Submit
+          </Button>
 
-        <Button
-          colorScheme="gray"
-          leftIcon={<ArrowBackIcon/>}
-          className="forgot-auth"
-          onClick={() => navigate("/login")}
-        >
-          Back
-        </Button>
-        
-      </div>
+          <Button
+            colorScheme="gray"
+            leftIcon={<ArrowBackIcon />}
+            className="forgot-auth"
+            onClick={() => navigate("/login")}
+          >
+            Back
+          </Button>
+
+        </div>
 
 
       </div>

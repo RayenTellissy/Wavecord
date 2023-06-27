@@ -9,7 +9,7 @@ import { ArrowForwardIcon } from "@chakra-ui/icons"
 import { Context } from '../../Context/Context';
 
 // common components
-import Logo from "../../Logo/Logo";
+import Logo from "../../common/Logo/Logo";
 import Google from '../../common/GoogleButton/Google';
 import Facebook from '../../common/FacebookButton/Facebook';
 
@@ -124,6 +124,7 @@ const Login = () => {
       <p id='login-forgot-password' onClick={() => navigate("/forgotpassword")}>Forgot Password</p>
 
       </div>
+
 
     </div>
   );

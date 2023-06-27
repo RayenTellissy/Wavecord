@@ -9,17 +9,20 @@ import Login from '../components/auth/Login/Login'
 import Signup from "../components/auth/Signup/Signup"
 import ForgotPassword from "../components/auth/ForgotPassword/ForgotPassword"
 
+// null routing
+import NullRouting from './NullRouting/NullRouting';
+
 const Routing = () => {
   const { user } = useContext(Context)
 
   return (
     <Routes>
-      {user.loggedIn === null ? "" : 
+      {user.loggedIn === null ? <Route path='/' element={<NullRouting/>}/> : 
         user.loggedIn ? (
           <>
+            <Route path='/' element={<p>this is home</p>}/>
             <Route path='/login' element={<Navigate to="/"/>}/>
             <Route path='/signup' element={<Navigate to="/"/>}/>
-            <Route path='/' element={<p>this is home</p>}/>
             <Route path='/settings' element={<p>this is settings</p>}/>
           </>
         )
