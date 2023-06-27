@@ -4,9 +4,6 @@ import { Navigate, Route, Routes } from "react-router-dom"
 
 import { Context } from "../components/Context/Context"
 
-// common components
-import Spinner from "../components/common/Spinner/Spinner"
-
 // route components
 import Login from '../components/auth/Login/Login'
 import Signup from "../components/auth/Signup/Signup"
