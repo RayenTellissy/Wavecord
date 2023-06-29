@@ -12,9 +12,9 @@ import "./ForgotPassword.css"
 
 const ForgotPassword = () => {
 
-  const [email, setEmail] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
-  const [isDisabled, setIsDisabled] = useState(true)
+  const [email,setEmail] = useState("")
+  const [isLoading,setIsLoading] = useState(false)
+  const [isDisabled,setIsDisabled] = useState(true)
   const navigate = useNavigate()
   const toast = useToast()
 
@@ -37,20 +37,33 @@ const ForgotPassword = () => {
 
   const handleSubmit = async () => {
 
-    setIsLoading(true)
-
-    const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/users/reset`, { email: email })
-    const result = response.data
-
-    setIsLoading(false)
-
-    toast({
-      title: result.success ? "Success" : "Failed",
-      description: result.message,
-      status: result.success ? "success" : "error",
-      duration: 3000,
-      isClosable: true
-    })
+    try{
+      setIsLoading(true)
+  
+      const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/users/reset`, { email: email })
+      const result = response.data
+  
+      setIsLoading(false)
+  
+      toast({
+        title: result.success ? "Success" : "Failed",
+        description: result.message,
+        status: result.success ? "success" : "error",
+        duration: 3000,
+        isClosable: true
+      })
+    }
+    catch(error){
+      if(error.message === "Request failed with status code 429"){
+        toast({
+          title: "Failed",
+          description: "Too many requests, please try again later.",
+          status: "warning",
+          duration: 2000,
+          isClosable: true
+        })
+      }
+    }
   }
 
   return (

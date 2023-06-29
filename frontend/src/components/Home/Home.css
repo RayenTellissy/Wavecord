@@ -1,0 +1,15 @@
+#home-server-bar{
+  display: flex;
+  flex-direction: column;
+  background-color: #1E1F22;
+  height: 100vh;
+  width: 5%;
+}
+
+#home-line-seperator{
+  height: 3px;
+  width: 3.5rem;
+  border-radius: 11px;
+  margin: 0 auto;
+  background-color: #313338;
+}

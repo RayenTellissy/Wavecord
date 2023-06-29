@@ -1,24 +1,57 @@
+datasource db {
+  provider = "cockroachdb"
+  url = env("DATABASE_URL")
+}
+
 generator client {
   provider = "prisma-client-js"
 }
 
-datasource db {
-  provider = "cockroachdb"
-  url      = env("DATABASE_URL")
+model Users {
+  id              String           @id
+  username        String           @unique
+  email           String
+  image           String?
+  role            Role             @default(BASIC)
+  status          Status           @default(ONLINE)
+  current_vc      Voice_channels?  @relation(fields: [voice_channelId], references: [id])
+  voice_channelId String?
+  created_at      DateTime         @default(now())
+  UsersInServers  UsersInServers[]
 }
 
-model Users {
-  id         String   @id
-  username   String   @unique
-  email      String
-  image      String?
-  role       Role     @default(BASIC)
-  status     Status   @default(ONLINE)
-  created_at DateTime @default(now())
+model Servers {
+  id             String           @id @default(cuid())
+  name           String
+  image          String
+  created_at     DateTime         @default(now())
+  Voice_channels Voice_channels[]
+  UsersInServers UsersInServers[]
+  server_link    String           @default(cuid())
+}
+
+model UsersInServers {
+  userId    Users    @relation(fields: [usersId], references: [id])
+  serverId  Servers  @relation(fields: [serversId], references: [id])
+  usersId   String
+  serversId String
+  isBanned  Boolean  @default(false)
+  joined    DateTime @default(now())
+
+  @@unique([usersId, serversId])
+}
+
+model Voice_channels {
+  id       String  @id @default(cuid())
+  name     String
+  server   Servers @relation(fields: [serverId], references: [id])
+  serverId String
+  Users    Users[]
 }
 
 enum Role {
   BASIC
+  TURBO
   ADMIN
 }
 

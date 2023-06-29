@@ -9,9 +9,10 @@ const { connect } = require("./prisma/connection")
 
 // routers
 const usersRouter = require("./routes/users")
+const serversRouter = require("./routes/servers")
 
 const app = express()
-const PORT = 3000
+const PORT = 3000 // server port
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
@@ -36,5 +37,6 @@ app.use(session({
 connect() // connecting database
 
 app.use("/users", usersRouter)
+app.use("/servers", serversRouter)
 
 app.listen(PORT, () => console.log(`> Server ready on port ${PORT}`))

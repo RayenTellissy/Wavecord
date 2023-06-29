@@ -16,11 +16,11 @@ import "./Signup.css"
 const Signup = () => {
 
   const { setUser } = useContext(Context)
-  const [username, setUsername] = useState("")
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
-  const [isDisabled, setIsDisabled] = useState(true)
+  const [username,setUsername] = useState("")
+  const [email,setEmail] = useState("")
+  const [password,setPassword] = useState("")
+  const [isLoading,setIsLoading] = useState(false)
+  const [isDisabled,setIsDisabled] = useState(true)
   const navigate = useNavigate()
   const toast = useToast()
 
@@ -58,32 +58,45 @@ const Signup = () => {
 
   const handleSubmit = async () => {
 
-    setIsLoading(true)
-
-    const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/users/signup`, {
-      username: username,
-      email: email,
-      password: password
-    }, { withCredentials: true })
-
-    setIsLoading(false)
-
-    const result = response.data
-    console.log(result)
-
-    // if user has been authenticated move redirect him
-    if (result.success) {
-      setUser({ loggedIn: true, id: result.cookie.user.id })
-      navigate("/home")
+    try{
+      setIsLoading(true)
+  
+      const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/users/signup`, {
+        username: username,
+        email: email,
+        password: password
+      }, { withCredentials: true })
+  
+      setIsLoading(false)
+  
+      const result = response.data
+      console.log(result)
+  
+      // if user has been authenticated move redirect him
+      if (result.success) {
+        setUser({ loggedIn: true, id: result.cookie.user.id })
+        navigate("/home")
+      }
+  
+      toast({
+        title: result.success ? "Success" : "Failed",
+        description: result.message,
+        status: result.success ? "success" : "error",
+        duration: 2000,
+        isClosable: true
+      })
     }
-
-    toast({
-      title: result.success ? "Success" : "Failed",
-      description: result.message,
-      status: result.success ? "success" : "error",
-      duration: 2000,
-      isClosable: true
-    })
+    catch(error){
+      if(error.message === "Request failed with status code 429"){
+        toast({
+          title: "Failed",
+          description: "Too many requests, please try again later.",
+          status: "warning",
+          duration: 2000,
+          isClosable: true
+        })
+      }
+    }
 
   }
 

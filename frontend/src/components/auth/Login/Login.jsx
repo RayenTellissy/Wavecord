@@ -54,31 +54,45 @@ const Login = () => {
   // login function
   const handleSubmit = async () => {
 
-    setIsLoading(true)
+    try {
+      setIsLoading(true)
+      const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/users/login`,{
+        username: username,
+        password: password
+      }, { withCredentials: true })
 
-    const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/users/login`,{
-      username: username,
-      password: password
-    }, { withCredentials: true })
+      setIsLoading(false)
 
-    setIsLoading(false)
+      const result = response.data
 
-    const result = response.data
+      // if user has been authenticated redirect him
+      if(result.success){
+        setUser({ id: result.cookie.user.id, loggedIn: true })
+        navigate("/")
+      }
 
-    // if user has been authenticated redirect him
-    if(result.success){
-      setUser({ id: result.cookie.user.id, loggedIn: true })
-      navigate("/")
+      // response alert
+      toast({
+        title: result.success ? "Success" : "Failed",
+        description: result.message,
+        status: result.success ? "success" : "error",
+        duration: 2000,
+        isClosable: true
+      })
     }
-
-    // response alert
-    toast({
-      title: result.success ? "Success" : "Failed",
-      description: result.message,
-      status: result.success ? "success" : "error",
-      duration: 2000,
-      isClosable: true
-    })
+    catch(error){
+      if(error.message === "Request failed with status code 429"){
+        toast({
+          title: "Failed",
+          description: "Too many requests, please try again later.",
+          status: "warning",
+          duration: 2000,
+          isClosable: true
+        })
+        navigate(0) // reloads
+      }
+    }
+    
   }
 
   return (
