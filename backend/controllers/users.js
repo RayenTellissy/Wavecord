@@ -1,16 +1,12 @@
 const {
    createUserWithEmailAndPassword, 
    signInWithEmailAndPassword, 
-   getAuth,
-   sendPasswordResetEmail
-   
+   sendPasswordResetEmail,
   } = require("firebase/auth")
-const { app } = require("../Firebase/FirebaseApp")
 
-const { PrismaClient } = require("@prisma/client")
-const prisma = new PrismaClient()
+const { prisma } = require("../prisma/connection")
+const { auth } = require("../Firebase/FirebaseApp")
 
-const auth = getAuth()
 
 module.exports = {
 
@@ -34,7 +30,9 @@ module.exports = {
       req.session.user = {
         id: id
       }
+      
       res.send({
+        cookie: req.session,
         success: true,
         message: "Signed Up."
       })
@@ -88,7 +86,6 @@ module.exports = {
       const response = await signInWithEmailAndPassword(auth, email, password)
 
       // setting a cookie
-      req.session.authenticated = true
       req.session.user = {
         id: response.user.uid
       }

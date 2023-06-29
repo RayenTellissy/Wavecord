@@ -1,5 +1,7 @@
 require("dotenv").config()
 const { initializeApp } = require("firebase/app")
+const { getAuth } = require("firebase/auth")
+
 
 const firebaseConfig = {
   apiKey: process.env.apiKey,
@@ -11,5 +13,6 @@ const firebaseConfig = {
 }
 
 const app = initializeApp(firebaseConfig)
+const auth = getAuth()
 
-module.exports = app
+module.exports = { auth }

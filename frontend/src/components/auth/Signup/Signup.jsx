@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from "axios"
 import { useToast, Button } from "@chakra-ui/react"
@@ -8,12 +8,14 @@ import { ArrowBackIcon } from "@chakra-ui/icons"
 import Logo from "../../common/Logo/Logo";
 import Google from '../../common/GoogleButton/Google';
 import Facebook from '../../common/FacebookButton/Facebook';
+import { Context } from "../../Context/Context"
 
 // styles
 import "./Signup.css"
 
 const Signup = () => {
 
+  const { setUser } = useContext(Context)
   const [username, setUsername] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -62,14 +64,16 @@ const Signup = () => {
       username: username,
       email: email,
       password: password
-    })
+    }, { withCredentials: true })
 
     setIsLoading(false)
 
     const result = response.data
+    console.log(result)
 
     // if user has been authenticated move redirect him
     if (result.success) {
+      setUser({ loggedIn: true, id: result.cookie.user.id })
       navigate("/home")
     }
 

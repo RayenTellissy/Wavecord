@@ -64,7 +64,6 @@ const Login = () => {
     setIsLoading(false)
 
     const result = response.data
-    console.log(result)
 
     // if user has been authenticated redirect him
     if(result.success){

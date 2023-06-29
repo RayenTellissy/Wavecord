@@ -4,10 +4,8 @@ const cors = require("cors")
 const helmet = require("helmet")
 const morgan = require("morgan")
 const session = require("express-session")
-const Redis = require("ioredis")
-// const RedisStore = require("connect-redis")(session)
-
-const connect = require("./prisma/connection")
+const MongoStore = require("connect-mongo")
+const { connect } = require("./prisma/connection")
 
 // routers
 const usersRouter = require("./routes/users")
@@ -15,7 +13,6 @@ const usersRouter = require("./routes/users")
 const app = express()
 const PORT = 3000
 
-// const redisClient = new Redis()
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cors({
@@ -27,14 +24,14 @@ app.use(morgan("dev"))
 app.use(session({
   secret: process.env.COOKIE_SEED,
   name: "sid",
-  // store: new RedisStore({ client: redisClient }),
   resave: false,
   saveUninitialized: false,
+  store: MongoStore.create({ mongoUrl: process.env.MONGO_URL, dbName: "sessions" }), // creating a mongodb session store
   cookie: {
     secure: process.env.ENVIRONMENT === "production" ? true : false,
-    expires: 1000 * 60 * 60 * 24 * 7,
+    expires: 604800000, // expires in a week
     httpOnly: true
-  }
+  },
 }))
 connect() // connecting database
 

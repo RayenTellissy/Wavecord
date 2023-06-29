@@ -13,10 +13,17 @@ model Users {
   email      String
   image      String?
   role       Role     @default(BASIC)
+  status     Status   @default(ONLINE)
   created_at DateTime @default(now())
 }
 
 enum Role {
   BASIC
   ADMIN
+}
+
+enum Status {
+  ONLINE
+  BUSY
+  OFFLINE
 }
