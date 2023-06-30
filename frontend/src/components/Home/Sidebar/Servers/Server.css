@@ -1,0 +1,9 @@
+.home-server-button{
+  margin: 0.5rem auto;
+}
+
+.home-server-image{
+  width: 4.5rem;
+  height: 4.5rem;
+  border-radius: 100px;
+}

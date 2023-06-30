@@ -38,7 +38,6 @@ module.exports = {
       })
     }
     catch(error){
-      console.log(error)
       const errorCode = error.code
 
       if(errorCode === "auth/email-already-in-use"){

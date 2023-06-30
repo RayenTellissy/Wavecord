@@ -12,6 +12,7 @@ import Login from '../components/auth/Login/Login'
 import Signup from "../components/auth/Signup/Signup"
 import ForgotPassword from "../components/auth/ForgotPassword/ForgotPassword"
 import Home from '../components/Home/Home'
+import Server from '../components/Server/Server';
 
 const Routing = () => {
   const { user } = useContext(Context)
@@ -25,6 +26,7 @@ const Routing = () => {
             <Route path='/login' element={<Navigate to="/"/>}/>
             <Route path='/signup' element={<Navigate to="/"/>}/>
             <Route path='/settings' element={<p>this is settings</p>}/>
+            <Route path='/server/:id' element={<Server/>}/>
           </>
         )
         :
