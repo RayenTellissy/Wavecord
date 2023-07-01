@@ -1,0 +1,13 @@
+#home-contacts-side-messages{
+  display: flex;
+  flex-direction: row;
+  padding: 1.5rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#home-contacts-side-message-text{
+  font-family: UbuntuMedium;
+  justify-content: center;
+  align-items: center;
+}

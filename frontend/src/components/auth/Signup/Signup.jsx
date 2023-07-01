@@ -75,7 +75,7 @@ const Signup = () => {
       // if user has been authenticated move redirect him
       if (result.success) {
         setUser({ loggedIn: true, id: result.cookie.user.id })
-        navigate("/home")
+        navigate("/")
       }
   
       toast({

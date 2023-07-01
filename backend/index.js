@@ -3,13 +3,14 @@ const express = require("express")
 const cors = require("cors")
 const helmet = require("helmet")
 const morgan = require("morgan")
-const session = require("express-session")
-const MongoStore = require("connect-mongo")
 const { connect } = require("./prisma/connection")
+const sessionMiddleware = require("./middleware/sessionMiddleware")
 
 // routers
 const usersRouter = require("./routes/users")
 const serversRouter = require("./routes/servers")
+const contactsRouter = require("./routes/contacts")
+const conversationsRouter = require("./routes/conversations")
 
 const app = express()
 const PORT = 3000 // server port
@@ -22,21 +23,13 @@ app.use(cors({
 }))
 app.use(helmet()) // securing http requests to the server
 app.use(morgan("dev"))
-app.use(session({
-  secret: process.env.COOKIE_SEED,
-  name: "sid",
-  resave: false,
-  saveUninitialized: false,
-  store: MongoStore.create({ mongoUrl: process.env.MONGO_URL, dbName: "sessions" }), // creating a mongodb session store
-  cookie: {
-    secure: process.env.ENVIRONMENT === "production" ? true : false,
-    expires: 604800000, // expires in a week
-    httpOnly: true
-  },
-}))
+app.use(sessionMiddleware) // express session
 connect() // connecting database
 
+// routers
 app.use("/users", usersRouter)
 app.use("/servers", serversRouter)
+app.use("/contacts", contactsRouter)
+app.use("/conversations", conversationsRouter)
 
 app.listen(PORT, () => console.log(`> Server ready on port ${PORT}`))

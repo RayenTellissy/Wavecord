@@ -1,0 +1,19 @@
+#home-navigator-button{
+  border-radius: 7px;
+  transition: background-color 0.1s ease;
+  font-family: UbuntuBold;
+  width: 90%;
+  height: 60px;
+  text-align: left;
+  display: flex;
+  align-items: center;
+}
+
+#home-navigator-button:hover{
+  background-color: #36373d;
+}
+
+
+#home-navigator-button:active{
+  background-color: #42434a;
+}

@@ -9,7 +9,7 @@ import "./HomeButton.css"
 const HomeButton = () => {
   return <Tooltip label="Home"
     placement='right' 
-    bg="blackAlpha.400" 
+    bg="blackAlpha.900" 
     color="white"
     padding={3}
     hasArrow={true}

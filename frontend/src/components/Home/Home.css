@@ -1,9 +1,14 @@
+#home-container{
+  display: flex;
+  flex-direction: row;
+}
+
 #home-server-bar{
   display: flex;
   flex-direction: column;
   background-color: #1E1F22;
   height: 100vh;
-  width: 5%;
+  width: 100px;
 }
 
 #home-line-seperator{
@@ -12,4 +17,35 @@
   border-radius: 11px;
   margin: 0 auto;
   background-color: #313338;
+}
+
+#home-contacts-bar{
+  width: 300px;
+  background-color: #252525;
+}
+
+#home-contacts-search-container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#home-contacts-search{
+  margin: 2rem;
+  border-radius: 11px;
+  padding: 10px 20px;
+  font-family: UbuntuMedium;
+  background-color: #1E1E1E;
+  color: #DDDEE9;
+}
+
+#home-contacts-search::placeholder{
+  color: #ACACAC;
+}
+
+#home-contacts-navigators{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }

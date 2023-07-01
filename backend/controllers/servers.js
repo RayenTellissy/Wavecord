@@ -29,9 +29,10 @@ module.exports = {
     }
   },
 
+  // function to fetch server details
   fetch: async (req,res) => {
     try{
-      const { id } = req.params
+      const { id } = req.params // server's id
 
       const result = await prisma.servers.findFirst({
         where: {

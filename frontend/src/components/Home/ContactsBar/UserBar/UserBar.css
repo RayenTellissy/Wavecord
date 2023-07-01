@@ -1,0 +1,14 @@
+#home-contacts-userbar-container{
+  display: flex;
+  flex-direction: row;
+}
+
+#home-contacts-userbar-avatar-section{
+  display: flex;
+  flex-direction: row;
+}
+
+#home-contacts-userbar-avatar-name-status{
+  display: flex;
+  flex-direction: column;
+}

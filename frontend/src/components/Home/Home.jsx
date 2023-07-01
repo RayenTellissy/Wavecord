@@ -1,13 +1,15 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { faBolt } from "@fortawesome/free-solid-svg-icons"
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Button, Box } from '@chakra-ui/react';
+import { faBolt, faUserGroup } from "@fortawesome/free-solid-svg-icons"
 import axios from "axios"
 
 // components
 import { Context } from "../Context/Context"
 import HomeButton from './Sidebar/HomeButton/HomeButton';
-import Server from './Sidebar/Servers/Server';
+import HomeNavigator from './ContactsBar/HomeNavigator/HomeNavigator';
+import DirectMessagesText from './ContactsBar/DirectMessages/DirectMessagesText';
+import Search from './ContactsBar/SearchBar/Search';
+import Servers from './Sidebar/Servers/Servers';
+import UserBar from './ContactsBar/UserBar/UserBar';
 
 // styles
 import "./Home.css"
@@ -21,10 +23,11 @@ const Home = () => {
     fetchServers()
   },[])
 
+  // function to fetch servers for the current user
   const fetchServers = async () => {
     try{
-      const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/servers/fetchByUser/${user.id}`)
-      setServers(response.data)
+      const servers = await axios.get(`${import.meta.env.VITE_SERVER_URL}/servers/fetchByUser/${user.id}`)
+      setServers(servers.data)
     }
     catch(error){
       console.log(error)
@@ -34,16 +37,30 @@ const Home = () => {
   return (
     <div>
       
-      <div id='home-server-bar'>
-        <HomeButton/>
-        <span id='home-line-seperator'/>
+      <div id='home-container'>
+        
+        <div id='home-server-bar'>
+          <HomeButton/>
+          <span id='home-line-seperator'/>
 
-        {servers.map((e,i) => {
-          return <Server key={i} id={e.serverId.id} name={e.serverId.name} image={e.serverId.image} />
-        })}
-      {/* <Button leftIcon={<FontAwesomeIcon icon={faBolt} />}>
-        Turbo
-      </Button> */}
+          <Servers servers={servers} />
+        </div>
+
+        <div id='home-contacts-bar'>
+          
+          <Search/>
+
+          <div id='home-contacts-navigators'>
+            <HomeNavigator text="Friends" icon={faUserGroup}/>
+            <HomeNavigator text="Turbo" icon={faBolt}/>
+          </div>
+
+          <DirectMessagesText/>
+
+          <UserBar/>
+
+        </div>
+
       </div>
     </div>
   );

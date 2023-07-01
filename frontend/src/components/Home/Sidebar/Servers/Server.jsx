@@ -10,7 +10,7 @@ const Server = ({ id, name, image }) => {
 
   return <Tooltip label={name} 
     placement='right' 
-    bg="blackAlpha.400" 
+    bg="blackAlpha.900" 
     color="white"
     padding={3}
     hasArrow={true}

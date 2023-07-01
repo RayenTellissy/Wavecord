@@ -34,11 +34,6 @@
   padding-left: 20px;
 }
 
-.login-input:focus{
-  outline: none;
-  caret-color: #0c6cfb;
-}
-
 #login-button-container{
   margin: 13px;
 }

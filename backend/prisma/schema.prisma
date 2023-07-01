@@ -1,6 +1,6 @@
 datasource db {
   provider = "cockroachdb"
-  url = env("DATABASE_URL")
+  url      = env("DATABASE_URL")
 }
 
 generator client {
@@ -18,6 +18,9 @@ model Users {
   voice_channelId String?
   created_at      DateTime         @default(now())
   UsersInServers  UsersInServers[]
+  Friends         Friends[]
+  Conversations   Conversations[]
+  DirectMessages  DirectMessages[]
 }
 
 model Servers {
@@ -49,6 +52,28 @@ model Voice_channels {
   Users    Users[]
 }
 
+model Friends {
+  id         String   @id @default(cuid())
+  users      Users[]
+  created_at DateTime @default(now())
+}
+
+model Conversations {
+  id             String           @id @default(cuid())
+  users          Users[]
+  type           ConversationType
+  DirectMessages DirectMessages[]
+}
+
+model DirectMessages {
+  id              String        @id @default(cuid())
+  sender          Users         @relation(fields: [usersId], references: [id])
+  usersId         String
+  conversation    Conversations @relation(fields: [conversationsId], references: [id])
+  conversationsId String
+  created_at      DateTime      @default(now())
+}
+
 enum Role {
   BASIC
   TURBO
@@ -59,4 +84,10 @@ enum Status {
   ONLINE
   BUSY
   OFFLINE
+}
+
+enum ConversationType {
+  DIRECT
+  GROUP
+  SERVER
 }

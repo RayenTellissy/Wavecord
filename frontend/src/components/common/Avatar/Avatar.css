@@ -1,0 +1,18 @@
+#small-avatar-container{
+  position: relative;
+}
+
+#small-avatar-picture{
+  height: 50px;
+  width: 50px;
+  border-radius: 100px;
+}
+
+#small-avatar-status{
+  position: absolute;
+  top: 33px;
+  left: 33px;
+  height: 17px;
+  width: 17px;
+  border-radius: 100px;
+}

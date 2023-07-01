@@ -10,6 +10,7 @@ const { auth } = require("../Firebase/FirebaseApp")
 
 module.exports = {
 
+  // function to create an account
   signup: async (req,res) => {
 
     try{
@@ -61,6 +62,7 @@ module.exports = {
     }
   },
 
+  // function to authenticate the user
   login: async (req,res) => {
     
     try{
@@ -125,6 +127,7 @@ module.exports = {
     }
   },
 
+  // function to reset password
   reset: async (req,res) => {
 
     try{
@@ -155,10 +158,33 @@ module.exports = {
     }
   },
 
+  // function to check for cookie on each render
   authenticateSession: async (req,res) => {
     if(req.session.user){
       return res.send({ loggedIn: true, id: req.session.user.id })
     }
     res.send({ loggedIn: false })
+  },
+
+  // function to fetch user details
+  fetch: async (req,res) => {
+    try{
+      const { id } = req.params
+
+      const result = await prisma.users.findFirst({
+        where: {
+          id: id
+        },
+        include: {
+          Friends: true,
+          Conversations: true
+        }
+      })
+
+      res.send(result)
+    }
+    catch(error){
+      res.send(error)
+    }
   }
 }
