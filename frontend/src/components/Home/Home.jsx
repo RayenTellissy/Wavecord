@@ -19,7 +19,6 @@ const Home = () => {
 
   const { user } = useContext(Context)
   const [servers,setServers] = useState([])
-  const [showModal,setShowModal] = useState(false)
 
   useEffect(() => {
     fetchServers()
@@ -44,7 +43,7 @@ const Home = () => {
         <div id='home-server-bar'>
           <HomeButton/>
           <span id='home-line-seperator'/>
-          <CreateServer setShowModal={setShowModal}/>
+          <CreateServer/>
           <Servers servers={servers} />
         </div>
 

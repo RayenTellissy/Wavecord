@@ -5,7 +5,7 @@ const Contacts = ({ contacts }) => {
   return (
     <>
       {contacts.map((e,i) => {
-        return <Contact name={e.name} image={e.image} status={e.status}/>
+        return <Contact key={i} name={e.name} image={e.image} status={e.status}/>
       })}
     </>
   );

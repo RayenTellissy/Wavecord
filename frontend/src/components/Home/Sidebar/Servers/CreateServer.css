@@ -21,7 +21,7 @@
   color: white;
 }
 
-#home-server-bar-modal-text{
+.home-server-bar-modal-text{
   font-family: UbuntuRegular;
   font-size: 15px;
   text-align: center;
@@ -29,7 +29,7 @@
 
 #home-server-bar-modal-create{
   display: flex;
-  border: 1px white solid;
+  border: 1px #a4a4a4 solid;
   border-radius: 5px;
   padding: 20px;
   margin-top: 20px;
@@ -46,4 +46,89 @@
 
 #home-server-bar-modal-create-text{
   font-size: 20px;
+}
+
+#home-server-bar-modal-seperator{
+  margin-top: auto;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  bottom: 20px;
+}
+
+.home-server-bar-modal-seperator-text{
+  font-family: UbuntuRegular;
+  margin: 10px;
+}
+
+#home-server-bar-modal-seperator-join{
+  background-color: #706c7c;
+  width: 100%;
+  padding: 15px;
+  border-radius: 4px;
+  font-family: UbuntuMedium;
+  margin-top: 5px;
+}
+
+#home-server-bar-modal-create-camera{
+  display: none;
+}
+
+#home-server-bar-modal-seperator-create{
+  width: 100%;
+}
+
+#home-server-bar-modal-seperator-label{
+  margin-bottom: 5px;
+  font-family: UbuntuRegular;
+}
+
+#home-server-bar-modal-seperator-input{
+  width: 100%;
+  background-color: #4f4f4f;
+  padding: 10px;
+  border-radius: 4px;
+  font-family: UbuntuRegular;
+}
+
+#home-server-bar-modal-seperator-create-container{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+#home-server-bar-modal-seperator-create-buttons{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.home-server-bar-modal-seperator-create-button{
+  font-family: UbuntuRegular;
+}
+
+#home-server-bar-modal-seperator-create-create{
+  background-color: #6064f4;
+  padding: 15px;
+  border-radius: 7px;
+  width: 8rem;
+}
+
+#home-server-bar-modal-container{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+#home-server-bar-modal-create-camera-label{
+  margin: 20px;
+  cursor: pointer;
+}
+
+#home-server-bar-modal-create-picture{
+  height: 150px;
+  width: 150px;
+  border-radius: 100px;
 }

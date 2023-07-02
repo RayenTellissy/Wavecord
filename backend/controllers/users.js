@@ -21,15 +21,17 @@ module.exports = {
 
       console.log(id)
   
-      await prisma.users.create({ data: {
-        id: id,
-        username: username,
-        email: email,
+      await prisma.users.create({ 
+        data: {
+          id: id,
+          username: username,
+          email: email,
       }})
 
       // setting a cookie
       req.session.user = {
-        id: id
+        id: id,
+        username: username
       }
       
       res.send({
@@ -88,7 +90,8 @@ module.exports = {
 
       // setting a cookie
       req.session.user = {
-        id: response.user.uid
+        id: response.user.uid,
+        username: username
       }
 
       res.send({
@@ -161,7 +164,7 @@ module.exports = {
   // function to check for cookie on each render
   authenticateSession: async (req,res) => {
     if(req.session.user){
-      return res.send({ loggedIn: true, id: req.session.user.id })
+      return res.send({ loggedIn: true, id: req.session.user.id, username: req.session.user.username })
     }
     res.send({ loggedIn: false })
   },
@@ -182,6 +185,27 @@ module.exports = {
       })
 
       res.send(result)
+    }
+    catch(error){
+      res.send(error)
+    }
+  },
+
+  // function to get role of a user
+  getRole: async (req,res) => {
+    try {
+      const { id } = req.params
+
+      const result = await prisma.users.findFirst({
+        where: {
+          id
+        },
+        select: {
+          role: true
+        }
+      })
+
+      res.send(result.role)
     }
     catch(error){
       res.send(error)
