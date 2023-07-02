@@ -1,6 +1,11 @@
 #home-contacts-userbar-container{
   display: flex;
   flex-direction: row;
+  padding: 5px;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  margin-bottom: 10px;
 }
 
 #home-contacts-userbar-avatar-section{
@@ -8,7 +13,25 @@
   flex-direction: row;
 }
 
+#home-contacts-userbar-username{
+  font-family: UbuntuMedium;
+}
+
+#home-contacts-userbar-status{
+  font-family: UbuntuRegular;
+}
+
 #home-contacts-userbar-avatar-name-status{
   display: flex;
   flex-direction: column;
+}
+
+.home-contacts-userbar-icon{
+  height: 25px;
+  width: 25px;
+  margin-left: 12px;
+}
+
+#home-contacts-userbar-icons-section{
+  margin: 10px;
 }

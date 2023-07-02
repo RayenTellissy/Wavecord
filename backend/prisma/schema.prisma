@@ -12,25 +12,30 @@ model Users {
   username        String           @unique
   email           String
   image           String?
-  role            Role             @default(BASIC)
   status          Status           @default(ONLINE)
   current_vc      Voice_channels?  @relation(fields: [voice_channelId], references: [id])
+  muted           Boolean          @default(false)
+  deafened        Boolean          @default(false)
+  role            Role             @default(BASIC)
   voice_channelId String?
   created_at      DateTime         @default(now())
   UsersInServers  UsersInServers[]
   Friends         Friends[]
   Conversations   Conversations[]
   DirectMessages  DirectMessages[]
+  servers_created Servers[]
 }
 
 model Servers {
   id             String           @id @default(cuid())
   name           String
   image          String
+  owner          Users            @relation(fields: [ownerId], references: [id])
   created_at     DateTime         @default(now())
   Voice_channels Voice_channels[]
   UsersInServers UsersInServers[]
   server_link    String           @default(cuid())
+  ownerId        String
 }
 
 model UsersInServers {

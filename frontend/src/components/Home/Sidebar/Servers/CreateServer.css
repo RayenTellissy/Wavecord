@@ -1,0 +1,49 @@
+#home-server-bar-create{
+  height: 70px;
+  width: 70px;
+  background-color: #313338;
+  border-radius: 100px;
+  margin: 10px;
+  transition: border-radius 0.2s, background-color 0.3s ;
+}
+
+#home-server-bar-create:hover{
+  background-color: #23a559;
+  border-radius: 25px;
+}
+
+#home-server-bar-create-icon-unhovered{
+  color: #23a559;
+  transition: color 0.3s;
+}
+
+#home-server-bar-create-icon-hovered{
+  color: white;
+}
+
+#home-server-bar-modal-text{
+  font-family: UbuntuRegular;
+  font-size: 15px;
+  text-align: center;
+}
+
+#home-server-bar-modal-create{
+  display: flex;
+  border: 1px white solid;
+  border-radius: 5px;
+  padding: 20px;
+  margin-top: 20px;
+  font-family: UbuntuMedium;
+  width: 100%;
+  text-align: left;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#home-server-bar-modal-create:hover{
+  background-color: #36495d;
+}
+
+#home-server-bar-modal-create-text{
+  font-size: 20px;
+}

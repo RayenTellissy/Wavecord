@@ -10,6 +10,7 @@ import DirectMessagesText from './ContactsBar/DirectMessages/DirectMessagesText'
 import Search from './ContactsBar/SearchBar/Search';
 import Servers from './Sidebar/Servers/Servers';
 import UserBar from './ContactsBar/UserBar/UserBar';
+import CreateServer from './Sidebar/Servers/CreateServer';
 
 // styles
 import "./Home.css"
@@ -18,6 +19,7 @@ const Home = () => {
 
   const { user } = useContext(Context)
   const [servers,setServers] = useState([])
+  const [showModal,setShowModal] = useState(false)
 
   useEffect(() => {
     fetchServers()
@@ -42,7 +44,7 @@ const Home = () => {
         <div id='home-server-bar'>
           <HomeButton/>
           <span id='home-line-seperator'/>
-
+          <CreateServer setShowModal={setShowModal}/>
           <Servers servers={servers} />
         </div>
 
@@ -62,6 +64,7 @@ const Home = () => {
         </div>
 
       </div>
+
     </div>
   );
 };

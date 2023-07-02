@@ -9,7 +9,7 @@ const HomeNavigator = ({ icon, text, style }) => {
       id='home-navigator-button'
       style={{ ...style }}>
         
-      <FontAwesomeIcon icon={icon} style={{ margin: 15, height: 30, width: 30 }}/>
+      <FontAwesomeIcon className='home-navigator-icon' icon={icon}/>
       
       {text}
     

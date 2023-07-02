@@ -6,6 +6,7 @@
 #home-server-bar{
   display: flex;
   flex-direction: column;
+  align-items: center;
   background-color: #1E1F22;
   height: 100vh;
   width: 100px;
@@ -22,6 +23,8 @@
 #home-contacts-bar{
   width: 300px;
   background-color: #252525;
+  display: flex;
+  flex-direction: column;
 }
 
 #home-contacts-search-container{

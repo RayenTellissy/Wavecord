@@ -1,5 +1,6 @@
 import React from 'react';
 import { Tooltip } from '@chakra-ui/react';
+import { useNavigate } from "react-router-dom"
 
 import Logo from "../../../common/Logo/Logo"
 
@@ -7,6 +8,8 @@ import Logo from "../../../common/Logo/Logo"
 import "./HomeButton.css"
 
 const HomeButton = () => {
+  const navigate = useNavigate()
+  
   return <Tooltip label="Home"
     placement='right' 
     bg="blackAlpha.900" 
@@ -17,7 +20,7 @@ const HomeButton = () => {
     margin={5}
     fontFamily="UbuntuMedium"
     >
-    <button id='home-button'>
+    <button id='home-button' onClick={() => navigate("/")}>
       <Logo style={{ height: "85%", margin: "auto"}}/>
     </button>
   </Tooltip> 

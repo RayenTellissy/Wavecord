@@ -17,3 +17,9 @@
 #home-navigator-button:active{
   background-color: #42434a;
 }
+
+.home-navigator-icon{
+  height: 30px;
+  width: 30px;
+  margin: 15px;
+}
