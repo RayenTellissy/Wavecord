@@ -24,6 +24,7 @@ model Users {
   Conversations   Conversations[]
   DirectMessages  DirectMessages[]
   servers_created Servers[]
+  Bans            Bans[]
 }
 
 model Servers {
@@ -36,6 +37,15 @@ model Servers {
   UsersInServers UsersInServers[]
   server_link    String           @default(cuid())
   ownerId        String
+  Bans           Bans[]
+}
+
+model Bans {
+  id        String  @id @default(cuid())
+  userId    Users   @relation(fields: [usersId], references: [id])
+  serverId  Servers @relation(fields: [serversId], references: [id])
+  usersId   String
+  serversId String
 }
 
 model UsersInServers {
@@ -43,7 +53,6 @@ model UsersInServers {
   serverId  Servers  @relation(fields: [serversId], references: [id])
   usersId   String
   serversId String
-  isBanned  Boolean  @default(false)
   joined    DateTime @default(now())
 
   @@unique([usersId, serversId])
