@@ -1,25 +1,31 @@
 import React, { useContext, useState } from 'react';
+import { useNavigate } from "react-router-dom"
 import { faCamera } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import BeatLoader from "react-spinners/BeatLoader"
 import {
   ModalHeader,
   ModalBody,
-  ModalFooter
+  ModalFooter,
+  useToast
 } from "@chakra-ui/react"
 import { v4 } from "uuid"
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage"
 import axios from "axios"
+import imageCompression from "browser-image-compression"
 
 // component
 import { storage } from '../../../../../Firebase/FirebaseApp';
 import { Context } from "../../../../Context/Context"
 
-const Create = ({ serverName, setServerName, setScreen, onClose }) => {
+const Create = ({ setScreen, onClose }) => {
   const { user } = useContext(Context)
   const [isLoading,setIsLoading] = useState(false)
   const [image,setImage] = useState(null)
   const [createDisabled,setCreateDisabled] = useState(false)
+  const [serverName,setServerName] = useState(`${user.username}'s Server`)
+  const toast = useToast()
+  const navigate = useNavigate()
 
   const importImage = (e) => {
     const file = e.target.files[0]
@@ -37,13 +43,44 @@ const Create = ({ serverName, setServerName, setScreen, onClose }) => {
   }
 
   const handleSubmit = async () => {
-    setCreateDisabled(true) // disabling button
     if(image === null){
-      return alert("choose image")
+      return toast({
+        title: "Failed",
+        description: "Please upload an image.",
+        status: "error",
+        duration: 1500,
+        isClosable: true,
+        position: "top",
+      })
     }
 
+    if(serverName === ""){
+      return toast({
+        title: "Failed",
+        description: "Please type a name for your server",
+        status: "error",
+        duration: 1500,
+        isClosable: true,
+        position: "top",
+      })
+    }
+    
+    setCreateDisabled(true) // disabling button
     setIsLoading(true)
 
+    const count = await axios.get(`${import.meta.env.VITE_SERVER_URL}/servers/count/${user.id}`)
+    if(!count.data.success){
+      onClose()
+      return toast({
+        title: "Failed",
+        description: count.data.message,
+        status: "info",
+        duration: 2000,
+        isClosable: true,
+        position: "top",
+      })
+    }
+    
     const blob = await new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest()
       xhr.onload = function () {
@@ -58,19 +95,40 @@ const Create = ({ serverName, setServerName, setScreen, onClose }) => {
       xhr.send(null)
     })
     
+    const options = {
+      maxSizeMB: 0.003 // compressing to ~3kb
+    }
+    // compressing image
+    const compressedImage = await imageCompression(blob, options)
+
     const imageRef = ref(storage, `server_pictures/${v4()}`) // creating a storage reference
-    await uploadBytes(imageRef, blob) // uploading image
+    await uploadBytes(imageRef, compressedImage) // uploading image
     
     const url = await getDownloadURL(imageRef)
-    
-    const role = await axios.get(`${import.meta.env.VITE_SERVER_URL}/users/getRole/${user.id}`) // fetching user's role
-    await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/create/${user.id}`,{
-      name: serverName,
-      image: url,
-      role: role.data
-    })
+
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/create/${user.id}`,{
+        name: serverName,
+        image: url
+      })
+
+      if(response.data.success === false){
+        onClose()
+        return toast({
+          title: "Failed",
+          description: response.data.message,
+          status: "warning",
+          duration: 3000,
+          isClosable: true
+        })
+      }
+    }
+    catch(error){
+      console.log(error)
+    }
 
     onClose() // closing modal
+    navigate(0) // reloads
   }
 
   return <>

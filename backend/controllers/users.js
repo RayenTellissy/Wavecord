@@ -130,6 +130,21 @@ module.exports = {
     }
   },
 
+  // logout function
+  logout: (req, res) => {
+    try {
+      req.session.destroy(err => {
+        if(err){
+          return res.send(err)
+        }
+      })
+      res.send("logged out.")
+    }
+    catch(error){
+      res.send(error)
+    }
+  },  
+  
   // function to reset password
   reset: async (req,res) => {
 
@@ -191,24 +206,4 @@ module.exports = {
     }
   },
 
-  // function to get role of a user
-  getRole: async (req,res) => {
-    try {
-      const { id } = req.params
-
-      const result = await prisma.users.findFirst({
-        where: {
-          id
-        },
-        select: {
-          role: true
-        }
-      })
-
-      res.send(result.role)
-    }
-    catch(error){
-      res.send(error)
-    }
-  }
 }

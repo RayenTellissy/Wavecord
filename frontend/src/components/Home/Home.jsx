@@ -43,8 +43,8 @@ const Home = () => {
         <div id='home-server-bar'>
           <HomeButton/>
           <span id='home-line-seperator'/>
-          <CreateServer/>
           <Servers servers={servers} />
+          <CreateServer/>
         </div>
 
         <div id='home-contacts-bar'>
@@ -60,6 +60,14 @@ const Home = () => {
 
           <UserBar/>
 
+        </div>
+
+        <div>
+          <button onClick={async () => {
+            await axios.get(`${import.meta.env.VITE_SERVER_URL}/users/logout`, { withCredentials: true })
+          }}>
+            log out
+          </button>
         </div>
 
       </div>

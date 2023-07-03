@@ -53,22 +53,7 @@ module.exports = {
   createServer: async (req,res) => {
     try {
       const { id } = req.params // new server owner's id
-      const { name, image, role } = req.body
-
-      // counting how many servers the user has created
-      const count = await prisma.servers.count({
-        where: {
-          ownerId: id
-        }
-      })
-
-      if(role === "BASIC" && count > 2){
-        return res.send("Non-Turbo users can only create a maximum of 3 servers.")
-      }
-
-      if(role === "TURBO" && count > 9){
-        return res.send("You have reached your maximum quota for creating servers.")
-      }
+      const { name, image } = req.body
 
       const result = await prisma.servers.create({
         data: {
@@ -96,16 +81,54 @@ module.exports = {
 
   joinServer: async (req,res) => {
     try {
-      const { userId, serverId } = req.body
+      const { userId, invite } = req.body
+      
+      const server = await prisma.servers.findFirst({
+        where: {
+          server_link: invite
+        },
+        select: {
+          id: true
+        }
+      })
+
+      if(!server){
+        return res.send({
+          status: "error",
+          success: false,
+          message: "Invite code doesn't exist."
+        })
+      }
+
+      const serverId = server.id
+
+      const memberCheck = await prisma.usersInServers.findFirst({
+        where: {
+          usersId: userId,
+          serversId: serverId
+        }
+      })
+
+      // if user is already a member return an error
+      if(memberCheck){
+        return res.send({
+          status: "warning",
+          success: false,
+          message: "User is already a member of this server.",
+        })
+      }
     
-      const result = await prisma.usersInServers.create({
+      await prisma.usersInServers.create({
         data: {
           usersId: userId,
           serversId: serverId
         }
       })
 
-      res.send(result)
+      res.send({
+        success: true,
+        message: "Joined server."
+      })
     }
     catch(error){
 
@@ -126,6 +149,53 @@ module.exports = {
       })
       
       res.send(result)
+    }
+    catch(error){
+      res.send(error)
+    }
+  },
+
+  count: async (req,res) => {
+    try {
+      const { id } = req.params
+
+      // getting the user's role
+      const roleQuery = await prisma.users.findFirst({
+        where: {
+          id
+        },
+        select: {
+          role: true
+        }
+      })
+
+      const role = roleQuery.role
+
+      // counting how many servers the user has created
+      const count = await prisma.servers.count({
+        where: {
+          ownerId: id
+        }
+      })
+      
+      if(role === "BASIC" && count > 2){
+        return res.send({
+          success: false,
+          message: "Non-Turbo users can only create a maximum of 3 servers."
+        })
+      }
+      
+      if(role === "TURBO" && count > 9){
+        return res.send({
+          success: false,
+          message: "You have reached your maximum quota for creating servers."
+        })
+      }
+      
+      res.send({
+        success: true,
+        role: role.role
+      })
     }
     catch(error){
       res.send(error)

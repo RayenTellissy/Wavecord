@@ -19,7 +19,7 @@ const Main = ({ setScreen }) => {
     <ModalFooter>
       <div id='home-server-bar-modal-seperator'>
         <p className='home-server-bar-modal-seperator-text'>Have an invite already?</p>
-        <button id='home-server-bar-modal-seperator-join'>
+        <button id='home-server-bar-modal-seperator-join' onClick={() => setScreen("join")}>
           Join a Server
         </button>
       </div>

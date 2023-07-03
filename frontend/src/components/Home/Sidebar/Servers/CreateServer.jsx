@@ -23,7 +23,6 @@ const CreateServer = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [hovered,setHovered] = useState(false)
   const [screen,setScreen] = useState("main")
-  const [serverName,setServerName] = useState(`${user.username}'s Server`)
 
   const handleMouseEnter = () => {
     setHovered(true)
@@ -62,12 +61,16 @@ const CreateServer = () => {
           }
 
           {screen === "create" &&
-          <Create 
-            serverName={serverName} 
-            setServerName={setServerName}
+          <Create
             setScreen={setScreen}
             onClose={onClose}
-          />
+          />}
+
+          {screen === "join" && 
+            <Join 
+              setScreen={setScreen}
+              onClose={onClose}
+            />
           }
 
         </ModalContent>
