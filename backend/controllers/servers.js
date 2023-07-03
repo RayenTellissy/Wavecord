@@ -155,6 +155,7 @@ module.exports = {
     }
   },
 
+  // function to count how many servers a user has created
   count: async (req,res) => {
     try {
       const { id } = req.params

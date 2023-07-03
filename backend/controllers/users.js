@@ -130,6 +130,71 @@ module.exports = {
     }
   },
 
+  googleLogin: async (req,res) => {
+    try {
+      const { id } = req.params
+      
+      const result = await prisma.users.findFirst({
+        where: {
+          id: id
+        },
+        select: {
+          id: true,
+          username: true,
+        }
+      })
+
+      if(!result){
+        console.log(result)
+        return res.send({
+          success: false,
+        })
+      }
+
+      req.session.user = {
+        id: result.id,
+        username: result.username
+      }
+
+      res.send({
+        cookie: req.session,
+        success: true,
+        message: "Logged in."
+      })
+    }
+    catch(error){
+      res.send(error)
+    }
+  },
+
+  googleSignup: async (req,res) => {
+    try {
+      const { id, username, email } = req.body
+      
+      await prisma.users.create({
+        data: {
+          id,
+          username,
+          email
+        }
+      })
+
+      req.session.user = {
+        id: id,
+        username: username
+      }
+
+      res.send({
+        cookie: req.session,        
+        success: true,
+        message: "Logged in."
+      })
+    }
+    catch(error){
+      res.send(error)
+    }
+  },
+
   // logout function
   logout: (req, res) => {
     try {

@@ -12,6 +12,11 @@ module.exports = {
     max: 3
   }),
 
+  logoutLimit: rateLimit({
+    windowMs: 1000 * 60 * 60, // 1 hour,
+    max: 5
+  }),
+
   resetLimit: rateLimit({
     windowMs: 1000 * 60 * 60, // 1 hour
     max: 2
