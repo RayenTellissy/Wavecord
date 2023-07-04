@@ -37,7 +37,6 @@
   width: 100%;
   text-align: left;
   align-items: center;
-  justify-content: space-between;
 }
 
 #home-server-bar-modal-create:hover{
@@ -46,6 +45,7 @@
 
 #home-server-bar-modal-create-text{
   font-size: 20px;
+  margin-left: 15px;
 }
 
 #home-server-bar-modal-seperator{
@@ -131,4 +131,8 @@
   height: 150px;
   width: 150px;
   border-radius: 100px;
+}
+
+#home-server-bar-modal-create-chev{
+  margin-left: auto;
 }

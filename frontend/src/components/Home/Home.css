@@ -3,6 +3,18 @@
   flex-direction: row;
 }
 
+#home-loader{
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
 #home-server-bar{
   display: flex;
   flex-direction: column;

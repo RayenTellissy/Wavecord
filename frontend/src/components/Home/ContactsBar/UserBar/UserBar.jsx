@@ -22,7 +22,9 @@ const UserBar = () => {
 
   const fetchUser = async () => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/users/fetch/${user.id}`)
+      const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/users/fetch/${user.id}`,{
+        withCredentials: true
+      })
       setUsername(response.data.username)
       setImage(response.data.image)
       setStatus(response.data.status)

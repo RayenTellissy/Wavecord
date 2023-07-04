@@ -1,0 +1,33 @@
+#home-conversation-container{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.home-conversation-conversation{
+  display: flex;
+  flex-direction: row;
+  width: 90%;
+  padding: 10px;
+  border-radius: 7px;
+}
+
+.home-conversation-conversation:hover{
+  background-color: #36373d
+}
+
+.home-conversation-conversation:active{
+  background-color: #42434a;
+}
+
+.home-conversation-username-container{
+  display: flex;
+  align-items: center;
+  height: 100%;
+  margin-left: 5px;
+}
+
+.home-conversation-username-text{
+  font-family: UbuntuMedium;
+  font-size: 18px;
+}

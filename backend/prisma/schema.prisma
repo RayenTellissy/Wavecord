@@ -81,10 +81,11 @@ model Conversations {
 
 model DirectMessages {
   id              String        @id @default(cuid())
-  sender          Users         @relation(fields: [usersId], references: [id])
-  usersId         String
+  sender          String
+  usersId         Users         @relation(fields: [sender], references: [id])
   conversation    Conversations @relation(fields: [conversationsId], references: [id])
   conversationsId String
+  message         String
   created_at      DateTime      @default(now())
 }
 

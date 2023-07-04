@@ -1,12 +1,11 @@
 const { prisma } = require("../prisma/connection")
 
 module.exports = {
-
   // function to fetch all contacts of a user
-  fetchContacts: async (req,res) => {
-    try{
+  fetchFriends: async (req,res) => {
+    try {
       const { id } = req.params // user's id
-
+  
       const result = await prisma.friends.findMany({
         where: {
           users: {
@@ -21,5 +20,5 @@ module.exports = {
     catch(error){
       res.send(error)
     }
-  }
+  },
 }

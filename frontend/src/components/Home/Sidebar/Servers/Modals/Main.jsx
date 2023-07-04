@@ -5,6 +5,7 @@ import {
   ModalBody,
   ModalFooter
 } from "@chakra-ui/react"
+import { FaKey } from "react-icons/fa"
 
 const Main = ({ setScreen }) => {
   return <>
@@ -12,8 +13,9 @@ const Main = ({ setScreen }) => {
     <ModalBody>
       <p className='home-server-bar-modal-text'>Your server is where you and your friends hang out. Make yours and start talking.</p>
       <button id='home-server-bar-modal-create' onClick={() => setScreen("create")}>
+        <FaKey size={30}/>
         <p id='home-server-bar-modal-create-text'>Create My Own</p>
-        <ChevronRightIcon boxSize={10}/>
+        <ChevronRightIcon id='home-server-bar-modal-create-chev' boxSize={10}/>
       </button>
     </ModalBody>
     <ModalFooter>

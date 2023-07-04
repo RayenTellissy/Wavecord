@@ -68,7 +68,9 @@ const Create = ({ setScreen, onClose }) => {
     setCreateDisabled(true) // disabling button
     setIsLoading(true)
 
-    const count = await axios.get(`${import.meta.env.VITE_SERVER_URL}/servers/count/${user.id}`)
+    const count = await axios.get(`${import.meta.env.VITE_SERVER_URL}/servers/count/${user.id}`,{
+      withCredentials: true
+    })
     if(!count.data.success){
       onClose()
       return toast({
@@ -110,6 +112,8 @@ const Create = ({ setScreen, onClose }) => {
       const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/create/${user.id}`,{
         name: serverName,
         image: url
+      },{
+        withCredentials: true
       })
 
       if(response.data.success === false){

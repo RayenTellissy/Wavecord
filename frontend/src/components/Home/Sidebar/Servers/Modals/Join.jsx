@@ -12,7 +12,7 @@ import BeatLoader from 'react-spinners/BeatLoader';
 // components
 import { Context } from '../../../../Context/Context';
 
-const Join = ({ onClose }) => {
+const Join = ({ onClose, setScreen }) => {
   const { user } = useContext(Context)
   const [joinDisabled,setJoinDisabled] = useState(false)
   const [invite,setInvite] = useState("")
@@ -39,6 +39,8 @@ const Join = ({ onClose }) => {
     const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/join`,{
       userId: user.id,
       invite
+    },{
+      withCredentials: true
     })
 
     // if user is already a member return this alert

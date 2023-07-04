@@ -9,8 +9,8 @@ const sessionMiddleware = require("./middleware/sessionMiddleware")
 // routers
 const usersRouter = require("./routes/users")
 const serversRouter = require("./routes/servers")
-const contactsRouter = require("./routes/contacts")
 const conversationsRouter = require("./routes/conversations")
+const friendsRouter = require("./routes/friends")
 
 const app = express()
 const PORT = 3000 // server port
@@ -29,7 +29,7 @@ connect() // connecting database
 // routers
 app.use("/users", usersRouter)
 app.use("/servers", serversRouter)
-app.use("/contacts", contactsRouter)
 app.use("/conversations", conversationsRouter)
+app.use("/friends", friendsRouter)
 
 app.listen(PORT, () => console.log(`> Server ready on port ${PORT}`))
