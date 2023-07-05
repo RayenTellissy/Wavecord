@@ -1,0 +1,44 @@
+#messages-top-bar{
+  height: 8%;
+  background-color: red;
+}
+
+#dm-conversation-container{
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+#messages-container{
+  display: flex;
+  flex-direction: row;
+}
+
+#message-container{
+  display: flex;
+  flex-direction: row;
+  padding: 15px;
+}
+
+#dm-username-message-container{
+  display: flex;
+  flex-direction: column;
+}
+
+#dm-message-username{
+  font-family: UbuntuMedium;
+  margin-right: 1rem;
+}
+
+#dm-message-createdat{
+  font-family: UbuntuLight;
+}
+
+#dm-message-message{
+  font-family: UbuntuRegular;
+}
+
+#dm-username-createdat{
+  display: flex;
+  flex-direction: row;
+}

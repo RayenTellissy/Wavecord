@@ -27,3 +27,8 @@ input::selection{
   font-family: UbuntuMedium;
   src: url("./assets/fonts/Ubuntu/Ubuntu-Medium.ttf");
 }
+
+@font-face {
+  font-family: UbuntuLight;
+  src: url("./assets/fonts/Ubuntu/Ubuntu-Light.ttf");
+}
