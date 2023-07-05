@@ -1,3 +1,9 @@
+#messages-container{
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+}
+
 #messages-top-bar{
   display: flex;
   align-items: center;
@@ -9,11 +15,6 @@
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-}
-
-#messages-container{
-  display: flex;
-  flex-direction: row;
 }
 
 #message-container{
@@ -43,4 +44,24 @@
 #dm-username-createdat{
   display: flex;
   flex-direction: row;
+}
+
+#dm-conversation-input-container{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#dm-messages-container{
+  height: 83%;
+  overflow-y: scroll;
+}
+
+#dm-conversation-input{
+  width: 96%;
+  border-radius: 4px;
+  padding: 15px;
+  background-color: #212937;
+  font-family: UbuntuRegular;
+  color: #DDDEE9;
 }

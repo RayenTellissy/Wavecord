@@ -37,12 +37,17 @@ module.exports = {
     try {
       const { id } = req.params // conversation's id
 
-      const result = await prisma.directMessages.findMany({
+      const result = await prisma.conversations.findFirst({
         where: {
-          conversationsId: id
+          id: id
         },
         include: {
-          usersId: true
+          users: true,
+          DirectMessages: {
+            include: {
+              usersId: true
+            }
+          }
         }
       })
 
@@ -70,6 +75,25 @@ module.exports = {
               }
             }
           }
+        }
+      })
+
+      res.send(result)
+    }
+    catch(error){
+      res.send(error)
+    }
+  },
+
+  sendMessage: async (req,res) => {
+    try {
+      const { conversationId, senderId, message } = req.body
+
+      const result = await prisma.directMessages.create({
+        data: {
+          sender: senderId,
+          conversationsId: conversationId,
+          message: message
         }
       })
 
