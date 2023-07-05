@@ -7,12 +7,15 @@ import Avatar from "../../../common/Avatar/Avatar"
 // styles
 import "./Conversation.css"
 
-const Conversation = ({ id, username, image, status }) => {
+const Conversation = ({ id, username, image, status, highlighted }) => {
   const navigate = useNavigate()
 
   return (
     <div id='home-conversation-container'>
-      <button className='home-conversation-conversation' onClick={() => navigate(`/dm/${id}`)}>
+      <button 
+        className={highlighted ? 'home-conversation-conversation-highlighted' : 'home-conversation-conversation'} 
+        onClick={() => navigate(`/dm/${id}`)}
+      >
 
         <div className='home-conversation-avatar-container'>
           <Avatar image={image} status={status}/>

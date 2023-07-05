@@ -13,7 +13,7 @@ import { Context } from '../../Context/Context';
 // styles
 import "./ContactsBar.css"
 
-const ContactsBar = () => {
+const ContactsBar = ({ highlighted }) => {
   const { user } = useContext(Context)
   const [conversations,setConversations] = useState([])
 
@@ -44,7 +44,7 @@ const ContactsBar = () => {
       </div>
 
       <DirectMessagesText/>
-      <Conversations conversations={conversations}/>
+      <Conversations conversations={conversations} highlighted={highlighted}/>
       <UserBar/>
 
     </div>

@@ -12,11 +12,29 @@
   border-radius: 7px;
 }
 
+
 .home-conversation-conversation:hover{
   background-color: #36373d
 }
 
 .home-conversation-conversation:active{
+  background-color: #42434a;
+}
+
+.home-conversation-conversation-highlighted{
+  display: flex;
+  flex-direction: row;
+  width: 90%;
+  padding: 10px;
+  border-radius: 7px;
+  background-color: #42434a;
+}
+
+.home-conversation-conversation-highlighted:hover{
+  background-color: #36373d
+}
+
+.home-conversation-conversation-highlighted:active{
   background-color: #42434a;
 }
 

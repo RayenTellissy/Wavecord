@@ -1,6 +1,8 @@
 #messages-top-bar{
+  display: flex;
+  align-items: center;
   height: 8%;
-  background-color: red;
+  background-color: #252525;
 }
 
 #dm-conversation-container{
