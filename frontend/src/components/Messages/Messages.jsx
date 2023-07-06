@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { useParams } from "react-router-dom"
+import { useLocation, useParams } from "react-router-dom"
 import axios from 'axios';
 
 // components
@@ -13,27 +13,42 @@ import OtherUsers from './OtherUsers/OtherUsers';
 import "./Messages.css"
 
 const Messages = () => {
-  const { user } = useContext(Context)
+  const { user, socket } = useContext(Context)
   const { id } = useParams() // conversation's id
   const [conversationType,setConversationType] = useState("")
   const [messages,setMessages] = useState([]) // conversation's 
   const [otherUsers,setOtherUsers] = useState([])
   const [conversationName,setConversationName] = useState("")
   const [message,setMessage] = useState("")
+  const [image,setImage] = useState("")
+  const location = useLocation().pathname
+
+  useEffect(() => {
+    socket.emit("join_room", id) // emitting a join room event to the socket server
+    fetchMessages() // fetching messages of the current conversation
+    fetchOtherUsers() // fetching other user's details that are in this conversation
+    fetchImage()
+  },[])
 
   useEffect(() => {
     fetchMessages()
     fetchOtherUsers()
-  },[])
+  },[location])
 
   useEffect(() => {
     handleConversationName()
-  },[conversationType])
+  },[conversationType,otherUsers])
+
+  useEffect(() => {
+    console.log("socket updated")
+    socket.on("receive_message", data => {
+      setMessages(prevMessages => [...prevMessages, data])
+    })
+  },[socket])
 
   const fetchMessages = async () => {
     try {
       const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/conversations/messages/${id}`)
-      console.log(response.data.type)
       setConversationType(response.data.type)
       setMessages(response.data.DirectMessages)
     }
@@ -55,6 +70,16 @@ const Messages = () => {
     }
   }
 
+  const fetchImage = async () => {
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/users/fetchImage/${user.id}`)
+      setImage(response.data.image)
+    }
+    catch(error){
+      console.log(error)
+    }
+  }
+
   const handleConversationName = () => {
     if(conversationType === "DIRECT"){
       setConversationName(otherUsers[0].username)
@@ -67,12 +92,20 @@ const Messages = () => {
       if(message === ""){
         return
       }
-      const text = message
+      const storedMessage = message
       setMessage("")
+      const messageDetails = {
+        conversation: id,
+        usersId: { username: user.username },
+        image: image,
+        message: storedMessage,
+        created_at: new Date(Date.now())
+      }
+      await socket.emit("send_message", messageDetails)
       await axios.post(`${import.meta.env.VITE_SERVER_URL}/conversations/sendMessage`,{
         conversationId: id,
         senderId: user.id,
-        message: text
+        message: storedMessage
       })
     }
     catch(error){
