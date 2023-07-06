@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useLocation, useParams } from "react-router-dom"
 import axios from 'axios';
 
@@ -22,6 +22,7 @@ const Messages = () => {
   const [message,setMessage] = useState("")
   const [image,setImage] = useState("")
   const location = useLocation().pathname
+  const scrollRef = useRef()
 
   useEffect(() => {
     socket.emit("join_room", id) // emitting a join room event to the socket server
@@ -40,11 +41,15 @@ const Messages = () => {
   },[conversationType,otherUsers])
 
   useEffect(() => {
-    console.log("socket updated")
     socket.on("receive_message", data => {
       setMessages(prevMessages => [...prevMessages, data])
     })
   },[socket])
+
+  useEffect(() => {
+    scrollToBottom()
+    scrollToBottomOnMessageUpdate()
+  },[messages])
 
   const fetchMessages = async () => {
     try {
@@ -113,6 +118,19 @@ const Messages = () => {
     }
   }
 
+  const scrollToBottom = () => {
+    scrollRef.current.scrollTop = scrollRef.current.scrollHeight
+  }
+
+  const scrollToBottomOnMessageUpdate = () => {
+    const messagesContainer = scrollRef.current
+    const shouldScrollToBottom = messagesContainer.scrollTop + messagesContainer.clientHeight === messagesContainer.scrollHeight
+
+    if (shouldScrollToBottom) {
+      scrollToBottom()
+    }
+  }
+
   return (
     <div id='messages-container'>
       <Sidebar/>
@@ -126,7 +144,7 @@ const Messages = () => {
           })}
         </div>
 
-        <div id='dm-messages-container'>
+        <div id='dm-messages-container' ref={scrollRef}>
           {messages.map((e,i) => {
             return <Message key={i} username={e.usersId.username} image={e.usersId.image} message={e.message} created_at={e.created_at}/>
           })}
