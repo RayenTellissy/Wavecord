@@ -27,12 +27,10 @@ io.on("connection", socket => {
   console.log("user connected", socket.id)
 
   socket.on("join_room", data => {
-    console.log(`joined room ${data}`)
     socket.join(data)
   })
 
   socket.on("send_message", data => {
-    console.log(data.conversation)
     socket.to(data.conversation).emit("receive_message", data)
   })
 

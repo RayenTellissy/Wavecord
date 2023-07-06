@@ -20,32 +20,33 @@ const Messages = () => {
   const [otherUsers,setOtherUsers] = useState([])
   const [conversationName,setConversationName] = useState("")
   const [message,setMessage] = useState("")
-  const [image,setImage] = useState("")
   const location = useLocation().pathname
   const scrollRef = useRef()
 
   useEffect(() => {
-    socket.emit("join_room", id) // emitting a join room event to the socket server
     fetchMessages() // fetching messages of the current conversation
     fetchOtherUsers() // fetching other user's details that are in this conversation
-    fetchImage()
   },[])
-
+  
+  // handling conversation switching
   useEffect(() => {
+    socket.emit("join_room", id) // emitting a join room event to the socket server
     fetchMessages()
     fetchOtherUsers()
   },[location])
 
   useEffect(() => {
     handleConversationName()
-  },[conversationType,otherUsers])
+  },[otherUsers])
 
+  // socket watching to update messages upon receiving socket
   useEffect(() => {
     socket.on("receive_message", data => {
       setMessages(prevMessages => [...prevMessages, data])
     })
   },[socket])
 
+  // use effect, watching message updates to scroll to bottom
   useEffect(() => {
     scrollToBottom()
     scrollToBottomOnMessageUpdate()
@@ -75,16 +76,6 @@ const Messages = () => {
     }
   }
 
-  const fetchImage = async () => {
-    try {
-      const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/users/fetchImage/${user.id}`)
-      setImage(response.data.image)
-    }
-    catch(error){
-      console.log(error)
-    }
-  }
-
   const handleConversationName = () => {
     if(conversationType === "DIRECT"){
       setConversationName(otherUsers[0].username)
@@ -102,11 +93,12 @@ const Messages = () => {
       const messageDetails = {
         conversation: id,
         usersId: { username: user.username },
-        image: image,
+        image: user.image,
         message: storedMessage,
         created_at: new Date(Date.now())
       }
       await socket.emit("send_message", messageDetails)
+      setMessages(prevMessages => [...prevMessages, messageDetails])
       await axios.post(`${import.meta.env.VITE_SERVER_URL}/conversations/sendMessage`,{
         conversationId: id,
         senderId: user.id,

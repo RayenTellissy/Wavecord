@@ -13,7 +13,7 @@ export const ContextProvider = ({ children }) => {
     authenticateSession()
     handleSocket()
   },[])
-
+  
   const authenticateSession = async () => {
     const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/users/login`, { withCredentials: true })
     setUser(response.data)

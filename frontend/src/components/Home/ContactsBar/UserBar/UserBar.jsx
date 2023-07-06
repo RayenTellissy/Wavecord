@@ -11,10 +11,7 @@ import Avatar from "../../../common/Avatar/Avatar"
 import "./UserBar.css"
 
 const UserBar = () => {
-  const { user } = useContext(Context)
-  const [username,setUsername] = useState("")
-  const [image,setImage] = useState("")
-  const [status,setStatus] = useState("")
+  const { user, setUser } = useContext(Context)
 
   useEffect(() => {
     fetchUser()
@@ -25,9 +22,12 @@ const UserBar = () => {
       const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/users/fetch/${user.id}`,{
         withCredentials: true
       })
-      setUsername(response.data.username)
-      setImage(response.data.image)
-      setStatus(response.data.status)
+      const result = response.data
+      const fetched = {
+        image: result.image,
+        status: result.status
+      }
+      setUser({ ...user, ...fetched })
     }
     catch(error){
       console.log(error)
@@ -39,11 +39,11 @@ const UserBar = () => {
 
       <div id='home-contacts-userbar-avatar-section'>
 
-        <Avatar image={image} status={status}/>
+        <Avatar image={user.image} status={user.status}/>
 
         <div id='home-contacts-userbar-avatar-name-status'>
-          <p id='home-contacts-userbar-username'>{username}</p>
-          <p id='home-contacts-userbar-status'>{status === "ONLINE" ? "Online" : (status === "BUSY" ? "Busy" : "Invisible")}</p>
+          <p id='home-contacts-userbar-username'>{user.username}</p>
+          <p id='home-contacts-userbar-status'>{user.status === "ONLINE" ? "Online" : (user.status === "BUSY" ? "Busy" : "Invisible")}</p>
         </div>
 
       </div>

@@ -260,7 +260,7 @@ module.exports = {
         },
         include: {
           Friends: true,
-          Conversations: true
+          Conversations: true,
         }
       })
 
