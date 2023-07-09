@@ -1,5 +1,6 @@
 import React from 'react';
 import moment from "moment/moment"
+import { Tooltip } from "@chakra-ui/react"
 
 // components
 import Avatar from '../common/Avatar/Avatar';
@@ -16,7 +17,18 @@ const Message = ({ username, image, message, created_at }) => {
       <div id='dm-username-message-container'>
         <div id='dm-username-createdat'>
           <p id='dm-message-username'>{username}</p>
-          <p id='dm-message-createdat'>{moment(created_at).calendar()}</p>
+          <Tooltip label={moment(created_at).format('dddd, MMMM Do YYYY, h:mm A')}
+            placement='top'
+            bg="black"
+            color="#DDDEE9"
+            hasArrow={true}
+            arrowSize={10}
+            openDelay={500}
+            padding={2}
+            borderRadius={5}
+          >
+            <p id='dm-message-createdat'>{moment(created_at).calendar()}</p>
+          </Tooltip>
         </div>
         <p id='dm-message-message'>{message}</p>
       </div>

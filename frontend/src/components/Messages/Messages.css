@@ -4,6 +4,10 @@
   height: 100vh;
 }
 
+#message-container:hover{
+  background-color: #191D2A;
+}
+
 #messages-top-bar{
   display: flex;
   align-items: center;
@@ -35,10 +39,12 @@
 
 #dm-message-createdat{
   font-family: UbuntuLight;
+  color: rgb(173, 173, 173);
 }
 
 #dm-message-message{
   font-family: UbuntuRegular;
+  color: #DDDEE9;
 }
 
 #dm-username-createdat{

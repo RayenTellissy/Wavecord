@@ -5,9 +5,9 @@ import axios from 'axios';
 // components
 import Sidebar from '../Home/Sidebar/Sidebar'
 import ContactsBar from "../Home/ContactsBar/ContactsBar"
-import Message from './Message';
 import { Context } from '../Context/Context';
 import OtherUsers from './OtherUsers/OtherUsers';
+import GroupMessages from './GroupMessages';
 
 // styles
 import "./Messages.css"
@@ -16,7 +16,7 @@ const Messages = () => {
   const { user, socket } = useContext(Context)
   const { id } = useParams() // conversation's id
   const [conversationType,setConversationType] = useState("")
-  const [messages,setMessages] = useState([]) // conversation's 
+  const [messages,setMessages] = useState([])
   const [otherUsers,setOtherUsers] = useState([])
   const [conversationName,setConversationName] = useState("")
   const [message,setMessage] = useState("")
@@ -46,12 +46,13 @@ const Messages = () => {
     })
   },[socket])
 
-  // use effect, watching message updates to scroll to bottom
+  // watching message updates to scroll to bottom
   useEffect(() => {
     scrollToBottom()
     scrollToBottomOnMessageUpdate()
   },[messages])
 
+  // function to fetch messages from current conversation
   const fetchMessages = async () => {
     try {
       const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/conversations/messages/${id}`)
@@ -85,9 +86,7 @@ const Messages = () => {
   // function to send a message 
   const sendMessage = async () => {
     try {
-      if(message === ""){
-        return
-      }
+      if(message === "") return // if the no message was written nothing will happen
       const storedMessage = message
       setMessage("")
       const messageDetails = {
@@ -137,9 +136,7 @@ const Messages = () => {
         </div>
 
         <div id='dm-messages-container' ref={scrollRef}>
-          {messages.map((e,i) => {
-            return <Message key={i} username={e.usersId.username} image={e.usersId.image} message={e.message} created_at={e.created_at}/>
-          })}
+          <GroupMessages messages={messages}/>
         </div>
 
         <div id='dm-conversation-input-container'>

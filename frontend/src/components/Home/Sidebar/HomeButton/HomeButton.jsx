@@ -19,7 +19,7 @@ const HomeButton = () => {
     arrowSize={10}
     margin={5}
     fontFamily="UbuntuMedium"
-    >
+  >
     <button id='home-button' onClick={() => navigate("/")}>
       <Logo style={{ height: "85%", margin: "auto"}}/>
     </button>

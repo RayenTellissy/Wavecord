@@ -271,23 +271,4 @@ module.exports = {
     }
   },
 
-  fetchImage: async (req,res) => {
-    try {
-      const { id } = req.params
-
-      const result = await prisma.users.findFirst({
-        where: {
-          id: id
-        },
-        select: {
-          image: true
-        }
-      })
-
-      res.send(result)
-    }
-    catch(error){
-      res.send(error)
-    }
-  }
 }

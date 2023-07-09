@@ -8,15 +8,13 @@ const {
   logout, 
   googleLogin, 
   googleSignup, 
-  fetchImage 
 } = require("../controllers/users")
 const { loginLimit, signupLimit, resetLimit } = require("../middleware/authLimiter")
 const authentication = require("../middleware/authentication")
 
 router.get("/login", authentication, authenticateSession)
-router.get("/fetch/:id", fetch)
+router.get("/fetch/:id", authentication, fetch)
 router.get("/logout", authentication, logout)
-router.get("/fetchImage/:id", fetchImage)
 
 router.post("/signup", signupLimit, signup)
 router.post("/login", loginLimit, login)
