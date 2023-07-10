@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useContext } from 'react';
 import axios from "axios"
@@ -26,10 +26,23 @@ const Login = () => {
   const navigate = useNavigate()
   const toast = useToast()
 
+  
   // regular expressions
   const usernameRegex = /^[a-zA-Z0-9]{3,20}$/
   const passwordRegex = /^.{7,}$/
+  
+  // adding an event listener
+  useEffect(() => {
+    const handleEnterPress = (e) => {
+      if(e.key === "Enter"){
+        handleSubmit()
+      }
+    }
+    document.addEventListener("keydown", handleEnterPress)
 
+    return () => document.removeEventListener("keydown", handleEnterPress)
+  },[])
+  
   // handle text input functions
   const handleUsernameChange = (e) => {
     setUsername(e.target.value)
@@ -89,7 +102,7 @@ const Login = () => {
           duration: 2000,
           isClosable: true
         })
-        navigate(0) // reloads
+        setIsLoading(false)
       }
     }
     

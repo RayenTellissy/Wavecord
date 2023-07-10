@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { useToast, Button } from "@chakra-ui/react"
 import axios from "axios"
 import { useNavigate } from "react-router-dom"
@@ -20,6 +20,18 @@ const ForgotPassword = () => {
 
   // regular expressions
   const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g
+
+  // adding an event listener
+  useEffect(() => {
+    const handleEnterPress = (e) => {
+      if(e.key === "Enter"){
+        handleSubmit()
+      }
+    }
+    document.addEventListener("keydown", handleEnterPress)
+
+    return () => document.removeEventListener("keydown", handleEnterPress)
+  },[])
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value)
@@ -63,6 +75,7 @@ const ForgotPassword = () => {
           isClosable: true
         })
       }
+      setIsLoading(false)
     }
   }
 

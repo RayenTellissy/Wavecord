@@ -8,11 +8,7 @@ const GroupMessages = ({ messages }) => {
 
   useEffect(() => {
     groupMessages(messages)
-  },[])
-
-  useEffect(() => {
-    console.log(messageList)
-  },[messageList])
+  },[messages])
 
   // a function that returns a boolean, whether two messages should be grouped or not
   const shouldGroupMessages = (prevTimestamp, currentTimestamp) => {
@@ -61,9 +57,9 @@ const GroupMessages = ({ messages }) => {
     <>
       {messageList.map((e,i) => {
         if(e.messages.length === 1){
-          return <Message key={i} username={e.messages[0].usersId.username} image={e.messages[0].usersId.image} message={e.messages[0].message} created_at={e.messages[0].created_at}/>
+          return <Message key={i} username={e.messages[0].usersId.username} image={e.messages[0].usersId.image} message={e.messages} created_at={e.messages[0].created_at}/>
         }
-        
+        return <Message key={i} username={e.messages[0].usersId.username} image={e.messages[0].usersId.image} message={e.messages} created_at={e.messages[0].created_at}/>
       })}
     </>
   );

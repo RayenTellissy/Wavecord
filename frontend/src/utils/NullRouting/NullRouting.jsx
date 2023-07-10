@@ -1,13 +1,13 @@
 import React from 'react';
-import Spinner from "../../components/common/Spinner/Spinner"
 
 // styles
 import "./NullRouting.css"
+import Logo from '../../components/common/Logo/Logo';
 
 const NullRouting = () => {
   return (
     <div id="null-routing-container">
-      <Spinner />
+      <Logo/>
     </div>
   );
 };

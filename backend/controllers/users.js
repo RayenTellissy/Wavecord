@@ -19,8 +19,6 @@ module.exports = {
       const response = await createUserWithEmailAndPassword(auth, email, password)
       const id = response.user.uid
 
-      console.log(id)
-  
       await prisma.users.create({ 
         data: {
           id: id,
@@ -59,6 +57,12 @@ module.exports = {
         res.send({
           success: false,
           message: "Weak Password."
+        })
+      }
+      else if(errorCode === "P2002"){
+        res.send({
+          success: false,
+          message: "Username already in use."
         })
       }
     }

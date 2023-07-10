@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import moment from "moment/moment"
 import { Tooltip } from "@chakra-ui/react"
 
@@ -8,6 +8,7 @@ import Avatar from '../common/Avatar/Avatar';
 import "./Messages.css"
 
 const Message = ({ username, image, message, created_at }) => {
+
   return (
     <div id='message-container'>
       <div>
@@ -30,7 +31,9 @@ const Message = ({ username, image, message, created_at }) => {
             <p id='dm-message-createdat'>{moment(created_at).calendar()}</p>
           </Tooltip>
         </div>
-        <p id='dm-message-message'>{message}</p>
+        {message.map((e,i) => {
+          return <p key={i} id='dm-message-message'>{e.message}</p>
+        })}
       </div>
     </div>
   );
