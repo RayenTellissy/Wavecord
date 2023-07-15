@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 // components
 import Message from "./Message"
 
-const GroupMessages = ({ messages }) => {
+const GroupMessages = ({ messages, setIsLoading }) => {
   const [messageList,setMessageList] = useState([])
 
   useEffect(() => {
@@ -50,6 +50,7 @@ const GroupMessages = ({ messages }) => {
         groupedMessages.push(currentGroup)
       }
       setMessageList(groupedMessages)
+      setIsLoading(false)
     }
   }
 

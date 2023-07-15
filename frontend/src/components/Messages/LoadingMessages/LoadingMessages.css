@@ -1,0 +1,26 @@
+#dm-loading-messages-container{
+  margin: 10px;
+}
+
+.dm-loading-message-container{
+  margin-top: 25px;
+}
+
+.dm-loading-message-upper{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.dm-loading-message-circle{
+  margin-right: 10px;
+}
+
+.dm-loading-message-lower{
+  display: flex;
+  flex-direction: column;
+}
+
+.dm-loading-message{
+  margin-top: 10px;
+}

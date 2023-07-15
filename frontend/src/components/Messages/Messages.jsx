@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { useLocation, useParams } from "react-router-dom"
+import { useParams } from "react-router-dom"
 import axios from 'axios';
 
 // components
@@ -8,6 +8,7 @@ import ContactsBar from "../Home/ContactsBar/ContactsBar"
 import { Context } from '../Context/Context';
 import OtherUsers from './OtherUsers/OtherUsers';
 import GroupMessages from './GroupMessages';
+import LoadingMessages from "./LoadingMessages/LoadingMessages"
 
 // styles
 import "./Messages.css"
@@ -19,21 +20,22 @@ const Messages = () => {
   const [messages,setMessages] = useState([])
   const [otherUsers,setOtherUsers] = useState([])
   const [conversationName,setConversationName] = useState("")
+  const [isLoading,setIsLoading] = useState(true)
   const [message,setMessage] = useState("")
-  const location = useLocation().pathname
-  const scrollRef = useRef()
-
+  const messagesContainerRef = useRef(null)
+  
   useEffect(() => {
-    fetchMessages() // fetching messages of the current conversation
     fetchOtherUsers() // fetching other user's details that are in this conversation
+    fetchMessages() // fetching messages of the current conversation
   },[])
   
   // handling conversation switching
   useEffect(() => {
     socket.emit("join_room", id) // emitting a join room event to the socket server
-    fetchMessages()
     fetchOtherUsers()
-  },[location])
+    fetchMessages()
+    scrollToBottom()
+  },[id])
 
   useEffect(() => {
     handleConversationName()
@@ -46,16 +48,16 @@ const Messages = () => {
     })
   },[socket])
 
-  // watching message updates to scroll to bottom
   useEffect(() => {
     scrollToBottom()
-    scrollToBottomOnMessageUpdate()
   },[messages])
 
   // function to fetch messages from current conversation
   const fetchMessages = async () => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/conversations/messages/${id}`)
+      const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/conversations/messages/${id}`,{
+        withCredentials: true
+      })
       setConversationType(response.data.type)
       setMessages(response.data.DirectMessages)
     }
@@ -69,6 +71,8 @@ const Messages = () => {
       const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/conversations/fetchOtherUsers`,{
         conversationId: id,
         userId: user.id
+      },{
+        withCredentials: true
       })
       setOtherUsers(response.data.users)
     }
@@ -89,15 +93,20 @@ const Messages = () => {
       if(message === "") return // if the no message was written nothing will happen
       const storedMessage = message
       setMessage("")
+
       const messageDetails = {
         conversation: id,
-        usersId: { username: user.username },
-        image: user.image,
+        usersId: { 
+          username: user.username,
+          image: user.image
+        },
         message: storedMessage,
         created_at: new Date(Date.now())
       }
+
       await socket.emit("send_message", messageDetails)
       setMessages(prevMessages => [...prevMessages, messageDetails])
+
       await axios.post(`${import.meta.env.VITE_SERVER_URL}/conversations/sendMessage`,{
         conversationId: id,
         senderId: user.id,
@@ -110,16 +119,7 @@ const Messages = () => {
   }
 
   const scrollToBottom = () => {
-    scrollRef.current.scrollTop = scrollRef.current.scrollHeight
-  }
-
-  const scrollToBottomOnMessageUpdate = () => {
-    const messagesContainer = scrollRef.current
-    const shouldScrollToBottom = messagesContainer.scrollTop + messagesContainer.clientHeight === messagesContainer.scrollHeight
-
-    if (shouldScrollToBottom) {
-      scrollToBottom()
-    }
+    messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight
   }
 
   return (
@@ -130,24 +130,31 @@ const Messages = () => {
       <div id='dm-conversation-container'>
 
         <div id='messages-top-bar'>
-          {otherUsers.map((e,i) => {
+          {!isLoading && otherUsers.map((e,i) => {
             return <OtherUsers key={i} image={e.image} username={conversationName} status={e.status} />
           })}
         </div>
 
-        <div id='dm-messages-container' ref={scrollRef}>
-          <GroupMessages messages={messages}/>
+        <div id='dm-messages-container' ref={messagesContainerRef}>
+          {isLoading && <LoadingMessages/>}
+          {messages.length !== 0 && <GroupMessages
+            messages={messages} 
+            setIsLoading={setIsLoading}
+          />}
         </div>
 
         <div id='dm-conversation-input-container'>
-          <input id='dm-conversation-input' 
-            type='text' 
+          <input id='dm-conversation-input'
+            type='text'
             spellCheck={false}
-            placeholder={`Message @${conversationName}`}  
+            placeholder={`Message @${conversationName}`}
             onChange={e => setMessage(e.target.value)}
             value={message}
+            onKeyDown={e => {
+              e.key === "Enter" && sendMessage()
+            }}
+            autoFocus
           />
-          <button onClick={sendMessage}>send</button>
         </div>
         
       </div>

@@ -10,6 +10,7 @@
   width: 90%;
   padding: 10px;
   border-radius: 7px;
+  margin: 3px;
 }
 
 
@@ -28,6 +29,7 @@
   padding: 10px;
   border-radius: 7px;
   background-color: #42434a;
+  margin: 3px;
 }
 
 .home-conversation-conversation-highlighted:hover{

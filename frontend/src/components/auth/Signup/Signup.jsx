@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from "axios"
 import { useToast, Button } from "@chakra-ui/react"
@@ -29,18 +29,6 @@ const Signup = () => {
   const usernameRegex = /^[a-zA-Z0-9]{3,20}$/
   const passwordRegex = /^.{7,}$/
 
-  // adding an event listener
-  useEffect(() => {
-    const handleEnterPress = (e) => {
-      if(e.key === "Enter"){
-        handleSubmit()
-      }
-    }
-    document.addEventListener("keydown", handleEnterPress)
-
-    return () => document.removeEventListener("keydown", handleEnterPress)
-  },[])
-
   // handle text input functions
   const handleUsernameChange = (e) => {
     setUsername(e.target.value)
@@ -64,6 +52,12 @@ const Signup = () => {
     }
     else {
       setIsDisabled(true)
+    }
+  }
+
+  const handleKeyPress = (e) => {
+    if(e.key === "Enter"){
+      handleSubmit()
     }
   }
 
@@ -123,9 +117,27 @@ const Signup = () => {
         <Facebook size="lg" />
 
         <div id="signup-input-container">
-          <input className='signup-input' type='text' placeholder='Enter username' onChange={e => handleUsernameChange(e)} />
-          <input className='signup-input' type='text' placeholder='Enter email' onChange={e => handleEmailChange(e)} />
-          <input className='signup-input' type='password' placeholder='Enter password' onChange={e => handlePasswordChange(e)} />
+          <input 
+            className='signup-input' 
+            type='text' 
+            placeholder='Enter username' 
+            onChange={e => handleUsernameChange(e)}
+            onKeyDown={e => handleKeyPress(e)}
+          />
+          <input 
+            className='signup-input' 
+            type='text' 
+            placeholder='Enter email' 
+            onChange={e => handleEmailChange(e)}
+            onKeyDown={e => handleKeyPress(e)}
+          />
+          <input 
+            className='signup-input' 
+            type='password' 
+            placeholder='Enter password' 
+            onChange={e => handlePasswordChange(e)}
+            onKeyDown={e => handleKeyPress(e)}
+          />
         </div>
 
         <div id='signup-button-container'>

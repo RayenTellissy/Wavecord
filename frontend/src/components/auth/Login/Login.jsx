@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useContext } from 'react';
 import axios from "axios"
@@ -25,23 +25,10 @@ const Login = () => {
   const [isDisabled,setIsDisabled] = useState(true)
   const navigate = useNavigate()
   const toast = useToast()
-
   
   // regular expressions
   const usernameRegex = /^[a-zA-Z0-9]{3,20}$/
   const passwordRegex = /^.{7,}$/
-  
-  // adding an event listener
-  useEffect(() => {
-    const handleEnterPress = (e) => {
-      if(e.key === "Enter"){
-        handleSubmit()
-      }
-    }
-    document.addEventListener("keydown", handleEnterPress)
-
-    return () => document.removeEventListener("keydown", handleEnterPress)
-  },[])
   
   // handle text input functions
   const handleUsernameChange = (e) => {
@@ -61,6 +48,12 @@ const Login = () => {
     }
     else{
       setIsDisabled(true)
+    }
+  }
+
+  const handleKeyPress = (e) => {
+    if(e.key === "Enter"){
+      handleSubmit()
     }
   }
 
@@ -105,7 +98,6 @@ const Login = () => {
         setIsLoading(false)
       }
     }
-    
   }
 
   return (
@@ -120,8 +112,20 @@ const Login = () => {
       <Facebook size="lg" />
 
       <div id="login-input-container">
-        <input className='login-input' type='text' placeholder='Enter username' onChange={e => handleUsernameChange(e)}/>
-        <input className='login-input' type='password' placeholder='Enter password' onChange={e => handlePasswordChange(e)}/>
+        <input 
+          className='login-input'
+          type='text' 
+          placeholder='Enter username' 
+          onChange={e => handleUsernameChange(e)}
+          onKeyDown={e => handleKeyPress(e)}
+        />
+        <input 
+          className='login-input' 
+          type='password' 
+          placeholder='Enter password' 
+          onChange={e => handlePasswordChange(e)}
+          onKeyDown={e => handleKeyPress(e)}
+        />
       </div>
 
       <div id='login-button-container'>

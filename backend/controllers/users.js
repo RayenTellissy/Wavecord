@@ -149,7 +149,6 @@ module.exports = {
       })
 
       if(!result){
-        console.log(result)
         return res.send({
           success: false,
         })

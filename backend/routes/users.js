@@ -12,7 +12,7 @@ const {
 const { loginLimit, signupLimit, resetLimit } = require("../middleware/authLimiter")
 const authentication = require("../middleware/authentication")
 
-router.get("/login", authentication, authenticateSession)
+router.get("/login", authenticateSession)
 router.get("/fetch/:id", authentication, fetch)
 router.get("/logout", authentication, logout)
 
