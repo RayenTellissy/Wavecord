@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import moment from "moment/moment"
 import { Tooltip } from "@chakra-ui/react"
 

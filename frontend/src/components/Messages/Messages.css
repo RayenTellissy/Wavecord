@@ -62,3 +62,7 @@
   height: 83%;
   overflow-y: scroll;
 }
+
+.twemoji{
+  height: 30px;
+}

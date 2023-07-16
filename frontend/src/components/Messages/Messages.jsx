@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useParams } from "react-router-dom"
 import axios from 'axios';
+import Twemoji from "react-twemoji"
 
 // components
 import Sidebar from '../Home/Sidebar/Sidebar'
@@ -136,9 +137,11 @@ const Messages = () => {
 
         <div id='dm-messages-container' ref={messagesContainerRef}>
           {isLoading && <LoadingMessages/>}
-          {messages.length !== 0 && messages.map((e,i) => {
-            return <Message key={i} username={e.usersId.username} image={e.usersId.image} message={e.message} created_at={e.created_at}/>
-          })}
+          <Twemoji options={{ className: 'twemoji' }}>
+            {messages.length !== 0 && messages.map((e,i) => {
+              return <Message key={i} username={e.usersId.username} image={e.usersId.image} message={e.message} created_at={e.created_at}/>
+            })}
+          </Twemoji>
         </div>
 
         <div id='dm-conversation-input-container'>
