@@ -12,6 +12,8 @@
   right: 45px;
 }
 
-#dd{
+#emoji-picker-container{
   position: absolute;
+  right: 40px;
+  bottom: 100px;
 }

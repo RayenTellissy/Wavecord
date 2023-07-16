@@ -131,7 +131,12 @@ const Messages = () => {
 
         <div id='messages-top-bar'>
           {!isLoading && otherUsers.map((e,i) => {
-            return <OtherUsers key={i} image={e.image} username={conversationName} status={e.status} />
+            return <OtherUsers 
+              key={i} 
+              image={e.image} 
+              username={conversationName} 
+              status={e.status} 
+            />
           })}
         </div>
 
@@ -139,7 +144,13 @@ const Messages = () => {
           {isLoading && <LoadingMessages/>}
           <Twemoji options={{ className: 'twemoji' }}>
             {messages.length !== 0 && messages.map((e,i) => {
-              return <Message key={i} username={e.usersId.username} image={e.usersId.image} message={e.message} created_at={e.created_at}/>
+              return <Message 
+                key={i} 
+                username={e.usersId.username} 
+                image={e.usersId.image} 
+                message={e.message} 
+                created_at={e.created_at}
+              />
             })}
           </Twemoji>
         </div>

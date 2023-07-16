@@ -11,7 +11,9 @@ const MessageInput = ({ conversationName, message, setMessage, sendMessage }) =>
 
   return (
     <>
-    {showEmoji && <Emoji onEmojiClick={emoji => setMessage(prevMessage => `${prevMessage}${emoji.emoji}`)}/>}
+      <div id='emoji-picker-container'>
+        {showEmoji && <Emoji onEmojiClick={emoji => setMessage(prevMessage => `${prevMessage}${emoji.emoji}`)}/>}
+      </div>
       <button id='message-input-emoji-picker' onClick={() => setShowEmoji(!showEmoji)}>
         <BsEmojiSmileFill size={35}/>
       </button>
