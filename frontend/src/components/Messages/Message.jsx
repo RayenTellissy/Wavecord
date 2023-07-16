@@ -31,9 +31,7 @@ const Message = ({ username, image, message, created_at }) => {
             <p id='dm-message-createdat'>{moment(created_at).calendar()}</p>
           </Tooltip>
         </div>
-        {message.map((e,i) => {
-          return <p key={i} id='dm-message-message'>{e.message}</p>
-        })}
+        <p id='dm-message-message'>{message}</p>
       </div>
     </div>
   );

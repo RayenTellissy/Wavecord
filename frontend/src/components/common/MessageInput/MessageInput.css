@@ -1,0 +1,17 @@
+#dm-conversation-input{
+  width: 98%;
+  border-radius: 4px;
+  padding: 15px;
+  background-color: #212937;
+  font-family: UbuntuRegular;
+  color: #DDDEE9;
+}
+
+#message-input-emoji-picker{
+  position: absolute;
+  right: 45px;
+}
+
+#dd{
+  position: absolute;
+}

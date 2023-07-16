@@ -45,7 +45,12 @@ module.exports = {
           users: true,
           DirectMessages: {
             include: {
-              usersId: true
+              usersId: {
+                select: {
+                  username: true,
+                  image: true
+                }
+              }
             }
           }
         }

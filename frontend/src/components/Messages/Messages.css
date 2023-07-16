@@ -62,12 +62,3 @@
   height: 83%;
   overflow-y: scroll;
 }
-
-#dm-conversation-input{
-  width: 96%;
-  border-radius: 4px;
-  padding: 15px;
-  background-color: #212937;
-  font-family: UbuntuRegular;
-  color: #DDDEE9;
-}

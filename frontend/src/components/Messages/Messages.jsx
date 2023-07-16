@@ -7,8 +7,9 @@ import Sidebar from '../Home/Sidebar/Sidebar'
 import ContactsBar from "../Home/ContactsBar/ContactsBar"
 import { Context } from '../Context/Context';
 import OtherUsers from './OtherUsers/OtherUsers';
-import GroupMessages from './GroupMessages';
+import Message from "./Message"
 import LoadingMessages from "./LoadingMessages/LoadingMessages"
+import MessageInput from '../common/MessageInput/MessageInput';
 
 // styles
 import "./Messages.css"
@@ -22,12 +23,7 @@ const Messages = () => {
   const [conversationName,setConversationName] = useState("")
   const [isLoading,setIsLoading] = useState(true)
   const [message,setMessage] = useState("")
-  const messagesContainerRef = useRef(null)
-  
-  useEffect(() => {
-    fetchOtherUsers() // fetching other user's details that are in this conversation
-    fetchMessages() // fetching messages of the current conversation
-  },[])
+    const messagesContainerRef = useRef(null)
   
   // handling conversation switching
   useEffect(() => {
@@ -60,6 +56,7 @@ const Messages = () => {
       })
       setConversationType(response.data.type)
       setMessages(response.data.DirectMessages)
+      setIsLoading(false)
     }
     catch(error){
       console.log(error)
@@ -89,28 +86,30 @@ const Messages = () => {
   
   // function to send a message 
   const sendMessage = async () => {
+    if(message === "") return // if the no message was written nothing will happen
+    const storedMessage = message
+    setMessage("")
+    
+    const messageDetails = {
+      conversation: id,
+      usersId: { 
+        username: user.username,
+        image: user.image
+      },
+      message: storedMessage,
+      created_at: new Date(Date.now())
+    }
+    
+    await socket.emit("send_message", messageDetails)
+    setMessages(prevMessages => [...prevMessages, messageDetails])
+    
     try {
-      if(message === "") return // if the no message was written nothing will happen
-      const storedMessage = message
-      setMessage("")
-
-      const messageDetails = {
-        conversation: id,
-        usersId: { 
-          username: user.username,
-          image: user.image
-        },
-        message: storedMessage,
-        created_at: new Date(Date.now())
-      }
-
-      await socket.emit("send_message", messageDetails)
-      setMessages(prevMessages => [...prevMessages, messageDetails])
-
       await axios.post(`${import.meta.env.VITE_SERVER_URL}/conversations/sendMessage`,{
         conversationId: id,
         senderId: user.id,
         message: storedMessage
+      },{
+        withCredentials: true
       })
     }
     catch(error){
@@ -137,23 +136,17 @@ const Messages = () => {
 
         <div id='dm-messages-container' ref={messagesContainerRef}>
           {isLoading && <LoadingMessages/>}
-          {messages.length !== 0 && <GroupMessages
-            messages={messages} 
-            setIsLoading={setIsLoading}
-          />}
+          {messages.length !== 0 && messages.map((e,i) => {
+            return <Message key={i} username={e.usersId.username} image={e.usersId.image} message={e.message} created_at={e.created_at}/>
+          })}
         </div>
 
         <div id='dm-conversation-input-container'>
-          <input id='dm-conversation-input'
-            type='text'
-            spellCheck={false}
-            placeholder={`Message @${conversationName}`}
-            onChange={e => setMessage(e.target.value)}
-            value={message}
-            onKeyDown={e => {
-              e.key === "Enter" && sendMessage()
-            }}
-            autoFocus
+          <MessageInput
+            conversationName={conversationName}
+            message={message}
+            setMessage={setMessage}
+            sendMessage={sendMessage}
           />
         </div>
         
