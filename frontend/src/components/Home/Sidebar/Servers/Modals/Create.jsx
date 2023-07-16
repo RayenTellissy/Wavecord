@@ -68,6 +68,7 @@ const Create = ({ setScreen, onClose }) => {
     setCreateDisabled(true) // disabling button
     setIsLoading(true)
 
+    // checking how many servers the user has created
     const count = await axios.get(`${import.meta.env.VITE_SERVER_URL}/servers/count/${user.id}`,{
       withCredentials: true
     })
@@ -83,19 +84,10 @@ const Create = ({ setScreen, onClose }) => {
       })
     }
     
-    const blob = await new Promise((resolve, reject) => {
-      const xhr = new XMLHttpRequest()
-      xhr.onload = function () {
-        resolve(xhr.response)
-      }
-      xhr.onerror = function (e) {
-        console.log(e)
-        reject(new TypeError("Network request failed"))
-      }
-      xhr.responseType = "blob"
-      xhr.open("GET", image, true)
-      xhr.send(null)
+    const response = await axios.get(image, {
+      responseType: "blob",
     })
+    const blob = response.data
     
     const options = {
       maxSizeMB: 0.003 // compressing to ~3kb

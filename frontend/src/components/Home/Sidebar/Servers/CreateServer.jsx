@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { AddIcon } from '@chakra-ui/icons';
 import { motion } from 'framer-motion';
 import {
@@ -10,7 +10,6 @@ import {
 } from '@chakra-ui/react';
 
 // components
-import { Context } from '../../../Context/Context';
 import Create from './Modals/Create';
 import Main from './Modals/Main';
 import Join from "./Modals/Join"
@@ -19,7 +18,6 @@ import Join from "./Modals/Join"
 import "./CreateServer.css"
 
 const CreateServer = () => {
-  const { user } = useContext(Context)
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [hovered,setHovered] = useState(false)
   const [screen,setScreen] = useState("main")

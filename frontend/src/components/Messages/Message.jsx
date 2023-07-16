@@ -7,8 +7,7 @@ import Avatar from '../common/Avatar/Avatar';
 
 import "./Messages.css"
 
-const Message = ({ username, image, message, created_at }) => {
-
+const Message = ({ username, image, message, type, created_at }) => {
   return (
     <div id='message-container'>
       <div>
@@ -31,7 +30,15 @@ const Message = ({ username, image, message, created_at }) => {
             <p id='dm-message-createdat'>{moment(created_at).calendar()}</p>
           </Tooltip>
         </div>
+        {type === "TEXT"
+        ?
         <p id='dm-message-message'>{message}</p>
+        :
+        <a className='dm-message-link' href={message} target="_blank" rel="noopener noreferrer">
+          {message}
+          <img src={message} style={{ maxWidth: '100%', marginTop: '5px' }} />
+        </a>
+        }
       </div>
     </div>
   );

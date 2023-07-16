@@ -66,3 +66,8 @@
 .twemoji{
   height: 30px;
 }
+
+.dm-message-link{
+  color: #6da7ff;
+  text-decoration: underline;
+}

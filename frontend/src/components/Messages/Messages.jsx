@@ -23,8 +23,7 @@ const Messages = () => {
   const [otherUsers,setOtherUsers] = useState([])
   const [conversationName,setConversationName] = useState("")
   const [isLoading,setIsLoading] = useState(true)
-  const [message,setMessage] = useState("")
-    const messagesContainerRef = useRef(null)
+  const messagesContainerRef = useRef(null)
   
   // handling conversation switching
   useEffect(() => {
@@ -84,39 +83,6 @@ const Messages = () => {
       setConversationName(otherUsers[0].username)
     }
   }
-  
-  // function to send a message 
-  const sendMessage = async () => {
-    if(message === "") return // if the no message was written nothing will happen
-    const storedMessage = message
-    setMessage("")
-    
-    const messageDetails = {
-      conversation: id,
-      usersId: { 
-        username: user.username,
-        image: user.image
-      },
-      message: storedMessage,
-      created_at: new Date(Date.now())
-    }
-    
-    await socket.emit("send_message", messageDetails)
-    setMessages(prevMessages => [...prevMessages, messageDetails])
-    
-    try {
-      await axios.post(`${import.meta.env.VITE_SERVER_URL}/conversations/sendMessage`,{
-        conversationId: id,
-        senderId: user.id,
-        message: storedMessage
-      },{
-        withCredentials: true
-      })
-    }
-    catch(error){
-      console.log(error)
-    }
-  }
 
   const scrollToBottom = () => {
     messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight
@@ -145,10 +111,11 @@ const Messages = () => {
           <Twemoji options={{ className: 'twemoji' }}>
             {messages.length !== 0 && messages.map((e,i) => {
               return <Message 
-                key={i} 
+                key={i}
                 username={e.usersId.username} 
                 image={e.usersId.image} 
-                message={e.message} 
+                message={e.message}
+                type={e.type}
                 created_at={e.created_at}
               />
             })}
@@ -158,9 +125,8 @@ const Messages = () => {
         <div id='dm-conversation-input-container'>
           <MessageInput
             conversationName={conversationName}
-            message={message}
-            setMessage={setMessage}
-            sendMessage={sendMessage}
+            setMessages={setMessages}
+            scrollToBottom={scrollToBottom}
           />
         </div>
         

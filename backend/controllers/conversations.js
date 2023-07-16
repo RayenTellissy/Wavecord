@@ -66,7 +66,6 @@ module.exports = {
   fetchOtherUsers: async (req,res) => {
     try {
       const { userId, conversationId } = req.body // conversation's id
-      console.log(userId)
 
       const result = await prisma.conversations.findFirst({
         where: {
@@ -84,7 +83,6 @@ module.exports = {
       })
 
       res.send(result)
-      console.log(result)
     }
     catch(error){
       res.send(error)
@@ -93,13 +91,14 @@ module.exports = {
 
   sendMessage: async (req,res) => {
     try {
-      const { conversationId, senderId, message } = req.body
+      const { conversationId, senderId, message, type } = req.body
 
       const result = await prisma.directMessages.create({
         data: {
           sender: senderId,
           conversationsId: conversationId,
-          message: message
+          message: message,
+          type: type
         }
       })
 

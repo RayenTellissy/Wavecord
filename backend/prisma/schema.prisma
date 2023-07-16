@@ -86,6 +86,7 @@ model DirectMessages {
   conversation    Conversations @relation(fields: [conversationsId], references: [id])
   conversationsId String
   message         String
+  type            MessageType   @default(TEXT)
   created_at      DateTime      @default(now())
 }
 
@@ -105,4 +106,9 @@ enum ConversationType {
   DIRECT
   GROUP
   SERVER
+}
+
+enum MessageType {
+  TEXT
+  LINK
 }
