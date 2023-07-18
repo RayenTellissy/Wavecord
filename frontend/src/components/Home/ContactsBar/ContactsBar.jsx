@@ -13,7 +13,7 @@ import { Context } from '../../Context/Context';
 // styles
 import "./ContactsBar.css"
 
-const ContactsBar = ({ highlighted }) => {
+const ContactsBar = ({ highlighted, selected, setSelected }) => {
   const { user } = useContext(Context)
   const [conversations,setConversations] = useState([])
 
@@ -39,8 +39,8 @@ const ContactsBar = ({ highlighted }) => {
       <Search/>
 
       <div id='home-contacts-navigators'>
-        <HomeNavigator text="Friends" icon={faUserGroup}/>
-        <HomeNavigator text="Turbo" icon={faBolt}/>
+        <HomeNavigator selected={selected} setSelected={setSelected} text="Friends" icon={faUserGroup}/>
+        <HomeNavigator selected={selected} setSelected={setSelected} text="Turbo" icon={faBolt}/>
       </div>
 
       <DirectMessagesText/>

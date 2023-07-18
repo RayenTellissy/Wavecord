@@ -3,16 +3,15 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import "./HomeNavigator.css"
 
-const HomeNavigator = ({ icon, text, style }) => {
+const HomeNavigator = ({ selected, setSelected, icon, text, style }) => {
   return (
     <button 
-      id='home-navigator-button'
-      style={{ ...style }}>
-        
+      id={text === selected ? 'home-navigator-button-selected' : "home-navigator-button"}
+      style={{ ...style }}
+      onClick={() => setSelected(text)}
+    >
       <FontAwesomeIcon className='home-navigator-icon' icon={icon}/>
-      
       {text}
-    
     </button>
   )
   
