@@ -13,6 +13,15 @@ module.exports = {
               id: id
             }
           }
+        },
+        select: {
+          users: {
+            where: {
+              id: {
+                not: id
+              }
+            }
+          }
         }
       })
       res.send(result)
@@ -21,4 +30,15 @@ module.exports = {
       res.send(error)
     }
   },
+
+  addFriend: async (req,res) => {
+    try {
+      const { user, requested } = req.body
+
+      
+    }
+    catch(error){
+      res.send(error)
+    }
+  }
 }

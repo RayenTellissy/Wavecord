@@ -1,0 +1,60 @@
+#home-right-topbar{
+  background-color: #252525;
+  height: 85px;
+  width: 100%;
+  box-shadow: black 2px 2px;
+}
+
+#home-right-topbar-friends{
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-left: 20px;
+}
+
+#home-right-topbar-friends-text{
+  font-family: UbuntuMedium;
+  font-size: 20px;
+  margin-left: 15px;
+}
+
+#home-right-topbar-friends-seperator{
+  height: 50%;
+  width: 2px;
+  background-color: #464646;
+  margin: 20px;
+  border-radius: 11px;
+}
+
+.home-right-topbar-friends-button{
+  padding: 5px 15px;
+  margin: 20px;
+  font-family: UbuntuMedium;
+  border-radius: 7px;
+}
+
+.home-right-topbar-friends-button-selected{
+  padding: 5px 15px;
+  margin: 20px;
+  font-family: UbuntuMedium;
+  border-radius: 7px;
+  background-color: #42434a;
+  
+}
+
+.home-right-topbar-friends-button:hover{
+  background-color: #36373d;
+}
+
+.home-right-topbar-friends-button:active{
+  background-color: #42434a;
+}
+
+#home-right-topbar-friends-add-button{
+  background-color: #248046;
+  padding: 5px 15px;
+  border-radius: 7px;
+  font-family: UbuntuMedium;
+  margin: 20px;
+}

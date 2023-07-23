@@ -25,6 +25,8 @@ model Users {
   DirectMessages  DirectMessages[]
   servers_created Servers[]
   Bans            Bans[]
+  sentFriendRequests   FriendRequest[] @relation("FriendRequestSender")
+  receivedFriendRequests FriendRequest[] @relation("FriendRequestRecipient")
 }
 
 model Servers {
@@ -70,6 +72,16 @@ model Friends {
   id         String   @id @default(cuid())
   users      Users[]
   created_at DateTime @default(now())
+}
+
+model FriendRequest {
+  id          String    @id @default(cuid())
+  sender      Users  @relation("FriendRequestSender", fields: [senderId], references: [id])
+  recipient   Users  @relation("FriendRequestRecipient", fields: [recipientId], references: [id])
+  senderId    String
+  recipientId String
+
+  @@index([senderId, recipientId])
 }
 
 model Conversations {

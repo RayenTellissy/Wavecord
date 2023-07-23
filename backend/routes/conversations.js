@@ -4,8 +4,8 @@ const { sendMessageLimit } = require("../middleware/conversationLimiter")
 const authentication = require("../middleware/authentication")
 
 router.get("/fetch/:id", authentication, fetchConversations)
-router.get("/messages/:id", authentication, fetchMessages)
 
+router.post("/messages", authentication, fetchMessages)
 router.post("/fetchOtherUsers", authentication, fetchOtherUsers)
 router.post("/sendMessage", authentication, sendMessageLimit, sendMessage)
 

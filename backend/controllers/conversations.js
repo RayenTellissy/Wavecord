@@ -35,11 +35,27 @@ module.exports = {
 
   fetchMessages: async (req,res) => {
     try {
-      const { id } = req.params // conversation's id
+      const { userId, conversationId } = req.body // conversation's id
+
+      const checkUser = await prisma.conversations.findFirst({
+        where: {
+          id: conversationId,
+          users: {
+            some: {
+              id: userId
+            }
+          }
+        }
+      })
+      if(!checkUser){
+        return res.send({
+          authorized: false
+        })
+      }
 
       const result = await prisma.conversations.findFirst({
         where: {
-          id: id
+          id: conversationId
         },
         include: {
           users: true,

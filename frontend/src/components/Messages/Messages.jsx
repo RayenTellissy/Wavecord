@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import axios from 'axios';
 import Twemoji from "react-twemoji"
 
@@ -24,12 +24,13 @@ const Messages = () => {
   const [conversationName,setConversationName] = useState("")
   const [isLoading,setIsLoading] = useState(true)
   const messagesContainerRef = useRef(null)
+  const navigate = useNavigate()
   
   // handling conversation switching
   useEffect(() => {
-    socket.emit("join_room", id) // emitting a join room event to the socket server
     fetchOtherUsers()
     fetchMessages()
+    socket.emit("join_room", id) // emitting a join room event to the socket server
     scrollToBottom()
   },[id])
 
@@ -51,9 +52,17 @@ const Messages = () => {
   // function to fetch messages from current conversation
   const fetchMessages = async () => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/conversations/messages/${id}`,{
+      const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/conversations/messages`,{
+        conversationId: id,
+        userId: user.id
+      },{
         withCredentials: true
       })
+
+      // if user tries to enter a conversation he's not a part of it will redirect without fetching messages
+      if(response.data.authorized === false){
+        navigate("/")
+      }
       setConversationType(response.data.type)
       setMessages(response.data.DirectMessages)
       setIsLoading(false)
