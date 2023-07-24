@@ -1,0 +1,27 @@
+#home-right-display-searchbar {
+  background-color: #1c1c24;
+  border-radius: 7px;
+  width: 100%;
+  height: 100%;
+  padding-left: 20px;
+  font-family: UbuntuMedium;
+  color: #DDDEE9;
+}
+
+#home-right-display-searchbar::placeholder {
+  color: #ACACAC;
+}
+
+#home-right-display-searchbar-icon {
+  position: absolute;
+  right: 10px;
+}
+
+#home-right-display-search-container {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 1000px;
+  height: 40px;
+}

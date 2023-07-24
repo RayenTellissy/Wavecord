@@ -1,0 +1,5 @@
+#home-right-display-online-container {
+  display: flex;
+  flex-direction: column;
+}
+

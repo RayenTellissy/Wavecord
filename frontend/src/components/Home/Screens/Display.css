@@ -1,0 +1,5 @@
+#home-right-display-container {
+  margin: 20px;
+  display: flex;
+  justify-content: center;
+}

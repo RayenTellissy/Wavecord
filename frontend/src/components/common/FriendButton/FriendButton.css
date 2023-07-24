@@ -1,0 +1,22 @@
+#friend-button-container {
+  display: flex;
+  flex-direction: row;
+  border-top: 1px solid #33315b;
+  margin: 15px;
+  padding-top: 20px;
+}
+
+#friend-button-username-status-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+#friend-button-username {
+  font-family: UbuntuBold;
+}
+
+#friend-button-status {
+  font-family: UbuntuRegular;
+  color: #ACACAC;
+}

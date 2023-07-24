@@ -1,6 +1,7 @@
 const router = require("express").Router()
-const { fetchFriends } = require("../controllers/friends")
+const { fetchOnlineFriends, fetchAllFriends } = require("../controllers/friends")
 
-router.get("/fetchFriends/:id", fetchFriends)
+router.post("/fetchOnlineFriends", fetchOnlineFriends)
+router.get("/fetchAllFriends/:id", fetchAllFriends)
 
 module.exports = router
