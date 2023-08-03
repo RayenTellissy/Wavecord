@@ -40,7 +40,9 @@ module.exports = {
         }
       })
 
-      res.send(result)
+      const onlineFriends = result.filter(e => e.users.length !== 0)
+      
+      res.send(onlineFriends)
     }
     catch(error){
       res.send(error)
@@ -50,7 +52,7 @@ module.exports = {
   // function to fetch all contacts of a user
   fetchAllFriends: async (req,res) => {
     try {
-      const { id } = req.params // user's id
+      const { id, query } = req.body // user's id
   
       const result = await prisma.friends.findMany({
         where: {
@@ -63,14 +65,24 @@ module.exports = {
         select: {
           users: {
             where: {
-              id: {
-                not: id
-              }
+              AND: [
+                {
+                  id: {
+                    not: id
+                  }  
+                },
+                {
+                  username: {
+                    contains: query
+                  }
+                }
+              ]
             }
           }
         }
       })
-      res.send(result)
+      const allFriends = result.filter(e => e.users.length !== 0)
+      res.send(allFriends)
     }
     catch(error){
       res.send(error)

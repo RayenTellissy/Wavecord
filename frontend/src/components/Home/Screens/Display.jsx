@@ -13,17 +13,18 @@ import "./Display.css"
 
 const Display = ({ selectedScreen }) => {
   const [query,setQuery] = useState("")
+  const [showSearch,setShowSearch] = useState(true)
   
   return <>
-    <SearchBar setQuery={setQuery}/>
+    {showSearch && <SearchBar setQuery={setQuery}/>}
 
     {selectedScreen === "Online"
     ? <OnlineFriends query={query}/>
     : (selectedScreen === "All"
-    ? <AllFriends/>
+    ? <AllFriends query={query}/>
     : (selectedScreen === "Pending"
     ? <PendingRequests/>
-    : (selectedScreen === "Blocked" ? <Blocked/> : <AddFriend/>)))}
+    : (selectedScreen === "Blocked" ? <Blocked/> : <AddFriend setShowSearch={setShowSearch}/>)))}
   </>
 };
 

@@ -16,14 +16,18 @@ import "./ContactsBar.css"
 const ContactsBar = ({ highlighted, selected, setSelected }) => {
   const { user } = useContext(Context)
   const [conversations,setConversations] = useState([])
+  const [query,setQuery] = useState("")
 
   useEffect(() => {
     fetchConversations()
-  },[])
+  },[query])
 
   const fetchConversations = async () => {
     try {
-      const conversations = await axios.get(`${import.meta.env.VITE_SERVER_URL}/conversations/fetch/${user.id}`,{
+      const conversations = await axios.post(`${import.meta.env.VITE_SERVER_URL}/conversations/fetch`,{
+        id: user.id,
+        query: query
+      },{
         withCredentials: true
       })
       setConversations(conversations.data)
@@ -36,7 +40,7 @@ const ContactsBar = ({ highlighted, selected, setSelected }) => {
   return (
     <div id='home-contacts-bar'>
           
-      <Search/>
+      <Search setQuery={setQuery}/>
 
       <div id='home-contacts-navigators'>
         <HomeNavigator selected={selected} setSelected={setSelected} text="Friends" icon={faUserGroup}/>

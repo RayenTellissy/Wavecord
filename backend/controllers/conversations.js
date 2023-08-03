@@ -4,7 +4,7 @@ module.exports = {
   
   fetchConversations: async (req,res) => {
     try {
-      const { id } = req.params
+      const { id, query } = req.body
 
       const result = await prisma.conversations.findMany({
         where: {
@@ -18,15 +18,26 @@ module.exports = {
           id: true,
           users: {
             where: {
-              id: {
-                not: id
-              }
+              AND: [
+                {
+                  id: {
+                    not: id
+                  }    
+                },
+                {
+                  username: {
+                    contains: query
+                  }
+                }
+              ]
             }
           },
         }
       })
 
-      res.send(result)
+      const final = result.filter(e => e.users.length !== 0)
+
+      res.send(final)
     }
     catch(error){
       res.send(error)

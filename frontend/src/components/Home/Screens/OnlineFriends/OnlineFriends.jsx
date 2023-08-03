@@ -4,6 +4,7 @@ import axios from "axios"
 // components
 import { Context } from "../../../Context/Context"
 import FriendButton from '../../../common/FriendButton/FriendButton';
+import Loader from '../../../common/Loader/Loader';
 
 // styles
 import "./OnlineFriends.css"
@@ -11,18 +12,22 @@ import "./OnlineFriends.css"
 const OnlineFriends = ({ query }) => {
   const { user } = useContext(Context)
   const [users,setUsers] = useState([])
+  const [isLoading,setIsLoading] = useState(true)
 
   useEffect(() => {
     fetchUsers()
-  },[])
+  },[query])
 
   const fetchUsers = async () => {
     try {
       const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/friends/fetchOnlineFriends`,{
         id: user.id,
         query: query
+      },{
+        withCredentials: true
       })
       setUsers(response.data)
+      setIsLoading(false)
     }
     catch(error){
       console.log(error)
@@ -31,8 +36,10 @@ const OnlineFriends = ({ query }) => {
 
   return (
     <div id='home-right-display-online-container'>
+      {isLoading && <Loader/>}
+      {!isLoading && <p id='home-right-display-online-count'>ONLINE - {users.length}</p>}
       {users.map((e,i) => {
-        return <FriendButton 
+        return <FriendButton
           key={i} 
           username={e.users[0].username} 
           image={e.users[0].image} 

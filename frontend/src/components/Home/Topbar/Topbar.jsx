@@ -19,8 +19,13 @@ const Topbar = ({ selectedScreen, setSelectedScreen}) => {
         <TopbarButton text="All" selectedScreen={selectedScreen} setSelectedScreen={setSelectedScreen}/>
         <TopbarButton text="Pending" selectedScreen={selectedScreen} setSelectedScreen={setSelectedScreen}/>
         <TopbarButton text="Blocked" selectedScreen={selectedScreen} setSelectedScreen={setSelectedScreen}/>
-        <button onClick={() => setSelectedScreen("AddFriend")} id='home-right-topbar-friends-add-button'>
-          Add friend
+        <button 
+          onClick={() => setSelectedScreen("AddFriend")} 
+          id={selectedScreen === "AddFriend" 
+          ? 'home-right-topbar-friends-add-button-selected' 
+          : 'home-right-topbar-friends-add-button'}
+        >
+          Add Friend
         </button>
       </div>
     </div>

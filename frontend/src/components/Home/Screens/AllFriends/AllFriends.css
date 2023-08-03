@@ -1,0 +1,10 @@
+#home-right-display-all-container {
+  display: flex;
+  flex-direction: column;
+}
+
+#home-right-display-all-count{
+  font-family: UbuntuMedium;
+  font-size: 15px;
+  margin: 15px;
+}

@@ -3,3 +3,8 @@
   flex-direction: column;
 }
 
+#home-right-display-online-count{
+  font-family: UbuntuMedium;
+  font-size: 15px;
+  margin: 15px;
+}

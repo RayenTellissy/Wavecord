@@ -58,3 +58,11 @@
   font-family: UbuntuMedium;
   margin: 20px;
 }
+
+#home-right-topbar-friends-add-button-selected{
+  color: #29be5f;
+  padding: 5px 15px;
+  margin: 20px;
+  font-family: UbuntuMedium;
+
+}
