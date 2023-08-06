@@ -9,13 +9,14 @@ import Loader from '../../../common/Loader/Loader';
 // styles
 import "./OnlineFriends.css"
 
-const OnlineFriends = ({ query }) => {
+const OnlineFriends = ({ query, setShowSearch }) => {
   const { user } = useContext(Context)
   const [users,setUsers] = useState([])
   const [isLoading,setIsLoading] = useState(true)
 
   useEffect(() => {
     fetchUsers()
+    return () => setShowSearch(false)
   },[query])
 
   const fetchUsers = async () => {
@@ -28,6 +29,9 @@ const OnlineFriends = ({ query }) => {
       })
       setUsers(response.data)
       setIsLoading(false)
+      if(response.data.length !== 0) {
+        setShowSearch(true)
+      }
     }
     catch(error){
       console.log(error)

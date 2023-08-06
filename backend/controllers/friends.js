@@ -91,9 +91,43 @@ module.exports = {
 
   addFriend: async (req,res) => {
     try {
-      const { user, requested } = req.body
+      const { sender, recipient } = req.body
 
-      
+      const result = await prisma.friendRequest.create({
+        data: {
+          senderId: sender,
+          recipientId: recipient
+        }
+      })
+      res.send(result)
+    }
+    catch(error){
+      res.send(error)
+    }
+  },
+
+  fetchPending: async (req,res) => {
+    try {
+      const { id } = req.params
+
+      const result = await prisma.friendRequest.findMany({
+        where: {
+          OR: [
+            {
+              senderId: id
+            },
+            {
+              recipientId: id
+            }
+          ]
+        },
+        select: {
+          recipient: true,
+          sender: true
+        },
+      })
+
+      res.send(result)
     }
     catch(error){
       res.send(error)

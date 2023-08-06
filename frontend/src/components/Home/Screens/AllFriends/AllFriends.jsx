@@ -9,13 +9,14 @@ import Loader from '../../../common/Loader/Loader';
 // styles
 import "./AllFriends.css"
 
-const AllFriends = ({ query }) => {
+const AllFriends = ({ query, setShowSearch }) => {
   const { user } = useContext(Context)
   const [users,setUsers] = useState([])
   const [isLoading,setIsLoading] = useState(true)
 
   useEffect(() => {
     fetchAllFriends()
+    return () => setShowSearch(false)
   },[query])
 
   const fetchAllFriends = async () => {
@@ -28,6 +29,9 @@ const AllFriends = ({ query }) => {
       })
       setUsers(response.data)
       setIsLoading(false)
+      if(response.data.length !== 0){ 
+        setShowSearch(true)
+      }
     }
     catch(error){
       console.log(error)
@@ -40,9 +44,9 @@ const AllFriends = ({ query }) => {
       {!isLoading && <p id='home-right-display-all-count'>ALL FRIENDS - {users.length}</p>}
       {users.map((e,i) => {
         return <FriendButton
-          key={i} 
-          username={e.users[0].username} 
-          image={e.users[0].image} 
+          key={i}
+          username={e.users[0].username}
+          image={e.users[0].image}
           status={e.users[0].status}
         />
       })}

@@ -1,0 +1,51 @@
+#home-right-display-pending-container {
+  display: flex;
+  justify-content: center;
+}
+
+#home-right-display-pending-users {
+  width: 97%;
+  display: flex;
+  flex-direction: column;
+}
+
+#home-right-display-pending-user-details-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+#home-right-display-pending-user-details {
+  display: flex;
+  flex-direction: row;
+}
+
+#home-right-display-pending-username {
+  display: flex;
+  flex-direction: column;
+}
+
+#home-right-display-pending-count {
+  font-family: UbuntuMedium;
+  font-size: 15px;
+  margin: 15px 0px;
+}
+
+.home-right-display-pending-button {
+  border-top: 1px solid #33315b;
+  padding-top: 20px;
+  margin: 15px 0px;
+}
+
+#home-right-display-pending-username-username {
+  font-family: UbuntuBold;
+}
+
+#home-right-display-pending-username-status {
+  font-family: UbuntuRegular;
+  color: #ACACAC;
+}
+
+.home-right-display-pending-action-button {
+  margin: 0px 20px;
+}
