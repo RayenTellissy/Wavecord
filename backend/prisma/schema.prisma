@@ -8,25 +8,25 @@ generator client {
 }
 
 model Users {
-  id              String           @id
-  username        String           @unique
-  email           String
-  image           String?
-  status          Status           @default(ONLINE)
-  current_vc      Voice_channels?  @relation(fields: [voice_channelId], references: [id])
-  muted           Boolean          @default(false)
-  deafened        Boolean          @default(false)
-  role            Role             @default(BASIC)
-  voice_channelId String?
-  created_at      DateTime         @default(now())
-  UsersInServers  UsersInServers[]
-  Friends         Friends[]
-  Conversations   Conversations[]
-  DirectMessages  DirectMessages[]
-  servers_created Servers[]
-  Bans            Bans[]
-  sentFriendRequests   FriendRequest[] @relation("FriendRequestSender")
-  receivedFriendRequests FriendRequest[] @relation("FriendRequestRecipient")
+  id                     String           @id
+  username               String           @unique
+  email                  String
+  image                  String?
+  status                 Status           @default(ONLINE)
+  current_vc             Voice_channels?  @relation(fields: [voice_channelId], references: [id])
+  muted                  Boolean          @default(false)
+  deafened               Boolean          @default(false)
+  role                   Role             @default(BASIC)
+  voice_channelId        String?
+  created_at             DateTime         @default(now())
+  UsersInServers         UsersInServers[]
+  Friends                Friends[]
+  Conversations          Conversations[]
+  DirectMessages         DirectMessages[]
+  servers_created        Servers[]
+  Bans                   Bans[]
+  sentFriendRequests     FriendRequest[]  @relation("FriendRequestSender")
+  receivedFriendRequests FriendRequest[]  @relation("FriendRequestRecipient")
 }
 
 model Servers {
@@ -75,13 +75,11 @@ model Friends {
 }
 
 model FriendRequest {
-  id          String    @id @default(cuid())
+  id          String @id @default(cuid())
   sender      Users  @relation("FriendRequestSender", fields: [senderId], references: [id])
   recipient   Users  @relation("FriendRequestRecipient", fields: [recipientId], references: [id])
   senderId    String
   recipientId String
-
-  @@index([senderId, recipientId])
 }
 
 model Conversations {

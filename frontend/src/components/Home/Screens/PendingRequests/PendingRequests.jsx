@@ -14,6 +14,7 @@ const PendingRequests = ({ setShowSearch }) => {
   const { user } = useContext(Context)
   const [users,setUsers] = useState([])
   const [isLoading,setIsLoading] = useState(true)
+  const [isAccepting,setIsAccepting] = useState(false)
 
   useEffect(() => {
     fetchRequests()
@@ -24,10 +25,10 @@ const PendingRequests = ({ setShowSearch }) => {
     try {
       const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/friends/fetchPending/${user.id}`)
       setUsers(response.data)
-      setIsLoading(false)
       if(response.data.length !== 0){
         setShowSearch(true)
       }
+      setIsLoading(false)
     }
     catch(error){
       console.log(error)
@@ -42,15 +43,19 @@ const PendingRequests = ({ setShowSearch }) => {
         {users.map((e,i) => {
           if(e.recipient.id === user.id){
             return <Received key={i}
+              id={e.sender.id}
               username={e.sender.username} 
               image={e.sender.image} 
               status={e.sender.status}
+              fetchRequests={fetchRequests}
+              setIsAccepting={setIsAccepting}
             />
           }
           else {
             return <Sent key={i} username={e.recipient.username} image={e.recipient.image} status={e.recipient.status} />
           }
         })}
+        {isAccepting && <Loader/>}
       </div>
     </div>
   );

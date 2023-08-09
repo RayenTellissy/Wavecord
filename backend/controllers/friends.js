@@ -132,5 +132,45 @@ module.exports = {
     catch(error){
       res.send(error)
     }
+  },
+
+  acceptFriendRequest: async (req,res) => {
+    try {
+      const { sender, requested } = req.body
+  
+      
+      // removing the friend request row after accepting
+      const requestId = await prisma.friendRequest.findFirst({
+        where: {
+          senderId: sender,
+          recipientId: requested
+        },
+        select: {
+          id: true
+        }
+      })
+      
+      await prisma.friendRequest.delete({
+        where: {
+          id: requestId.id
+        }
+      })
+      
+      const result = await prisma.friends.create({
+        data: {
+          users: {
+            connect: [
+              { id: sender },
+              { id: requested }
+            ]
+          }
+        }
+      })
+      
+      res.send(result)
+    }
+    catch(error){
+      console.log(error)
+    }
   }
 }

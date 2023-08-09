@@ -1,14 +1,39 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
 import { IoMdCheckmark } from "react-icons/io"
 import { IoClose } from "react-icons/io5"
+import { Tooltip } from '@chakra-ui/react';
+import axios from 'axios';
 
 // components
 import Avatar from '../../../../common/Avatar/Avatar';
+import { Context } from '../../../../Context/Context';
+import Loader from '../../../../common/Loader/Loader';
 
 // styles
 import "../PendingRequests.css"
 
-const Received = ({ username, image, status }) => {
+const Received = ({ id, username, image, status, fetchRequests, setIsAccepting }) => {
+  const { user } = useContext(Context)
+  const [acceptDisabled,setAcceptDisabled] = useState(false)
+
+  const acceptFriendRequest = async () => {
+    if(acceptDisabled) return
+    setAcceptDisabled(true)
+    setIsAccepting(true)
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/friends/acceptFriendRequest`,{
+        sender: id,
+        requested: user.id
+      })
+      console.log(response.data)
+      fetchRequests()
+      setIsAccepting(false)
+    }
+    catch(error){
+      console.log(error)
+    }
+  }
+  
   return (
     <div 
       id='home-right-display-pending-received-container'
@@ -23,12 +48,42 @@ const Received = ({ username, image, status }) => {
           </div>
         </div>
         <div id='home-right-display-pending-buttons-container'>
-          <button className='home-right-display-pending-action-button'>
-            <IoMdCheckmark size={40} color='#FFFFFF'/>
-          </button>
-          <button className='home-right-display-pending-action-button'>
-            <IoClose color='#FFFFFF' size={40}/>
-          </button>
+          <Tooltip
+            label="Accept"
+            placement="top"
+            color="white"
+            backgroundColor="black"
+            fontFamily="UbuntuMedium"
+            hasArrow={true}
+            arrowSize={10}
+            padding={3}
+            borderRadius={7}
+            openDelay={500}
+          >
+            <button 
+              className='home-right-display-pending-action-button'
+              onClick={acceptFriendRequest}
+            >
+              <IoMdCheckmark size={40} color='#FFFFFF'/>
+            </button>
+          </Tooltip>
+
+          <Tooltip
+            label="Decline"
+            placement="top"
+            color="white"
+            backgroundColor="black"
+            fontFamily="UbuntuMedium"
+            hasArrow={true}
+            arrowSize={10}
+            padding={3}
+            borderRadius={7}
+            openDelay={500}
+          >
+            <button className='home-right-display-pending-action-button'>
+              <IoClose color='#FFFFFF' size={40}/>
+            </button>
+          </Tooltip>
         </div>
       </div>
     </div>
