@@ -4,10 +4,12 @@ const {
   fetchAllFriends, 
   addFriend, 
   fetchPending, 
-  acceptFriendRequest 
+  acceptFriendRequest, 
+  removeRequest
 } = require("../controllers/friends")
 
 router.get("/fetchPending/:id", fetchPending)
+router.get("/removeRequest/:id", removeRequest)
 
 router.post("/fetchOnlineFriends", fetchOnlineFriends)
 router.post("/fetchAllFriends", fetchAllFriends)

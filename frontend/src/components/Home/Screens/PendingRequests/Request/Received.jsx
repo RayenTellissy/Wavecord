@@ -7,12 +7,11 @@ import axios from 'axios';
 // components
 import Avatar from '../../../../common/Avatar/Avatar';
 import { Context } from '../../../../Context/Context';
-import Loader from '../../../../common/Loader/Loader';
 
 // styles
 import "../PendingRequests.css"
 
-const Received = ({ id, username, image, status, fetchRequests, setIsAccepting }) => {
+const Received = ({ requestId, id, username, image, status, fetchRequests, setIsAccepting }) => {
   const { user } = useContext(Context)
   const [acceptDisabled,setAcceptDisabled] = useState(false)
 
@@ -21,11 +20,22 @@ const Received = ({ id, username, image, status, fetchRequests, setIsAccepting }
     setAcceptDisabled(true)
     setIsAccepting(true)
     try {
-      const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/friends/acceptFriendRequest`,{
+      await axios.post(`${import.meta.env.VITE_SERVER_URL}/friends/acceptFriendRequest`,{
         sender: id,
         requested: user.id
       })
-      console.log(response.data)
+      fetchRequests()
+      setIsAccepting(false)
+    }
+    catch(error){
+      console.log(error)
+    }
+  }
+
+  const rejectFriendRequest = async () => {
+    setIsAccepting(true)
+    try {
+      await axios.get(`${import.meta.env.VITE_SERVER_URL}/friends/removeRequest/${requestId}`)
       fetchRequests()
       setIsAccepting(false)
     }
@@ -80,7 +90,7 @@ const Received = ({ id, username, image, status, fetchRequests, setIsAccepting }
             borderRadius={7}
             openDelay={500}
           >
-            <button className='home-right-display-pending-action-button'>
+            <button className='home-right-display-pending-action-button' onClick={rejectFriendRequest}>
               <IoClose color='#FFFFFF' size={40}/>
             </button>
           </Tooltip>

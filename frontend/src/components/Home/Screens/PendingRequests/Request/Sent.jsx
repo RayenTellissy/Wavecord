@@ -1,11 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
+import axios from 'axios';
 import { IoClose } from "react-icons/io5"
 import { Tooltip } from '@chakra-ui/react';
 
 // components
 import Avatar from '../../../../common/Avatar/Avatar';
 
-const Sent = ({ username, image, status }) => {
+const Sent = ({ requestId, username, image, status, setIsAccepting, fetchRequests }) => {
+
+  const removeRequest = async () => {
+    try {
+      setIsAccepting(true)
+      await axios.get(`${import.meta.env.VITE_SERVER_URL}/friends/removeRequest/${requestId}`)
+      fetchRequests()
+      setIsAccepting(false)
+    }
+    catch(error){
+      console.log(error)
+    }
+  }
+
   return (
     <div 
       id='home-right-display-pending-sent-container'
@@ -32,7 +46,10 @@ const Sent = ({ username, image, status }) => {
             borderRadius={7}
             openDelay={500}
           >
-            <button className='home-right-display-pending-action-button'>
+            <button 
+              className='home-right-display-pending-action-button'
+              onClick={removeRequest}
+            >
               <IoClose color='#FFFFFF' size={40}/>
             </button>
           </Tooltip>

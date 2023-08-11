@@ -27,6 +27,8 @@ model Users {
   Bans                   Bans[]
   sentFriendRequests     FriendRequest[]  @relation("FriendRequestSender")
   receivedFriendRequests FriendRequest[]  @relation("FriendRequestRecipient")
+  blockedUsers           BlockedUsers[]   @relation("blockedUsers")
+  blockedByUsers         BlockedUsers[]   @relation("blockedByUsers")
 }
 
 model Servers {
@@ -48,6 +50,14 @@ model Bans {
   serverId  Servers @relation(fields: [serversId], references: [id])
   usersId   String
   serversId String
+}
+
+model BlockedUsers {
+  id        String @id @default(cuid())
+  blocker   Users  @relation("blockedUsers", fields: [blockerId], references: [id])
+  blocked   Users  @relation("blockedByUsers", fields: [blockedId], references: [id])
+  blockerId String
+  blockedId String
 }
 
 model UsersInServers {

@@ -29,6 +29,7 @@ const PendingRequests = ({ setShowSearch }) => {
         setShowSearch(true)
       }
       setIsLoading(false)
+      console.log(response.data)
     }
     catch(error){
       console.log(error)
@@ -43,6 +44,7 @@ const PendingRequests = ({ setShowSearch }) => {
         {users.map((e,i) => {
           if(e.recipient.id === user.id){
             return <Received key={i}
+              requestId={e.id}
               id={e.sender.id}
               username={e.sender.username} 
               image={e.sender.image} 
@@ -52,7 +54,14 @@ const PendingRequests = ({ setShowSearch }) => {
             />
           }
           else {
-            return <Sent key={i} username={e.recipient.username} image={e.recipient.image} status={e.recipient.status} />
+            return <Sent key={i}
+              requestId={e.id}
+              username={e.recipient.username} 
+              image={e.recipient.image} 
+              status={e.recipient.status} 
+              fetchRequests={fetchRequests}
+              setIsAccepting={setIsAccepting}
+            />
           }
         })}
         {isAccepting && <Loader/>}

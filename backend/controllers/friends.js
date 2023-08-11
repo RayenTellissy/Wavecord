@@ -93,13 +93,105 @@ module.exports = {
     try {
       const { sender, recipient } = req.body
 
-      const result = await prisma.friendRequest.create({
-        data: {
-          senderId: sender,
-          recipientId: recipient
+      // user exists check
+      const userExists = await prisma.users.findFirst({
+        where: {
+          username: recipient
+        },
+        select: {
+          id: true
         }
       })
-      res.send(result)
+      if(!userExists){
+        return res.send({ userExists: false })
+      }
+
+      // checking if users are already friends
+      const friendsCheck = await prisma.friends.findFirst({
+        where: {
+          AND: [
+            {
+              users: {
+                some: {
+                  id: sender
+                }
+              }
+            },
+            {
+              users: {
+                some: {
+                  id: userExists.id
+                }
+              }
+            }
+          ]
+        }
+      })
+      if(friendsCheck){
+        return res.send({
+          friend: recipient,
+          alreadyFriends: true
+        })
+      }
+
+      // checking if the sender has already sent a friend request
+      const alreadyRequested = await prisma.friendRequest.findFirst({
+        where: {
+          AND: [
+            {
+              senderId: sender
+            },
+            {
+              recipientId: userExists.id
+            }
+          ]
+        }
+      })
+      if(alreadyRequested){
+        return res.send({
+          recipient: recipient,
+          alreadyRequested: true
+        })
+      }
+
+      // checking if the requested user has already sent the sender a friend request
+      const recipientAlreadyRequested = await prisma.friendRequest.findFirst({
+        where: {
+          AND: [
+            {
+              senderId: userExists.id
+            },
+            {
+              recipientId: sender
+            }
+          ]
+        }
+      })
+      if(recipientAlreadyRequested){
+        return res.send({
+          recipient: recipient,
+          recipientAlreadyRequested: true
+        })
+      }
+
+      // getting the recipient's id
+      const query = await prisma.users.findFirst({
+        where: {
+          username: recipient
+        },
+        select: {
+          id: true
+        }
+      })
+
+      // creating friend request row
+      await prisma.friendRequest.create({
+        data: {
+          senderId: sender,
+          recipientId: query.id
+        }
+      })
+      res.send({ success: true })
     }
     catch(error){
       res.send(error)
@@ -122,6 +214,7 @@ module.exports = {
           ]
         },
         select: {
+          id: true,
           recipient: true,
           sender: true
         },
@@ -138,7 +231,6 @@ module.exports = {
     try {
       const { sender, requested } = req.body
   
-      
       // removing the friend request row after accepting
       const requestId = await prisma.friendRequest.findFirst({
         where: {
@@ -170,7 +262,24 @@ module.exports = {
       res.send(result)
     }
     catch(error){
-      console.log(error)
+      res.send(error)
+    }
+  },
+
+  removeRequest: async (req,res) => {
+    try {
+      const { id } = req.params // request's id
+  
+      const result = await prisma.friendRequest.delete({
+        where: {
+          id: id
+        }
+      })
+
+      res.send(result)
+    }
+    catch(error){
+      res.send(error)
     }
   }
 }
