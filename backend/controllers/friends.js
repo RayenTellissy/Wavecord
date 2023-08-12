@@ -281,5 +281,43 @@ module.exports = {
     catch(error){
       res.send(error)
     }
+  },
+
+  blockUser: async (req,res) => {
+    try {
+      const { blocker, blocked } = req.body
+  
+      const result = await prisma.blockedUsers.create({
+        data: {
+          blockerId: blocker,
+          blockedId: blocked
+        }
+      })
+
+      res.send(result)
+    }
+    catch(error){
+      res.send(error)
+    }
+  },
+
+  fetchBlocks: async (req,res) => {
+    try {
+      const { id } = req.params
+  
+      const result = await prisma.blockedUsers.findMany({
+        where: {
+          blockerId: id
+        },
+        select: {
+          blocked: true
+        }
+      })
+
+      res.send(result)
+    }
+    catch(error){
+      res.send(error)
+    }
   }
 }

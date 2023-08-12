@@ -1,0 +1,39 @@
+#blockeduser-button-container {
+  display: flex;
+  flex-direction: row;
+  border-top: 1px solid #33315b;
+  margin: 15px 0px;
+  padding-top: 20px;
+}
+
+#blockeduser-button-username-status-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+#blockeduser-button-username {
+  font-family: UbuntuBold;
+}
+
+#blockeduser-button-status {
+  font-family: UbuntuRegular;
+  color: #ACACAC;
+}
+
+#home-right-display-blocked-container {
+  display: flex;
+  justify-content: center;
+}
+
+#home-right-display-blocked-count {
+  font-family: UbuntuMedium;
+  font-size: 15px;
+  margin: 15px 0px;
+}
+
+#home-right-display-blocked-users {
+  width: 97%;
+  display: flex;
+  flex-direction: column;
+}

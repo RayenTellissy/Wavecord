@@ -24,7 +24,7 @@ const Display = ({ selectedScreen }) => {
     ? <AllFriends query={query} setShowSearch={setShowSearch}/>
     : (selectedScreen === "Pending"
     ? <PendingRequests setShowSearch={setShowSearch}/>
-    : (selectedScreen === "Blocked" ? <Blocked/> : <AddFriend setShowSearch={setShowSearch}/>)))}
+    : (selectedScreen === "Blocked" ? <Blocked setShowSearch={setShowSearch}/> : <AddFriend setShowSearch={setShowSearch}/>)))}
   </>
 };
 
