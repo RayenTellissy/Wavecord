@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import axios from "axios"
+import { useToast } from "@chakra-ui/react"
 
 // components
 import { Context } from "../../../Context/Context"
@@ -14,6 +15,7 @@ const OnlineFriends = ({ query, setShowSearch }) => {
   const [users,setUsers] = useState([])
   const [isLoading,setIsLoading] = useState(true)
   const [isUpdating,setIsUpdating] = useState(false)
+  const toast = useToast()
 
   useEffect(() => {
     fetchUsers()
@@ -55,6 +57,7 @@ const OnlineFriends = ({ query, setShowSearch }) => {
           status={e.users[0].status}
           setIsUpdating={setIsUpdating}
           fetchUsers={fetchUsers}
+          toast={toast}
         />
       })}
       {isUpdating && <Loader/>}

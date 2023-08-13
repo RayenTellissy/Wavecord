@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
+import { useToast } from '@chakra-ui/react';
 
 // components
 import { Context } from '../../../Context/Context';
@@ -14,6 +15,7 @@ const AllFriends = ({ query, setShowSearch }) => {
   const [users,setUsers] = useState([])
   const [isLoading,setIsLoading] = useState(true)
   const [isUpdating,setIsUpdating] = useState(false)
+  const toast = useToast()
 
   useEffect(() => {
     fetchUsers()
@@ -49,11 +51,13 @@ const AllFriends = ({ query, setShowSearch }) => {
       {users.map((e,i) => {
         return <FriendButton
           key={i}
+          id={e.users[0].id}
           username={e.users[0].username}
           image={e.users[0].image}
           status={e.users[0].status}
           setIsUpdating={setIsUpdating}
           fetchUsers={fetchUsers}
+          toast={toast}
         />
       })}
       {isUpdating && <Loader/>}

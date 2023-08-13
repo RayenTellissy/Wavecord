@@ -11,7 +11,7 @@ import Avatar from '../Avatar/Avatar';
 // styles
 import "./FriendButton.css"
 
-const FriendButton = ({ id, username, image, status, setIsUpdating, fetchUsers }) => {
+const FriendButton = ({ id, username, image, status, setIsUpdating, fetchUsers, toast }) => {
   const { user } = useContext(Context)
 
   const removeFriend = async () => {
@@ -23,8 +23,14 @@ const FriendButton = ({ id, username, image, status, setIsUpdating, fetchUsers }
       },{
         withCredentials: true
       })
-      fetchUsers()
+      await fetchUsers()
       setIsUpdating(false)
+      toast({
+        description: "Friend removed.",
+        status: "success",
+        duration: 2000
+
+      })
     }
     catch(error){
       console.log(error)
@@ -34,14 +40,20 @@ const FriendButton = ({ id, username, image, status, setIsUpdating, fetchUsers }
   const blockUser = async () => {
     setIsUpdating(true)
     try {
-      await axios.post(`${import.meta.env.VITE_SERVER_URL}/friends/blockUser`,{
+      const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/friends/blockUser`,{
         blocker: user.id,
         blocked: id
       },{
         withCredentials: true
       })
-      fetchUsers()
+      console.log(response.data)
+      await fetchUsers()
       setIsUpdating(false)
+      toast({
+        description: "Friend blocked.",
+        status: "success",
+        duration: 2000
+      })
     }
     catch(error){
       console.log(error)
