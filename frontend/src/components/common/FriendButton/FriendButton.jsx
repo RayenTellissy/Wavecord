@@ -11,17 +11,37 @@ import Avatar from '../Avatar/Avatar';
 // styles
 import "./FriendButton.css"
 
-const FriendButton = ({ id, username, image, status }) => {
+const FriendButton = ({ id, username, image, status, setIsUpdating, fetchUsers }) => {
   const { user } = useContext(Context)
 
   const removeFriend = async () => {
+    setIsUpdating(true)
     try {
-      const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/friends/removeFriend`,{
+      await axios.post(`${import.meta.env.VITE_SERVER_URL}/friends/removeFriend`,{
         remover: user.id,
         removed: id
       },{
         withCredentials: true
       })
+      fetchUsers()
+      setIsUpdating(false)
+    }
+    catch(error){
+      console.log(error)
+    }
+  }
+
+  const blockUser = async () => {
+    setIsUpdating(true)
+    try {
+      await axios.post(`${import.meta.env.VITE_SERVER_URL}/friends/blockUser`,{
+        blocker: user.id,
+        blocked: id
+      },{
+        withCredentials: true
+      })
+      fetchUsers()
+      setIsUpdating(false)
     }
     catch(error){
       console.log(error)
@@ -71,7 +91,7 @@ const FriendButton = ({ id, username, image, status }) => {
             borderRadius={7}
             openDelay={500}
           >
-            <button className='friend-button-remove-friend'>
+            <button className='friend-button-remove-friend' onClick={blockUser}>
               <BiBlock size={35}/>
             </button>
           </Tooltip>

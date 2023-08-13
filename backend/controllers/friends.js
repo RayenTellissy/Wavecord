@@ -329,6 +329,39 @@ module.exports = {
   blockUser: async (req,res) => {
     try {
       const { blocker, blocked } = req.body
+
+      const rowId = await prisma.friends.findFirst({
+        where: {
+          AND: [
+            {
+              users: {
+                some: {
+                  id: blocker
+                }
+              }
+            },
+            {
+              users: {
+                some: {
+                  id: blocked
+                }
+              }
+            }
+          ]
+        },
+        select: {
+          id: true
+        }
+      })
+      
+      if(rowId){
+        // removing the 2 users from friends
+        await prisma.friends.delete({
+          where: {
+            id: rowId.id
+          }
+        })
+      }
   
       const result = await prisma.blockedUsers.create({
         data: {

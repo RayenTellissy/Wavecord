@@ -13,13 +13,14 @@ const AllFriends = ({ query, setShowSearch }) => {
   const { user } = useContext(Context)
   const [users,setUsers] = useState([])
   const [isLoading,setIsLoading] = useState(true)
+  const [isUpdating,setIsUpdating] = useState(false)
 
   useEffect(() => {
-    fetchAllFriends()
+    fetchUsers()
     return () => setShowSearch(false)
   },[query])
 
-  const fetchAllFriends = async () => {
+  const fetchUsers = async () => {
     try {
       const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/friends/fetchAllFriends`,{
         id: user.id,
@@ -51,8 +52,11 @@ const AllFriends = ({ query, setShowSearch }) => {
           username={e.users[0].username}
           image={e.users[0].image}
           status={e.users[0].status}
+          setIsUpdating={setIsUpdating}
+          fetchUsers={fetchUsers}
         />
       })}
+      {isUpdating && <Loader/>}
     </div>
   );
 };

@@ -13,6 +13,7 @@ const OnlineFriends = ({ query, setShowSearch }) => {
   const { user } = useContext(Context)
   const [users,setUsers] = useState([])
   const [isLoading,setIsLoading] = useState(true)
+  const [isUpdating,setIsUpdating] = useState(false)
 
   useEffect(() => {
     fetchUsers()
@@ -52,8 +53,11 @@ const OnlineFriends = ({ query, setShowSearch }) => {
           username={e.users[0].username} 
           image={e.users[0].image} 
           status={e.users[0].status}
+          setIsUpdating={setIsUpdating}
+          fetchUsers={fetchUsers}
         />
       })}
+      {isUpdating && <Loader/>}
     </div>
   );
 };
