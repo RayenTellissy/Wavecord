@@ -7,7 +7,9 @@ const {
   acceptFriendRequest, 
   removeRequest,
   blockUser,
-  fetchBlocks
+  fetchBlocks,
+  unblockUser,
+  removeFriend
 } = require("../controllers/friends")
 
 router.get("/fetchPending/:id", fetchPending)
@@ -17,7 +19,9 @@ router.get("/fetchBlocks/:id", fetchBlocks)
 router.post("/fetchOnlineFriends", fetchOnlineFriends)
 router.post("/fetchAllFriends", fetchAllFriends)
 router.post("/addFriend", addFriend)
+router.post("/removeFriend", removeFriend)
 router.post("/acceptFriendRequest", acceptFriendRequest)
 router.post("/blockUser", blockUser)
+router.post("/unblockUser", unblockUser)
 
 module.exports = router

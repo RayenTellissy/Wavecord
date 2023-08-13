@@ -10,7 +10,7 @@ import Loader from "../../../common/Loader/Loader"
 // styles
 import "./PendingRequests.css"
 
-const PendingRequests = ({ setShowSearch }) => {
+const PendingRequests = ({ query, setShowSearch }) => {
   const { user } = useContext(Context)
   const [users,setUsers] = useState([])
   const [isLoading,setIsLoading] = useState(true)
@@ -21,6 +21,17 @@ const PendingRequests = ({ setShowSearch }) => {
     return () => setShowSearch(false)
   },[])
 
+  useEffect(() => {
+    filterUsers()
+  },[query])
+
+  const filterUsers = () => {
+    if(!query){
+      fetchRequests()
+    }
+    setUsers(users.filter(e => e.sender.username.toLowerCase().includes(query.toLowerCase())))
+  }
+
   const fetchRequests = async () => {
     try {
       const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/friends/fetchPending/${user.id}`)
@@ -28,8 +39,10 @@ const PendingRequests = ({ setShowSearch }) => {
       if(response.data.length !== 0){
         setShowSearch(true)
       }
+      else if(response.data.length === 0){
+        setShowSearch(false)
+      }
       setIsLoading(false)
-      console.log(response.data)
     }
     catch(error){
       console.log(error)

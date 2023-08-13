@@ -4,6 +4,12 @@
   border-top: 1px solid #33315b;
   margin: 15px;
   padding-top: 20px;
+  justify-content: space-between;
+}
+
+#friend-button-details-container {
+  display: flex;
+  flex-direction: row;
 }
 
 #friend-button-username-status-container {
@@ -19,4 +25,8 @@
 #friend-button-status {
   font-family: UbuntuRegular;
   color: #ACACAC;
+}
+
+.friend-button-remove-friend {
+  margin: 0px 20px;
 }

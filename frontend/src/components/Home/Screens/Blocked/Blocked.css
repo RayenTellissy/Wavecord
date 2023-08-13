@@ -4,6 +4,7 @@
   border-top: 1px solid #33315b;
   margin: 15px 0px;
   padding-top: 20px;
+  justify-content: space-between;
 }
 
 #blockeduser-button-username-status-container {
@@ -36,4 +37,13 @@
   width: 97%;
   display: flex;
   flex-direction: column;
+}
+
+#blockeduser-button-details-container{
+  display: flex;
+  flex-direction: row;
+}
+
+#blockeduser-button-unblock{
+  margin: 0px 20px;
 }

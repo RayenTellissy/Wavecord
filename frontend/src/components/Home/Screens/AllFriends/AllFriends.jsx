@@ -31,6 +31,9 @@ const AllFriends = ({ query, setShowSearch }) => {
       if(response.data.length !== 0){ 
         setShowSearch(true)
       }
+      if(response.data.length === 0){
+        setShowSearch(false)
+      }
       setIsLoading(false)
     }
     catch(error){

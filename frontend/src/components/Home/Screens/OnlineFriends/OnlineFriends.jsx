@@ -31,6 +31,9 @@ const OnlineFriends = ({ query, setShowSearch }) => {
       if(response.data.length !== 0) {
         setShowSearch(true)
       }
+      if(response.data.length === 0){
+        setShowSearch(false)
+      }
       setIsLoading(false)
     }
     catch(error){
@@ -44,7 +47,8 @@ const OnlineFriends = ({ query, setShowSearch }) => {
       {!isLoading && <p id='home-right-display-online-count'>ONLINE - {users.length}</p>}
       {users.map((e,i) => {
         return <FriendButton
-          key={i} 
+          key={i}
+          id={e.users[0].id}
           username={e.users[0].username} 
           image={e.users[0].image} 
           status={e.users[0].status}

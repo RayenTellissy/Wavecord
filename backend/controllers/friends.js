@@ -198,6 +198,49 @@ module.exports = {
     }
   },
 
+  removeFriend: async (req,res) => {
+    try {
+      const { remover, removed } = req.body
+
+      const rowId = await prisma.friends.findFirst({
+        where: {
+          AND: [
+            {
+              users: {
+                some: {
+                  id: remover
+                }
+              }
+            },
+            {
+              users: {
+                some: {
+                  id: removed
+                }
+              }
+            }
+          ]
+        },
+        select: {
+          id: true
+        }
+      })
+
+      if(!rowId) return res.send({ notFriends: true })
+
+      await prisma.friends.delete({
+        where: {
+          id: rowId.id
+        }
+      })
+
+      res.send({ success: true })
+    }
+    catch(error){
+      res.send(error)
+    }
+  },
+
   fetchPending: async (req,res) => {
     try {
       const { id } = req.params
@@ -291,6 +334,33 @@ module.exports = {
         data: {
           blockerId: blocker,
           blockedId: blocked
+        }
+      })
+
+      res.send(result)
+    }
+    catch(error){
+      res.send(error)
+    }
+  },
+
+  unblockUser: async (req,res) => {
+    try {
+      const { blocker, blocked } = req.body
+
+      const rowId = await prisma.blockedUsers.findFirst({
+        where: {
+          blockedId: blocker,
+          blockedId: blocked
+        },
+        select: {
+          id: true
+        }
+      })
+
+      const result = await prisma.blockedUsers.delete({
+        where: {
+          id: rowId.id
         }
       })
 
