@@ -64,6 +64,14 @@ const AddFriend = ({ setShowSearch }) => {
         })
       }
 
+      if(response.data.userBlocked){
+        toast({
+          description: "You cannot send this user a friend request.",
+          status: "warning",
+          duration: 2000
+        })
+      }
+
       if(response.data.success){
         toast({
           description: "Friend request sent.",

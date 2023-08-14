@@ -40,13 +40,12 @@ const FriendButton = ({ id, username, image, status, setIsUpdating, fetchUsers, 
   const blockUser = async () => {
     setIsUpdating(true)
     try {
-      const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/friends/blockUser`,{
+      await axios.post(`${import.meta.env.VITE_SERVER_URL}/friends/blockUser`,{
         blocker: user.id,
         blocked: id
       },{
         withCredentials: true
       })
-      console.log(response.data)
       await fetchUsers()
       setIsUpdating(false)
       toast({

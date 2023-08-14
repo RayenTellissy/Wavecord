@@ -174,6 +174,25 @@ module.exports = {
         })
       }
 
+      // checking if user is blocked
+      const blockCheck = await prisma.blockedUsers.findFirst({
+        where: {
+          OR: [
+            {
+              blockerId: sender,
+              blockedId: userExists.id
+            },
+            {
+              blockerId: userExists.id,
+              blockedId: sender
+            }
+          ]
+        }
+      })
+      if(blockCheck){
+        return res.send({ userBlocked: true })
+      }
+
       // getting the recipient's id
       const query = await prisma.users.findFirst({
         where: {
