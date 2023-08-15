@@ -75,7 +75,6 @@ const Signup = () => {
       setIsLoading(false)
   
       const result = response.data
-      console.log(result)
   
       // if user has been authenticated move redirect him
       if (result.success) {
