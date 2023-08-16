@@ -1,0 +1,20 @@
+#server-text-channel-button{
+  width: 300px;
+  padding: 5px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border-radius: 3px;
+}
+
+#server-text-channel-button:hover{
+  background-color: #25324a;
+}
+
+#server-text-channel-button:active{
+  background-color: #2b3953;
+}
+
+#server-text-channel-name{
+  font-family: UbuntuRegular;
+}

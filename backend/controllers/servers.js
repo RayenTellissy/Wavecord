@@ -39,7 +39,8 @@ module.exports = {
           id: id
         },
         include: {
-          UsersInServers: true
+          UsersInServers: true,
+          Text_channels: true
         }
       })
       
@@ -197,6 +198,24 @@ module.exports = {
         success: true,
         role: role.role
       })
+    }
+    catch(error){
+      res.send(error)
+    }
+  },
+
+  createTextChannel: async (req,res) => {
+    try {
+      const { name, serverId } = req.body
+
+      const result = await prisma.text_channels.create({
+        data: {
+          name: name,
+          serverId: serverId
+        }
+      })
+
+      res.send(result)
     }
     catch(error){
       res.send(error)

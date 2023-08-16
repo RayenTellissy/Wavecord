@@ -1,0 +1,22 @@
+#server-container {
+  display: flex;
+  flex-direction: row;
+}
+
+#server-name {
+  font-family: UbuntuBold;
+  font-size: 23px;
+}
+
+#server-name-container {
+  margin: 35px 0px
+}
+
+#server-bar-container{
+  display: flex;
+  justify-content: center;
+}
+
+#server-bar-main{
+  width: 95%;
+}

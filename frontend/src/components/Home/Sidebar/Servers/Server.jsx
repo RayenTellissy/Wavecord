@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 import "./Server.css"
 
-const Server = ({ id, name, image }) => {
+const Server = ({ id, name, image, highlighted }) => {
 
   const navigate = useNavigate()
 
@@ -19,7 +19,10 @@ const Server = ({ id, name, image }) => {
     fontFamily="UbuntuMedium"
     >
     <button className='home-server-button' onClick={() => navigate(`/server/${id}`)}>
-      <img className='home-server-image' src={image} />
+      <img 
+        className={highlighted ? (id === highlighted ? 'home-server-image-active' : 'home-server-image') : 'home-server-image'} 
+        src={image} 
+      />
     </button>
   </Tooltip>
 };

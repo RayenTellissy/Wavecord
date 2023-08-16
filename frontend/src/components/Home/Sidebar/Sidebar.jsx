@@ -10,7 +10,7 @@ import { Context } from '../../Context/Context';
 // styles
 import "./Sidebar.css"
 
-const Sidebar = () => {
+const Sidebar = ({ highlighted }) => {
   const { user } = useContext(Context)
   const [servers,setServers] = useState([])
 
@@ -35,7 +35,7 @@ const Sidebar = () => {
     <div id='home-server-bar'>
       <HomeButton/>
       <span id='home-line-seperator'/>
-      <Servers servers={servers} />
+      <Servers servers={servers} highlighted={highlighted} />
       <CreateServer/>
     </div>
   );

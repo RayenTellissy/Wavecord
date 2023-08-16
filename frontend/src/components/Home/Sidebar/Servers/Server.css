@@ -5,5 +5,11 @@
 .home-server-image{
   width: 4.5rem;
   height: 4.5rem;
-  border-radius: 100px;
+  border-radius: 50%;
+}
+
+.home-server-image-active{
+  width: 4.5rem;
+  height: 4.5rem;
+  border-radius: 35%;
 }
