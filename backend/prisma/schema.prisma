@@ -33,18 +33,17 @@ model Users {
 }
 
 model Servers {
-  id             String           @id @default(cuid())
+  id             String              @id @default(cuid())
   name           String
   image          String
   roles          roles[]
-  server_link    String           @default(cuid())
-  created_at     DateTime         @default(now())
-  Voice_channels Voice_channels[]
+  categories     Server_categories[]
+  server_link    String              @default(cuid())
+  created_at     DateTime            @default(now())
   UsersInServers UsersInServers[]
-  owner          Users            @relation(fields: [ownerId], references: [id])
+  owner          Users               @relation(fields: [ownerId], references: [id])
   ownerId        String
   Bans           Bans[]
-  Text_channels  Text_channels[]
 }
 
 model roles {
@@ -81,20 +80,28 @@ model UsersInServers {
   @@unique([usersId, serversId])
 }
 
+model Server_categories {
+  id             String           @id @default(cuid())
+  Text_channels  Text_channels[]
+  Voice_channels Voice_channels[]
+  server         Servers          @relation(fields: [serverId], references: [id])
+  serverId       String
+}
+
 model Text_channels {
-  id       String           @id @default(cuid())
-  name     String
-  server   Servers          @relation(fields: [serverId], references: [id])
-  serverId String
-  messages ServerMessages[]
+  id         String            @id @default(cuid())
+  name       String
+  messages   ServerMessages[]
+  category   Server_categories @relation(fields: [categoryId], references: [id])
+  categoryId String
 }
 
 model Voice_channels {
-  id       String  @id @default(cuid())
-  name     String
-  server   Servers @relation(fields: [serverId], references: [id])
-  serverId String
-  Users    Users[]
+  id         String            @id @default(cuid())
+  name       String
+  Users      Users[]
+  category   Server_categories @relation(fields: [categoryId], references: [id])
+  categoryId String
 }
 
 model Friends {
@@ -154,7 +161,6 @@ enum Status {
 enum ConversationType {
   DIRECT
   GROUP
-  SERVER
 }
 
 enum MessageType {
