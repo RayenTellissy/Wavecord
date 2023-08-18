@@ -8,12 +8,12 @@ import VoiceChannel from '../VoiceChannel/VoiceChannel';
 // styles
 import "./Category.css"
 
-const Category = ({ id, name, text, voice, setShowModal, setCategoryChosen }) => {
+const Category = ({ id, name, text, voice, onOpen, setCategoryChosen }) => {
   const [hovered,setHovered] = useState(false)
 
   const handleClick = () => {
     setCategoryChosen(name)
-    setShowModal(true)
+    onOpen()
   }
 
   return (

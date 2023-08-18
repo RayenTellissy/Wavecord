@@ -12,13 +12,88 @@
   margin: 35px 0px
 }
 
-#server-bar-container{
+#server-bar-container {
   width: 300px;
   display: flex;
   justify-content: center;
   background-color: #2b2d31;
 }
 
-#server-bar-main{
+#server-bar-main {
   width: 95%;
+}
+
+
+
+
+
+.server-category-modal-body-text-type{
+  padding: 8px;
+  border-radius: 4px;
+  background-color: #2b2d31;
+}
+
+#server-category-modal-body-text-type-active{
+  background-color: #41444a;
+}
+
+#server-category-modal-body-text-type-inactive:hover{
+  background-color: #393b41;
+}
+
+#server-category-modal-body-text-type-inactive:active{
+  background-color: #41444a;
+}
+
+#server-category-modal-header-1 {
+  font-family: UbuntuMedium;
+  font-size: 25px;
+  color: #f2f3f5;
+}
+
+#server-category-modal-header-2{
+  font-family: UbuntuLight;
+  font-size: 16px;
+  color: #adb1b9;
+}
+
+#server-category-modal-body-channel-type{
+  color: #a5aab2;
+  font-family: UbuntuMedium;
+  font-size: 15px;
+  margin-bottom: 5px;
+}
+
+#server-category-modal-body-container{
+  display: flex;
+  flex-direction: column;
+}
+
+#server-category-modal-body-text-type-container{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.server-category-modal-body-type-details{
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.server-category-modal-body-type-title{
+  font-family: UbuntuMedium;
+  font-size: 20px;
+  color: #d6d8db;
+  margin-bottom: 8px;
+}
+
+.server-category-modal-body-type-description{
+  font-family: UbuntuRegular;
+  font-size: 14px;
+  color: #a5aab1;
+}
+
+#server-category-modal-body-text-type-hashtag{
+  margin: 0px 11px;
 }
