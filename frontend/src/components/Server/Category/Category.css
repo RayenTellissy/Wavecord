@@ -1,0 +1,27 @@
+.server-category-name {
+  font-family: UbuntuMedium;
+  font-size: 15px;
+}
+
+#server-category-name-unhovered {
+  color: #DDDEE9;
+}
+
+#server-category-name-hovered {
+  color: #FFFFFF;
+}
+
+#server-category-row-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#server-category-plus-button {
+  color: #dddee9;
+}
+
+#server-category-plus-button:hover {
+  color: rgb(255, 255, 255);
+}

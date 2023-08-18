@@ -7,7 +7,7 @@ import "./TextChannel.css"
 const TextChannel = ({ id, name }) => {
   return (
     <button id='server-text-channel-button'>
-      {/* <FaHashtag/> */}
+      <FaHashtag id='server-text-channel-hashtag'/>
       <p id='server-text-channel-name'>{ name }</p>
     </button>
   );

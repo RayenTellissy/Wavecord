@@ -40,7 +40,12 @@ module.exports = {
         },
         include: {
           UsersInServers: true,
-          Text_channels: true
+          categories: {
+            include: {
+              Text_channels: true,
+              Voice_channels: true
+            }
+          }
         }
       })
       
@@ -204,14 +209,50 @@ module.exports = {
     }
   },
 
-  createTextChannel: async (req,res) => {
+  createCategory: async (req,res) => {
     try {
       const { name, serverId } = req.body
+
+      const result = await prisma.server_categories.create({
+        data: {
+          name: name,
+          serverId: serverId
+        }
+      })
+
+      res.send(result)
+    }
+    catch(error){
+      res.send(error)
+    }
+  },
+
+  createTextChannel: async (req,res) => {
+    try {
+      const { name, categoryId } = req.body
 
       const result = await prisma.text_channels.create({
         data: {
           name: name,
-          serverId: serverId
+          categoryId: categoryId
+        }
+      })
+
+      res.send(result)
+    }
+    catch(error){
+      res.send(error)
+    }
+  },
+
+  createVoiceChannel: async (req,res) => {
+    try {
+      const { name , categoryId } = req.body
+
+      const result = await prisma.voice_channels.create({
+        data: {
+          name: name,
+          categoryId: categoryId
         }
       })
 

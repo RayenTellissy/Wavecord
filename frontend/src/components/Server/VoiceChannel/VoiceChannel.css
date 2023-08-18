@@ -1,4 +1,4 @@
-#server-text-channel-button {
+#server-voice-channel-button {
   width: 280px;
   padding: 5px;
   display: flex;
@@ -7,19 +7,19 @@
   border-radius: 3px;
 }
 
-#server-text-channel-button:hover {
+#server-voice-channel-button:hover {
   background-color: #35373c;
 }
 
-#server-text-channel-button:active {
+#server-voice-channel-button:active {
   background-color: #3f4248;
 }
 
-#server-text-channel-name {
+#server-voice-channel-name {
   font-family: UbuntuRegular;
 }
 
-#server-text-channel-hashtag {
+#server-voice-channel-speaker {
   margin-right: 7px;
   color: gray;
 }

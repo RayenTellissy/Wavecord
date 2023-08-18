@@ -82,6 +82,7 @@ model UsersInServers {
 
 model Server_categories {
   id             String           @id @default(cuid())
+  name           String
   Text_channels  Text_channels[]
   Voice_channels Voice_channels[]
   server         Servers          @relation(fields: [serverId], references: [id])
