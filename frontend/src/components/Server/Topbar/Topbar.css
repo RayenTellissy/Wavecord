@@ -1,7 +1,6 @@
 #server-topbar-container {
   background-color: #252525;
   height: 85px;
-  flex: 1;
   box-shadow: black 2px 2px;
   display: flex;
   align-items: center;

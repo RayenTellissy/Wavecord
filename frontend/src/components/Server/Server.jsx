@@ -108,7 +108,6 @@ const Server = () => {
         </div>
       </div>
       <div id='server-right-display-content'>
-        <Topbar currentTextChannel={currentTextChannel}/>
         <ChannelMessages currentTextChannel={currentTextChannel} currentTextChannelId={currentTextChannelId}/>
       </div>
       <Modal isOpen={isOpen} onClose={onClose} isCentered size="lg">

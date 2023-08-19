@@ -1,13 +1,10 @@
 #server-messages-container{
   display: flex;
   flex-direction: column;
-  height: 100%;
-  
+  height: 100vh;
 }
 
 #server-messages-channel-messages{
-  display: flex;
-  flex-direction: column;
   height: 83%;
   overflow-y: scroll;
 }

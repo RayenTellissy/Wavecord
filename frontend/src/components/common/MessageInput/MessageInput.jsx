@@ -39,19 +39,34 @@ const MessageInput = ({ conversationName, setMessages, conversationType, channel
     const storedMessage = message
     setMessage("")
     
-    const messageDetails = {
-      conversation: id,
-      usersId: { 
-        username: user.username,
-        image: user.image
-      },
-      message: storedMessage,
-      type: "TEXT",
-      created_at: new Date(Date.now())
+    if(conversationType === "dm"){
+      const messageDetails = {
+        conversation: id,
+        usersId: { 
+          username: user.username,
+          image: user.image
+        },
+        message: storedMessage,
+        type: "TEXT",
+        created_at: new Date(Date.now())
+      }
+      await socket.emit("send_message", messageDetails)
+      setMessages(prevMessages => [...prevMessages, messageDetails])
     }
-    
-    await socket.emit("send_message", messageDetails)
-    setMessages(prevMessages => [...prevMessages, messageDetails])
+    else if(conversationType === "server"){
+      const messageDetails = {
+        conversation: channelId,
+        sender: { 
+          username: user.username,
+          image: user.image
+        },
+        message: storedMessage,
+        type: "TEXT",
+        created_at: new Date(Date.now())
+      }
+      await socket.emit("send_message", messageDetails)
+      setMessages(prevMessages => [...prevMessages, messageDetails])
+    }
     
     try {
       if(conversationType === "dm"){
@@ -68,6 +83,8 @@ const MessageInput = ({ conversationName, setMessages, conversationType, channel
           channelId: channelId,
           senderId: user.id,
           message: message
+        },{
+          withCredentials: true
         })
       }
     }

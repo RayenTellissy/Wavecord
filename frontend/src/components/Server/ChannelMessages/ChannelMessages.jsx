@@ -8,18 +8,22 @@ import { Context } from '../../Context/Context';
 
 // styles
 import "./ChannelMessages.css"
+import Topbar from '../Topbar/Topbar';
 
 const ChannelMessages = ({ currentTextChannel, currentTextChannelId }) => {
-  const { user } = useContext(Context)
+  const { socket } = useContext(Context)
   const [messages,setMessages] = useState([])
 
   useEffect(() => {
     fetchMessages()
-  },[])
+    socket.emit("join_room", currentTextChannelId)
+  },[currentTextChannelId])
 
   useEffect(() => {
-    console.log(messages)
-  },[messages])
+    socket.on("receive_message", data => {
+      setMessages(prevMessages => [...prevMessages, data])
+    })
+  },[socket])
 
   const fetchMessages = async () => {
     try {
@@ -27,7 +31,6 @@ const ChannelMessages = ({ currentTextChannel, currentTextChannelId }) => {
         channelId: currentTextChannelId
       })
       setMessages(response.data)
-      console.log(currentTextChannelId)
     }
     catch(error){
       console.log(error)
@@ -36,6 +39,7 @@ const ChannelMessages = ({ currentTextChannel, currentTextChannelId }) => {
 
   return (
     <div id='server-messages-container'>
+      <Topbar currentTextChannel={currentTextChannel}/>
       <div id='server-messages-channel-messages'>
         {messages.length !== 0 && messages.map((e,i) => {
           return <Message
