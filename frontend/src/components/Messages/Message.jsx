@@ -32,7 +32,7 @@ const Message = ({ username, image, message, type, created_at }) => {
         </div>
         {type === "TEXT"
         ?
-        <p id='dm-message-message'>{message}</p>
+        <p id='dm-message-message' className='selectable'>{message}</p>
         :
         <a className='dm-message-link' href={message} target="_blank" rel="noopener noreferrer">
           {message}

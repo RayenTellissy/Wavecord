@@ -11,16 +11,25 @@ import {
   ModalBody,
   ModalCloseButton
 } from "@chakra-ui/react"
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverHeader,
+  PopoverBody,
+  PopoverFooter
+} from '@chakra-ui/react'
 import { FaHashtag } from "react-icons/fa"
 import { MdOutlineRadioButtonChecked, MdOutlineRadioButtonUnchecked } from "react-icons/md"
 import { HiSpeakerWave } from "react-icons/hi2"
 import { IoMdLock } from "react-icons/io"
+import { RiArrowDropDownLine } from "react-icons/ri"
+import { MdClose } from "react-icons/md"
 
 // components
 import Sidebar from '../Home/Sidebar/Sidebar';
 import Category from './Category/Category';
 import Switch from '../common/Switch/Switch';
-import Topbar from './Topbar/Topbar';
 import ChannelMessages from './ChannelMessages/ChannelMessages';
 
 // styles
@@ -38,6 +47,7 @@ const Server = () => {
   const [modalChannelName,setModalChannelName] = useState("")
   const [privateChecked,setPrivateChecked] = useState(false)
   const [createDisabled,setCreateDisabled] = useState(false)
+  const [showDropdown,setShowDropdown] = useState(false)
   
   useEffect(() => {
     fetchData()
@@ -88,8 +98,11 @@ const Server = () => {
       <Sidebar highlighted={server.id}/>
       <div id='server-bar-container'>
         <div id='server-bar-main'>
-          <div id='server-name-container'>
+          <div id='server-name-container' onClick={() => setShowDropdown(!showDropdown)}>
             <p id='server-name'>{server.name}</p>
+            <div id='server-banner-icon-container'>
+              {showDropdown ? <MdClose size={22}/> : <RiArrowDropDownLine size={40}/>}
+            </div>
           </div>
           {server.categories && server.categories.map((e,i) => {
             return <Category

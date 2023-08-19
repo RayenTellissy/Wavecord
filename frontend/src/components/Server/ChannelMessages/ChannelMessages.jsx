@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 
 // components
@@ -13,10 +13,12 @@ import Topbar from '../Topbar/Topbar';
 const ChannelMessages = ({ currentTextChannel, currentTextChannelId }) => {
   const { socket } = useContext(Context)
   const [messages,setMessages] = useState([])
+  const messagesContainerRef = useRef(null)
 
   useEffect(() => {
     fetchMessages()
     socket.emit("join_room", currentTextChannelId)
+    scrollToBottom()
   },[currentTextChannelId])
 
   useEffect(() => {
@@ -24,6 +26,10 @@ const ChannelMessages = ({ currentTextChannel, currentTextChannelId }) => {
       setMessages(prevMessages => [...prevMessages, data])
     })
   },[socket])
+
+  useEffect(() => {
+    scrollToBottom()
+  },[messages])
 
   const fetchMessages = async () => {
     try {
@@ -37,12 +43,17 @@ const ChannelMessages = ({ currentTextChannel, currentTextChannelId }) => {
     }
   }
 
+  const scrollToBottom = () => {
+    messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight
+  }
+
   return (
     <div id='server-messages-container'>
       <Topbar currentTextChannel={currentTextChannel}/>
-      <div id='server-messages-channel-messages'>
+      <div id='server-messages-channel-messages' ref={messagesContainerRef} >
         {messages.length !== 0 && messages.map((e,i) => {
           return <Message
+            key={i}
             username={e.sender.username}
             image={e.sender.image}
             message={e.message}
