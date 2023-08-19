@@ -20,6 +20,8 @@ import { IoMdLock } from "react-icons/io"
 import Sidebar from '../Home/Sidebar/Sidebar';
 import Category from './Category/Category';
 import Switch from '../common/Switch/Switch';
+import Topbar from './Topbar/Topbar';
+import ChannelMessages from './ChannelMessages/ChannelMessages';
 
 // styles
 import "./Server.css"
@@ -28,6 +30,7 @@ const Server = () => {
   const { id } = useParams()
   const [server,setServer] = useState({})
   const [currentTextChannel,setCurrentTextChannel] = useState("")
+  const [currentTextChannelId,setCurrentTextChannelId] = useState("")
   const [categoryChosen,setCategoryChosen] = useState("")
   const [categoryIdChosen,setCategoryIdChosen] = useState("")
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -79,7 +82,7 @@ const Server = () => {
       console.log(error)
     }
   }
-
+  
   return (
     <div id='server-container'>
       <Sidebar highlighted={server.id}/>
@@ -98,9 +101,15 @@ const Server = () => {
               onOpen={onOpen}
               setCategoryChosen={setCategoryChosen}
               setCategoryIdChosen={setCategoryIdChosen}
+              setCurrentTextChannel={setCurrentTextChannel}
+              setCurrentTextChannelId={setCurrentTextChannelId}
             />
           })}
         </div>
+      </div>
+      <div id='server-right-display-content'>
+        <Topbar currentTextChannel={currentTextChannel}/>
+        <ChannelMessages currentTextChannel={currentTextChannel} currentTextChannelId={currentTextChannelId}/>
       </div>
       <Modal isOpen={isOpen} onClose={onClose} isCentered size="lg">
         <ModalOverlay/>

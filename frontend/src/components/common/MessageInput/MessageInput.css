@@ -1,3 +1,10 @@
+#message-input-container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
 #dm-conversation-input{
   width: 98%;
   border-radius: 4px;

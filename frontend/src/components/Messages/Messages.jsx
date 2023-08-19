@@ -136,6 +136,7 @@ const Messages = () => {
             conversationName={conversationName}
             setMessages={setMessages}
             scrollToBottom={scrollToBottom}
+            conversationType="dm"
           />
         </div>
         

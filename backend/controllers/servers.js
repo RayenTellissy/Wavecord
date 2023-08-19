@@ -261,5 +261,44 @@ module.exports = {
     catch(error){
       res.send(error)
     }
+  },
+
+  fetchTextChannelMessages: async (req,res) => {
+    try {
+      const { channelId } = req.body
+
+      const result = await prisma.serverMessages.findMany({
+        where: {
+          channelId : channelId
+        },
+        include: {
+          sender: true
+        }
+      })
+
+      res.send(result)
+    }
+    catch(error){
+      res.send(error)
+    }
+  },
+
+  sendMessage: async (req,res) => {
+    try {
+      const { senderId, channelId, message } = req.body
+
+      const result = await prisma.serverMessages.create({
+        data: {
+          senderId: senderId,
+          channelId: channelId,
+          message: message
+        }
+      })
+
+      res.send(result)
+    }
+    catch(error){
+      res.send(error)
+    }
   }
 }

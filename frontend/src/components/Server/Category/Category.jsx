@@ -8,7 +8,7 @@ import VoiceChannel from '../VoiceChannel/VoiceChannel';
 // styles
 import "./Category.css"
 
-const Category = ({ id, name, text, voice, onOpen, setCategoryChosen, setCategoryIdChosen }) => {
+const Category = ({ id, name, text, voice, onOpen, setCategoryChosen, setCategoryIdChosen, setCurrentTextChannel, setCurrentTextChannelId }) => {
   const [hovered,setHovered] = useState(false)
 
   const handleClick = () => {
@@ -35,7 +35,13 @@ const Category = ({ id, name, text, voice, onOpen, setCategoryChosen, setCategor
         </button>
       </div>
       {text.map((e,i) => {
-        return <TextChannel key={i} id={e.id} name={e.name}/>
+        return <TextChannel 
+          key={i}
+          id={e.id} 
+          name={e.name} 
+          setCurrentTextChannel={setCurrentTextChannel}
+          setCurrentTextChannelId={setCurrentTextChannelId}
+        />
       })}
       {voice.map((e,i) => {
         return <VoiceChannel key={i} id={e.id} name={e.name}/>

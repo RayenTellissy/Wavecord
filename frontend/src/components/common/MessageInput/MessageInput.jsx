@@ -24,7 +24,7 @@ import Emoji from '../Emoji/Emoji';
 // styles
 import "./MessageInput.css"
 
-const MessageInput = ({ conversationName, setMessages }) => {
+const MessageInput = ({ conversationName, setMessages, conversationType, channelId }) => {
   const { user, socket } = useContext(Context)
   const { id } = useParams()
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -54,13 +54,22 @@ const MessageInput = ({ conversationName, setMessages }) => {
     setMessages(prevMessages => [...prevMessages, messageDetails])
     
     try {
-      await axios.post(`${import.meta.env.VITE_SERVER_URL}/conversations/sendMessage`,{
-        conversationId: id,
-        senderId: user.id,
-        message: storedMessage
-      },{
-        withCredentials: true
-      })
+      if(conversationType === "dm"){
+        await axios.post(`${import.meta.env.VITE_SERVER_URL}/conversations/sendMessage`,{
+          conversationId: id,
+          senderId: user.id,
+          message: storedMessage
+        },{
+          withCredentials: true
+        })
+      }
+      else if(conversationType === "server"){
+        await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/sendMessage`,{
+          channelId: channelId,
+          senderId: user.id,
+          message: message
+        })
+      }
     }
     catch(error){
       console.log(error)
@@ -133,7 +142,7 @@ const MessageInput = ({ conversationName, setMessages }) => {
   }
 
   return (
-    <>
+    <div id='message-input-container'>
       <div id='emoji-picker-container'>
         {showEmoji && <Emoji onEmojiClick={emoji => setMessage(prevMessage => `${prevMessage}${emoji.emoji}`)}/>}
       </div>
@@ -149,7 +158,7 @@ const MessageInput = ({ conversationName, setMessages }) => {
       <input id='dm-conversation-input'
         type='text'
         spellCheck={false}
-        placeholder={`Message @${conversationName}`}
+        placeholder={`Message ${conversationType === "dm" ? "@" : "#"}${conversationName}`}
         onChange={e => setMessage(e.target.value)}
         value={message}
         onKeyDown={e => {
@@ -181,7 +190,7 @@ const MessageInput = ({ conversationName, setMessages }) => {
           </ModalFooter>
         </ModalContent>
       </Modal>
-    </>
+    </div>
   );
 };
 

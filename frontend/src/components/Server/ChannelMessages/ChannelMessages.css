@@ -1,0 +1,13 @@
+#server-messages-container{
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  
+}
+
+#server-messages-channel-messages{
+  display: flex;
+  flex-direction: column;
+  height: 83%;
+  overflow-y: scroll;
+}

@@ -1,6 +1,5 @@
 #server-container {
   display: flex;
-  flex-direction: row;
 }
 
 #server-name {
@@ -202,4 +201,8 @@
 
 #server-category-modal-body-private-cancel-button:hover {
   text-decoration: underline;
+}
+
+#server-right-display-content{
+  flex: 1;
 }
