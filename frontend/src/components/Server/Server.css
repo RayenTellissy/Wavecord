@@ -185,12 +185,12 @@
   margin-left: 20px;
 }
 
-#server-category-modal-body-private-create-button-active{
+#server-category-modal-body-private-create-button-active {
   background-color: #5865f1;
   color: #f3f4fe;
 }
 
-#server-category-modal-body-private-create-button-inactive{
+#server-category-modal-body-private-create-button-inactive {
   background-color: #414891;
   color: #8a8c94;
   cursor: not-allowed;
@@ -208,11 +208,11 @@
   text-decoration: underline;
 }
 
-#server-right-display-content{
+#server-right-display-content {
   flex: 1;
 }
 
-#server-banner-icon-container{
+#server-banner-icon-container {
   display: flex;
   flex: 1;
   justify-content: center;

@@ -100,6 +100,7 @@ const AddFriend = ({ setShowSearch }) => {
             placeholder='You can add friends with their Wavecord username.'
             onChange={e => setQuery(e.target.value)}
             value={query}
+            autoComplete='off'
           />
           <button 
             className='home-right-display-addfriend-submit'

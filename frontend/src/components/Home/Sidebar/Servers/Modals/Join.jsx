@@ -76,6 +76,7 @@ const Join = ({ onClose, setScreen }) => {
               type="text" 
               onChange={e => setInvite(e.target.value)}
               autoFocus
+              autoComplete='off'
             />
           </div>
           <div id='home-server-bar-modal-seperator-create-buttons'>

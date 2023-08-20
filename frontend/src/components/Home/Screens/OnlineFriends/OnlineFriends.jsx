@@ -18,8 +18,11 @@ const OnlineFriends = ({ query, setShowSearch }) => {
   const toast = useToast()
 
   useEffect(() => {
-    fetchUsers()
     return () => setShowSearch(false)
+  },[])
+
+  useEffect(() => {
+    fetchUsers()
   },[query])
 
   const fetchUsers = async () => {

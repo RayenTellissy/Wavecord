@@ -86,6 +86,7 @@ const ForgotPassword = () => {
             placeholder='Enter email' 
             onChange={e => handleEmailChange(e)}
             onKeyDown={e => handleKeyPress(e)}
+            autoComplete='off'
           />
         </div>
 

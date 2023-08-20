@@ -118,6 +118,7 @@ const Login = () => {
           placeholder='Enter username' 
           onChange={e => handleUsernameChange(e)}
           onKeyDown={e => handleKeyPress(e)}
+          autoComplete='off'
         />
         <input 
           className='login-input' 
@@ -125,6 +126,7 @@ const Login = () => {
           placeholder='Enter password' 
           onChange={e => handlePasswordChange(e)}
           onKeyDown={e => handleKeyPress(e)}
+          autoComplete='off'
         />
       </div>
 

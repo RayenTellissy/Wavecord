@@ -8,6 +8,7 @@ const Search = ({ setQuery }) => {
         type='text' 
         placeholder='Find or start a conversation'
         onChange={e => setQuery(e.target.value)}
+        autoComplete='off'
       />
     </div>
   );

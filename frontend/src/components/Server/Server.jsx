@@ -174,6 +174,7 @@ const Server = () => {
                     type='text' 
                     placeholder='new-channel'
                     onChange={e => setModalChannelName(e.target.value)}
+                    autoComplete='off'
                   />
                   {modalChannelType === "text" ? <FaHashtag className='server-category-modal-body-channel-name-input-icon'/> : <HiSpeakerWave className='server-category-modal-body-channel-name-input-icon'/>}
                 </div>

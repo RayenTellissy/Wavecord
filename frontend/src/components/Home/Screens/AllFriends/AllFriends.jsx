@@ -18,8 +18,11 @@ const AllFriends = ({ query, setShowSearch }) => {
   const toast = useToast()
 
   useEffect(() => {
-    fetchUsers()
     return () => setShowSearch(false)
+  },[])
+
+  useEffect(() => {
+    fetchUsers()
   },[query])
 
   const fetchUsers = async () => {
@@ -34,7 +37,7 @@ const AllFriends = ({ query, setShowSearch }) => {
       if(response.data.length !== 0){ 
         setShowSearch(true)
       }
-      if(response.data.length === 0){
+      if(response.data.length === 0 && query === ""){
         setShowSearch(false)
       }
       setIsLoading(false)

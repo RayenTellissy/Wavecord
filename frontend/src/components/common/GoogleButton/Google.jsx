@@ -120,7 +120,13 @@ const Google = ({ size, color, margin }) => {
             <ModalHeader fontFamily="UbuntuMedium" alignSelf="center">Choose a username</ModalHeader>
             <ModalBody>
               <div className="google-auth-button-modal">
-                <input id="google-auth-modal-username" type="text" onChange={e => setUsername(e.target.value)} autoFocus/>
+                <input 
+                  id="google-auth-modal-username"
+                  type="text"
+                  onChange={e => setUsername(e.target.value)}
+                  autoFocus
+                  autoComplete='off'
+                />
               </div>
             </ModalBody>
             <ModalFooter>

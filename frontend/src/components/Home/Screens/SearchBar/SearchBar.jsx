@@ -13,6 +13,7 @@ const SearchBar = ({ setQuery }) => {
           type='text' 
           placeholder='Search'
           onChange={e => setQuery(e.target.value)}
+          autoComplete='off'
         />
         <BiSearch id='home-right-display-searchbar-icon' color='#a4aab0' size={25}/>
       </div>

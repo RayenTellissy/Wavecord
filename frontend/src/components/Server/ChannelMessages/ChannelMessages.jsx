@@ -5,10 +5,11 @@ import axios from 'axios';
 import MessageInput from "../../common/MessageInput/MessageInput"
 import Message from '../../Messages/Message';
 import { Context } from '../../Context/Context';
+import Topbar from '../Topbar/Topbar';
+import Roles from '../Roles/Roles';
 
 // styles
 import "./ChannelMessages.css"
-import Topbar from '../Topbar/Topbar';
 
 const ChannelMessages = ({ currentTextChannel, currentTextChannelId }) => {
   const { socket } = useContext(Context)
@@ -50,6 +51,7 @@ const ChannelMessages = ({ currentTextChannel, currentTextChannelId }) => {
   return (
     <div id='server-messages-container'>
       <Topbar currentTextChannel={currentTextChannel}/>
+      <Roles/>
       <div id='server-messages-channel-messages' ref={messagesContainerRef} >
         {messages.length !== 0 && messages.map((e,i) => {
           return <Message

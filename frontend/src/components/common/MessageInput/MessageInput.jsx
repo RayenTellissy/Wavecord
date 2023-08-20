@@ -182,6 +182,7 @@ const MessageInput = ({ conversationName, setMessages, conversationType, channel
           e.key === "Enter" && sendMessage()
         }}
         autoFocus
+        autoComplete='off'
       />
 
       <Modal isOpen={isOpen} onClose={onClose}>

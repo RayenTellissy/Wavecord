@@ -148,6 +148,7 @@ const Create = ({ setScreen, onClose }) => {
               value={serverName}
               onChange={e => setServerName(e.target.value)}
               autoFocus
+              autoComplete='off'
             />
           </div>
           <div id='home-server-bar-modal-seperator-create-buttons'>
