@@ -51,25 +51,31 @@ const ChannelMessages = ({ currentTextChannel, currentTextChannelId }) => {
   return (
     <div id='server-messages-container'>
       <Topbar currentTextChannel={currentTextChannel}/>
-      <Roles/>
-      <div id='server-messages-channel-messages' ref={messagesContainerRef} >
-        {messages.length !== 0 && messages.map((e,i) => {
-          return <Message
-            key={i}
-            username={e.sender.username}
-            image={e.sender.image}
-            message={e.message}
-            type="TEXT"
-            created_at={e.created_at}
-          />
-        })}
+      <div id='ksabndkubasdiuka'>
+        <div id='sakjdbjas'>
+          <div id='server-messages-channel-messages' ref={messagesContainerRef} >
+            {messages.length !== 0 && messages.map((e,i) => {
+              return <Message
+              key={i}
+              username={e.sender.username}
+              image={e.sender.image}
+              message={e.message}
+              type="TEXT"
+              created_at={e.created_at}
+              />
+            })}
+          </div>
+          <div>
+            <MessageInput
+              setMessages={setMessages}
+              conversationType="server"
+              conversationName={currentTextChannel}
+              channelId={currentTextChannelId}
+            />
+          </div>
+        </div>
+        <Roles/>
       </div>
-      <MessageInput
-        setMessages={setMessages}
-        conversationType="server"
-        conversationName={currentTextChannel}
-        channelId={currentTextChannelId}
-      />
     </div>
   );
 };
