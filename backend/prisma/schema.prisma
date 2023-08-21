@@ -48,13 +48,14 @@ model Servers {
 }
 
 model roles {
-  id            String          @id @default(cuid())
-  name          String
-  isAdmin       Boolean
-  server        Servers         @relation(fields: [serverId], references: [id])
-  serverId      String
-  UsersInRoles  UsersInRoles[]
-  Text_channels Text_channels[]
+  id                   String           @id @default(cuid())
+  name                 String
+  isAdmin              Boolean
+  server               Servers          @relation(fields: [serverId], references: [id])
+  serverId             String
+  UsersInRoles         UsersInRoles[]
+  allowedTextChannels  Text_channels[]
+  allowedVoiceChannels Voice_channels[]
 }
 
 model UsersInRoles {
@@ -117,6 +118,7 @@ model Voice_channels {
   category   Server_categories @relation(fields: [categoryId], references: [id])
   categoryId String
   isPrivate  Boolean           @default(false)
+  rolesAllowed roles[]
 }
 
 model Friends {

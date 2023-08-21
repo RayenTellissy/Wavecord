@@ -74,6 +74,52 @@ module.exports = {
         }
       })
 
+      await prisma.roles.create({
+        data: {
+          name: "everyone",
+          isAdmin: false,
+          serverId: result.id
+        }
+      })
+
+      const category = await prisma.server_categories.create({
+        data: {
+          name: "general",
+          serverId: result.id
+        }
+      })
+
+      const everyone = await prisma.roles.findFirst({
+        where: {
+          name: "everyone",
+          serverId: result.id
+        }
+      })
+      
+      await prisma.text_channels.create({
+        data: {
+          name: "general",
+          categoryId: category.id,
+          rolesAllowed: {
+            connect: [
+              { id: everyone.id }
+            ]
+          }
+        }
+      })
+
+      await prisma.voice_channels.create({
+        data: {
+          name: "general",
+          categoryId: category.id,
+          rolesAllowed: {
+            connect: [
+              { id: everyone.id }
+            ]
+          }
+        }
+      })
+
       res.send(result)
     }
     catch(error){
@@ -120,7 +166,7 @@ module.exports = {
         return res.send({
           status: "warning",
           success: false,
-          message: "User is already a member of this server.",
+          message: "You are already a member of this server.",
         })
       }
     
@@ -128,6 +174,20 @@ module.exports = {
         data: {
           usersId: userId,
           serversId: serverId
+        }
+      })
+
+      const everyoneId = await prisma.roles.findFirst({
+        where: {
+          serverId: serverId,
+          name: "everyone"
+        }
+      })
+
+      await prisma.usersInRoles.create({
+        data: {
+          roleId: everyoneId.id,
+          userId: userId
         }
       })
 

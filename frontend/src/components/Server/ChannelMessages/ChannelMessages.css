@@ -10,14 +10,17 @@
   flex: 1;
 }
 
-#sakjdbjas{
+#server-content-main{
   display: flex;
   flex-direction: column;
-  height: 97%;
   flex: 1;
 }
 
-#ksabndkubasdiuka{
+#server-message-input-container{
+  margin-bottom: 20px;
+}
+
+#server-content-container{
   display: flex;
   flex-direction: row;
   height: 91%;

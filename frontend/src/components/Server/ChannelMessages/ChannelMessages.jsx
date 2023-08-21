@@ -51,8 +51,8 @@ const ChannelMessages = ({ currentTextChannel, currentTextChannelId }) => {
   return (
     <div id='server-messages-container'>
       <Topbar currentTextChannel={currentTextChannel}/>
-      <div id='ksabndkubasdiuka'>
-        <div id='sakjdbjas'>
+      <div id='server-content-container'>
+        <div id='server-content-main'>
           <div id='server-messages-channel-messages' ref={messagesContainerRef} >
             {messages.length !== 0 && messages.map((e,i) => {
               return <Message
@@ -65,7 +65,7 @@ const ChannelMessages = ({ currentTextChannel, currentTextChannelId }) => {
               />
             })}
           </div>
-          <div>
+          <div id='server-message-input-container'>
             <MessageInput
               setMessages={setMessages}
               conversationType="server"
