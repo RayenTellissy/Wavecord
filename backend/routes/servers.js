@@ -11,7 +11,8 @@ const {
   createCategory,
   createVoiceChannel,
   fetchTextChannelMessages,
-  sendMessage
+  sendMessage,
+  fetchUsersByRoles
 } = require("../controllers/servers")
 const { createLimit, joinLimit, deleteLimit, leaveLimit } = require("../middleware/serverLimiter")
 const authentication = require("../middleware/authentication")
@@ -19,8 +20,9 @@ const authentication = require("../middleware/authentication")
 router.get("/fetchByUser/:id", authentication, fetchByUser)
 router.get("/fetch/:id", fetch)
 router.get("/count/:id", authentication, count)
+router.get("/fetchUsersByRoles/:serverId", fetchUsersByRoles)
 
-router.post("/create/:id", authentication, createLimit, createServer)
+router.post("/create/:id", authentication, createServer)
 router.post("/join", authentication, joinLimit, joinServer)
 router.post("/createCategory", createCategory)
 router.post("/createTextChannel", createTextChannel)
@@ -29,6 +31,6 @@ router.post("/fetchTextChannelMessages", fetchTextChannelMessages)
 router.post("/sendMessage", sendMessage)
 
 router.delete("/leave", authentication, leaveLimit, leaveServer)
-router.delete("/delete", authentication, deleteLimit, deleteServer)
+router.delete("/delete", deleteServer)
 
 module.exports = router

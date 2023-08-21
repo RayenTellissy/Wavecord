@@ -20,6 +20,7 @@ model Users {
   voice_channelId        String?
   created_at             DateTime         @default(now())
   UsersInServers         UsersInServers[]
+  UsersInRoles           UsersInRoles[]
   Friends                Friends[]
   Conversations          Conversations[]
   DirectMessages         DirectMessages[]
@@ -30,7 +31,6 @@ model Users {
   blockedUsers           BlockedUsers[]   @relation("blockedUsers")
   blockedByUsers         BlockedUsers[]   @relation("blockedByUsers")
   ServerMessages         ServerMessages[]
-  UsersInRoles           UsersInRoles[]
 }
 
 model Servers {
@@ -45,6 +45,8 @@ model Servers {
   owner          Users               @relation(fields: [ownerId], references: [id])
   ownerId        String
   Bans           Bans[]
+  Text_channels  Text_channels[]
+  Voice_channels Voice_channels[]
 }
 
 model roles {
@@ -53,6 +55,7 @@ model roles {
   isAdmin              Boolean
   server               Servers          @relation(fields: [serverId], references: [id])
   serverId             String
+  color                String
   UsersInRoles         UsersInRoles[]
   allowedTextChannels  Text_channels[]
   allowedVoiceChannels Voice_channels[]
@@ -109,16 +112,20 @@ model Text_channels {
   categoryId   String
   isPrivate    Boolean           @default(false)
   rolesAllowed roles[]
+  server       Servers           @relation(fields: [serverId], references: [id])
+  serverId     String
 }
 
 model Voice_channels {
-  id         String            @id @default(cuid())
-  name       String
-  Users      Users[]
-  category   Server_categories @relation(fields: [categoryId], references: [id])
-  categoryId String
-  isPrivate  Boolean           @default(false)
+  id           String            @id @default(cuid())
+  name         String
+  Users        Users[]
+  category     Server_categories @relation(fields: [categoryId], references: [id])
+  categoryId   String
+  isPrivate    Boolean           @default(false)
   rolesAllowed roles[]
+  server       Servers           @relation(fields: [serverId], references: [id])
+  serverId     String
 }
 
 model Friends {

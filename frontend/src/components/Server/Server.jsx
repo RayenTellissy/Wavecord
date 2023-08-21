@@ -70,13 +70,15 @@ const Server = () => {
       if(modalChannelType === "text"){
         await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/createTextChannel`,{
           name: modalChannelName,
-          categoryId: categoryIdChosen
+          categoryId: categoryIdChosen,
+          serverId: id
         })
       }
       else if(modalChannelType === "voice"){
         await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/createVoiceChannel`,{
           name: modalChannelName,
-          categoryId: categoryIdChosen
+          categoryId: categoryIdChosen,
+          serverId: id
         })
       }
       fetchData() // refreshing data

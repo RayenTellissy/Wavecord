@@ -74,11 +74,20 @@ module.exports = {
         }
       })
 
-      await prisma.roles.create({
+      const everyone = await prisma.roles.create({
         data: {
           name: "everyone",
+          color: "",
           isAdmin: false,
           serverId: result.id
+        }
+      })
+
+      // giving the owner @everyone role
+      await prisma.usersInRoles.create({
+        data: {
+          roleId: everyone.id,
+          userId: id
         }
       })
 
@@ -89,7 +98,7 @@ module.exports = {
         }
       })
 
-      const everyone = await prisma.roles.findFirst({
+      await prisma.roles.findFirst({
         where: {
           name: "everyone",
           serverId: result.id
@@ -100,6 +109,7 @@ module.exports = {
         data: {
           name: "general",
           categoryId: category.id,
+          serverId: result.id,
           rolesAllowed: {
             connect: [
               { id: everyone.id }
@@ -112,6 +122,7 @@ module.exports = {
         data: {
           name: "general",
           categoryId: category.id,
+          serverId: result.id,
           rolesAllowed: {
             connect: [
               { id: everyone.id }
@@ -128,7 +139,81 @@ module.exports = {
   },
 
   deleteServer: async (req,res) => {
+    try {
+      const { serverId, ownerId } = req.body
 
+      const ownerCheck = await prisma.servers.findFirst({
+        where: {
+          ownerId: ownerId,
+          id: serverId
+        }
+      })
+      if(!ownerCheck) return res.send("You don't own this server.")
+
+      // removing all text messages
+      await prisma.serverMessages.deleteMany({
+        where: {
+          channel: {
+            serverId: serverId
+          }
+        }
+      })
+
+      // removing all text channels
+      await prisma.text_channels.deleteMany({
+        where: {
+          serverId: serverId
+        }
+      })
+
+      // removing all voice channels
+      await prisma.voice_channels.deleteMany({
+        where: {
+          serverId: serverId
+        }
+      })
+
+      // remove all categories
+      await prisma.server_categories.deleteMany({
+        where: {
+          serverId: serverId
+        }
+      })
+
+      // removing all members in roles relations
+      await prisma.usersInRoles.deleteMany({
+        where: {
+          role: {
+            serverId: serverId
+          }
+        }
+      })
+
+      // remvoing all server memebers
+      await prisma.usersInServers.deleteMany({
+        where: {
+          serversId: serverId
+        }
+      })
+
+      // removing all roles
+      await prisma.roles.deleteMany({
+        where: {
+          serverId: serverId
+        }
+      })
+
+      const result = await prisma.servers.delete({
+        where: {
+          id: serverId
+        }
+      })
+
+      res.send(result)
+    }
+    catch(error){
+      res.send(error)
+    }
   },
 
   joinServer: async (req,res) => {
@@ -289,12 +374,13 @@ module.exports = {
 
   createTextChannel: async (req,res) => {
     try {
-      const { name, categoryId } = req.body
+      const { name, categoryId, serverId } = req.body
 
       const result = await prisma.text_channels.create({
         data: {
           name: name,
-          categoryId: categoryId
+          categoryId: categoryId,
+          serverId: serverId
         }
       })
 
@@ -307,12 +393,13 @@ module.exports = {
 
   createVoiceChannel: async (req,res) => {
     try {
-      const { name , categoryId } = req.body
+      const { name , categoryId, serverId } = req.body
 
       const result = await prisma.voice_channels.create({
         data: {
           name: name,
-          categoryId: categoryId
+          categoryId: categoryId,
+          serverId: serverId
         }
       })
 
@@ -352,6 +439,30 @@ module.exports = {
           senderId: senderId,
           channelId: channelId,
           message: message
+        }
+      })
+
+      res.send(result)
+    }
+    catch(error){
+      res.send(error)
+    }
+  },
+
+  fetchUsersByRoles: async (req,res) => {
+    try {
+      const { serverId } = req.params
+
+      const result = await prisma.roles.findMany({
+        where: {
+          serverId: serverId
+        },
+        include: {
+          UsersInRoles: {
+            include: {
+              user: true
+            }
+          }
         }
       })
 
