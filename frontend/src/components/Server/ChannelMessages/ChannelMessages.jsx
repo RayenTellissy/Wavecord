@@ -2,11 +2,11 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 
 // components
+import { Context } from '../../Context/Context';
 import MessageInput from "../../common/MessageInput/MessageInput"
 import Message from '../../Messages/Message';
-import { Context } from '../../Context/Context';
-import Topbar from '../Topbar/Topbar';
 import Roles from '../Roles/Roles';
+import Topbar from "../Topbar/Topbar"
 
 // styles
 import "./ChannelMessages.css"
@@ -49,34 +49,36 @@ const ChannelMessages = ({ serverId, currentTextChannel, currentTextChannelId })
   }
 
   return (
-    <div id='server-messages-container'>
-      <Topbar currentTextChannel={currentTextChannel}/>
-      <div id='server-content-container'>
-        <div id='server-content-main'>
-          <div id='server-messages-channel-messages' ref={messagesContainerRef} >
-            {messages.length !== 0 && messages.map((e,i) => {
-              return <Message
-              key={i}
-              username={e.sender.username}
-              image={e.sender.image}
-              message={e.message}
-              type="TEXT"
-              created_at={e.created_at}
-              />
-            })}
+    <>
+      <div id='server-messages-container'>
+        <div id='server-content-container'>
+          <div id='server-content-main'>
+            <Topbar currentTextChannel={currentTextChannel}/>
+            <div id='server-messages-channel-messages' ref={messagesContainerRef} >
+              {messages.length !== 0 && messages.map((e,i) => {
+                return <Message
+                key={i}
+                username={e.sender.username}
+                image={e.sender.image}
+                message={e.message}
+                type="TEXT"
+                created_at={e.created_at}
+                />
+              })}
+            </div>
+            <div id='server-message-input-container'>
+              <MessageInput
+                setMessages={setMessages}
+                conversationType="server"
+                conversationName={currentTextChannel}
+                channelId={currentTextChannelId}
+                />
+            </div>
           </div>
-          <div id='server-message-input-container'>
-            <MessageInput
-              setMessages={setMessages}
-              conversationType="server"
-              conversationName={currentTextChannel}
-              channelId={currentTextChannelId}
-            />
-          </div>
+          <Roles serverId={serverId}/>
         </div>
-        <Roles serverId={serverId}/>
       </div>
-    </div>
+    </>
   );
 };
 

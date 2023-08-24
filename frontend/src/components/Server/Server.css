@@ -209,6 +209,8 @@
 }
 
 #server-right-display-content {
+  display: flex;
+  flex-direction: column;
   flex: 1;
 }
 
@@ -216,4 +218,10 @@
   display: flex;
   flex: 1;
   justify-content: center;
+}
+
+#server-category-main-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }

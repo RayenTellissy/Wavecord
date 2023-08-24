@@ -5,7 +5,7 @@ import "./Switch.css"
 const Switch = ({ checked, setChecked }) => {
 
   return (
-    <div>
+    <button>
       <label className="switch">
         <input checked={checked} type="checkbox" onChange={() => setChecked(!checked)}/>
         <div className="slider">
@@ -23,7 +23,7 @@ const Switch = ({ checked, setChecked }) => {
             </div>
         </div>
       </label>
-    </div>
+    </button>
   );
 };
 

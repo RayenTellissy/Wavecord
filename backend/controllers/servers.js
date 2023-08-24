@@ -413,7 +413,21 @@ module.exports = {
         }
       })
 
-      res.send(result)
+      const noRole = await prisma.usersInServers.findMany({
+        where: {
+          serverId: serverId,
+          rolesId: null
+        },
+        select: {
+          user: true
+        }
+      })
+      console.log(noRole)
+
+      res.send({
+        withRole: result,
+        noRole: noRole
+      })
     }
     catch(error){
       res.send(error)

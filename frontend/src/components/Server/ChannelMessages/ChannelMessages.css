@@ -23,5 +23,5 @@
 #server-content-container{
   display: flex;
   flex-direction: row;
-  height: 91%;
+  height: 100%;
 }

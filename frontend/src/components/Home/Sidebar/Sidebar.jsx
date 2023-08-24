@@ -24,7 +24,6 @@ const Sidebar = ({ highlighted }) => {
       const servers = await axios.get(`${import.meta.env.VITE_SERVER_URL}/servers/fetchByUser/${user.id}`,{
         withCredentials: true
       })
-      console.log(servers.data)
       setServers(servers.data)
     }
     catch(error){

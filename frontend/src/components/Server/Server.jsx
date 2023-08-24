@@ -31,6 +31,7 @@ import Sidebar from '../Home/Sidebar/Sidebar';
 import Category from './Category/Category';
 import Switch from '../common/Switch/Switch';
 import ChannelMessages from './ChannelMessages/ChannelMessages';
+import Userbar from "../Home/ContactsBar/UserBar/UserBar"
 
 // styles
 import "./Server.css"
@@ -46,7 +47,7 @@ const Server = () => {
   const [modalChannelType,setModalChannelType] = useState("text")
   const [modalChannelName,setModalChannelName] = useState("")
   const [privateChecked,setPrivateChecked] = useState(false)
-  const [createDisabled,setCreateDisabled] = useState(false)
+  const [createDisabled,setCreateDisabled] = useState(true)
   const [showDropdown,setShowDropdown] = useState(false)
   
   useEffect(() => {
@@ -60,6 +61,13 @@ const Server = () => {
     }
     catch(error){
       console.log(error)
+    }
+  }
+
+  const handleNameChange = (e) => {
+    setModalChannelName(e.target.value)
+    if(modalChannelName !== 0){
+      setCreateDisabled(false)
     }
   }
 
@@ -88,7 +96,6 @@ const Server = () => {
       setCategoryIdChosen("")
       setModalChannelType("text")
       setModalChannelName("")
-      setCreateDisabled(false) // enabling submit button
     }
     catch(error){
       console.log(error)
@@ -106,24 +113,31 @@ const Server = () => {
               {showDropdown ? <MdClose size={22}/> : <RiArrowDropDownLine size={40}/>}
             </div>
           </div>
-          {server.categories && server.categories.map((e,i) => {
-            return <Category
-              key={i}
-              id={e.id}
-              name={e.name}
-              text={e.Text_channels}
-              voice={e.Voice_channels}
-              onOpen={onOpen}
-              setCategoryChosen={setCategoryChosen}
-              setCategoryIdChosen={setCategoryIdChosen}
-              setCurrentTextChannel={setCurrentTextChannel}
-              setCurrentTextChannelId={setCurrentTextChannelId}
-            />
-          })}
+          <div id='server-category-main-container'>
+            {server.categories && server.categories.map((e,i) => {
+              return <Category
+                key={i}
+                id={e.id}
+                name={e.name}
+                text={e.Text_channels}
+                voice={e.Voice_channels}
+                onOpen={onOpen}
+                setCategoryChosen={setCategoryChosen}
+                setCategoryIdChosen={setCategoryIdChosen}
+                setCurrentTextChannel={setCurrentTextChannel}
+                setCurrentTextChannelId={setCurrentTextChannelId}
+              />
+            })}
+            <Userbar/>
+          </div>
         </div>
       </div>
       <div id='server-right-display-content'>
-        <ChannelMessages serverId={id} currentTextChannel={currentTextChannel} currentTextChannelId={currentTextChannelId}/>
+        <ChannelMessages
+          serverId={id}
+          currentTextChannel={currentTextChannel}
+          currentTextChannelId={currentTextChannelId}
+        />
       </div>
       <Modal isOpen={isOpen} onClose={onClose} isCentered size="lg">
         <ModalOverlay/>
@@ -145,7 +159,9 @@ const Server = () => {
                   <FaHashtag className='server-category-modal-body-type-icon' size={28} color='#b3b4b7'/>
                   <div className='server-category-modal-body-type-details'>
                     <p className='server-category-modal-body-type-title'>Text</p>
-                    <p className='server-category-modal-body-type-description'>Send messages, images, GIFs, emoji, opinions, and puns</p>
+                    <p className='server-category-modal-body-type-description'>
+                      Send messages, images, GIFs, emoji, opinions, and puns
+                    </p>
                   </div>
                   <div className='server-category-modal-body-radio-container'>
                     {modalChannelType === "text" ? <MdOutlineRadioButtonChecked size={30}/> : <MdOutlineRadioButtonUnchecked size={30}/>}
@@ -175,7 +191,7 @@ const Server = () => {
                     id='server-category-modal-body-channel-name-input'
                     type='text' 
                     placeholder='new-channel'
-                    onChange={e => setModalChannelName(e.target.value)}
+                    onChange={e => handleNameChange(e)}
                     autoComplete='off'
                   />
                   {modalChannelType === "text" ? <FaHashtag className='server-category-modal-body-channel-name-input-icon'/> : <HiSpeakerWave className='server-category-modal-body-channel-name-input-icon'/>}
