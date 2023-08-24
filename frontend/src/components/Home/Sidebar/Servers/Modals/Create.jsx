@@ -84,10 +84,10 @@ const Create = ({ setScreen, onClose }) => {
       })
     }
     
-    const response = await axios.get(image, {
+    const imageResponse = await axios.get(image, {
       responseType: "blob",
     })
-    const blob = response.data
+    const blob = imageResponse.data
     
     const options = {
       maxSizeMB: 0.003 // compressing to ~3kb
@@ -107,24 +107,23 @@ const Create = ({ setScreen, onClose }) => {
       },{
         withCredentials: true
       })
-
+      
       if(response.data.success === false){
-        onClose()
-        return toast({
-          title: "Failed",
-          description: response.data.message,
-          status: "warning",
-          duration: 3000,
-          isClosable: true
-        })
-      }
+          onClose()
+          return toast({
+              title: "Failed",
+              description: response.data.message,
+              status: "warning",
+              duration: 3000,
+              isClosable: true
+            })
+          }
+      onClose() // closing modal
+      navigate(`/server/${response.data.id}`) // reloads
     }
     catch(error){
       console.log(error)
     }
-
-    onClose() // closing modal
-    navigate(0) // reloads
   }
 
   return <>

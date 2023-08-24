@@ -1,3 +1,7 @@
+#friend-button-main-div {
+  cursor: pointer;
+}
+
 #friend-button-container {
   display: flex;
   flex-direction: row;

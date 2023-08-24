@@ -36,13 +36,13 @@ import ChannelMessages from './ChannelMessages/ChannelMessages';
 import "./Server.css"
 
 const Server = () => {
+  const { isOpen, onOpen, onClose } = useDisclosure()
   const { id } = useParams()
   const [server,setServer] = useState({})
   const [currentTextChannel,setCurrentTextChannel] = useState("")
   const [currentTextChannelId,setCurrentTextChannelId] = useState("")
   const [categoryChosen,setCategoryChosen] = useState("")
   const [categoryIdChosen,setCategoryIdChosen] = useState("")
-  const { isOpen, onOpen, onClose } = useDisclosure()
   const [modalChannelType,setModalChannelType] = useState("text")
   const [modalChannelName,setModalChannelName] = useState("")
   const [privateChecked,setPrivateChecked] = useState(false)
@@ -123,7 +123,7 @@ const Server = () => {
         </div>
       </div>
       <div id='server-right-display-content'>
-        <ChannelMessages currentTextChannel={currentTextChannel} currentTextChannelId={currentTextChannelId}/>
+        <ChannelMessages serverId={id} currentTextChannel={currentTextChannel} currentTextChannelId={currentTextChannelId}/>
       </div>
       <Modal isOpen={isOpen} onClose={onClose} isCentered size="lg">
         <ModalOverlay/>

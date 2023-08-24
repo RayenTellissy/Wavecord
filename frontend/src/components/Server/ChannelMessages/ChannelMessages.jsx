@@ -11,7 +11,7 @@ import Roles from '../Roles/Roles';
 // styles
 import "./ChannelMessages.css"
 
-const ChannelMessages = ({ currentTextChannel, currentTextChannelId }) => {
+const ChannelMessages = ({ serverId, currentTextChannel, currentTextChannelId }) => {
   const { socket } = useContext(Context)
   const [messages,setMessages] = useState([])
   const messagesContainerRef = useRef(null)
@@ -74,7 +74,7 @@ const ChannelMessages = ({ currentTextChannel, currentTextChannelId }) => {
             />
           </div>
         </div>
-        <Roles/>
+        <Roles serverId={serverId}/>
       </div>
     </div>
   );

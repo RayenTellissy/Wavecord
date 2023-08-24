@@ -22,7 +22,7 @@ router.get("/fetch/:id", fetch)
 router.get("/count/:id", authentication, count)
 router.get("/fetchUsersByRoles/:serverId", fetchUsersByRoles)
 
-router.post("/create/:id", authentication, createServer)
+router.post("/create/:id", createServer)
 router.post("/join", authentication, joinLimit, joinServer)
 router.post("/createCategory", createCategory)
 router.post("/createTextChannel", createTextChannel)

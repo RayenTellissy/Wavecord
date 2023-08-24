@@ -60,7 +60,7 @@ const FriendButton = ({ id, username, image, status, setIsUpdating, fetchUsers, 
   }
 
   return (
-    <button>
+    <div id='friend-button-main-div'>
       <div id='friend-button-container'>
         <div id='friend-button-details-container'>
           <Avatar image={image} status={status}/>
@@ -84,6 +84,7 @@ const FriendButton = ({ id, username, image, status, setIsUpdating, fetchUsers, 
             padding={3}
             borderRadius={7}
             openDelay={500}
+            onClick={removeFriend}
           >
             <button className='friend-button-remove-friend' onClick={removeFriend}>
               <TbFriendsOff size={35}/>
@@ -108,7 +109,7 @@ const FriendButton = ({ id, username, image, status, setIsUpdating, fetchUsers, 
           </Tooltip>
         </div>
       </div>
-    </button>
+    </div>
   );
 };
 

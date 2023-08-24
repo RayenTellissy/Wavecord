@@ -9,10 +9,10 @@ module.exports = {
   
       const result = await prisma.usersInServers.findMany({
         where: {
-          usersId: id
+          userId: id
         },
         select: {
-          serverId: {
+          server: {
             select: {
               id: true,
               name: true,
@@ -63,31 +63,14 @@ module.exports = {
 
       const result = await prisma.servers.create({
         data: {
-          name,
-          image,
+          name: name,
+          image: image,
           ownerId: id,
           UsersInServers: {
             create: {
-              usersId: id
+              userId: id
             }
           }
-        }
-      })
-
-      const everyone = await prisma.roles.create({
-        data: {
-          name: "everyone",
-          color: "",
-          isAdmin: false,
-          serverId: result.id
-        }
-      })
-
-      // giving the owner @everyone role
-      await prisma.usersInRoles.create({
-        data: {
-          roleId: everyone.id,
-          userId: id
         }
       })
 
@@ -98,23 +81,11 @@ module.exports = {
         }
       })
 
-      await prisma.roles.findFirst({
-        where: {
-          name: "everyone",
-          serverId: result.id
-        }
-      })
-      
       await prisma.text_channels.create({
         data: {
           name: "general",
           categoryId: category.id,
-          serverId: result.id,
-          rolesAllowed: {
-            connect: [
-              { id: everyone.id }
-            ]
-          }
+          serverId: result.id
         }
       })
 
@@ -122,12 +93,7 @@ module.exports = {
         data: {
           name: "general",
           categoryId: category.id,
-          serverId: result.id,
-          rolesAllowed: {
-            connect: [
-              { id: everyone.id }
-            ]
-          }
+          serverId: result.id
         }
       })
 
@@ -180,19 +146,10 @@ module.exports = {
         }
       })
 
-      // removing all members in roles relations
-      await prisma.usersInRoles.deleteMany({
-        where: {
-          role: {
-            serverId: serverId
-          }
-        }
-      })
-
       // remvoing all server memebers
       await prisma.usersInServers.deleteMany({
         where: {
-          serversId: serverId
+          serverId: serverId
         }
       })
 
@@ -241,8 +198,8 @@ module.exports = {
 
       const memberCheck = await prisma.usersInServers.findFirst({
         where: {
-          usersId: userId,
-          serversId: serverId
+          userId: userId,
+          serverId: serverId
         }
       })
 
@@ -257,28 +214,15 @@ module.exports = {
     
       await prisma.usersInServers.create({
         data: {
-          usersId: userId,
-          serversId: serverId
-        }
-      })
-
-      const everyoneId = await prisma.roles.findFirst({
-        where: {
-          serverId: serverId,
-          name: "everyone"
-        }
-      })
-
-      await prisma.usersInRoles.create({
-        data: {
-          roleId: everyoneId.id,
-          userId: userId
+          userId: userId,
+          serverId: serverId
         }
       })
 
       res.send({
         success: true,
-        message: "Joined server."
+        message: "Joined server.",
+        serverId: serverId
       })
     }
     catch(error){
@@ -293,8 +237,8 @@ module.exports = {
       const result = await prisma.usersInServers.delete({
         where: {
           usersId_serversId: {
-            usersId: userId,
-            serversId: serverId
+            userId: userId,
+            serverId: serverId
           }
         }
       })
@@ -458,11 +402,7 @@ module.exports = {
           serverId: serverId
         },
         include: {
-          UsersInRoles: {
-            include: {
-              user: true
-            }
-          }
+          UsersInServers: true
         }
       })
 

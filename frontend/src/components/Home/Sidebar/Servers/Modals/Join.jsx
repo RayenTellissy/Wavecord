@@ -57,7 +57,7 @@ const Join = ({ onClose, setScreen }) => {
     }
 
     onClose() // close modal
-    navigate(0) // reloads
+    navigate(`/server/${response.data.serverId}`) // reloads
   }
 
   return <>

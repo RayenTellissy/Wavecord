@@ -5,7 +5,7 @@ const Servers = ({ servers, highlighted }) => {
   return (
     <>
       {servers.map((e,i) => {
-        return <Server key={i} id={e.serverId.id} name={e.serverId.name} image={e.serverId.image} highlighted={highlighted} />
+        return <Server key={i} id={e.server.id} name={e.server.name} image={e.server.image} highlighted={highlighted} />
       })}
     </>
   );

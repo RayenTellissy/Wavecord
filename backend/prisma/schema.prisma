@@ -20,7 +20,6 @@ model Users {
   voice_channelId        String?
   created_at             DateTime         @default(now())
   UsersInServers         UsersInServers[]
-  UsersInRoles           UsersInRoles[]
   Friends                Friends[]
   Conversations          Conversations[]
   DirectMessages         DirectMessages[]
@@ -37,36 +36,26 @@ model Servers {
   id             String              @id @default(cuid())
   name           String
   image          String
-  roles          roles[]
-  categories     Server_categories[]
   server_link    String              @default(cuid())
   created_at     DateTime            @default(now())
-  UsersInServers UsersInServers[]
   owner          Users               @relation(fields: [ownerId], references: [id])
   ownerId        String
-  Bans           Bans[]
+  UsersInServers UsersInServers[]
+  roles          roles[]
+  categories     Server_categories[]
   Text_channels  Text_channels[]
   Voice_channels Voice_channels[]
+  Bans           Bans[]
 }
 
 model roles {
-  id                   String           @id @default(cuid())
-  name                 String
-  isAdmin              Boolean
-  server               Servers          @relation(fields: [serverId], references: [id])
-  serverId             String
-  color                String
-  UsersInRoles         UsersInRoles[]
-  allowedTextChannels  Text_channels[]
-  allowedVoiceChannels Voice_channels[]
-}
-
-model UsersInRoles {
-  id     String @id @default(cuid())
-  role   roles  @relation(fields: [roleId], references: [id])
-  roleId String
-  user   Users  @relation(fields: [userId], references: [id])
-  userId String
+  id             String           @id @default(cuid())
+  name           String
+  isAdmin        Boolean
+  server         Servers          @relation(fields: [serverId], references: [id])
+  serverId         String
+  color          String
+  UsersInServers UsersInServers[]
 }
 
 model Bans {
@@ -86,13 +75,14 @@ model BlockedUsers {
 }
 
 model UsersInServers {
-  userId    Users    @relation(fields: [usersId], references: [id])
-  serverId  Servers  @relation(fields: [serversId], references: [id])
-  usersId   String
-  serversId String
-  joined    DateTime @default(now())
-
-  @@unique([usersId, serversId])
+  id       String   @id @default(cuid())
+  server   Servers  @relation(fields: [serverId], references: [id])
+  serverId String
+  user     Users    @relation(fields: [userId], references: [id])
+  userId   String
+  role     roles?   @relation(fields: [rolesId], references: [id])
+  rolesId  String?
+  joined   DateTime @default(now())
 }
 
 model Server_categories {
@@ -105,27 +95,25 @@ model Server_categories {
 }
 
 model Text_channels {
-  id           String            @id @default(cuid())
-  name         String
-  messages     ServerMessages[]
-  category     Server_categories @relation(fields: [categoryId], references: [id])
-  categoryId   String
-  isPrivate    Boolean           @default(false)
-  rolesAllowed roles[]
-  server       Servers           @relation(fields: [serverId], references: [id])
-  serverId     String
+  id         String            @id @default(cuid())
+  name       String
+  messages   ServerMessages[]
+  category   Server_categories @relation(fields: [categoryId], references: [id])
+  categoryId String
+  isPrivate  Boolean           @default(false)
+  server     Servers           @relation(fields: [serverId], references: [id])
+  serverId   String
 }
 
 model Voice_channels {
-  id           String            @id @default(cuid())
-  name         String
-  Users        Users[]
-  category     Server_categories @relation(fields: [categoryId], references: [id])
-  categoryId   String
-  isPrivate    Boolean           @default(false)
-  rolesAllowed roles[]
-  server       Servers           @relation(fields: [serverId], references: [id])
-  serverId     String
+  id         String            @id @default(cuid())
+  name       String
+  Users      Users[]
+  category   Server_categories @relation(fields: [categoryId], references: [id])
+  categoryId String
+  isPrivate  Boolean           @default(false)
+  server     Servers           @relation(fields: [serverId], references: [id])
+  serverId   String
 }
 
 model Friends {
