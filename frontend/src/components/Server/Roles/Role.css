@@ -1,0 +1,27 @@
+#one-role-main-container {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+
+#one-role-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 10px;
+  border-radius: 7px;
+}
+
+#one-role-container:hover {
+  background-color: #35373c;
+}
+
+#one-role-container:active {
+  background-color: #3c3e44;
+}
+
+#one-role-name {
+  color: #949ba4;
+  font-family: UbuntuMedium;
+  margin-bottom: 5px;
+}

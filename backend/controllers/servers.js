@@ -402,7 +402,14 @@ module.exports = {
           serverId: serverId
         },
         include: {
-          UsersInServers: true
+          UsersInServers: {
+            select: {
+              user: true
+            }
+          }
+        },
+        orderBy: {
+          created_at: "asc"
         }
       })
 

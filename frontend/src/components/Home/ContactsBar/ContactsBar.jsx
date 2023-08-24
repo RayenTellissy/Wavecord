@@ -47,7 +47,7 @@ const ContactsBar = ({ highlighted, selected, setSelected }) => {
         <HomeNavigator selected={selected} setSelected={setSelected} text="Turbo" icon={faBolt}/>
       </div>
 
-      <DirectMessagesText/>
+      <DirectMessagesText id={user.id}/>
       <Conversations conversations={conversations} highlighted={highlighted}/>
       <UserBar/>
 

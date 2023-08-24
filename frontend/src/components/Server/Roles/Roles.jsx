@@ -1,17 +1,25 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+
+// components
+import Role from './Role';
 
 // styles
 import "./Roles.css"
-import axios from 'axios';
 
 const Roles = ({ serverId }) => {
-  const [users,setUsers] = useState([])
+  const [roles,setRoles] = useState([])
 
-  const fetchUsers = async () => {
+  useEffect(() => {
+    fetchRoles()
+  },[])
+
+  const fetchRoles = async () => {
     try {
       const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/servers/fetchUsersByRoles/${serverId}`,{
         withCredentials: true
       })
+      setRoles(response.data)
     }
     catch(error){
       console.log(error)
@@ -20,7 +28,11 @@ const Roles = ({ serverId }) => {
 
   return (
     <div id='server-roles-bar-container'>
-
+      <div id='server-roles-bar-main-container'>
+        {roles.map((e,i) => {
+          return <Role key={i} roleName={e.name} roleColor={e.color} users={e.UsersInServers}/>
+        })}
+      </div>
     </div>
   );
 };

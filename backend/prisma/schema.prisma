@@ -53,9 +53,10 @@ model roles {
   name           String
   isAdmin        Boolean
   server         Servers          @relation(fields: [serverId], references: [id])
-  serverId         String
+  serverId       String
   color          String
   UsersInServers UsersInServers[]
+  created_at     DateTime         @default(now())
 }
 
 model Bans {
