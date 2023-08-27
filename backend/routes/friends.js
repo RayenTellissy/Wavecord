@@ -9,12 +9,14 @@ const {
   blockUser,
   fetchBlocks,
   unblockUser,
-  removeFriend
+  removeFriend,
+  fetchFriendsWithNoConversation
 } = require("../controllers/friends")
 
 router.get("/fetchPending/:id", fetchPending)
 router.get("/removeRequest/:id", removeRequest)
 router.get("/fetchBlocks/:id", fetchBlocks)
+router.get("/fetchFriendsWithNoConversations/:userId", fetchFriendsWithNoConversation)
 
 router.post("/fetchOnlineFriends", fetchOnlineFriends)
 router.post("/fetchAllFriends", fetchAllFriends)

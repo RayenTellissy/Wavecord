@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from "react-router-dom"
 import { AddIcon } from "@chakra-ui/icons"
 import axios from 'axios';
 import {
@@ -6,7 +7,8 @@ import {
   PopoverTrigger,
   PopoverContent,
   PopoverFooter,
-  PopoverBody
+  PopoverBody,
+  useDisclosure
 } from '@chakra-ui/react'
 
 // components
@@ -15,11 +17,14 @@ import AddDM from './AddDM';
 // styles
 import "./DirectMessagesText.css"
 
-const DirectMessagesText = ({ id }) => {
+const DirectMessagesText = ({ id, fetchConversations }) => {
+  const { onOpen, onClose, isOpen } = useDisclosure()
   const [friends,setFriends] = useState([])
   const [query,setQuery] = useState("")
   const [constantFriends,setConstantFriends] = useState([])
-  const [chosenFriend,setChosenFriend] = useState("")
+  const [checked,setChecked] = useState("")
+  const [submitDisabled,setSubmitDisabled] = useState(false)
+  const navigate = useNavigate()
 
   useEffect(() => {
     filterFriends()
@@ -27,9 +32,10 @@ const DirectMessagesText = ({ id }) => {
 
   const fetchFriends = async () => {
     try {
-      const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/friends/fetchAllFriends`,{
-        id: id
+      const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/friends/fetchFriendsWithNoConversations/${id}`,{
+        withCredentials: true
       })
+      console.log(response.data)
       setFriends(response.data)
       setConstantFriends(response.data)
     }
@@ -39,8 +45,23 @@ const DirectMessagesText = ({ id }) => {
   }
 
   const createDM = async () => {
-    if(!chosenFriend) return
-
+    if(submitDisabled) return
+    if(!checked) return
+    try {
+      setSubmitDisabled(true)
+      onClose()
+      const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/conversations/createDM`,{
+        currentUser: id,
+        otherUser: checked
+      })
+      setChecked("")
+      fetchConversations()
+      navigate(`/dm/${response.data.id}`)
+      setSubmitDisabled(false)
+    }
+    catch(error){
+      console.log(error)
+    }
   }
 
   const filterFriends = () => {
@@ -55,7 +76,7 @@ const DirectMessagesText = ({ id }) => {
       <p id='home-contacts-side-message-text'>
         DIRECT MESSAGES
       </p>
-      <Popover placement='bottom-start'>
+      <Popover isOpen={isOpen} onOpen={onOpen} onClose={onClose} placement='bottom-start'>
         <PopoverTrigger>
           <button>
             <AddIcon onClick={fetchFriends}/>
@@ -80,17 +101,18 @@ const DirectMessagesText = ({ id }) => {
               {friends.map((e,i) => {
                 return <AddDM
                   key={i}
-                  id={e.users[0].id}
-                  username={e.users[0].username}
-                  image={e.users[0].image}
-                  status={e.users[0].status}
-                  setChosenFriend={setChosenFriend}
+                  id={e.id}
+                  username={e.username}
+                  image={e.image}
+                  status={e.status}
+                  checked={checked}
+                  setChecked={setChecked}
                 />
               })}
             </PopoverBody>
             <PopoverFooter padding="20px 0px" bgColor="#313338" borderBottomRadius={4} borderColor="#292929">
               <div id='add-dm-popover-submit-container'>
-                <button id='add-dm-popover-submit'>
+                <button id='add-dm-popover-submit' onClick={createDM}>
                   <p id='add-dm-popover-submit-text'>Create DM</p>
                 </button>
               </div>

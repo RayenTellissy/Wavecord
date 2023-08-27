@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { BsSquare, BsCheckSquare } from "react-icons/bs"
 
 // components
@@ -7,17 +7,14 @@ import Avatar from '../../../common/Avatar/Avatar';
 // styles
 import "./AddDM.css"
 
-const AddDM = ({ id, username, image, status, setChosenFriend }) => {
-  const [checked,setChecked] = useState(false)
+const AddDM = ({ id, username, image, status, checked, setChecked }) => {
 
   const handleClick = () => {
-    if(!checked){
-      setChecked(true)
-      setChosenFriend(id)
+    if(checked !== id){
+      setChecked(id)
     }
     else {
-      setChecked(false)
-      setChosenFriend("")
+      setChecked("")
     }
   }
 
@@ -29,7 +26,7 @@ const AddDM = ({ id, username, image, status, setChosenFriend }) => {
           <p id='add-dm-button-username'>{ username }</p>
         </div>
         <div id='add-dm-button-check-container'>
-          {checked ? <BsCheckSquare size={25}/> : <BsSquare size={25}/>}
+          {checked === id ? <BsCheckSquare size={25}/> : <BsSquare size={25}/>}
         </div>
       </button>
     </div>

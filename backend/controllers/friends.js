@@ -441,5 +441,33 @@ module.exports = {
     catch(error){
       res.send(error)
     }
+  },
+
+  fetchFriendsWithNoConversation: async (req,res) => {
+    try {
+      const { id } = req.params
+
+      const result = await prisma.users.findMany({
+        where: {
+          Friends: {
+            some: {
+              id: id
+            }
+          },
+          NOT: {
+            Conversations: {
+              some: {
+                id: id
+              }
+            }
+          }
+        }
+      })
+
+      res.send(result)
+    }
+    catch(error){
+      res.send(error)
+    }
   }
 }

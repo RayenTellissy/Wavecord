@@ -134,5 +134,50 @@ module.exports = {
     catch(error){
       res.send(error)
     }
+  },
+
+  createDM: async (req,res) => {
+    try {
+      const { currentUser, otherUser } = req.body
+
+      const conversationCheck = await prisma.conversations.findFirst({
+        where: {
+          AND: [
+            {
+              users: {
+                some: {
+                  id: currentUser
+                }
+              } 
+            },
+            {
+              users: {
+                some: {
+                  id: otherUser
+                }
+              } 
+            }
+          ]
+        }
+      })
+      if(conversationCheck) return res.send({ error: "Users already have a conversation." })
+
+      const result = await prisma.conversations.create({
+        data: {
+          users: {
+            connect: [
+              { id: currentUser },
+              { id: otherUser }
+            ]
+          },
+          type: "DIRECT"
+        }
+      })
+
+      res.send(result)
+    }
+    catch(error){
+      res.send(error)
+    }
   }
 }
