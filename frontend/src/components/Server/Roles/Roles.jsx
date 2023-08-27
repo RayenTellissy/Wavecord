@@ -40,7 +40,7 @@ const Roles = ({ serverId }) => {
           {noRoles.map((e,i) => {
             return <button key={i} id='one-role-container'>
               <Avatar status={e.user.status} />
-              <p style={{color: "#82929c", fontFamily: "UbuntuMedium"}}>{e.user.username}</p>
+              <p style={{color: "#a6aeb3", fontFamily: "UbuntuMedium"}}>{e.user.username}</p>
             </button>
           })}
         </div>

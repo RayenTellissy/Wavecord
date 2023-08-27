@@ -51,19 +51,21 @@ const AllFriends = ({ query, setShowSearch }) => {
     <div id='home-right-display-all-container'>
       {isLoading && <Loader/>}
       {!isLoading && <p id='home-right-display-all-count'>ALL FRIENDS - {users.length}</p>}
-      {users.map((e,i) => {
-        return <FriendButton
-          key={i}
-          id={e.users[0].id}
-          username={e.users[0].username}
-          image={e.users[0].image}
-          status={e.users[0].status}
-          setIsUpdating={setIsUpdating}
-          fetchUsers={fetchUsers}
-          toast={toast}
-        />
-      })}
-      {isUpdating && <Loader/>}
+      <div id='home-right-display-all-users-container'>
+        {users.map((e,i) => {
+          return <FriendButton
+            key={i}
+            id={e.users[0].id}
+            username={e.users[0].username}
+            image={e.users[0].image}
+            status={e.users[0].status}
+            setIsUpdating={setIsUpdating}
+            fetchUsers={fetchUsers}
+            toast={toast}
+          />
+        })}
+        {isUpdating && <Loader/>}
+      </div>
     </div>
   );
 };

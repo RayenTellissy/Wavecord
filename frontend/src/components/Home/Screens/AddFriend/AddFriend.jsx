@@ -18,7 +18,6 @@ const AddFriend = ({ setShowSearch }) => {
 
   useEffect(() => {
     setShowSearch(false)
-    return () => setShowSearch(true)
   },[])
 
   const handleSubmit = async () => {

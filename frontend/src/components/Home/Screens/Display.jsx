@@ -16,7 +16,7 @@ const Display = ({ selectedScreen }) => {
   const [showSearch,setShowSearch] = useState(false)
   
   return <>
-    {showSearch && <SearchBar setQuery={setQuery}/>}
+    {showSearch && selectedScreen !== "AddFriend" && <SearchBar setQuery={setQuery}/>}
 
     {selectedScreen === "Online"
     ? <OnlineFriends query={query} setShowSearch={setShowSearch}/>

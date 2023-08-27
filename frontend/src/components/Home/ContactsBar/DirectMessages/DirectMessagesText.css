@@ -1,4 +1,4 @@
-#home-contacts-side-messages{
+#home-contacts-side-messages {
   display: flex;
   flex-direction: row;
   padding: 1.5rem;
@@ -6,8 +6,65 @@
   justify-content: space-between;
 }
 
-#home-contacts-side-message-text{
+#home-contacts-side-message-text {
   font-family: UbuntuMedium;
   justify-content: center;
   align-items: center;
+}
+
+#add-dm-popover-container {
+  height: 200px;
+  width: 400px;
+}
+
+#add-dm-popover-header-main {
+  border-bottom: 1px solid rgb(41, 41, 41);
+  box-shadow: 0px 1px 5px -2px black;
+  padding: 15px;
+}
+
+#add-dm-popover-header-container {
+  margin-bottom: 20px;
+}
+
+#add-dm-popover-header-text {
+  font-size: 25px;
+  font-family: UbuntuBold;
+}
+
+#add-dm-popover-search {
+  background-color: #1e1f22;
+  padding: 8px;
+  border-radius: 4px;
+  font-family: UbuntuRegular;
+  width: 100%;
+}
+
+#add-dm-popover-input-container {
+  margin-bottom: 10px;
+}
+
+#add-dm-popover-submit-container {
+  display: flex;
+  justify-content: center;
+}
+
+#add-dm-popover-submit {
+  padding: 10px 20px;
+  width: 90%;
+  background-color: #5865f2;
+  border-radius: 3px;
+  transition: 0.2s ease;
+}
+
+#add-dm-popover-submit:hover {
+  background-color: #4752c4;
+}
+
+#add-dm-popover-submit:active {
+  background-color: #3c45a5;
+}
+
+#add-dm-popover-submit-text {
+  font-family: UbuntuMedium;
 }

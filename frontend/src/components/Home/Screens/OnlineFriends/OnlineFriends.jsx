@@ -18,10 +18,6 @@ const OnlineFriends = ({ query, setShowSearch }) => {
   const toast = useToast()
 
   useEffect(() => {
-    return () => setShowSearch(false)
-  },[])
-
-  useEffect(() => {
     fetchUsers()
   },[query])
 
@@ -51,19 +47,21 @@ const OnlineFriends = ({ query, setShowSearch }) => {
     <div id='home-right-display-online-container'>
       {isLoading && <Loader/>}
       {!isLoading && <p id='home-right-display-online-count'>ONLINE - {users.length}</p>}
-      {users.map((e,i) => {
-        return <FriendButton
-          key={i}
-          id={e.users[0].id}
-          username={e.users[0].username} 
-          image={e.users[0].image} 
-          status={e.users[0].status}
-          setIsUpdating={setIsUpdating}
-          fetchUsers={fetchUsers}
-          toast={toast}
-        />
-      })}
-      {isUpdating && <Loader/>}
+      <div id='home-right-display-online-users-container'>
+        {users.map((e,i) => {
+          return <FriendButton
+            key={i}
+            id={e.users[0].id}
+            username={e.users[0].username}
+            image={e.users[0].image}
+            status={e.users[0].status}
+            setIsUpdating={setIsUpdating}
+            fetchUsers={fetchUsers}
+            toast={toast}
+          />
+        })}
+        {isUpdating && <Loader/>}
+      </div>
     </div>
   );
 };

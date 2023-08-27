@@ -12,6 +12,7 @@ import "./Blocked.css"
 const Blocked = ({ query, setShowSearch }) => {
   const { user } = useContext(Context)
   const [users,setUsers] = useState([])
+  const [constantUsers,setConstantUsers] = useState([])
   const [isLoading,setIsLoading] = useState(true)
   const [isUnblocking,setIsUnblocking] = useState(false)
 
@@ -27,7 +28,7 @@ const Blocked = ({ query, setShowSearch }) => {
 
   const filterUsers = () => {
     if(!query){
-      fetchBlocks()
+      return setUsers(constantUsers)
     }
     setUsers(users.filter(e => e.blocked.username.toLowerCase().includes(query.toLowerCase())))
   }
@@ -38,6 +39,7 @@ const Blocked = ({ query, setShowSearch }) => {
         withCredentials: true
       })
       setUsers(response.data)
+      setConstantUsers(response.data)
       if(response.data.length !== 0){
         setShowSearch(true)
       }
@@ -55,20 +57,22 @@ const Blocked = ({ query, setShowSearch }) => {
     <div id='home-right-display-blocked-container'>
       <div id='home-right-display-blocked-users'>
         {!isLoading && <p id='home-right-display-blocked-count'>BLOCKED - { users.length }</p>}
-        {users.map((e,i) => {
-          return <BlockedUser
-            key={i}
-            id={e.blocked.id}
-            username={e.blocked.username} 
-            image={e.blocked.image} 
-            status={e.blocked.status}
-            setIsUnblocking={setIsUnblocking}
-            fetchBlocks={fetchBlocks}
-          />
-        })}
-        {isLoading && <Loader/>}
-        {isUnblocking && <Loader/>}
-      </div>
+        <div id='home-right-display-blocked-users-container'>
+          {users.map((e,i) => {
+            return <BlockedUser
+              key={i}
+              id={e.blocked.id}
+              username={e.blocked.username} 
+              image={e.blocked.image} 
+              status={e.blocked.status}
+              setIsUnblocking={setIsUnblocking}
+              fetchBlocks={fetchBlocks}
+            />
+          })}
+          {isLoading && <Loader/>}
+          {isUnblocking && <Loader/>}
+        </div>
+        </div>
     </div>
   );
 };

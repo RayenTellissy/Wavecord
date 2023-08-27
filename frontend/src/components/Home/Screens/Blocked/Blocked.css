@@ -39,11 +39,16 @@
   flex-direction: column;
 }
 
-#blockeduser-button-details-container{
+#blockeduser-button-details-container {
   display: flex;
   flex-direction: row;
 }
 
-#blockeduser-button-unblock{
+#blockeduser-button-unblock {
   margin: 0px 20px;
+}
+
+#home-right-display-blocked-users-container {
+  overflow-y: scroll;
+  max-height: 78vh;
 }

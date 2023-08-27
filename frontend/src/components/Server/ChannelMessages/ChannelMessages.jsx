@@ -72,7 +72,7 @@ const ChannelMessages = ({ serverId, currentTextChannel, currentTextChannelId })
                 conversationType="server"
                 conversationName={currentTextChannel}
                 channelId={currentTextChannelId}
-                />
+              />
             </div>
           </div>
           <Roles serverId={serverId}/>

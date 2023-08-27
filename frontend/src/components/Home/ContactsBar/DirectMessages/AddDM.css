@@ -1,0 +1,30 @@
+#add-dm-button-container {
+  display: flex;
+}
+
+#add-dm-button {
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 4px;
+  width: 100%;
+}
+
+#add-dm-button:hover {
+  background: #393c41;
+}
+
+#add-dm-button-avatar-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+#add-dm-button-check-container {
+  margin-right: 10px;
+}
+
+#add-dm-button-username {
+  font-family: UbuntuMedium;
+}

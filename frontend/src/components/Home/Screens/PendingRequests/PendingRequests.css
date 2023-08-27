@@ -49,3 +49,8 @@
 .home-right-display-pending-action-button {
   margin: 0px 20px;
 }
+
+#home-right-display-pending-users-container {
+  overflow-y: scroll;
+  max-height: 78vh;
+}

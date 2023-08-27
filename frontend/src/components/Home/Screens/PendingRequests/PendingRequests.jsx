@@ -13,6 +13,7 @@ import "./PendingRequests.css"
 const PendingRequests = ({ query, setShowSearch }) => {
   const { user } = useContext(Context)
   const [users,setUsers] = useState([])
+  const [constantUsers,setConstantUsers] = useState([])
   const [isLoading,setIsLoading] = useState(true)
   const [isAccepting,setIsAccepting] = useState(false)
 
@@ -27,7 +28,7 @@ const PendingRequests = ({ query, setShowSearch }) => {
 
   const filterUsers = () => {
     if(!query){
-      fetchRequests()
+      return setUsers(constantUsers)
     }
     setUsers(users.filter(e => e.sender.username.toLowerCase().includes(query.toLowerCase())))
   }
@@ -36,6 +37,7 @@ const PendingRequests = ({ query, setShowSearch }) => {
     try {
       const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/friends/fetchPending/${user.id}`)
       setUsers(response.data)
+      setConstantUsers(response.data)
       if(response.data.length !== 0){
         setShowSearch(true)
       }
@@ -54,6 +56,7 @@ const PendingRequests = ({ query, setShowSearch }) => {
       <div id='home-right-display-pending-users'>
         {isLoading && <Loader/>}
         {!isLoading && <p id='home-right-display-pending-count'>PENDING - {users.length}</p>}
+        <div id='home-right-display-pending-users-container'></div>
         {users.map((e,i) => {
           if(e.recipient.id === user.id){
             return <Received key={i}

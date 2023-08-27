@@ -128,8 +128,8 @@ const Server = () => {
                 setCurrentTextChannelId={setCurrentTextChannelId}
               />
             })}
-            <Userbar/>
           </div>
+          <Userbar/>
         </div>
       </div>
       <div id='server-right-display-content'>

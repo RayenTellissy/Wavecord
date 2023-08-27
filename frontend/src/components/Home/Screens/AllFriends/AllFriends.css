@@ -8,3 +8,8 @@
   font-size: 15px;
   margin: 15px;
 }
+
+#home-right-display-all-users-container{
+  overflow-y: scroll;
+  max-height: 78vh;
+}
