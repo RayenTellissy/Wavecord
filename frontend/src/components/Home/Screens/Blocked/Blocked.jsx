@@ -57,6 +57,7 @@ const Blocked = ({ query, setShowSearch }) => {
     <div id='home-right-display-blocked-container'>
       <div id='home-right-display-blocked-users'>
         {!isLoading && <p id='home-right-display-blocked-count'>BLOCKED - { users.length }</p>}
+        {isLoading && <Loader/>}
         <div id='home-right-display-blocked-users-container'>
           {users.map((e,i) => {
             return <BlockedUser
@@ -69,7 +70,6 @@ const Blocked = ({ query, setShowSearch }) => {
               fetchBlocks={fetchBlocks}
             />
           })}
-          {isLoading && <Loader/>}
           {isUnblocking && <Loader/>}
         </div>
         </div>

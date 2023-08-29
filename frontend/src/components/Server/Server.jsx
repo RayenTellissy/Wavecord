@@ -9,16 +9,13 @@ import {
   ModalHeader,
   ModalFooter,
   ModalBody,
-  ModalCloseButton
-} from "@chakra-ui/react"
-import {
+  ModalCloseButton,
   Popover,
   PopoverTrigger,
   PopoverContent,
-  PopoverHeader,
+  PopoverFooter,
   PopoverBody,
-  PopoverFooter
-} from '@chakra-ui/react'
+} from "@chakra-ui/react"
 import { FaHashtag } from "react-icons/fa"
 import { MdOutlineRadioButtonChecked, MdOutlineRadioButtonUnchecked } from "react-icons/md"
 import { HiSpeakerWave } from "react-icons/hi2"
@@ -32,12 +29,14 @@ import Category from './Category/Category';
 import Switch from '../common/Switch/Switch';
 import ChannelMessages from './ChannelMessages/ChannelMessages';
 import Userbar from "../Home/ContactsBar/UserBar/UserBar"
+// import Dropdown from './Dropdown/Dropdown';
 
 // styles
 import "./Server.css"
 
 const Server = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
+  const { isOpen: isOpenDropdown, onOpen: onOpenDropdown, onClose: onCloseDropdown } = useDisclosure()
   const { id } = useParams()
   const [server,setServer] = useState({})
   const [currentTextChannel,setCurrentTextChannel] = useState("")
@@ -101,18 +100,33 @@ const Server = () => {
       console.log(error)
     }
   }
+
+  const handleDropdown = () => {
+    setShowDropdown(!showDropdown)
+    if(!showDropdown){
+      return onOpenDropdown()
+    }
+    onCloseDropdown()
+  }
   
   return (
     <div id='server-container'>
       <Sidebar highlighted={server.id}/>
       <div id='server-bar-container'>
         <div id='server-bar-main'>
-          <div id='server-name-container' onClick={() => setShowDropdown(!showDropdown)}>
+          <button id='server-name-container' onClick={handleDropdown}>
             <p id='server-name'>{server.name}</p>
             <div id='server-banner-icon-container'>
               {showDropdown ? <MdClose size={22}/> : <RiArrowDropDownLine size={40}/>}
+              <Popover placement='bottom-start' isOpen={isOpenDropdown} onOpen={onOpenDropdown} onClose={onCloseDropdown}>
+      <PopoverContent>
+        <PopoverBody>
+          asdasd
+        </PopoverBody>
+      </PopoverContent>
+    </Popover>
             </div>
-          </div>
+          </button>
           <div id='server-category-main-container'>
             {server.categories && server.categories.map((e,i) => {
               return <Category

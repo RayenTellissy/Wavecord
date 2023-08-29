@@ -68,3 +68,9 @@
 #add-dm-popover-submit-text {
   font-family: UbuntuMedium;
 }
+
+#add-dm-popover-loader-container {
+  display: flex;
+  justify-content: center;
+  height: 300px;
+}

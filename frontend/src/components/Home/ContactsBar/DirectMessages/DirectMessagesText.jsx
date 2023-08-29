@@ -10,9 +10,11 @@ import {
   PopoverBody,
   useDisclosure
 } from '@chakra-ui/react'
+import BeatLoader from "react-spinners/BeatLoader"
 
 // components
 import AddDM from './AddDM';
+import Loader from "../../../common/Loader/noMarginLoader"
 
 // styles
 import "./DirectMessagesText.css"
@@ -24,6 +26,8 @@ const DirectMessagesText = ({ id, fetchConversations }) => {
   const [constantFriends,setConstantFriends] = useState([])
   const [checked,setChecked] = useState("")
   const [submitDisabled,setSubmitDisabled] = useState(false)
+  const [isLoading,setIsLoading] = useState(false)
+  const [isCreating,setIsCreating] = useState(false)
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -32,12 +36,13 @@ const DirectMessagesText = ({ id, fetchConversations }) => {
 
   const fetchFriends = async () => {
     try {
+      setIsLoading(true)
       const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/friends/fetchFriendsWithNoConversations/${id}`,{
         withCredentials: true
       })
-      console.log(response.data)
       setFriends(response.data)
       setConstantFriends(response.data)
+      setIsLoading(false)
     }
     catch(error){
       console.log(error)
@@ -48,13 +53,15 @@ const DirectMessagesText = ({ id, fetchConversations }) => {
     if(submitDisabled) return
     if(!checked) return
     try {
+      setIsCreating(true)
       setSubmitDisabled(true)
-      onClose()
       const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/conversations/createDM`,{
         currentUser: id,
         otherUser: checked
       })
-      setChecked("")
+      setIsCreating(false)
+      onClose() // closing popover
+      setChecked("") // resetting chosen user
       fetchConversations()
       navigate(`/dm/${response.data.id}`)
       setSubmitDisabled(false)
@@ -98,22 +105,29 @@ const DirectMessagesText = ({ id, fetchConversations }) => {
               </div>
             </div>
             <PopoverBody maxHeight="30vh" overflowY="scroll" bgColor="#313338">
-              {friends.map((e,i) => {
-                return <AddDM
-                  key={i}
-                  id={e.id}
-                  username={e.username}
-                  image={e.image}
-                  status={e.status}
-                  checked={checked}
-                  setChecked={setChecked}
-                />
-              })}
+              {isLoading ? (
+              <div id='add-dm-popover-loader-container'>
+                <Loader/>
+              </div>) : 
+                friends.map((e, i) => {
+                  return (
+                    <AddDM
+                      key={i}
+                      id={e.id}
+                      username={e.username}
+                      image={e.image}
+                      status={e.status}
+                      checked={checked}
+                      setChecked={setChecked}
+                    />
+                  );
+                })
+              }
             </PopoverBody>
             <PopoverFooter padding="20px 0px" bgColor="#313338" borderBottomRadius={4} borderColor="#292929">
               <div id='add-dm-popover-submit-container'>
                 <button id='add-dm-popover-submit' onClick={createDM}>
-                  <p id='add-dm-popover-submit-text'>Create DM</p>
+                  {isCreating ? <BeatLoader size={8} color='white'/> :<p id='add-dm-popover-submit-text'>Create DM</p>}
                 </button>
               </div>
             </PopoverFooter>
