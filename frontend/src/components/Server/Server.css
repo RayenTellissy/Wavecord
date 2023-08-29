@@ -10,14 +10,17 @@
 }
 
 #server-name-container {
+  border-bottom: 3px #3c3f45 solid;
+  border-radius: 2px;
+}
+
+#server-popover-name-icon {
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  cursor: pointer;
-  border-bottom: 3px #3c3f45 solid;
-  border-radius: 2px;
 }
+
 
 #server-bar-container {
   width: 300px;

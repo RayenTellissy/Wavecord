@@ -29,7 +29,7 @@ import Category from './Category/Category';
 import Switch from '../common/Switch/Switch';
 import ChannelMessages from './ChannelMessages/ChannelMessages';
 import Userbar from "../Home/ContactsBar/UserBar/UserBar"
-// import Dropdown from './Dropdown/Dropdown';
+import AllButtons from './PopoverButtons/AllButtons';
 
 // styles
 import "./Server.css"
@@ -114,19 +114,23 @@ const Server = () => {
       <Sidebar highlighted={server.id}/>
       <div id='server-bar-container'>
         <div id='server-bar-main'>
-          <button id='server-name-container' onClick={handleDropdown}>
-            <p id='server-name'>{server.name}</p>
-            <div id='server-banner-icon-container'>
-              {showDropdown ? <MdClose size={22}/> : <RiArrowDropDownLine size={40}/>}
-              <Popover placement='bottom-start' isOpen={isOpenDropdown} onOpen={onOpenDropdown} onClose={onCloseDropdown}>
-      <PopoverContent>
-        <PopoverBody>
-          asdasd
-        </PopoverBody>
-      </PopoverContent>
-    </Popover>
-            </div>
-          </button>
+              <Popover placement='bottom' isOpen={isOpenDropdown} onOpen={onOpenDropdown} onClose={onCloseDropdown}>
+                <PopoverTrigger>
+                  <button id='server-name-container' onClick={handleDropdown}>
+                    <div id='server-popover-name-icon'>
+                      <p id='server-name'>{server.name}</p>
+                      <div id='server-banner-icon-container'>
+                        {showDropdown ? <MdClose size={22}/> : <RiArrowDropDownLine size={40}/>}
+                      </div>
+                    </div>
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent bgColor="#111214" width={280}>
+                  <PopoverBody>
+                    <AllButtons ownerId={server.ownerId}/>
+                  </PopoverBody>
+                </PopoverContent>
+              </Popover>
           <div id='server-category-main-container'>
             {server.categories && server.categories.map((e,i) => {
               return <Category

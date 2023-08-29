@@ -1,0 +1,49 @@
+.server-popover-button {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px;
+  border-radius: 3px;
+  width: 100%;
+  margin: 5px 0px;
+}
+
+.server-popover-button:hover {
+  background-color: #4752c4;
+}
+
+.server-popover-button-delete {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px;
+  border-radius: 3px;
+  width: 100%;
+  margin: 5px 0px;
+}
+
+.server-popover-button-delete:hover {
+  background-color: #da373c;
+}
+
+.server-popover-button-text {
+  font-family: UbuntuMedium;
+}
+
+#server-popover-button-basic-text {
+  color: #dddee9;
+}
+
+#server-popover-button-hovered-text {
+  color: white;
+}
+
+#server-popover-button-invite-text {
+  color: #949cf7;
+}
+
+#server-popover-button-delete-text {
+  color: #da373c;
+}
