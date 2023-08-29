@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { useDisclosure } from '@chakra-ui/react';
@@ -13,8 +13,7 @@ import {
   Popover,
   PopoverTrigger,
   PopoverContent,
-  PopoverFooter,
-  PopoverBody,
+  PopoverBody
 } from "@chakra-ui/react"
 import { FaHashtag } from "react-icons/fa"
 import { MdOutlineRadioButtonChecked, MdOutlineRadioButtonUnchecked } from "react-icons/md"
@@ -30,6 +29,8 @@ import Switch from '../common/Switch/Switch';
 import ChannelMessages from './ChannelMessages/ChannelMessages';
 import Userbar from "../Home/ContactsBar/UserBar/UserBar"
 import AllButtons from './PopoverButtons/AllButtons';
+import ServerLink from './ServerLinkModal/ServerLink';
+import { Context } from '../Context/Context';
 
 // styles
 import "./Server.css"
@@ -37,7 +38,9 @@ import "./Server.css"
 const Server = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { isOpen: isOpenDropdown, onOpen: onOpenDropdown, onClose: onCloseDropdown } = useDisclosure()
+  const { isOpen: isOpenServerLink, onOpen: onOpenServerLink, onClose: onCloseServerLink } = useDisclosure()
   const { id } = useParams()
+  const { user } = useContext(Context)
   const [server,setServer] = useState({})
   const [currentTextChannel,setCurrentTextChannel] = useState("")
   const [currentTextChannelId,setCurrentTextChannelId] = useState("")
@@ -101,22 +104,29 @@ const Server = () => {
     }
   }
 
-  const handleDropdown = () => {
-    setShowDropdown(!showDropdown)
-    if(!showDropdown){
-      return onOpenDropdown()
-    }
+  const handlePopoverOpen = () => {
+    setShowDropdown(true)
+    onOpenDropdown()
+  }
+
+  const handlePopoverClose = () => {
+    setShowDropdown(false)
     onCloseDropdown()
   }
-  
+
   return (
     <div id='server-container'>
       <Sidebar highlighted={server.id}/>
       <div id='server-bar-container'>
         <div id='server-bar-main'>
-              <Popover placement='bottom' isOpen={isOpenDropdown} onOpen={onOpenDropdown} onClose={onCloseDropdown}>
+              <Popover
+                placement='bottom'
+                isOpen={isOpenDropdown}
+                onOpen={handlePopoverOpen}
+                onClose={handlePopoverClose}
+              >
                 <PopoverTrigger>
-                  <button id='server-name-container' onClick={handleDropdown}>
+                  <button id='server-name-container'>
                     <div id='server-popover-name-icon'>
                       <p id='server-name'>{server.name}</p>
                       <div id='server-banner-icon-container'>
@@ -127,7 +137,11 @@ const Server = () => {
                 </PopoverTrigger>
                 <PopoverContent bgColor="#111214" width={280}>
                   <PopoverBody>
-                    <AllButtons ownerId={server.ownerId}/>
+                    <AllButtons
+                      ownerId={server.ownerId}
+                      onOpen={onOpenServerLink}
+                      user={user}
+                    />
                   </PopoverBody>
                 </PopoverContent>
               </Popover>
@@ -243,6 +257,14 @@ const Server = () => {
           </ModalFooter>
         </ModalContent>
       </Modal>
+      <ServerLink
+        isOpen={isOpenServerLink}
+        onOpen={onOpenServerLink}
+        onClose={onCloseServerLink}
+        server={server}
+        user={user}
+        fetchData={fetchData}
+      />
     </div>
   );
 };

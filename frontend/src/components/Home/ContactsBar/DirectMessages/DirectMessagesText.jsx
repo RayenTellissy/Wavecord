@@ -85,8 +85,8 @@ const DirectMessagesText = ({ id, fetchConversations }) => {
       </p>
       <Popover isOpen={isOpen} onOpen={onOpen} onClose={onClose} placement='bottom-start'>
         <PopoverTrigger>
-          <button>
-            <AddIcon onClick={fetchFriends}/>
+          <button onClick={fetchFriends}>
+            <AddIcon/>
           </button>
         </PopoverTrigger>
         <PopoverContent minW={{ base: "100%", lg: "max-content" }} borderRadius={4} backgroundColor="#313338" border="1px solid #222327">

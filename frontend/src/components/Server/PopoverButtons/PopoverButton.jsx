@@ -3,12 +3,13 @@ import React from 'react';
 // styles
 import "./PopoverButton.css"
 
-const PopoverButton = ({ hovered, setHovered, text, textColor, icon }) => {
+const PopoverButton = ({ hovered, setHovered, text, textColor, icon, callback }) => {
 
   return (
     <button className={textColor === "red" ? 'server-popover-button-delete' : 'server-popover-button'}
       onMouseEnter={() => setHovered(text)}
       onMouseLeave={() => setHovered("")}
+      onClick={callback}
     >
       <p
         className='server-popover-button-text'

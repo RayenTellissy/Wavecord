@@ -9,8 +9,7 @@ import { IoIosRemoveCircle } from "react-icons/io"
 import PopoverButton from './PopoverButton';
 import { Context } from '../../Context/Context';
 
-const AllButtons = ({ ownerId }) => {
-  const { user } = useContext(Context)
+const AllButtons = ({ user, ownerId, onOpen }) => {
   const [hovered,setHovered] = useState("")
 
   return (
@@ -21,6 +20,7 @@ const AllButtons = ({ ownerId }) => {
         text="Invite People"
         textColor="blue"
         icon={<BsFillPersonPlusFill size={20} color={hovered === "Invite People" ? 'white' : '#949cf7'}/>}
+        callback={() => onOpen()}
       />
       <PopoverButton
         hovered={hovered}

@@ -36,7 +36,7 @@ model Servers {
   id             String              @id @default(cuid())
   name           String
   image          String
-  server_link    String              @default(cuid())
+  server_link    String              @default(cuid()) @unique
   created_at     DateTime            @default(now())
   owner          Users               @relation(fields: [ownerId], references: [id])
   ownerId        String

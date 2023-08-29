@@ -14,6 +14,7 @@
     "@prisma/client": "^5.1.1",
     "connect-mongo": "^5.0.0",
     "cors": "^2.8.5",
+    "cuid": "^3.0.0",
     "express": "^4.18.2",
     "express-rate-limit": "^6.7.0",
     "express-session": "^1.17.3",

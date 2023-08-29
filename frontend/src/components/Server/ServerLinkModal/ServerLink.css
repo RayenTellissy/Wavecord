@@ -1,0 +1,59 @@
+#server-link-welcome-text {
+  font-family: UbuntuLight;
+  display: inline;
+}
+
+#server-link-welcome-server-name {
+  font-family: UbuntuMedium;
+  display: inline;
+}
+
+#server-link-input-container {
+  display: flex;
+  flex-direction: row;
+}
+
+#server-link-input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 7px;
+  margin-right: 10px;
+  background-color: #1e1f22;
+  font-family: UbuntuMedium;
+  color: #dddee9;
+}
+
+.server-link-copy-button {
+  padding: 10px 25px;
+  border-radius: 4px;
+  font-family: UbuntuMedium;
+}
+
+#server-link-copy-button-active {
+  background-color: #5865f2;
+}
+
+#server-link-copy-button-disabled {
+  background-color: #414891;
+  cursor: default;
+}
+
+#server-link-copy-button:hover {
+  background-color: #4752c4;
+}
+
+#server-link-copy-button:active {
+  background-color: #3c45a5;
+}
+
+#server-link-reset-button {
+  font-family: UbuntuMedium;
+}
+
+#server-link-copy-button-text-active {
+  color: white;
+}
+
+#server-link-copy-button-text-disabled {
+  color: rgb(168, 168, 168);
+}

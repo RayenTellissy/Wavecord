@@ -1,4 +1,5 @@
 const { prisma } = require("../prisma/connection")
+const cuid = require("cuid")
 
 module.exports = {
 
@@ -422,12 +423,31 @@ module.exports = {
           user: true
         }
       })
-      console.log(noRole)
 
       res.send({
         withRole: result,
         noRole: noRole
       })
+    }
+    catch(error){
+      res.send(error)
+    }
+  },
+
+  resetServerLink: async (req,res) => {
+    try {
+      const { server_link } = req.body
+
+      const result = await prisma.servers.update({
+        where: {
+          server_link: server_link
+        },
+        data: {
+          server_link: cuid()
+        }
+      })
+
+      res.send(result)
     }
     catch(error){
       res.send(error)
