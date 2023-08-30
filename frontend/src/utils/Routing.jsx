@@ -14,6 +14,7 @@ import ForgotPassword from "../components/auth/ForgotPassword/ForgotPassword"
 import Home from '../components/Home/Home'
 import Server from '../components/Server/Server';
 import Messages from '../components/Messages/Messages';
+import ServerSettings from '../components/Server/Settings/ServerSettings';
 
 const Routing = () => {
   const { user } = useContext(Context)
@@ -29,6 +30,7 @@ const Routing = () => {
             <Route path='/settings' element={<p>this is settings</p>}/>
             <Route path='/server/:id' element={<Server/>}/>
             <Route path='/dm/:id' element={<Messages/>}/>
+            <Route path='/server/settings/:id' element={<ServerSettings/>} />
           </>
         )
         :

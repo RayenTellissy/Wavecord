@@ -38,11 +38,11 @@
   cursor: default;
 }
 
-#server-link-copy-button:hover {
+#server-link-copy-button-active:hover {
   background-color: #4752c4;
 }
 
-#server-link-copy-button:active {
+#server-link-copy-button-active:active {
   background-color: #3c45a5;
 }
 

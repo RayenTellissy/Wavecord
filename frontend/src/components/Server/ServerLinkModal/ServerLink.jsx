@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import {
   Modal,
   ModalOverlay,
@@ -11,7 +12,6 @@ import {
 
 // styles
 import "./ServerLink.css"
-import axios from 'axios';
 
 const ServerLink = ({ isOpen, onOpen, onClose, server, user, fetchData }) => {
   const toast = useToast()
@@ -20,6 +20,11 @@ const ServerLink = ({ isOpen, onOpen, onClose, server, user, fetchData }) => {
   const handleCopy = () => {
     if(isResetting) return
     navigator.clipboard.writeText(server.server_link)
+    toast({
+      title: "Copied to Clipboard.",
+      status: "success",
+      duration: 1500
+    })
   }
 
   const handleResetLink = async () => {
@@ -33,7 +38,9 @@ const ServerLink = ({ isOpen, onOpen, onClose, server, user, fetchData }) => {
     try {
       setIsResetting(true)
       await axios.put(`${import.meta.env.VITE_SERVER_URL}/servers/resetServerLink`,{
-        server_link: server.server_link
+        server_link: server.server_link,
+        id: user.id,
+        ownerId: server.ownerId
       },{
         withCredentials: true
       })

@@ -141,6 +141,7 @@ const Server = () => {
                       ownerId={server.ownerId}
                       onOpen={onOpenServerLink}
                       user={user}
+                      id={server.id}
                     />
                   </PopoverBody>
                 </PopoverContent>

@@ -1,0 +1,15 @@
+#server-settings-display-button {
+  padding: 10px 10px;
+  width: 100%;
+  text-align: left;
+  font-family: UbuntuMedium;
+  border-radius: 4px;
+}
+
+#server-settings-display-button:hover {
+  background-color: #35373c;
+}
+
+#server-settings-display-button:active {
+  background-color: #3f4248;
+}

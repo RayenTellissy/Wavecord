@@ -436,7 +436,9 @@ module.exports = {
 
   resetServerLink: async (req,res) => {
     try {
-      const { server_link } = req.body
+      const { id, ownerId, server_link } = req.body
+
+      if(id !== ownerId) return res.send("You don't have server privileges to do that.")
 
       const result = await prisma.servers.update({
         where: {

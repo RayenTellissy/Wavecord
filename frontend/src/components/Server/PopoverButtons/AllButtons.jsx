@@ -1,4 +1,5 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { BsFillPersonPlusFill } from "react-icons/bs"
 import { MdSettings } from "react-icons/md"
 import { BiSolidFolderPlus } from "react-icons/bi"
@@ -7,10 +8,10 @@ import { IoIosRemoveCircle } from "react-icons/io"
 
 // components
 import PopoverButton from './PopoverButton';
-import { Context } from '../../Context/Context';
 
-const AllButtons = ({ user, ownerId, onOpen }) => {
+const AllButtons = ({ user, ownerId, onOpen, id }) => {
   const [hovered,setHovered] = useState("")
+  const navigate = useNavigate()
 
   return (
     <div>
@@ -22,18 +23,21 @@ const AllButtons = ({ user, ownerId, onOpen }) => {
         icon={<BsFillPersonPlusFill size={20} color={hovered === "Invite People" ? 'white' : '#949cf7'}/>}
         callback={() => onOpen()}
       />
-      <PopoverButton
-        hovered={hovered}
-        setHovered={setHovered}
-        text="Server Settings"
-        icon={<MdSettings size={20}/>}
-      />
-      <PopoverButton
-        hovered={hovered}
-        setHovered={setHovered}
-        text="Create Category"
-        icon={<BiSolidFolderPlus size={20}/>}
-      />
+      {user.id === ownerId && <>
+        <PopoverButton
+          hovered={hovered}
+          setHovered={setHovered}
+          text="Server Settings"
+          icon={<MdSettings size={20}/>}
+          callback={() => navigate(`/server/settings/${id}`)}
+        />
+        <PopoverButton
+          hovered={hovered}
+          setHovered={setHovered}
+          text="Create Category"
+          icon={<BiSolidFolderPlus size={20}/>}
+        />
+      </>}
       <PopoverButton
         hovered={hovered}
         setHovered={setHovered}
