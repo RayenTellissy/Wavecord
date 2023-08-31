@@ -17,12 +17,12 @@
 }
 
 #server-settings-info {
-  margin: 0px 20px
+  margin: 20px 50px
 }
 
 #server-settings-dropdown {
   margin: 20px 20px;
-  width: 40%;
+  width: 200px;
 }
 
 #server-settings-server-name-title {

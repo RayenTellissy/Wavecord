@@ -9,7 +9,7 @@ import { IoIosRemoveCircle } from "react-icons/io"
 // components
 import PopoverButton from './PopoverButton';
 
-const AllButtons = ({ user, ownerId, onOpen, id }) => {
+const AllButtons = ({ user, ownerId, onOpen, server }) => {
   const [hovered,setHovered] = useState("")
   const navigate = useNavigate()
 
@@ -29,7 +29,9 @@ const AllButtons = ({ user, ownerId, onOpen, id }) => {
           setHovered={setHovered}
           text="Server Settings"
           icon={<MdSettings size={20}/>}
-          callback={() => navigate(`/server/settings/${id}`)}
+          callback={() => navigate(`/server/settings`,{
+            state: server
+          })}
         />
         <PopoverButton
           hovered={hovered}

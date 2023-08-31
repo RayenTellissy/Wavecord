@@ -30,7 +30,7 @@ const Routing = () => {
             <Route path='/settings' element={<p>this is settings</p>}/>
             <Route path='/server/:id' element={<Server/>}/>
             <Route path='/dm/:id' element={<Messages/>}/>
-            <Route path='/server/settings/:id' element={<ServerSettings/>} />
+            <Route path='/server/settings' element={<ServerSettings/>} />
           </>
         )
         :

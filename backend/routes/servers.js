@@ -13,7 +13,8 @@ const {
   fetchTextChannelMessages,
   sendMessage,
   fetchUsersByRoles,
-  resetServerLink
+  resetServerLink,
+  changeServerImage
 } = require("../controllers/servers")
 const { createLimit, joinLimit, deleteLimit, leaveLimit } = require("../middleware/serverLimiter")
 const authentication = require("../middleware/authentication")
@@ -32,6 +33,7 @@ router.post("/fetchTextChannelMessages", fetchTextChannelMessages)
 router.post("/sendMessage", sendMessage)
 
 router.put("/resetServerLink", resetServerLink)
+router.put("/changeServerImage", changeServerImage)
 
 router.delete("/leave", authentication, leaveLimit, leaveServer)
 router.delete("/delete", deleteServer)

@@ -1,27 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 
 // components
 import DisplayButton from './DisplayButton/DisplayButton';
-import Overview from './Screens/Overview';
-import Roles from './Screens/Roles';
+import Overview from './Screens/Overview/Overview';
+import Roles from './Screens/Roles/Roles';
 
 // styles
 import "./ServerSettings.css"
 
 const ServerSettings = () => {
-  const { id } = useParams()
-  const [server,setServer] = useState({})
+  const location = useLocation()
   const [display,setDisplay] = useState("Overview")
-
-  useEffect(() => {
-    fetchData()
-  },[])
+  const [server,setServer] = useState(location.state)
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/servers/fetch/${id}`)
+      const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/servers/fetch/${server.id}`)
       setServer(response.data)
     }
     catch(error){
@@ -42,7 +38,7 @@ const ServerSettings = () => {
             display="Roles"
             callback={() => setDisplay("Roles")}
           />
-          <DisplayButton 
+          <DisplayButton
             display="Members"
             callback={() => setDisplay("Members")}
           />
@@ -54,7 +50,7 @@ const ServerSettings = () => {
       </div>
       <div id='server-settings-info-container'>
         <div id='server-settings-info'>
-          {display === "Overview" ? <Overview/> : <Roles/>}
+          {display === "Overview" ? <Overview server={server} fetchData={fetchData}/> : <Roles/>}
         </div>
       </div>
     </div>

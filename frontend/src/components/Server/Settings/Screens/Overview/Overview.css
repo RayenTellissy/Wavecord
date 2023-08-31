@@ -1,0 +1,71 @@
+#server-settings-overview-container {
+  display: flex;
+  flex-direction: column;
+}
+
+#server-settings-overview-title {
+  font-family: UbuntuBold;
+  font-size: 25px;
+}
+
+#server-settings-overview-server-image-container {
+  margin: 10px 20px;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+
+#server-settings-overview-server-image {
+  height: 100px;
+  width: 100px;
+  border-radius: 100%;
+}
+
+#server-settings-overview-server-p-container {
+  margin: 0px 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  width: 300px;
+}
+
+#server-settings-overview-server-p {
+  font-family: UbuntuRegular;
+  color: #b5bac1;
+  width: 250px;
+}
+
+#server-settings-overview-upload-image {
+  margin-top: 10px;
+  padding: 10px 0px;
+  width: 55%;
+  border: 1px solid #4e5058;
+  border-radius: 4px;
+  font-family: UbuntuMedium;
+  transition: 0.2s ease;
+}
+
+#server-settings-overview-upload-image:hover {
+  background-color: #4e5058;
+}
+
+#server-settings-overview-server-name-input-container {
+  width: 25%;
+}
+
+#server-settings-overview-server-name-text {
+  color: #b5bac1;
+  font-family: UbuntuMedium;
+}
+
+#server-settings-overview-server-name-input {
+  background-color: #1e1f22;
+  padding: 10px;
+  width: 100%;
+  border-radius: 4px;
+  font-family: UbuntuRegular;
+}
+
+#server-settings-overview-upload-image-input {
+  display: none;
+}

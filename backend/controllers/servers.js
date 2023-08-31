@@ -454,5 +454,25 @@ module.exports = {
     catch(error){
       res.send(error)
     }
+  },
+
+  changeServerImage: async (req,res) => {
+    try {
+      const { serverId, image } = req.body
+
+      const result = await prisma.servers.update({
+        where: {
+          id: serverId
+        },
+        data: {
+          image: image
+        }
+      })
+
+      res.send(result)
+    }
+    catch(error){
+      res.send(error)
+    }
   }
 }
