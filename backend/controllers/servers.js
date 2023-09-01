@@ -474,5 +474,66 @@ module.exports = {
     catch(error){
       res.send(error)
     }
+  },
+
+  changeServerName: async (req,res) => {
+    try {
+      const { serverId, name } = req.body
+
+      const result = await prisma.servers.update({
+        where: {
+          id: serverId
+        },
+        data: {
+          name: name
+        }
+      })
+
+      res.send(result)
+    }
+    catch(error){
+      res.send(error)
+    }
+  },
+
+  fetchServerRoles: async (req,res) => {
+    try {
+      const { serverId } = req.params
+
+      const result = await prisma.servers.findFirst({
+        where: {
+          id: serverId
+        },
+        select: {
+          roles: {
+            include: {
+              UsersInServers: true
+            }
+          }
+        }
+      })
+
+      res.send(result.roles)
+    }
+    catch(error){
+      res.send(error)
+    }
+  },
+
+  removeRole: async (req,res) => {
+    try {
+      const { roleId } = req.params
+
+      const result = await prisma.roles.delete({
+        where: {
+          id: roleId
+        }
+      })
+
+      res.send(result)
+    }
+    catch(error){
+      res.send(error)
+    }
   }
 }

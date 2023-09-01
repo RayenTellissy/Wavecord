@@ -1,0 +1,29 @@
+#server-settings-modal-save-check-text {
+  font-family: UbuntuRegular;
+}
+
+#server-settings-modal-save-check-reset {
+  font-family: UbuntuRegular;
+  color: #d5d7da;
+}
+
+#server-settings-modal-save-check-reset:hover {
+  text-decoration: underline;
+}
+
+#server-settings-modal-save-check-save {
+  margin-left: 20px;
+  padding: 7px 15px;
+  background-color: #248046;
+  border-radius: 4px;
+  font-family: UbuntuRegular;
+  transition: .2s ease;
+}
+
+#server-settings-modal-save-check-save:hover {
+  background-color: #1a6435;
+}
+
+#server-settings-modal-save-check-save:active {
+  background-color: #15562b;
+}

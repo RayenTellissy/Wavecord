@@ -1,0 +1,31 @@
+#server-settings-roles-onerole-container {
+  border-top: 1px solid #3f4147;
+  padding: 25px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#server-settings-roles-onerole-name-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 200px;
+}
+
+#server-settings-roles-onerole-name {
+  font-family: UbuntuMedium;
+  margin-left: 10px;
+}
+
+#server-settings-roles-onerole-members-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+#server-settings-roles-onerole-members {
+  font-size: 23px;
+  margin-right: 3px;
+}

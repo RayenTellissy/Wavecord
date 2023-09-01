@@ -33,24 +33,30 @@ const ServerSettings = () => {
           <DisplayButton
             display="Overview"
             callback={() => setDisplay("Overview")}
+            highlighted={display === "Overview"}
           />
           <DisplayButton
             display="Roles"
             callback={() => setDisplay("Roles")}
+            highlighted={display === "Roles"}
           />
           <DisplayButton
             display="Members"
             callback={() => setDisplay("Members")}
+            highlighted={display === "Members"}
           />
           <DisplayButton
             display="Bans"
             callback={() => setDisplay("Bans")}
+            highlighted={display === "Bans"}
           />
         </div>
       </div>
       <div id='server-settings-info-container'>
         <div id='server-settings-info'>
-          {display === "Overview" ? <Overview server={server} fetchData={fetchData}/> : <Roles/>}
+          {display === "Overview"
+          ? <Overview server={server} fetchData={fetchData}/> 
+          : <Roles server={server}/>}
         </div>
       </div>
     </div>

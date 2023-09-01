@@ -1,0 +1,76 @@
+#server-settings-roles-container {
+  width: 50%;
+}
+
+#server-settings-roles-title {
+  font-family: UbuntuBold;
+  font-size: 25px;
+}
+
+#server-settings-roles-under-title {
+  font-family: UbuntuRegular;
+  color: #b5bac1;
+}
+
+#server-settings-roles-search-create-container {
+  display: flex;
+  flex-direction: row;
+  height: 40px;
+  margin-top: 40px;
+}
+
+#server-settings-roles-search-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+#server-settings-roles-search-input {
+  font-family: UbuntuRegular;
+  background-color: #1e1f22;
+  padding-left: 15px;
+  border-radius: 4px;
+  width: 100%;
+  height: 100%;
+}
+
+
+#server-settings-roles-search-input::placeholder {
+  color: #949ba4;
+}
+
+#server-settings-roles-search-input-search-icon {
+  position: absolute;
+  right: 10px;
+}
+
+#server-settings-roles-create-role {
+  font-family: UbuntuMedium;
+  background-color: #5865f2;
+  padding: 10px 15px;
+  border-radius: 4px;
+  margin-left: 10px;
+  transition: .2s ease;
+}
+
+#server-settings-roles-create-role:hover {
+  background-color: #4752c4;
+}
+
+#server-settings-roles-create-role:active {
+  background-color: #3c45a5;
+}
+
+#server-settings-roles-display {
+  margin-top: 20px;
+}
+
+#server-settings-roles-display-mapping {
+  margin-top: 10px;
+}
+
+#server-settings-roles-number-title {
+  font-family: UbuntuMedium;
+  width: 200px;
+}

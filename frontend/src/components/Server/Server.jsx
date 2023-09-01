@@ -142,7 +142,6 @@ const Server = () => {
                       onOpen={onOpenServerLink}
                       user={user}
                       server={server}
-                      setServer={setServer}
                     />
                   </PopoverBody>
                 </PopoverContent>
