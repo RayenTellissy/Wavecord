@@ -17,7 +17,8 @@ const {
   changeServerImage,
   changeServerName,
   fetchServerRoles,
-  removeRole
+  removeRole,
+  createRole
 } = require("../controllers/servers")
 const { createLimit, joinLimit, deleteLimit, leaveLimit } = require("../middleware/serverLimiter")
 const authentication = require("../middleware/authentication")
@@ -35,6 +36,7 @@ router.post("/createTextChannel", createTextChannel)
 router.post("/createVoiceChannel", createVoiceChannel)
 router.post("/fetchTextChannelMessages", fetchTextChannelMessages)
 router.post("/sendMessage", sendMessage)
+router.post("/createRole", createRole)
 
 router.put("/resetServerLink", resetServerLink)
 router.put("/changeServerImage", changeServerImage)

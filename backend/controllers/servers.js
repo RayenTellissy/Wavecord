@@ -535,5 +535,29 @@ module.exports = {
     catch(error){
       res.send(error)
     }
+  },
+
+  createRole: async (req,res) => {
+    try {
+      const { roleName, roleColor, serverId, isAdmin } = req.body
+
+      if(!roleName || !roleColor || !serverId) return res.send({
+        error: "Information Missing!"
+      })
+
+      const result = await prisma.roles.create({
+        data: {
+          name: roleName,
+          isAdmin: isAdmin,
+          serverId: serverId,
+          color: roleColor
+        }
+      })
+
+      res.send(result)
+    }
+    catch(error){
+      res.send(error)
+    }
   }
 }

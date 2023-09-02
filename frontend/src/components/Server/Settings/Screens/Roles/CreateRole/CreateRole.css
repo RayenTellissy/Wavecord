@@ -1,0 +1,61 @@
+#create-role-modal-input {
+  background-color: #1e1f22;
+  padding: 10px;
+  border-radius: 4px;
+  font-family: UbuntuMedium;
+}
+
+#create-role-modal-picker-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+#create-role-modal-title-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#create-role-modal-title {
+  font-family: UbuntuMedium;
+  font-size: 18px;
+}
+
+#create-role-modal-create-button {
+  font-family: UbuntuMedium;
+  background-color: #5865f2;
+  padding: 10px;
+  width: 120px;
+  border-radius: 4px;
+  margin-left: 10px;
+  transition: .2s ease;
+}
+
+#create-role-modal-create-button:hover {
+  background-color: #4752c4;
+}
+
+#create-role-modal-create-button:active {
+  background-color: #3c45a5;
+}
+
+#create-role-modal-picker-title-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+#create-role-modal-switch-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+#create-role-modal-switch-title {
+  font-family: UbuntuMedium;
+  font-size: 17px;
+  margin-right: 10px;
+}

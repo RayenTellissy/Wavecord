@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { BiSearch } from "react-icons/bi"
 import axios from 'axios';
+import BeatLoader from "react-spinners/BeatLoader"
+import { useDisclosure } from '@chakra-ui/react';
 
 // components
 import Role from './Role/Role';
+import CreateRole from './CreateRole/CreateRole';
 
 // styles
 import "./Roles.css"
 
 const Roles = ({ server }) => {
+  const { isOpen, onOpen, onClose } = useDisclosure()
   const [query,setQuery] = useState("")
   const [roles,setRoles] = useState([])
   const [constantRoles,setConstantRoles] = useState([])
@@ -36,18 +40,6 @@ const Roles = ({ server }) => {
     }
   }
 
-  const removeRole = async (id) => {
-    try {
-      await axios.delete(`${import.meta.env.VITE_SERVER_URL}/servers/removeRole/${id}`,{},{
-        withCredentials: true
-      })
-      fetchRoles()
-    }
-    catch(error){
-      console.log(error)
-    }
-  }
-
   const filterData = () => {
     if(!query){
       return setRoles(constantRoles)
@@ -65,11 +57,13 @@ const Roles = ({ server }) => {
             id='server-settings-roles-search-input'
             type='text'
             placeholder='Search Roles'
+            value={query}
             onChange={e => setQuery(e.target.value)}
+            autoComplete='off'
           />
           <BiSearch id='server-settings-roles-search-input-search-icon' color='#a4aab0' size={25}/>
         </div>
-        <button id='server-settings-roles-create-role'>Create Role</button>
+        <button id='server-settings-roles-create-role' onClick={onOpen}>Create Role</button>
       </div>
       <div id='server-settings-roles-display'>
         <p id='server-settings-roles-number-title'>ROLES - {roles.length}</p>
@@ -81,11 +75,19 @@ const Roles = ({ server }) => {
               name={e.name}
               color={e.color}
               members={e.UsersInServers.length}
-              removeRole={removeRole}
+              fetchRoles={fetchRoles}
             />
           })}
+          {isLoading && <BeatLoader size={8} color='white'/>}
         </div>
       </div>
+      <CreateRole
+        isOpen={isOpen}
+        onClose={onClose}
+        serverId={server.id}
+        fetchRoles={fetchRoles}
+        setQuery={setQuery}
+      />
     </div>
   );
 };

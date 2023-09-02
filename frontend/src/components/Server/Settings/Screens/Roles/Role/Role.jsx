@@ -1,13 +1,30 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { RiShieldUserFill } from "react-icons/ri"
 import { BiSolidUser } from "react-icons/bi"
 import { AiFillDelete } from "react-icons/ai"
 import { Tooltip } from "@chakra-ui/react"
+import axios from 'axios';
+import ScaleLoader from "react-spinners/ScaleLoader"
 
 // styles
 import "./Role.css"
 
-const Role = ({ id, name, color, members, removeRole }) => {
+const Role = ({ id, name, color, members, fetchRoles }) => {
+  const [isDeleting,setIsDeleting] = useState(false)
+
+  const removeRole = async () => {
+    try {
+      setIsDeleting(true)
+      await axios.delete(`${import.meta.env.VITE_SERVER_URL}/servers/removeRole/${id}`,{},{
+        withCredentials: true
+      })
+      fetchRoles()
+      setIsDeleting(false)
+    }
+    catch(error){
+      console.log(error)
+    }
+  }
 
   return (
     <div id='server-settings-roles-onerole-container'>
@@ -33,8 +50,10 @@ const Role = ({ id, name, color, members, removeRole }) => {
           fontFamily="UbuntuMedium"
           openDelay={500}
         >
-          <button onClick={() => removeRole(id)}>
-            <AiFillDelete size={30} color='#da373c'/>
+          <button onClick={removeRole}>
+            {isDeleting
+            ? <ScaleLoader height={17.5} width={2} color='#da373c'/>
+            : <AiFillDelete size={30} color='#da373c'/>}
           </button>
         </Tooltip>
       </div>
