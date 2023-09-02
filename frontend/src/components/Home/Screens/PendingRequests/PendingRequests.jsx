@@ -27,10 +27,7 @@ const PendingRequests = ({ query, setShowSearch }) => {
   },[query])
 
   const filterUsers = () => {
-    if(!query){
-      return setUsers(constantUsers)
-    }
-    setUsers(users.filter(e => e.sender.username.toLowerCase().includes(query.toLowerCase())))
+    setUsers(constantUsers.filter(e => e.sender.username.toLowerCase().includes(query.toLowerCase())))
   }
 
   const fetchRequests = async () => {

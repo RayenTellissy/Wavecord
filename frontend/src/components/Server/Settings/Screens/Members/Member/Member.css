@@ -1,0 +1,31 @@
+#server-settings-members-member-container {
+  padding: 20px;
+  width: 100%;
+  border-top: 1px solid #393b40;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+#server-settings-members-member-avatar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 120px;
+}
+
+#server-settings-members-member-add-button-container {
+  display: flex;
+  align-items: center;
+}
+
+#server-settings-members-member-add-button {
+  padding: 5px;
+  background-color: #232428;
+  border-radius: 7px;
+}
+
+#server-settings-members-member-dots-container {
+  display: flex;
+  align-items: center;
+}

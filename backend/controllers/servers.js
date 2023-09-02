@@ -400,7 +400,10 @@ module.exports = {
 
       const result = await prisma.roles.findMany({
         where: {
-          serverId: serverId
+          serverId: serverId,
+          UsersInServers: {
+            some: {}
+          }
         },
         include: {
           UsersInServers: {
@@ -551,6 +554,31 @@ module.exports = {
           isAdmin: isAdmin,
           serverId: serverId,
           color: roleColor
+        }
+      })
+
+      res.send(result)
+    }
+    catch(error){
+      res.send(error)
+    }
+  },
+
+  fetchMembers: async (req,res) => {
+    try {
+      const { serverId } = req.params
+
+      if(!serverId) return res.send({
+        error: "Missing Information!"
+      })
+
+      const result = await prisma.usersInServers.findMany({
+        where: {
+          serverId: serverId
+        },
+        select: {
+          user: true,
+          role: true
         }
       })
 

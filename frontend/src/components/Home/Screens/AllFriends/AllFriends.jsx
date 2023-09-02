@@ -13,27 +13,29 @@ import "./AllFriends.css"
 const AllFriends = ({ query, setShowSearch }) => {
   const { user } = useContext(Context)
   const [users,setUsers] = useState([])
+  const [constantUsers,setConstantUsers] = useState([])
   const [isLoading,setIsLoading] = useState(true)
   const [isUpdating,setIsUpdating] = useState(false)
   const toast = useToast()
 
   useEffect(() => {
-    return () => setShowSearch(false)
+    fetchUsers()
   },[])
 
   useEffect(() => {
-    fetchUsers()
+    filterUsers()
   },[query])
 
   const fetchUsers = async () => {
     try {
       const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/friends/fetchAllFriends`,{
-        id: user.id,
-        query: query
+        id: user.id
       },{
         withCredentials: true
       })
       setUsers(response.data)
+      setConstantUsers(response.data)
+      
       if(response.data.length !== 0){ 
         setShowSearch(true)
       }
@@ -45,6 +47,10 @@ const AllFriends = ({ query, setShowSearch }) => {
     catch(error){
       console.log(error)
     }
+  }
+
+  const filterUsers = () => {
+    setUsers(constantUsers.filter(e => e.users[0].username.toUpperCase().includes(query.toUpperCase())))
   }
 
   return (

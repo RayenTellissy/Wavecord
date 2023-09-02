@@ -40,11 +40,8 @@ const Roles = ({ server }) => {
     }
   }
 
-  const filterData = () => {
-    if(!query){
-      return setRoles(constantRoles)
-    }
-    setRoles(roles.filter(e => e.name.toUpperCase().includes(query.toUpperCase())))
+  const filterData = async () => {
+    setRoles(constantRoles.filter(e => e.name.toUpperCase().includes(query.toUpperCase())))
   }
 
   return (

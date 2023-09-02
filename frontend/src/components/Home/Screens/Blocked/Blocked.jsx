@@ -27,10 +27,7 @@ const Blocked = ({ query, setShowSearch }) => {
   },[query])
 
   const filterUsers = () => {
-    if(!query){
-      return setUsers(constantUsers)
-    }
-    setUsers(users.filter(e => e.blocked.username.toLowerCase().includes(query.toLowerCase())))
+    setUsers(constantUsers.filter(e => e.blocked.username.toLowerCase().includes(query.toLowerCase())))
   }
 
   const fetchBlocks = async () => {

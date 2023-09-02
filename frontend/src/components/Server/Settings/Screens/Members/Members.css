@@ -1,0 +1,17 @@
+#server-settings-members-container {
+  width: 65%;
+}
+
+#server-settings-members-title {
+  font-family: UbuntuMedium;
+  font-size: 25px;
+}
+
+#server-settings-members-count {
+  font-family: UbuntuRegular;
+  margin: 15px 0px;
+}
+
+#server-settings-members-mapping {
+  margin-top: 25px;
+}

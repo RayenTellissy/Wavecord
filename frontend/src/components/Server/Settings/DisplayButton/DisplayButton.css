@@ -22,3 +22,7 @@
 #server-settings-display-button:active {
   background-color: #3f4248;
 }
+
+.server-settings-display-button-class {
+  margin-bottom: 5px;
+}

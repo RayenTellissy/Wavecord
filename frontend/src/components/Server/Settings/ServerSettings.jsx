@@ -6,6 +6,7 @@ import axios from 'axios';
 import DisplayButton from './DisplayButton/DisplayButton';
 import Overview from './Screens/Overview/Overview';
 import Roles from './Screens/Roles/Roles';
+import Members from './Screens/Members/Members';
 
 // styles
 import "./ServerSettings.css"
@@ -56,7 +57,9 @@ const ServerSettings = () => {
         <div id='server-settings-info'>
           {display === "Overview"
           ? <Overview server={server} fetchData={fetchData}/> 
-          : <Roles server={server}/>}
+          : (display === "Roles"
+          ? <Roles server={server}/>
+          : <Members server={server}/>)}
         </div>
       </div>
     </div>

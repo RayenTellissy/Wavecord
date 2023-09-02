@@ -16,10 +16,15 @@ import "./ContactsBar.css"
 const ContactsBar = ({ highlighted, selected, setSelected }) => {
   const { user } = useContext(Context)
   const [conversations,setConversations] = useState([])
+  const [constantConversations,setConstantConversations] = useState([])
   const [query,setQuery] = useState("")
 
   useEffect(() => {
     fetchConversations()
+  },[])
+
+  useEffect(() => {
+    filterConversations()
   },[query])
 
   const fetchConversations = async () => {
@@ -31,10 +36,15 @@ const ContactsBar = ({ highlighted, selected, setSelected }) => {
         withCredentials: true
       })
       setConversations(conversations.data)
+      setConstantConversations(conversations.data)
     }
     catch(error){
       console.log(error)
     }
+  }
+
+  const filterConversations = () => {
+    setConversations(constantConversations.filter(e => e.users[0].username.toUpperCase().includes(query.toUpperCase())))
   }
 
   return (
