@@ -8,9 +8,9 @@ const sessionMiddleware = session({
   saveUninitialized: false,
   store: MongoStore.create({ mongoUrl: process.env.MONGO_URL, dbName: "sessions" }), // creating a mongodb session store
   cookie: {
-    secure: process.env.ENVIRONMENT === "production" ? true : false,
+    secure: false,
     expires: 604800000, // expires in a week
-    httpOnly: true
+    httpOnly: true,
   },
 })
 
