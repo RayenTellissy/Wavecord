@@ -11,6 +11,7 @@ const sessionMiddleware = session({
     secure: process.env.ENVIRONMENT === "production" ? true : false,
     expires: 604800000, // expires in a week
     httpOnly: false,
+    sameSite: "none"
   },
 })
 
