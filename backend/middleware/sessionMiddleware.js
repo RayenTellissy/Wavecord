@@ -10,8 +10,7 @@ const sessionMiddleware = session({
   cookie: {
     secure: process.env.ENVIRONMENT === "production" ? true : false,
     expires: 604800000, // expires in a week
-    httpOnly: true,
-    sameSite: "lax"
+    httpOnly: false,
   },
 })
 
