@@ -45,6 +45,7 @@ CREATE TABLE "roles" (
     "isAdmin" BOOL NOT NULL,
     "serverId" STRING NOT NULL,
     "color" STRING NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "roles_pkey" PRIMARY KEY ("id")
 );
@@ -72,6 +73,7 @@ CREATE TABLE "UsersInServers" (
     "id" STRING NOT NULL,
     "serverId" STRING NOT NULL,
     "userId" STRING NOT NULL,
+    "rolesId" STRING,
     "joined" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "UsersInServers_pkey" PRIMARY KEY ("id")
@@ -173,6 +175,9 @@ CREATE TABLE "_ConversationsToUsers" (
 CREATE UNIQUE INDEX "Users_username_key" ON "Users"("username");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Servers_server_link_key" ON "Servers"("server_link");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "_FriendsToUsers_AB_unique" ON "_FriendsToUsers"("A", "B");
 
 -- CreateIndex
@@ -210,6 +215,9 @@ ALTER TABLE "UsersInServers" ADD CONSTRAINT "UsersInServers_serverId_fkey" FOREI
 
 -- AddForeignKey
 ALTER TABLE "UsersInServers" ADD CONSTRAINT "UsersInServers_userId_fkey" FOREIGN KEY ("userId") REFERENCES "Users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "UsersInServers" ADD CONSTRAINT "UsersInServers_rolesId_fkey" FOREIGN KEY ("rolesId") REFERENCES "roles"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Server_categories" ADD CONSTRAINT "Server_categories_serverId_fkey" FOREIGN KEY ("serverId") REFERENCES "Servers"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

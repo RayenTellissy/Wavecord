@@ -1,0 +1,19 @@
+#server-settings-members-member-roles-popover-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 10px;
+  width: 100%;
+  border-radius: 4px;
+  color: #b2b7be;
+}
+
+#server-settings-members-member-roles-popover-container:hover {
+  background-color: #393c41;
+  color: white;
+}
+
+#server-settings-members-member-roles-popover-role-name {
+  font-family: UbuntuRegular;
+  margin-left: 10px;
+}

@@ -1,14 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BiPlus, BiDotsVerticalRounded } from "react-icons/bi"
-import { Popover, PopoverBody, PopoverContent, PopoverTrigger } from '@chakra-ui/react';
+import { Popover, PopoverBody, PopoverContent, PopoverTrigger, useDisclosure } from '@chakra-ui/react';
 
 // components
 import Avatar from "../../../../../common/Avatar/Avatar"
+import Role from './Role/Role';
 
 // styles
 import "./Member.css"
 
-const Member = ({ id, username, image, role }) => {
+const Member = ({ id, username, image, role, roles, serverId, fetchMembers }) => {
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const [query,setQuery] = useState("")
+
   return (
     <div id='server-settings-members-member-container'>
       <div id='server-settings-members-member-avatar'>
@@ -20,20 +24,34 @@ const Member = ({ id, username, image, role }) => {
         </p>
       </div>
       <div id='server-settings-members-member-add-button-container'>
-        <Popover>
+        {role ? role.name : <Popover isOpen={isOpen} onClose={onClose}>
           <PopoverTrigger>
-            <button style={{ padding: 5, backgroundColor: '#232428', borderRadius: 7 }}>
+            <button onClick={onOpen} style={{ padding: 5, backgroundColor: '#232428', borderRadius: 7 }}>
               <BiPlus id='server-settings-members-member-add-icon' size={20}/>
             </button>
           </PopoverTrigger>
-          <PopoverContent>
+          <PopoverContent bg="#313338" w={280}>
             <PopoverBody>
               <div>
-                <input placeholder='Role' />
+                <input id='server-setting-members-member-roles-search' placeholder='Role' />
+                <div id='server-settings-members-member-roles-mapping'>
+                  {roles.map((e,i) => {
+                    return <Role
+                      key={i}
+                      id={e.id}
+                      name={e.name}
+                      color={e.color}
+                      userId={id}
+                      onClose={onClose}
+                      serverId={serverId}
+                      fetchMembers={fetchMembers}
+                    />
+                  })}
+                </div>
               </div>
             </PopoverBody>
           </PopoverContent>
-        </Popover>
+        </Popover>}
       </div>
       <div id='server-settings-members-member-dots-container'>
         <BiDotsVerticalRounded size={25}/>

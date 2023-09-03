@@ -29,3 +29,26 @@
   display: flex;
   align-items: center;
 }
+
+#server-setting-members-member-roles-search {
+  background-color: #1e1f22;
+  padding: 5px;
+  padding-left: 10px;
+  width: 100%;
+  border-radius: 4px;
+  font-family: UbuntuRegular;
+}
+
+#server-settings-members-member-roles-mapping {
+  padding-top: 10px;
+  height: 300px;
+  overflow-y: scroll;
+}
+
+#server-settings-members-member-roles-mapping::-webkit-scrollbar {
+  width: 0px;
+}
+
+#server-settings-members-member-roles-mapping::-webkit-scrollbar-thumb {
+  background-color: transparent;
+}

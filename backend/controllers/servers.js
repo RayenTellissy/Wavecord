@@ -587,5 +587,48 @@ module.exports = {
     catch(error){
       res.send(error)
     }
+  },
+  
+  fetchOnlyRoles: async (req,res) => {
+    try {
+      const { serverId } = req.params
+
+      const result = await prisma.roles.findMany({
+        where: {
+          serverId
+        },
+        select: {
+          id: true,
+          name: true,
+          color: true
+        }
+      })
+
+      res.send(result)
+    }
+    catch(error){
+      res.send(error)
+    }
+  },
+
+  giveRole: async (req,res) => {
+    try {
+      const { userId, roleId, serverId } = req.body
+
+      const result = await prisma.usersInServers.updateMany({
+        where: {
+          userId: userId,
+          serverId: serverId
+        },
+        data: {
+          rolesId: roleId
+        }
+      })
+
+      res.send(result)
+    }
+    catch(error){
+      res.send(error)
+    }
   }
 }

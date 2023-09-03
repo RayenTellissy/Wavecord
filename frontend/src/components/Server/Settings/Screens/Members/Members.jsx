@@ -10,11 +10,17 @@ import "./Members.css"
 const Members = ({ server }) => {
   const [users, setUsers] = useState([])
   const [constantUsers, setConstantUsers] = useState([])
+  const [roles,setRoles] = useState([])
   const [query,setQuery] = useState("")
 
   useEffect(() => {
-    fetchMembers()
+    fetchData()
   },[])
+
+  const fetchData = async () => {
+    await fetchMembers()
+    fetchRoles()
+  }
 
   const fetchMembers = async () => {
     try {
@@ -25,6 +31,18 @@ const Members = ({ server }) => {
       setConstantUsers(response.data)
     }
     catch (error) {
+      console.log(error)
+    }
+  }
+
+  const fetchRoles = async () => {
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/servers/fetchOnlyRoles/${server.id}`,{
+        withCredentials: true
+      })
+      setRoles(response.data)
+    }
+    catch(error){
       console.log(error)
     }
   }
@@ -44,6 +62,9 @@ const Members = ({ server }) => {
             username={e.user.username}
             image={e.user.image}
             role={e.role}
+            roles={roles}
+            serverId={server.id}
+            fetchMembers={fetchMembers}
           />
         })}
       </div>
