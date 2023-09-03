@@ -19,6 +19,7 @@ const PORT = 3000 // server port
 
 app.get("/", (req,res) => res.send("")) // heartbeat route
 
+app.set("trust proxy", 1)
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cors({
