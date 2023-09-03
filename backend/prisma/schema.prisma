@@ -30,13 +30,14 @@ model Users {
   blockedUsers           BlockedUsers[]   @relation("blockedUsers")
   blockedByUsers         BlockedUsers[]   @relation("blockedByUsers")
   ServerMessages         ServerMessages[]
+  BugReports             BugReports[]
 }
 
 model Servers {
   id             String              @id @default(cuid())
   name           String
   image          String
-  server_link    String              @default(cuid()) @unique
+  server_link    String              @unique @default(cuid())
   created_at     DateTime            @default(now())
   owner          Users               @relation(fields: [ownerId], references: [id])
   ownerId        String
@@ -158,6 +159,14 @@ model ServerMessages {
   message    String
   type       MessageType   @default(TEXT)
   created_at DateTime      @default(now())
+}
+
+model BugReports {
+  id         String   @id @default(cuid())
+  sender     Users    @relation(fields: [senderId], references: [id])
+  senderId   String
+  message    String
+  created_at DateTime @default(now())
 }
 
 enum Role {

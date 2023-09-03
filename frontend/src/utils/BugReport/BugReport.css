@@ -1,0 +1,38 @@
+#bug-report-button {
+  padding: 15px;
+  background-color: #252525;
+  border-radius: 11px;
+  position: absolute;
+  bottom: 30px;
+  right: 50px;
+}
+
+#bug-report-header-container {
+  display: flex;
+  justify-content: center;
+  font-family: UbuntuMedium;
+  font-size: 25px;
+}
+
+#bug-report-textarea {
+  width: 100%;
+  font-family: UbuntuRegular;
+  padding: 10px;
+}
+
+#bug-report-send-ticket {
+  height: 45px;
+  width: 120px;
+  font-family: UbuntuRegular;
+  border-radius: 4px;
+  background-color: #5865f2;
+  transition: .2s ease;
+}
+
+#bug-report-send-ticket:hover {
+  background-color: #4752c4;
+}
+
+#bug-report-send-ticket:active {
+  background-color: #3c45a5;
+}

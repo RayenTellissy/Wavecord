@@ -4,13 +4,17 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-input:focus {
+input, textarea:focus {
   outline: none;
   caret-color: #0c6cfb;
 }
 
-input::selection {
+input, textarea::selection {
   background-color: #62CAC2;
+}
+
+textarea {
+  resize: none !important;
 }
 
 @font-face {
