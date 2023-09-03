@@ -6,6 +6,8 @@ const morgan = require("morgan")
 const { connect } = require("./prisma/connection")
 const sessionMiddleware = require("./middleware/sessionMiddleware")
 
+app.get("/", (req,res) => res.send("")) // heartbeat route
+
 // routers
 const usersRouter = require("./routes/users")
 const serversRouter = require("./routes/servers")

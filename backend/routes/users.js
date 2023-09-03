@@ -13,13 +13,13 @@ const { loginLimit, signupLimit, resetLimit } = require("../middleware/authLimit
 const authentication = require("../middleware/authentication")
 
 router.get("/login", authenticateSession)
-router.get("/fetch/:id", authentication, fetch)
-router.get("/logout", authentication, logout)
+router.get("/fetch/:id", fetch)
+router.get("/logout", logout)
 
-router.post("/signup", signupLimit, signup)
-router.post("/login", loginLimit, login)
+router.post("/signup", signup)
+router.post("/login", login)
 router.post("/googleLogin/:id", googleLogin)
 router.post("/googleSignup", googleSignup)
-router.post("/reset", resetLimit, reset)
+router.post("/reset", reset)
 
 module.exports = router
