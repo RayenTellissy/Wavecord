@@ -6,7 +6,6 @@ const morgan = require("morgan")
 const { connect } = require("./prisma/connection")
 const sessionMiddleware = require("./middleware/sessionMiddleware")
 
-app.get("/", (req,res) => res.send("")) // heartbeat route
 
 // routers
 const usersRouter = require("./routes/users")
@@ -17,6 +16,8 @@ const bugReportsRouter = require("./routes/bugReports")
 
 const app = express()
 const PORT = 3000 // server port
+
+app.get("/", (req,res) => res.send("")) // heartbeat route
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
