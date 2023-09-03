@@ -19,6 +19,7 @@
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+  border-bottom: 3px solid #3c3f45;
 }
 
 

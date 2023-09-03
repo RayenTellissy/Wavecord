@@ -1,17 +1,26 @@
-import React, { useState } from 'react';
-import { BiPlus, BiDotsVerticalRounded } from "react-icons/bi"
+import React, { useEffect, useState } from 'react';
+import { BiPlus, BiDotsVerticalRounded, BiSearch } from "react-icons/bi"
 import { Popover, PopoverBody, PopoverContent, PopoverTrigger, useDisclosure } from '@chakra-ui/react';
 
 // components
 import Avatar from "../../../../../common/Avatar/Avatar"
 import Role from './Role/Role';
+import HasRole from './HasRole/HasRole';
 
 // styles
 import "./Member.css"
 
-const Member = ({ id, username, image, role, roles, serverId, fetchMembers }) => {
+const Member = ({ id, username, image, role, roles, setRoles, constantRoles, serverId, fetchMembers }) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [query,setQuery] = useState("")
+
+  useEffect(() => {
+    filterRoles()
+  },[query])
+
+  const filterRoles = () => {
+    setRoles(constantRoles.filter(e => e.name.toUpperCase().includes(query.toUpperCase())))
+  }
 
   return (
     <div id='server-settings-members-member-container'>
@@ -24,7 +33,7 @@ const Member = ({ id, username, image, role, roles, serverId, fetchMembers }) =>
         </p>
       </div>
       <div id='server-settings-members-member-add-button-container'>
-        {role ? role.name : <Popover isOpen={isOpen} onClose={onClose}>
+        {role ? <HasRole id={id} serverId={serverId} name={role.name} color={role.color} fetchMembers={fetchMembers}/> : <Popover isOpen={isOpen} onClose={onClose}>
           <PopoverTrigger>
             <button onClick={onOpen} style={{ padding: 5, backgroundColor: '#232428', borderRadius: 7 }}>
               <BiPlus id='server-settings-members-member-add-icon' size={20}/>
@@ -33,7 +42,14 @@ const Member = ({ id, username, image, role, roles, serverId, fetchMembers }) =>
           <PopoverContent bg="#313338" w={280}>
             <PopoverBody>
               <div>
-                <input id='server-setting-members-member-roles-search' placeholder='Role' />
+                <div id='server-settings-members-member-search-container'>
+                  <input
+                    id='server-settings-members-member-roles-search'
+                    placeholder='Role'
+                    onChange={e => setQuery(e.target.value)}
+                  />
+                  <BiSearch id='server-settings-members-member-role-search-icon' size={25}/>
+                </div>
                 <div id='server-settings-members-member-roles-mapping'>
                   {roles.map((e,i) => {
                     return <Role

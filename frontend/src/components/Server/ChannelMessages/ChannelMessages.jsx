@@ -10,6 +10,7 @@ import Topbar from "../Topbar/Topbar"
 
 // styles
 import "./ChannelMessages.css"
+import Twemoji from 'react-twemoji';
 
 const ChannelMessages = ({ serverId, currentTextChannel, currentTextChannelId }) => {
   const { socket } = useContext(Context)
@@ -55,16 +56,18 @@ const ChannelMessages = ({ serverId, currentTextChannel, currentTextChannelId })
           <div id='server-content-main'>
             <Topbar currentTextChannel={currentTextChannel}/>
             <div id='server-messages-channel-messages' ref={messagesContainerRef} >
-              {messages.length !== 0 && messages.map((e,i) => {
-                return <Message
-                key={i}
-                username={e.sender.username}
-                image={e.sender.image}
-                message={e.message}
-                type="TEXT"
-                created_at={e.created_at}
-                />
-              })}
+              <Twemoji options={{ className: 'twemoji' }}>
+                {messages.length !== 0 && messages.map((e,i) => {
+                  return <Message
+                  key={i}
+                  username={e.sender.username}
+                  image={e.sender.image}
+                  message={e.message}
+                  type="TEXT"
+                  created_at={e.created_at}
+                  />
+                })}
+              </Twemoji>
             </div>
             <div id='server-message-input-container'>
               <MessageInput

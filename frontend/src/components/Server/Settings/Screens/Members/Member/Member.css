@@ -30,7 +30,7 @@
   align-items: center;
 }
 
-#server-setting-members-member-roles-search {
+#server-settings-members-member-roles-search {
   background-color: #1e1f22;
   padding: 5px;
   padding-left: 10px;
@@ -51,4 +51,15 @@
 
 #server-settings-members-member-roles-mapping::-webkit-scrollbar-thumb {
   background-color: transparent;
+}
+
+#server-settings-members-member-role-search-icon {
+  position: absolute;
+  right: 20px;
+}
+
+#server-settings-members-member-search-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }

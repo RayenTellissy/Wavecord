@@ -15,3 +15,29 @@
 #server-settings-members-mapping {
   margin-top: 25px;
 }
+
+#server-settings-members-count-input-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#server-settings-members-search-input {
+  padding: 7px 20px;
+  background-color: #1e1f22;
+  border-radius: 4px;
+  font-family: UbuntuRegular;
+}
+
+#server-settings-members-search-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  position: relative;
+}
+
+#server-settings-members-search-input-icon {
+  position: absolute;
+  right: 10px;
+}

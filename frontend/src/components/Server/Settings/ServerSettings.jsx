@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { IoClose } from 'react-icons/io5';
+import { Kbd } from '@chakra-ui/react';
 
 // components
 import DisplayButton from './DisplayButton/DisplayButton';
@@ -15,6 +17,13 @@ const ServerSettings = () => {
   const location = useLocation()
   const [display,setDisplay] = useState("Overview")
   const [server,setServer] = useState(location.state)
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    document.addEventListener("keydown", handleKeyPress)
+    
+    return () => document.removeEventListener("keydown", handleKeyPress)
+  },[])
 
   const fetchData = async () => {
     try {
@@ -23,6 +32,11 @@ const ServerSettings = () => {
     }
     catch(error){
       console.log(error)
+    }
+  }
+  const handleKeyPress = (e) => {
+    if(e.key === "Escape"){
+      navigate(`/server/${server.id}`)
     }
   }
 
@@ -60,6 +74,12 @@ const ServerSettings = () => {
           : (display === "Roles"
           ? <Roles server={server}/>
           : <Members server={server}/>)}
+        <button id='server-settings-leave-button' onClick={() => navigate(`/server/${server.id}`)}>
+          <div id='server-settings-leave-div'>
+            <IoClose size={40} color='#a4a8af'/>
+          </div>
+          <Kbd padding={2}>ESC</Kbd>
+        </button>
         </div>
       </div>
     </div>

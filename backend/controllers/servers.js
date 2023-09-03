@@ -630,5 +630,26 @@ module.exports = {
     catch(error){
       res.send(error)
     }
+  },
+
+  removeRoleFromUser: async (req,res) => {
+    try {
+      const { userId, serverId } = req.body
+
+      const result = await prisma.usersInServers.updateMany({
+        where: {
+          userId,
+          serverId
+        },
+        data: {
+          rolesId: null
+        }
+      })
+
+      res.send(result)
+    }
+    catch(error){
+      res.send(error)
+    }
   }
 }

@@ -21,7 +21,8 @@ const {
   createRole,
   fetchMembers,
   fetchOnlyRoles,
-  giveRole
+  giveRole,
+  removeRoleFromUser
 } = require("../controllers/servers")
 const { createLimit, joinLimit, deleteLimit, leaveLimit } = require("../middleware/serverLimiter")
 const authentication = require("../middleware/authentication")
@@ -47,6 +48,7 @@ router.post("/giveRole", giveRole)
 router.put("/resetServerLink", resetServerLink)
 router.put("/changeServerImage", changeServerImage)
 router.put("/changeServerName", changeServerName)
+router.put("/removeRoleFromUser", removeRoleFromUser)
 
 router.delete("/leave", authentication, leaveLimit, leaveServer)
 router.delete("/delete", deleteServer)

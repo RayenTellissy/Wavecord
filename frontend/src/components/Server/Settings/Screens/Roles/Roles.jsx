@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { BiSearch } from "react-icons/bi"
 import axios from 'axios';
 import BeatLoader from "react-spinners/BeatLoader"
 import { useDisclosure } from '@chakra-ui/react';
+import { BiSearch } from "react-icons/bi"
 
 // components
 import Role from './Role/Role';

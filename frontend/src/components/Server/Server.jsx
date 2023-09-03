@@ -51,6 +51,7 @@ const Server = () => {
   const [privateChecked,setPrivateChecked] = useState(false)
   const [createDisabled,setCreateDisabled] = useState(true)
   const [showDropdown,setShowDropdown] = useState(false)
+  const [bannerLoading,setBannerLoading] = useState(true)
   
   useEffect(() => {
     fetchData()
@@ -60,6 +61,7 @@ const Server = () => {
     try {
       const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/servers/fetch/${id}`)
       setServer(response.data)
+      setBannerLoading(false)
     }
     catch(error){
       console.log(error)
@@ -119,33 +121,33 @@ const Server = () => {
       <Sidebar highlighted={server.id}/>
       <div id='server-bar-container'>
         <div id='server-bar-main'>
-              <Popover
-                placement='bottom'
-                isOpen={isOpenDropdown}
-                onOpen={handlePopoverOpen}
-                onClose={handlePopoverClose}
-              >
-                <PopoverTrigger>
-                  <button id='server-name-container'>
-                    <div id='server-popover-name-icon'>
-                      <p id='server-name'>{server.name}</p>
-                      <div id='server-banner-icon-container'>
-                        {showDropdown ? <MdClose size={22}/> : <RiArrowDropDownLine size={40}/>}
-                      </div>
-                    </div>
-                  </button>
-                </PopoverTrigger>
-                <PopoverContent bgColor="#111214" width={280}>
-                  <PopoverBody>
-                    <AllButtons
-                      ownerId={server.ownerId}
-                      onOpen={onOpenServerLink}
-                      user={user}
-                      server={server}
-                    />
-                  </PopoverBody>
-                </PopoverContent>
-              </Popover>
+          <Popover
+            placement='bottom'
+            isOpen={isOpenDropdown}
+            onOpen={handlePopoverOpen}
+            onClose={handlePopoverClose}
+          >
+            <PopoverTrigger>
+              <button id='server-name-container'>
+                <div id='server-popover-name-icon'>
+                  <p id='server-name'>{server.name}</p>
+                  <div id='server-banner-icon-container'>
+                    {showDropdown ? <MdClose size={22}/> : <RiArrowDropDownLine size={40}/>}
+                  </div>
+                </div>
+              </button>
+            </PopoverTrigger>
+            <PopoverContent bgColor="#111214" width={280}>
+              <PopoverBody>
+                <AllButtons
+                  ownerId={server.ownerId}
+                  onOpen={onOpenServerLink}
+                  user={user}
+                  server={server}
+                />
+              </PopoverBody>
+            </PopoverContent>
+          </Popover>
           <div id='server-category-main-container'>
             {server.categories && server.categories.map((e,i) => {
               return <Category

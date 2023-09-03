@@ -17,7 +17,9 @@
 }
 
 #server-settings-info {
-  margin: 20px 50px
+  margin: 20px 50px;
+  position: relative;
+  width: 80%;
 }
 
 #server-settings-dropdown {
@@ -29,4 +31,17 @@
   font-family: UbuntuMedium;
   color: #86929b;
   margin-left: 9px;
+}
+
+#server-settings-leave-button {
+  position: absolute;
+  right: 0px;
+  top: 30px;
+}
+
+#server-settings-leave-div {
+  border-radius: 50%;
+  border: 2px solid #a4a8af;
+  padding: 5px;
+  margin-bottom: 10px;
 }

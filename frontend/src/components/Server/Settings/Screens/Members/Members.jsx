@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from "axios"
+import { BiSearch } from "react-icons/bi"
+import BeatLoader from 'react-spinners/BeatLoader';
 
 // components
 import Member from './Member/Member';
@@ -11,11 +13,17 @@ const Members = ({ server }) => {
   const [users, setUsers] = useState([])
   const [constantUsers, setConstantUsers] = useState([])
   const [roles,setRoles] = useState([])
+  const [constantRoles,setConstantRoles] = useState([])
   const [query,setQuery] = useState("")
+  const [isLoading,setIsLoading] = useState(true)
 
   useEffect(() => {
     fetchData()
   },[])
+
+  useEffect(() => {
+    filterUsers()
+  },[query])
 
   const fetchData = async () => {
     await fetchMembers()
@@ -29,6 +37,7 @@ const Members = ({ server }) => {
       })
       setUsers(response.data)
       setConstantUsers(response.data)
+      setIsLoading(false)
     }
     catch (error) {
       console.log(error)
@@ -41,18 +50,26 @@ const Members = ({ server }) => {
         withCredentials: true
       })
       setRoles(response.data)
+      setConstantRoles(response.data)
     }
     catch(error){
       console.log(error)
     }
   }
 
+  const filterUsers = () => {
+    setUsers(constantUsers.filter(e => e.user.username.toUpperCase().includes(query.toUpperCase())))
+  }
+
   return (
     <div id='server-settings-members-container'>
       <p id='server-settings-members-title'>Server Members</p>
-      <div>
+      <div id='server-settings-members-count-input-container'>
         <p id='server-settings-members-count'>{constantUsers.length} Members</p>
-        <input placeholder='Search' />
+        <div id='server-settings-members-search-container'>
+          <input id='server-settings-members-search-input' placeholder='Search' onChange={e => setQuery(e.target.value)} />
+          <BiSearch id='server-settings-members-search-input-icon' size={25}/>
+        </div>
       </div>
       <div id='server-settings-members-mapping'>
         {users.map((e,i) => {
@@ -63,10 +80,13 @@ const Members = ({ server }) => {
             image={e.user.image}
             role={e.role}
             roles={roles}
+            setRoles={setRoles}
+            constantRoles={constantRoles}
             serverId={server.id}
             fetchMembers={fetchMembers}
           />
         })}
+        {isLoading && <BeatLoader size={8} color='white'/>}
       </div>
     </div>
   );
