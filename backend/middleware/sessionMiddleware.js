@@ -6,7 +6,8 @@ const sessionMiddleware = session({
   name: "sid",
   resave: false,
   saveUninitialized: true,
-  store: MongoStore.create({ mongoUrl: process.env.MONGO_URL, dbName: "sessions" }), // creating a mongodb session store
+  store: MongoStore.create({ mongoUrl: process.env.MONGO_URL, dbName: "sessions" }), // creating a mongodb session store,
+  proxy: true,
   cookie: {
     secure: process.env.ENVIRONMENT === "production" ? true : false,
     expires: 604800000, // expires in a week
