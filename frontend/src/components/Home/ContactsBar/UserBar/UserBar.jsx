@@ -1,17 +1,18 @@
 import React, { useContext, useEffect, useState } from 'react';
-import axios from 'axios';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faMicrophone, faMicrophoneSlash, faHeadset, faGear } from "@fortawesome/free-solid-svg-icons"
+import axios from 'axios';
 
 // components
-import { Context } from '../../../Context/Context';
 import Avatar from "../../../common/Avatar/Avatar"
+import { Context } from '../../../Context/Context';
 
 // styles
 import "./UserBar.css"
 
 const UserBar = () => {
-  const { user, setUser } = useContext(Context)
+  const { user } = useContext(Context)
+  const [userData,setUserData] = useState({})
 
   useEffect(() => {
     fetchUser()
@@ -19,15 +20,8 @@ const UserBar = () => {
 
   const fetchUser = async () => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/users/fetch/${user.id}`,{
-        withCredentials: true
-      })
-      const result = response.data
-      const fetched = {
-        image: result.image,
-        status: result.status
-      }
-      setUser({ ...user, ...fetched })
+      const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/users/fetchUserbar/${user.id}`)
+      setUserData(response.data)
     }
     catch(error){
       console.log(error)
@@ -39,11 +33,11 @@ const UserBar = () => {
 
       <div id='home-contacts-userbar-avatar-section'>
 
-        <Avatar image={user.image} status={user.status}/>
+        <Avatar image={userData.image} status={userData.status}/>
 
         <div id='home-contacts-userbar-avatar-name-status'>
-          <p id='home-contacts-userbar-username'>{user.username}</p>
-          <p id='home-contacts-userbar-status'>{user.status === "ONLINE" ? "Online" : (user.status === "BUSY" ? "Busy" : "Invisible")}</p>
+          <p id='home-contacts-userbar-username'>{userData.username}</p>
+          <p id='home-contacts-userbar-status'>{userData.status === "ONLINE" ? "Online" : (userData.status === "BUSY" ? "Busy" : "Invisible")}</p>
         </div>
 
       </div>

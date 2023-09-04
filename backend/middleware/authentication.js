@@ -1,8 +1,18 @@
+const jwt = require("jsonwebtoken")
+
 const authentication = ( req, res, next ) => {
-  if(!req.session.user){
-    return res.send("Unauthorized")
+  const token = req.headers.Authorization
+
+  if(!token) return res.send({ error: "Unauthorized" })
+  
+  try {
+    jwt.verify(token, process.env.JWT_SECRET)
+    next()
   }
-  next()
+  catch(error){
+    res.send({ error: "Invalid Token" })
+  }
+
 }
 
 module.exports = authentication

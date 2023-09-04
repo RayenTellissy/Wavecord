@@ -4,8 +4,6 @@ const cors = require("cors")
 const helmet = require("helmet")
 const morgan = require("morgan")
 const { connect } = require("./prisma/connection")
-const sessionMiddleware = require("./middleware/sessionMiddleware")
-
 
 // routers
 const usersRouter = require("./routes/users")
@@ -19,7 +17,6 @@ const PORT = 3000 // server port
 
 app.get("/", (req,res) => res.send("")) // heartbeat route
 
-app.set("trust proxy", 1)
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cors({
@@ -28,7 +25,6 @@ app.use(cors({
 }))
 app.use(helmet()) // securing http requests to the server
 app.use(morgan("dev"))
-app.use(sessionMiddleware) // express session
 connect() // connecting database
 
 // routers

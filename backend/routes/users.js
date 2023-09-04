@@ -7,7 +7,8 @@ const {
   fetch, 
   logout, 
   googleLogin, 
-  googleSignup, 
+  googleSignup,
+  fetchUserbar, 
 } = require("../controllers/users")
 const { loginLimit, signupLimit, resetLimit } = require("../middleware/authLimiter")
 const authentication = require("../middleware/authentication")
@@ -15,6 +16,7 @@ const authentication = require("../middleware/authentication")
 router.get("/login", authenticateSession)
 router.get("/fetch/:id", fetch)
 router.get("/logout", logout)
+router.get("/fetchUserbar/:id", fetchUserbar)
 
 router.post("/signup", signup)
 router.post("/login", login)

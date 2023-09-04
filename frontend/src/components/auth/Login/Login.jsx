@@ -17,8 +17,7 @@ import Facebook from '../../common/FacebookButton/Facebook';
 import "./Login.css"
 
 const Login = () => {
-
-  const { setUser } = useContext(Context)
+  const { setUser, authenticateSession } = useContext(Context)
   const [username,setUsername] = useState("")
   const [password,setPassword] = useState("")
   const [isLoading,setIsLoading] = useState(false)
@@ -73,8 +72,9 @@ const Login = () => {
 
       // if user has been authenticated redirect him
       if(result.success){
-        setUser({ id: result.cookie.user.id, loggedIn: true })
-        navigate("/")
+        localStorage.setItem("token", result.token)
+        localStorage.setItem("id", result.id)
+        setUser({ loggedIn: true, id: result.id })
       }
 
       // response alert

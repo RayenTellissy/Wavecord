@@ -18,13 +18,19 @@ const Sidebar = ({ highlighted }) => {
     fetchServers()
   },[])
 
+  useEffect(() => {
+    console.log(servers)
+  },[servers])
+
   // function to fetch servers for the current user
   const fetchServers = async () => {
     try{
+      console.log(user.id)
       const servers = await axios.get(`${import.meta.env.VITE_SERVER_URL}/servers/fetchByUser/${user.id}`,{
         withCredentials: true
       })
       setServers(servers.data)
+      console.log("Here")
     }
     catch(error){
       console.log(error)

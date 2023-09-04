@@ -6,7 +6,8 @@ const {
 
 const { prisma } = require("../prisma/connection")
 const { auth } = require("../Firebase/FirebaseApp")
-
+const jwt = require("jsonwebtoken") 
+require("dotenv").config()
 
 module.exports = {
 
@@ -26,16 +27,13 @@ module.exports = {
           email: email,
       }})
 
-      // setting a cookie
-      req.session.user = {
+      jwt.sign({
         id: id,
         username: username
-      }
-      
-      res.send({
-        cookie: req.session,
-        success: true,
-        message: "Signed Up."
+      }, process.env.JWT_SECRET, { expiresIn: "7d" },
+      (error,token) => {
+        if(error) return res.send({ loggedIn: false, status: "Something went wrong." })
+        res.send({ loggedIn: true, token, success: true, message: "Signed up."})
       })
     }
     catch(error){
@@ -92,16 +90,12 @@ module.exports = {
   
       const response = await signInWithEmailAndPassword(auth, email, password)
 
-      // setting a cookie
-      req.session.user = {
-        id: response.user.uid,
-        username: username
-      }
-
-      res.send({
-        cookie: req.session,
-        success: true,
-        message: "Logged in.",
+      jwt.sign({
+        id: response.user.uid
+      }, process.env.JWT_SECRET, { expiresIn: "15s" },
+      (error,token) => {
+        if(error) return res.send({ loggedIn: false, status: "Something went wrong." })
+        res.send({ loggedIn: true, id: response.user.uid, token, success: true, message: "Logged in."})
       })
     }
     catch(error){
@@ -246,10 +240,22 @@ module.exports = {
 
   // function to check for cookie on each render
   authenticateSession: async (req,res) => {
-    if(req.session.user){
-      return res.send({ loggedIn: true, id: req.session.user.id, username: req.session.user.username })
+    const token = req.headers["authorization"]?.split(" ")[1]
+
+    if(!token) {
+      return res.send({ loggedIn: false })
     }
-    res.send({ loggedIn: false })
+
+    const decoded = jwt.decode(token, process.env.JWT_SECRET)
+
+    jwt.verify(token, process.env.JWT_SECRET, async (error, token) => {
+      if(error) return res.send({ loggedIn: false })
+      res.send({
+        loggedIn: true,
+        token,
+        id: decoded.id
+      })
+    })
   },
 
   // function to fetch user details
@@ -273,5 +279,27 @@ module.exports = {
       res.send(error)
     }
   },
+
+  fetchUserbar: async (req,res) => {
+    try {
+      const { id } = req.params
+
+      const result = await prisma.users.findFirst({
+        where: {
+          id
+        },
+        select: {
+          username: true,
+          image: true,
+          status: true
+        }
+      })
+
+      res.send(result)
+    }
+    catch(error){
+      console.log(error)
+    }
+  }
 
 }

@@ -6,16 +6,30 @@ import io from "socket.io-client"
 export const Context = createContext()
 
 export const ContextProvider = ({ children }) => {
-  const [user,setUser] = useState({ loggedIn: null })
+  const [user,setUser] = useState({
+    loggedIn: null,
+    token: localStorage.getItem("token"),
+    id: localStorage.getItem("id")
+  })
   const [socket,setSocket] = useState(null)
 
   useEffect(() => {
     authenticateSession()
     handleSocket()
   },[])
+
+  useEffect(() => {
+    console.log(user)
+  },[user])
+
   
   const authenticateSession = async () => {
-    const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/users/login`, { withCredentials: true })
+    const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/users/login`, {
+      withCredentials: true,
+      headers: {
+        "Authorization": `Bearer ${user.token}`
+      }
+    })
     setUser(response.data)
   }
 
@@ -25,7 +39,7 @@ export const ContextProvider = ({ children }) => {
   }
 
   return (
-    <Context.Provider value={{ user, setUser, socket }}>
+    <Context.Provider value={{ user, setUser, socket, authenticateSession }}>
       {children}
     </Context.Provider>
   )
