@@ -2,11 +2,6 @@
   from = "/*"
   to = "/index.html"
   status = 200
-[[redirects]]
-  from = "/users/*"
-  to = "https://wavecord.onrender.com/:splat"
-  status = 200
-  force = true
 [[headers]]
   for = "/*"
     [headers.values]
