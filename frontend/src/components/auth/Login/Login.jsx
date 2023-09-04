@@ -61,6 +61,7 @@ const Login = () => {
     console.log("0")
     try {
       setIsLoading(true)
+      console.log("0.5")
       const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/users/login`,{
         username: username,
         password: password
