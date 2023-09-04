@@ -65,7 +65,6 @@ const Login = () => {
         password: password
       },{
         withCredentials: true,
-        method: "POST"
       })
 
       setIsLoading(false)
