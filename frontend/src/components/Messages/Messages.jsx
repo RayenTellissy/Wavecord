@@ -16,27 +16,20 @@ import MessageInput from '../common/MessageInput/MessageInput';
 import "./Messages.css"
 
 const Messages = () => {
-  const { user, socket } = useContext(Context)
+  const { user, socket, conversationChosen } = useContext(Context)
   const { id } = useParams() // conversation's id
   const [conversationType,setConversationType] = useState("")
   const [messages,setMessages] = useState([])
-  const [otherUsers,setOtherUsers] = useState([])
-  const [conversationName,setConversationName] = useState("")
   const [isLoading,setIsLoading] = useState(true)
   const messagesContainerRef = useRef(null)
   const navigate = useNavigate()
   
   // handling conversation switching
   useEffect(() => {
-    fetchOtherUsers()
     fetchMessages()
     socket.emit("join_room", id) // emitting a join room event to the socket server
     scrollToBottom()
   },[id])
-
-  useEffect(() => {
-    handleConversationName()
-  },[otherUsers])
 
   // socket watching to update messages upon receiving socket
   useEffect(() => {
@@ -72,27 +65,6 @@ const Messages = () => {
     }
   }
 
-  const fetchOtherUsers = async () => {
-    try {
-      const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/conversations/fetchOtherUsers`,{
-        conversationId: id,
-        userId: user.id
-      },{
-        withCredentials: true
-      })
-      setOtherUsers(response.data.users)
-    }
-    catch(error){
-      console.log(error)
-    }
-  }
-
-  const handleConversationName = () => {
-    if(conversationType === "DIRECT"){
-      setConversationName(otherUsers[0].username)
-    }
-  }
-
   const scrollToBottom = () => {
     messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight
   }
@@ -105,14 +77,11 @@ const Messages = () => {
       <div id='dm-conversation-container'>
 
         <div id='messages-top-bar'>
-          {!isLoading && otherUsers.map((e,i) => {
-            return <OtherUsers 
-              key={i} 
-              image={e.image} 
-              username={conversationName} 
-              status={e.status} 
-            />
-          })}
+          <OtherUsers 
+            image={conversationChosen.image}
+            username={conversationChosen.username}
+            status={conversationChosen.status} 
+          />
         </div>
 
         <div id='dm-messages-container' ref={messagesContainerRef}>
@@ -133,10 +102,11 @@ const Messages = () => {
 
         <div id='dm-conversation-input-container'>
           <MessageInput
-            conversationName={conversationName}
+            conversationName={conversationChosen.username}
             setMessages={setMessages}
             scrollToBottom={scrollToBottom}
             conversationType="dm"
+            user={user}
           />
         </div>
         

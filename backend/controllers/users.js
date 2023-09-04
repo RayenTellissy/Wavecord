@@ -1,3 +1,4 @@
+require("dotenv").config()
 const {
    createUserWithEmailAndPassword, 
    signInWithEmailAndPassword, 
@@ -7,7 +8,7 @@ const {
 const { prisma } = require("../prisma/connection")
 const { auth } = require("../Firebase/FirebaseApp")
 const jwt = require("jsonwebtoken") 
-require("dotenv").config()
+const { generateAccessToken, generateRefreshToken } = require("../utils/generateTokens")
 
 module.exports = {
 
@@ -27,13 +28,19 @@ module.exports = {
           email: email,
       }})
 
-      jwt.sign({
+      const token = generateAccessToken({ id })
+      const refreshToken = generateRefreshToken({ id })
+
+      res.send({
+        loggedIn: true,
         id: id,
-        username: username
-      }, process.env.JWT_SECRET, { expiresIn: "7d" },
-      (error,token) => {
-        if(error) return res.send({ loggedIn: false, status: "Something went wrong." })
-        res.send({ loggedIn: true, token, success: true, message: "Signed up."})
+        username: username,
+        image: null,
+        status: "ONLINE",
+        token,
+        refreshToken,
+        success: true,
+        message: "Signed up."
       })
     }
     catch(error){
@@ -85,17 +92,23 @@ module.exports = {
           message: "User not found."
         })
       }
-  
       const email = user.email
   
       const response = await signInWithEmailAndPassword(auth, email, password)
 
-      jwt.sign({
-        id: response.user.uid
-      }, process.env.JWT_SECRET, { expiresIn: "15s" },
-      (error,token) => {
-        if(error) return res.send({ loggedIn: false, status: "Something went wrong." })
-        res.send({ loggedIn: true, id: response.user.uid, token, success: true, message: "Logged in."})
+      const token = generateAccessToken({ id: response.user.uid })
+      const refreshToken = generateRefreshToken({ id: response.user.uid })
+
+      res.send({
+        loggedIn: true,
+        id: response.user.uid,
+        username: user.username,
+        image: user.image,
+        status: user.status,
+        token,
+        refreshToken,
+        success: true,
+        message: "Logged in."
       })
     }
     catch(error){
@@ -238,24 +251,80 @@ module.exports = {
     }
   },
 
-  // function to check for cookie on each render
-  authenticateSession: async (req,res) => {
-    const token = req.headers["authorization"]?.split(" ")[1]
+  authenticateSession: async (req, res) => {
+    const accessToken = req.headers.authorization
+    const refreshToken = req.headers["x-refresh-token"]
 
-    if(!token) {
+    if (!accessToken || !refreshToken){
       return res.send({ loggedIn: false })
     }
 
-    const decoded = jwt.decode(token, process.env.JWT_SECRET)
+    const decoded = jwt.decode(accessToken, process.env.JWT_SECRET)
+    const now = Date.now() / 1000
 
-    jwt.verify(token, process.env.JWT_SECRET, async (error, token) => {
-      if(error) return res.send({ loggedIn: false })
-      res.send({
-        loggedIn: true,
-        token,
-        id: decoded.id
+    // Checking if access token has expired
+    if (decoded?.exp < now) {
+      jwt.verify(refreshToken, process.env.REFRESH_TOKEN, async (error) => {
+        if (error) {
+          return res.send({ loggedIn: false })
+        }
+
+        // Generate a new access token
+        const newAccessToken = generateAccessToken({ id: decoded.id })
+
+        try {
+          const user = await prisma.users.findFirst({
+            where: {
+              id: decoded?.id
+            },
+            select: {
+              username: true,
+              image: true,
+              status: true
+            }
+          })
+
+          return res.send({
+            loggedIn: true,
+            token: newAccessToken,
+            id: decoded.id,
+            username: user.username,
+            image: user.image,
+            status: user.status
+          })
+        }
+        catch(error){
+          return res.send({ error: 'An error occurred while fetching user data' })
+        }
       })
-    })
+    }
+    else {
+      // access token hasn't expired, no need to refresh
+      try {
+        const user = await prisma.users.findFirst({
+          where: {
+            id: decoded?.id
+          },
+          select: {
+            username: true,
+            image: true,
+            status: true
+          }
+        })
+
+        return res.send({
+          loggedIn: true,
+          token: accessToken,
+          id: decoded.id,
+          username: user.username,
+          image: user.image,
+          status: user.status
+        })
+      }
+      catch(error){
+        return res.send({ error: 'An error occurred while fetching user data' })
+      }
+    }
   },
 
   // function to fetch user details

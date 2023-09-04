@@ -58,7 +58,6 @@ const Login = () => {
 
   // login function
   const handleSubmit = async () => {
-
     try {
       setIsLoading(true)
       const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/users/login`,{
@@ -73,8 +72,9 @@ const Login = () => {
       // if user has been authenticated redirect him
       if(result.success){
         localStorage.setItem("token", result.token)
+        localStorage.setItem("refreshToken", result.refreshToken)
         localStorage.setItem("id", result.id)
-        setUser({ loggedIn: true, id: result.id })
+        setUser(response.data)
       }
 
       // response alert

@@ -12,12 +12,10 @@
   "license": "ISC",
   "dependencies": {
     "@prisma/client": "^5.1.1",
-    "connect-mongo": "^5.0.0",
     "cors": "^2.8.5",
     "cuid": "^3.0.0",
     "express": "^4.18.2",
     "express-rate-limit": "^6.7.0",
-    "express-session": "^1.17.3",
     "firebase": "^9.23.0",
     "helmet": "^7.0.0",
     "jsonwebtoken": "^9.0.2",

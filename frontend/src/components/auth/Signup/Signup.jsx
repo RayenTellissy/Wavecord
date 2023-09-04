@@ -62,7 +62,6 @@ const Signup = () => {
   }
 
   const handleSubmit = async () => {
-
     try{
       setIsLoading(true)
   
@@ -76,10 +75,11 @@ const Signup = () => {
   
       const result = response.data
   
-      // if user has been authenticated move redirect him
       if (result.success) {
-        setUser({ loggedIn: true, id: result.cookie.user.id })
-        navigate("/")
+        localStorage.setItem("token", result.token)
+        localStorage.setItem("refreshToken", result.refreshToken)
+        localStorage.setItem("id", result.id)
+        setUser(response.data)
       }
   
       toast({

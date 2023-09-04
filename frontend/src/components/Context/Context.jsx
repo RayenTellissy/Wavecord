@@ -12,24 +12,22 @@ export const ContextProvider = ({ children }) => {
     id: localStorage.getItem("id")
   })
   const [socket,setSocket] = useState(null)
+  const [conversationChosen,setConversationChosen] = useState({})
 
   useEffect(() => {
     authenticateSession()
     handleSocket()
   },[])
 
-  useEffect(() => {
-    console.log(user)
-  },[user])
-
-  
   const authenticateSession = async () => {
     const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/users/login`, {
       withCredentials: true,
       headers: {
-        "Authorization": `Bearer ${user.token}`
+        "authorization": user.token,
+        "x-refresh-token": localStorage.getItem("refreshToken")
       }
     })
+    localStorage.setItem("token", response.data.token)
     setUser(response.data)
   }
 
@@ -39,7 +37,7 @@ export const ContextProvider = ({ children }) => {
   }
 
   return (
-    <Context.Provider value={{ user, setUser, socket, authenticateSession }}>
+    <Context.Provider value={{ user, setUser, socket, conversationChosen, setConversationChosen }}>
       {children}
     </Context.Provider>
   )

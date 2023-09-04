@@ -24,8 +24,8 @@ import Emoji from '../Emoji/Emoji';
 // styles
 import "./MessageInput.css"
 
-const MessageInput = ({ conversationName, setMessages, conversationType, channelId }) => {
-  const { user, socket } = useContext(Context)
+const MessageInput = ({ user, conversationName, setMessages, conversationType, channelId }) => {
+  const { socket } = useContext(Context)
   const { id } = useParams()
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [showEmoji,setShowEmoji] = useState(false)
@@ -40,9 +40,10 @@ const MessageInput = ({ conversationName, setMessages, conversationType, channel
     setMessage("")
     
     if(conversationType === "dm"){
+      console.log(user)
       const messageDetails = {
         conversation: id,
-        usersId: { 
+        usersId: {
           username: user.username,
           image: user.image
         },

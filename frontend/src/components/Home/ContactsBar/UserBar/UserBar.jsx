@@ -1,7 +1,6 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faMicrophone, faMicrophoneSlash, faHeadset, faGear } from "@fortawesome/free-solid-svg-icons"
-import axios from 'axios';
 
 // components
 import Avatar from "../../../common/Avatar/Avatar"
@@ -12,32 +11,17 @@ import "./UserBar.css"
 
 const UserBar = () => {
   const { user } = useContext(Context)
-  const [userData,setUserData] = useState({})
-
-  useEffect(() => {
-    fetchUser()
-  },[])
-
-  const fetchUser = async () => {
-    try {
-      const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/users/fetchUserbar/${user.id}`)
-      setUserData(response.data)
-    }
-    catch(error){
-      console.log(error)
-    }
-  }
 
   return (
     <div id='home-contacts-userbar-container'>
 
       <div id='home-contacts-userbar-avatar-section'>
 
-        <Avatar image={userData.image} status={userData.status}/>
+        <Avatar image={user.image} status={user.status}/>
 
         <div id='home-contacts-userbar-avatar-name-status'>
-          <p id='home-contacts-userbar-username'>{userData.username}</p>
-          <p id='home-contacts-userbar-status'>{userData.status === "ONLINE" ? "Online" : (userData.status === "BUSY" ? "Busy" : "Invisible")}</p>
+          <p id='home-contacts-userbar-username'>{user.username}</p>
+          <p id='home-contacts-userbar-status'>{user.status === "ONLINE" ? "Online" : (user.status === "BUSY" ? "Busy" : "Invisible")}</p>
         </div>
 
       </div>

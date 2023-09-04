@@ -58,7 +58,9 @@ const ContactsBar = ({ highlighted, selected, setSelected }) => {
       </div>
 
       <DirectMessagesText id={user.id} fetchConversations={fetchConversations}/>
-      <Conversations conversations={conversations} highlighted={highlighted}/>
+      <Conversations
+        conversations={conversations}
+        highlighted={highlighted}/>
       <UserBar/>
 
     </div>

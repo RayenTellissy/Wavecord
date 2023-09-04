@@ -8,6 +8,7 @@ import Avatar from '../common/Avatar/Avatar';
 import "./Messages.css"
 
 const Message = ({ username, image, message, type, created_at }) => {
+  console.log(username)
   return (
     <div id='message-container'>
       <div>
