@@ -20,6 +20,7 @@ app.get("/", (req,res) => res.send("")) // heartbeat route
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cors({
+  credentials: true,
   origin: process.env.CLIENT_URL
 }))
 app.use(helmet()) // securing http requests to the server
