@@ -58,13 +58,14 @@ const Login = () => {
 
   // login function
   const handleSubmit = async () => {
+    console.log("0")
     try {
       setIsLoading(true)
       const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/users/login`,{
         username: username,
         password: password
       }, { withCredentials: true })
-
+      console.log("1")
       setIsLoading(false)
 
       const result = response.data
@@ -76,7 +77,7 @@ const Login = () => {
         localStorage.setItem("wavecord-id", result.id)
         setUser(response.data)
       }
-
+      console.log("2")
       // response alert
       toast({
         title: result.success ? "Success" : "Failed",
