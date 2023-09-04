@@ -22,7 +22,6 @@ app.use(express.urlencoded({ extended: true }))
 app.use(cors({
   credentials: true,
   origin: process.env.CLIENT_URL,
-  methods: ["GET", "POST", "PUT", "DELETE"]
 }))
 app.use(helmet()) // securing http requests to the server
 app.use(morgan("dev"))
