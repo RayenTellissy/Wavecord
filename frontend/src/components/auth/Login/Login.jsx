@@ -17,7 +17,7 @@ import Facebook from '../../common/FacebookButton/Facebook';
 import "./Login.css"
 
 const Login = () => {
-  const { setUser, authenticateSession } = useContext(Context)
+  const { setUser } = useContext(Context)
   const [username,setUsername] = useState("")
   const [password,setPassword] = useState("")
   const [isLoading,setIsLoading] = useState(false)
@@ -58,15 +58,13 @@ const Login = () => {
 
   // login function
   const handleSubmit = async () => {
-    console.log("0")
     try {
       setIsLoading(true)
-      console.log("0.5")
       const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/users/login`,{
         username: username,
         password: password
       })
-      console.log("1")
+
       setIsLoading(false)
 
       const result = response.data
@@ -78,7 +76,7 @@ const Login = () => {
         localStorage.setItem("wavecord-id", result.id)
         setUser(response.data)
       }
-      console.log("2")
+
       // response alert
       toast({
         title: result.success ? "Success" : "Failed",
