@@ -71,9 +71,9 @@ const Login = () => {
 
       // if user has been authenticated redirect him
       if(result.success){
-        localStorage.setItem("token", result.token)
-        localStorage.setItem("refreshToken", result.refreshToken)
-        localStorage.setItem("id", result.id)
+        localStorage.setItem("wavecord-token", result.token)
+        localStorage.setItem("wavecord-refreshToken", result.refreshToken)
+        localStorage.setItem("wavecord-id", result.id)
         setUser(response.data)
       }
 

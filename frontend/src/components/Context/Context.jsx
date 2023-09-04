@@ -8,8 +8,8 @@ export const Context = createContext()
 export const ContextProvider = ({ children }) => {
   const [user,setUser] = useState({
     loggedIn: null,
-    token: localStorage.getItem("token"),
-    id: localStorage.getItem("id")
+    token: localStorage.getItem("wavecord-token"),
+    id: localStorage.getItem("wavecord-id")
   })
   const [socket,setSocket] = useState(null)
   const [conversationChosen,setConversationChosen] = useState({})
@@ -24,10 +24,10 @@ export const ContextProvider = ({ children }) => {
       withCredentials: true,
       headers: {
         "authorization": user.token,
-        "x-refresh-token": localStorage.getItem("refreshToken")
+        "x-refresh-token": localStorage.getItem("wavecord-refreshToken")
       }
     })
-    localStorage.setItem("token", response.data.token)
+    localStorage.setItem("wavecord-token", response.data.token)
     setUser(response.data)
   }
 
