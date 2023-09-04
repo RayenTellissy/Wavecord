@@ -64,10 +64,7 @@ const Login = () => {
         username: username,
         password: password
       },{
-        headers: {
-          'Access-Control-Allow-Origin' : '*',
-          'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
-        }
+        withCredentials: true
       })
 
       setIsLoading(false)
