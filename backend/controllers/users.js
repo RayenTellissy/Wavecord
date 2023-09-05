@@ -98,14 +98,17 @@ module.exports = {
       // const token = generateAccessToken({ id: response.user.uid })
       // const refreshToken = generateRefreshToken({ id: response.user.uid })
 
+      const token = jwt.sign({ id: response.user.uid }, process.env.JWT_SECRET, { expiresIn: "1m" })
+      const refreshToken = jwt.sign({ id: response.user.uid }, process.env.JWT_SECRET, { expiresIn: "5d" })
+
       res.send({
         loggedIn: true,
         id: response.user.uid,
         username: user.username,
         image: user.image,
         status: user.status,
-        // token,
-        // refreshToken,
+        token,
+        refreshToken,
         success: true,
         message: "Logged in."
       })
