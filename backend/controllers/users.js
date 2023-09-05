@@ -95,8 +95,8 @@ module.exports = {
   
       const response = await signInWithEmailAndPassword(auth, email, password)
 
-      const token = generateAccessToken({ id: response.user.uid })
-      const refreshToken = generateRefreshToken({ id: response.user.uid })
+      // const token = generateAccessToken({ id: response.user.uid })
+      // const refreshToken = generateRefreshToken({ id: response.user.uid })
 
       res.send({
         loggedIn: true,
@@ -104,8 +104,8 @@ module.exports = {
         username: user.username,
         image: user.image,
         status: user.status,
-        token,
-        refreshToken,
+        // token,
+        // refreshToken,
         success: true,
         message: "Logged in."
       })
