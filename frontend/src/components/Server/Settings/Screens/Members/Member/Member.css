@@ -11,7 +11,7 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  width: 120px;
+  width: 150px;
 }
 
 #server-settings-members-member-add-button-container {
@@ -43,6 +43,9 @@
   padding-top: 10px;
   height: 300px;
   overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 #server-settings-members-member-roles-mapping::-webkit-scrollbar {
@@ -62,4 +65,32 @@
   display: flex;
   flex-direction: row;
   align-items: center;
+}
+
+.server-settings-members-member-dots-red-button {
+  color: #ce373a;
+  width: 100%;
+  text-align: left;
+  padding: 6px;
+  border-radius: 2px;
+  font-family: UbuntuRegular;
+  padding-left: 10px;
+  margin-bottom: 3px;
+}
+
+.server-settings-members-member-dots-red-button-active {
+  color: #ce373a;
+  width: 100%;
+  padding: 6px;
+  border-radius: 2px;
+  font-family: UbuntuRegular;
+  padding-left: 10px;
+  margin-bottom: 3px;
+  display: flex;
+  justify-content: center;
+}
+
+.server-settings-members-member-dots-red-button:hover {
+  background-color: #ce373a;
+  color: white;
 }

@@ -18,7 +18,6 @@ import "./Messages.css"
 const Messages = () => {
   const { user, socket, conversationChosen } = useContext(Context)
   const { id } = useParams() // conversation's id
-  const [conversationType,setConversationType] = useState("")
   const [messages,setMessages] = useState([])
   const [isLoading,setIsLoading] = useState(true)
   const messagesContainerRef = useRef(null)
@@ -56,7 +55,6 @@ const Messages = () => {
       if(response.data.authorized === false){
         navigate("/")
       }
-      setConversationType(response.data.type)
       setMessages(response.data.DirectMessages)
       setIsLoading(false)
     }

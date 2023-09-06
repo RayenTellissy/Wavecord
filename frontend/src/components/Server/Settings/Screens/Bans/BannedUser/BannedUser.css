@@ -1,0 +1,25 @@
+#server-settings-bans-banned-user {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px;
+  border-radius: 11px;
+  background-color: #3f4147;
+  transition: .2s ease;
+  font-family: UbuntuRegular;
+}
+
+#server-settings-bans-banned-user:hover {
+  background-color: #393c41;
+}
+
+#server-settings-bans-avatar-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+#server-settings-bans-unban-button {
+  margin-right: 10px;
+}

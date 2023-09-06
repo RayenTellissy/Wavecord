@@ -9,6 +9,7 @@ import DisplayButton from './DisplayButton/DisplayButton';
 import Overview from './Screens/Overview/Overview';
 import Roles from './Screens/Roles/Roles';
 import Members from './Screens/Members/Members';
+import Bans from './Screens/Bans/Bans';
 
 // styles
 import "./ServerSettings.css"
@@ -73,7 +74,7 @@ const ServerSettings = () => {
           ? <Overview server={server} fetchData={fetchData}/> 
           : (display === "Roles"
           ? <Roles server={server}/>
-          : <Members server={server}/>)}
+          : (display === "Members" ? <Members server={server}/> : <Bans server={server}/> ))}
         <button id='server-settings-leave-button' onClick={() => navigate(`/server/${server.id}`)}>
           <div id='server-settings-leave-div'>
             <IoClose size={40} color='#a4a8af'/>

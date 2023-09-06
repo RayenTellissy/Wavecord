@@ -53,7 +53,7 @@ module.exports = {
       res.send(result)
     }
     catch(error){
-      console.log(error)
+      res.send(error)
     }
   },
 
@@ -212,6 +212,14 @@ module.exports = {
           message: "You are already a member of this server.",
         })
       }
+
+      const banCheck = await prisma.bans.findFirst({
+        where: {
+          serverId,
+          userId
+        }
+      })
+      if(banCheck) return res.send({ status: "BANNED", error: "You are banned from this server." })
     
       await prisma.usersInServers.create({
         data: {
@@ -227,7 +235,7 @@ module.exports = {
       })
     }
     catch(error){
-
+      res.send(error)
     }
   },
 
@@ -634,9 +642,55 @@ module.exports = {
 
   removeRoleFromUser: async (req,res) => {
     try {
-      const { userId, serverId } = req.body
+      const { removerId, userId, serverId } = req.body
+      
+      const userIsAdmin = await prisma.usersInServers.findFirst({
+        where: {
+          userId,
+          serverId
+        },
+        select: {
+          role: true
+        }
+      })
 
-      const result = await prisma.usersInServers.updateMany({
+      if(!userIsAdmin){
+        const removerRole = await prisma.usersInServers.findFirst({
+          where: {
+            userId: removerId,
+            serverId,
+          },
+          select: {
+            role: true
+          }
+        })
+        if(removerRole.role.isAdmin){
+          const result = await prisma.usersInServers.updateMany({
+            where: {
+              userId,
+              serverId
+            },
+            data: {
+              rolesId: null
+            }
+          })
+          return res.send(result)
+        }
+        return res.send({ error: "You do not have admin privileges in this server." })
+      }
+
+      const removerOwnerCheck = await prisma.usersInServers.findFirst({
+        where: {
+          userId: removerId,
+          serverId,
+          server: {
+            ownerId: removerId
+          }
+        }
+      })
+      if(!removerOwnerCheck) return res.send({ error: "Admins cannot kick other Admins."})
+
+      await prisma.usersInServers.updateMany({
         where: {
           userId,
           serverId
@@ -645,8 +699,173 @@ module.exports = {
           rolesId: null
         }
       })
+      res.send({ success: true })
+    }
+    catch(error){
+      res.send(error)
+    }
+  },
+
+  kickUser: async (req,res) => {
+    try {
+      const { kicker, kicked, serverId } = req.body
+
+      // checking if the kicker is an admin
+      const adminCheck = await prisma.usersInServers.findFirst({
+        where: {
+          userId: kicker,
+          serverId,
+          OR: [
+            {
+              role: {
+                isAdmin: true
+              }
+            },
+            {
+              server: {
+                ownerId: kicker
+              }
+            }
+          ]
+        }
+      })
+      if(!adminCheck) return res.send({ error: "You do not have admin privileges in this server."})
+
+      // checking if the user to be kicked is an admin
+      const kickedAdminCheck = await prisma.usersInServers.findFirst({
+        where: {
+          userId: kicked,
+          serverId,
+          role: {
+            isAdmin: true
+          }
+        }
+      })
+      if(kickedAdminCheck) return res.send({ error: "Admins cannot be kicked."})
+
+      await prisma.usersInServers.deleteMany({
+        where: {
+          userId: kicked,
+          serverId
+        }
+      })
+      
+      res.send({ success: true, message: `user ${kicked} has been kicked.` })
+    }
+    catch(error){
+      res.send(error)
+    }
+  },
+
+  fetchBannedUsers: async (req,res) => {
+    try {
+      const { serverId } = req.params
+
+      const result = await prisma.bans.findMany({
+        where: {
+          serverId
+        },
+        select: {
+          user: true
+        }
+      })
 
       res.send(result)
+    }
+    catch(error){
+      res.send(error)
+    }
+  },
+
+  banUser: async (req,res) => {
+    try {
+      const { banner, banned, serverId } = req.body
+
+      // checking if the banner is an admin
+      const adminCheck = await prisma.usersInServers.findFirst({
+        where: {
+          userId: banner,
+          serverId,
+          OR: [
+            {
+              role: {
+                isAdmin: true
+              }
+            },
+            {
+              server: {
+                ownerId: banner
+              }
+            }
+          ]
+        }
+      })
+      if(!adminCheck) return res.send({ error: "You do not have admin privileges in this server." })
+
+      const bannedAdminCheck = await prisma.usersInServers.findFirst({
+        where: {
+          userId: banned,
+          serverId,
+          role: {
+            isAdmin: true
+          }
+        }
+      })
+      if(bannedAdminCheck) return res.send({ error: "Admins cannot be banned." })
+      
+      await prisma.usersInServers.deleteMany({
+        where: {
+          userId: banned,
+          serverId
+        }
+      })
+
+      await prisma.bans.create({
+        data: {
+          userId: banned,
+          serverId
+        }
+      })
+
+      res.send({ success: true, message: `user ${banned} has been banned. ` })
+    }
+    catch(error){
+      res.send(error)
+    }
+  },
+
+  unbanUser: async (req,res) => {
+    try {
+      const { remover, removed, serverId } = req.body
+
+      const removerAdminCheck = await prisma.usersInServers.findFirst({
+        where: {
+          userId: remover,
+          serverId,
+          OR: [
+            {
+              role: {
+                isAdmin: true
+              }
+            },
+            {
+              server: {
+                ownerId: remover
+              }
+            }
+          ]
+        }
+      })
+      if(!removerAdminCheck) return res.send({ error: "You do not have admin privileges." })
+
+      await prisma.bans.deleteMany({
+        where: {
+          userId: removed,
+          serverId
+        }
+      })
+
+      res.send({ success: true, message: `User ${removed} has been unbanned.` })
     }
     catch(error){
       res.send(error)

@@ -1,15 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import axios from "axios"
 import { BiSearch } from "react-icons/bi"
 import BeatLoader from 'react-spinners/BeatLoader';
 
 // components
 import Member from './Member/Member';
+import { Context } from "../../../../Context/Context"
 
 // styles
 import "./Members.css"
 
 const Members = ({ server }) => {
+  const { user } = useContext(Context)
   const [users, setUsers] = useState([])
   const [constantUsers, setConstantUsers] = useState([])
   const [roles,setRoles] = useState([])
@@ -32,9 +34,7 @@ const Members = ({ server }) => {
 
   const fetchMembers = async () => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/servers/fetchMembers/${server.id}`, {
-        withCredentials: true
-      })
+      const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/servers/fetchMembers/${server.id}`)
       setUsers(response.data)
       setConstantUsers(response.data)
       setIsLoading(false)
@@ -46,9 +46,7 @@ const Members = ({ server }) => {
 
   const fetchRoles = async () => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/servers/fetchOnlyRoles/${server.id}`,{
-        withCredentials: true
-      })
+      const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/servers/fetchOnlyRoles/${server.id}`)
       setRoles(response.data)
       setConstantRoles(response.data)
     }
@@ -64,13 +62,13 @@ const Members = ({ server }) => {
   return (
     <div id='server-settings-members-container'>
       <p id='server-settings-members-title'>Server Members</p>
-      <div id='server-settings-members-count-input-container'>
+      {!isLoading && <div id='server-settings-members-count-input-container'>
         <p id='server-settings-members-count'>{constantUsers.length} Members</p>
         <div id='server-settings-members-search-container'>
           <input id='server-settings-members-search-input' placeholder='Search' onChange={e => setQuery(e.target.value)} />
           <BiSearch id='server-settings-members-search-input-icon' size={25}/>
         </div>
-      </div>
+      </div>}
       <div id='server-settings-members-mapping'>
         {users.map((e,i) => {
           return <Member
@@ -84,6 +82,7 @@ const Members = ({ server }) => {
             constantRoles={constantRoles}
             serverId={server.id}
             fetchMembers={fetchMembers}
+            user={user}
           />
         })}
         {isLoading && <BeatLoader size={8} color='white'/>}

@@ -39,9 +39,17 @@ const Join = ({ onClose, setScreen }) => {
     const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/join`,{
       userId: user.id,
       invite
-    },{
-      withCredentials: true
     })
+
+    if(response.data.status === "BANNED"){
+      onClose()
+      return toast({
+        title: response.data.error,
+        status: "error",
+        duration: 1500,
+        position: "top"
+      })
+    }
 
     // if user is already a member return this alert
     if(!response.data.success){

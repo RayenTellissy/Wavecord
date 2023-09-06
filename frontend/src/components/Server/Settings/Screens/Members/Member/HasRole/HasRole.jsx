@@ -7,14 +7,17 @@ import "./HasRole.css"
 
 const HasRole = ({ userId, serverId, name, color, fetchMembers }) => {
   const [hovered,setHovered] = useState(false)
+  const [isLoading,setIsLoading] = useState(false)
 
   const removeRole = async () => {
     try {
+      setIsLoading(true)
       await axios.put(`${import.meta.env.VITE_SERVER_URL}/servers/removeRoleFromUser`,{
         userId,
         serverId
       })
-      fetchMembers()
+      await fetchMembers()
+      setIsLoading(false)
     }
     catch(error){
       console.log(error)
@@ -29,7 +32,7 @@ const HasRole = ({ userId, serverId, name, color, fetchMembers }) => {
     >
       {hovered ? <IoClose size={13} color={color}/> : <>
         <div style={{ height: 13, width: 13, borderRadius: "50%", backgroundColor: color }} /></>}
-        <p id='server-settings-members-member-hasrole-name'>{ name }</p>
+        <p id='server-settings-members-member-hasrole-name'>{isLoading ? 'Loading...' : `${ name }`}</p>
     </button>
   );
 };

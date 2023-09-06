@@ -4,10 +4,11 @@ import axios from 'axios';
 // styles
 import "./Role.css"
 
-const Role = ({ id, name, color, userId, onClose, serverId, fetchMembers }) => {
+const Role = ({ id, name, color, userId, onClose, serverId, fetchMembers, setIsLoading }) => {
 
   const giveRole = async () => {
     try {
+      setIsLoading(true)
       await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/giveRole`,{
         userId,
         roleId: id,
@@ -15,6 +16,7 @@ const Role = ({ id, name, color, userId, onClose, serverId, fetchMembers }) => {
       })
       await fetchMembers()
       onClose()
+      setIsLoading(false)
     }
     catch(error){
       console.log(error)

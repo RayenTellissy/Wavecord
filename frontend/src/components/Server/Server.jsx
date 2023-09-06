@@ -51,7 +51,6 @@ const Server = () => {
   const [privateChecked,setPrivateChecked] = useState(false)
   const [createDisabled,setCreateDisabled] = useState(true)
   const [showDropdown,setShowDropdown] = useState(false)
-  const [bannerLoading,setBannerLoading] = useState(true)
   
   useEffect(() => {
     fetchData()
@@ -61,7 +60,6 @@ const Server = () => {
     try {
       const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/servers/fetch/${id}`)
       setServer(response.data)
-      setBannerLoading(false)
     }
     catch(error){
       console.log(error)
@@ -114,6 +112,11 @@ const Server = () => {
   const handlePopoverClose = () => {
     setShowDropdown(false)
     onCloseDropdown()
+  }
+
+  const closeModal = () => {
+    setPrivateChecked(false)
+    onClose()
   }
 
   return (
@@ -174,7 +177,7 @@ const Server = () => {
           currentTextChannelId={currentTextChannelId}
         />
       </div>
-      <Modal isOpen={isOpen} onClose={onClose} isCentered size="lg">
+      <Modal isOpen={isOpen} onClose={closeModal} isCentered size="lg">
         <ModalOverlay/>
         <ModalContent  borderRadius={10} bg="#313338">
           <ModalHeader>

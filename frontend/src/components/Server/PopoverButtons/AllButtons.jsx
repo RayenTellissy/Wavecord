@@ -9,7 +9,7 @@ import { IoIosRemoveCircle } from "react-icons/io"
 // components
 import PopoverButton from './PopoverButton';
 
-const AllButtons = ({ user, ownerId, onOpen, server, setServer }) => {
+const AllButtons = ({ user, ownerId, onOpen, server }) => {
   const [hovered,setHovered] = useState("")
   const navigate = useNavigate()
 

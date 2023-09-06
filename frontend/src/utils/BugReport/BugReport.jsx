@@ -18,12 +18,12 @@ const BugReport = () => {
   const [isLoading,setIsLoading] = useState(false)
 
   const sendTicket = async () => {
-    if(!message) return
+    if(!message || message.length > 500) return
     if(submitDisabled) return 
     setSubmitDisabled(true)
     setIsLoading(true)
     try {
-      const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/bugReports/createTicket`,{
+      await axios.post(`${import.meta.env.VITE_SERVER_URL}/bugReports/createTicket`,{
         senderId: user.id,
         message
       })

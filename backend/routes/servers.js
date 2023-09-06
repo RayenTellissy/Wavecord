@@ -22,7 +22,11 @@ const {
   fetchMembers,
   fetchOnlyRoles,
   giveRole,
-  removeRoleFromUser
+  removeRoleFromUser,
+  kickUser,
+  fetchBannedUsers,
+  banUser,
+  unbanUser
 } = require("../controllers/servers")
 const { createLimit, joinLimit, deleteLimit, leaveLimit } = require("../middleware/serverLimiter")
 const authentication = require("../middleware/authentication")
@@ -34,6 +38,7 @@ router.get("/fetchUsersByRoles/:serverId", fetchUsersByRoles)
 router.get("/fetchServerRoles/:serverId", fetchServerRoles)
 router.get("/fetchMembers/:serverId", fetchMembers)
 router.get("/fetchOnlyRoles/:serverId", fetchOnlyRoles)
+router.get("/fetchBannedUsers/:serverId", fetchBannedUsers)
 
 router.post("/create/:id", createServer)
 router.post("/join", joinServer)
@@ -44,6 +49,9 @@ router.post("/fetchTextChannelMessages", fetchTextChannelMessages)
 router.post("/sendMessage", sendMessage)
 router.post("/createRole", createRole)
 router.post("/giveRole", giveRole)
+router.post("/kickUser", kickUser)
+router.post("/banUser", banUser)
+router.post("/unbanUser", unbanUser)
 
 router.put("/resetServerLink", resetServerLink)
 router.put("/changeServerImage", changeServerImage)

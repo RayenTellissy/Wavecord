@@ -61,11 +61,11 @@ model roles {
 }
 
 model Bans {
-  id        String  @id @default(cuid())
-  userId    Users   @relation(fields: [usersId], references: [id])
-  serverId  Servers @relation(fields: [serversId], references: [id])
-  usersId   String
-  serversId String
+  id       String  @id @default(cuid())
+  user     Users   @relation(fields: [userId], references: [id])
+  userId   String
+  server   Servers @relation(fields: [serverId], references: [id])
+  serverId String
 }
 
 model BlockedUsers {
