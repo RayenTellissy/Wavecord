@@ -366,7 +366,7 @@ module.exports = {
       res.send(result)
     }
     catch(error){
-      console.log(error)
+      res.send(error)
     }
   }
 

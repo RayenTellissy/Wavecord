@@ -870,5 +870,69 @@ module.exports = {
     catch(error){
       res.send(error)
     }
+  },
+
+  joinVoiceRoom: async (req,res) => {
+    try {
+      const { userId, channelId } = req.body
+
+      await prisma.users.update({
+        where: {
+          id: userId
+        },
+        data: {
+          voice_channelId: channelId
+        }
+      })
+
+      res.send({ success: true, message: `User ${userId} joined vc ${channelId}.`})
+    }
+    catch(error){
+      res.send(error)
+    }
+  },
+
+  leaveVoiceRoom: async (req,res) => {
+    try {
+      const { id } = req.body
+
+      await prisma.users.update({
+        where: {
+          id
+        },
+        data: {
+          voice_channelId: null
+        }
+      })
+
+      res.send({ success: true, message: `User ${userId} has left the channel.`})
+    }
+    catch(error){
+      res.send(error)
+    }
+  },
+
+  fetchUsersInRoom: async (req,res) => {
+    try {
+      const { channelId } = req.params
+
+      const result = await prisma.users.findMany({
+        where: {
+          voice_channelId: channelId
+        },
+        select: {
+          id: true,
+          username: true,
+          image: true,
+          muted: true,
+          deafened: true
+        }
+      })
+
+      res.send(result)
+    }
+    catch(error){
+      res.send(error)
+    }
   }
 }

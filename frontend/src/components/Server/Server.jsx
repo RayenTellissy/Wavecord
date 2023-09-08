@@ -31,6 +31,7 @@ import Userbar from "../Home/ContactsBar/UserBar/UserBar"
 import AllButtons from './PopoverButtons/AllButtons';
 import ServerLink from './ServerLinkModal/ServerLink';
 import { Context } from '../Context/Context';
+import VoiceRoom from './VoiceRoom/VoiceRoom';
 
 // styles
 import "./Server.css"
@@ -44,6 +45,8 @@ const Server = () => {
   const [server,setServer] = useState({})
   const [currentTextChannel,setCurrentTextChannel] = useState("")
   const [currentTextChannelId,setCurrentTextChannelId] = useState("")
+  const [currentVoiceChannelId,setCurrentVoiceChannelId] = useState("")
+  const [currentChannelType,setCurrentChannelType] = useState("")
   const [categoryChosen,setCategoryChosen] = useState("")
   const [categoryIdChosen,setCategoryIdChosen] = useState("")
   const [modalChannelType,setModalChannelType] = useState("text")
@@ -164,6 +167,8 @@ const Server = () => {
                 setCategoryIdChosen={setCategoryIdChosen}
                 setCurrentTextChannel={setCurrentTextChannel}
                 setCurrentTextChannelId={setCurrentTextChannelId}
+                setCurrentChannelType={setCurrentChannelType}
+                setCurrentVoiceChannelId={setCurrentVoiceChannelId}
               />
             })}
           </div>
@@ -171,11 +176,12 @@ const Server = () => {
         </div>
       </div>
       <div id='server-right-display-content'>
-        <ChannelMessages
+        {!currentChannelType === "voice" && <ChannelMessages
           serverId={id}
           currentTextChannel={currentTextChannel}
           currentTextChannelId={currentTextChannelId}
-        />
+        />}
+        {currentChannelType === "voice" && <VoiceRoom channelId={currentVoiceChannelId}/>}
       </div>
       <Modal isOpen={isOpen} onClose={closeModal} isCentered size="lg">
         <ModalOverlay/>

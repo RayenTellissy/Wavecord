@@ -40,7 +40,6 @@ const MessageInput = ({ user, conversationName, setMessages, conversationType, c
     setMessage("")
     
     if(conversationType === "dm"){
-      console.log(user)
       const messageDetails = {
         conversation: id,
         usersId: {

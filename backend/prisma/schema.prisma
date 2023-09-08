@@ -14,10 +14,10 @@ model Users {
   image                  String?
   status                 Status           @default(ONLINE)
   current_vc             Voice_channels?  @relation(fields: [voice_channelId], references: [id])
+  voice_channelId        String?
   muted                  Boolean          @default(false)
   deafened               Boolean          @default(false)
   role                   Role             @default(BASIC)
-  voice_channelId        String?
   created_at             DateTime         @default(now())
   UsersInServers         UsersInServers[]
   Friends                Friends[]

@@ -1,10 +1,16 @@
 #server-voice-channel-button {
+  display: flex;
+  flex-direction: column;
   width: 280px;
   padding: 5px;
   display: flex;
+  border-radius: 3px;
+}
+
+#server-voice-channel-title-container {
+  display: flex;
   flex-direction: row;
   align-items: center;
-  border-radius: 3px;
 }
 
 #server-voice-channel-button:hover {

@@ -1,0 +1,17 @@
+#user-in-room-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: 10px 25px;
+}
+
+#user-in-room-image {
+  height: 30px;
+  width: 30px;
+  border-radius: 50%;
+}
+
+#user-in-room-name {
+  font-family: UbuntuRegular;
+  margin-left: 8px;
+}

@@ -26,7 +26,10 @@ const {
   kickUser,
   fetchBannedUsers,
   banUser,
-  unbanUser
+  unbanUser,
+  joinVoiceRoom,
+  leaveVoiceRoom,
+  fetchUsersInRoom
 } = require("../controllers/servers")
 const { createLimit, joinLimit, deleteLimit, leaveLimit } = require("../middleware/serverLimiter")
 const authentication = require("../middleware/authentication")
@@ -39,6 +42,7 @@ router.get("/fetchServerRoles/:serverId", fetchServerRoles)
 router.get("/fetchMembers/:serverId", fetchMembers)
 router.get("/fetchOnlyRoles/:serverId", fetchOnlyRoles)
 router.get("/fetchBannedUsers/:serverId", fetchBannedUsers)
+router.get("/fetchUsersInRoom/:channelId", fetchUsersInRoom)
 
 router.post("/create/:id", createServer)
 router.post("/join", joinServer)
@@ -52,6 +56,8 @@ router.post("/giveRole", giveRole)
 router.post("/kickUser", kickUser)
 router.post("/banUser", banUser)
 router.post("/unbanUser", unbanUser)
+router.post("/joinVoiceRoom", joinVoiceRoom)
+router.post("/leaveVoiceRoom", leaveVoiceRoom)
 
 router.put("/resetServerLink", resetServerLink)
 router.put("/changeServerImage", changeServerImage)
