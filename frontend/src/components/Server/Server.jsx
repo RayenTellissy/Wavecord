@@ -41,11 +41,12 @@ const Server = () => {
   const { isOpen: isOpenDropdown, onOpen: onOpenDropdown, onClose: onCloseDropdown } = useDisclosure()
   const { isOpen: isOpenServerLink, onOpen: onOpenServerLink, onClose: onCloseServerLink } = useDisclosure()
   const { id } = useParams()
-  const { user } = useContext(Context)
+  const { user, socket } = useContext(Context)
   const [server,setServer] = useState({})
   const [currentTextChannel,setCurrentTextChannel] = useState("")
   const [currentTextChannelId,setCurrentTextChannelId] = useState("")
   const [currentVoiceChannelId,setCurrentVoiceChannelId] = useState("")
+  const [voiceTokens,setVoiceTokens] = useState({})
   const [currentChannelType,setCurrentChannelType] = useState("")
   const [categoryChosen,setCategoryChosen] = useState("")
   const [categoryIdChosen,setCategoryIdChosen] = useState("")
@@ -56,6 +57,7 @@ const Server = () => {
   const [showDropdown,setShowDropdown] = useState(false)
   
   useEffect(() => {
+    socket.emit("open_server", id)
     fetchData()
   },[])
 
@@ -169,6 +171,7 @@ const Server = () => {
                 setCurrentTextChannelId={setCurrentTextChannelId}
                 setCurrentChannelType={setCurrentChannelType}
                 setCurrentVoiceChannelId={setCurrentVoiceChannelId}
+                voiceTokens={voiceTokens}
               />
             })}
           </div>
@@ -176,12 +179,15 @@ const Server = () => {
         </div>
       </div>
       <div id='server-right-display-content'>
-        {!currentChannelType === "voice" && <ChannelMessages
+        {currentChannelType !== "voice" && <ChannelMessages
           serverId={id}
           currentTextChannel={currentTextChannel}
           currentTextChannelId={currentTextChannelId}
         />}
-        {currentChannelType === "voice" && <VoiceRoom channelId={currentVoiceChannelId}/>}
+        {currentChannelType === "voice" && <VoiceRoom channelId={currentVoiceChannelId}
+          setCurrentChannelType={setCurrentChannelType}
+          setVoiceTokens={setVoiceTokens}
+        />}
       </div>
       <Modal isOpen={isOpen} onClose={closeModal} isCentered size="lg">
         <ModalOverlay/>

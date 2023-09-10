@@ -4,9 +4,14 @@ import { AccessToken } from 'livekit-server-sdk'
 import dotenv from "dotenv"
 dotenv.config()
 
-const createToken = (channelId, username) => {
+const createToken = (channelId, id, username, image) => {
   const at = new AccessToken(process.env.LK_API_KEY, process.env.LK_API_SECRET, {
-    identity: username
+    identity: username,
+    metadata: JSON.stringify({
+      id,
+      username,
+      image
+    })
   })
   at.addGrant({ roomJoin: true, room: channelId })
 
@@ -14,13 +19,13 @@ const createToken = (channelId, username) => {
 }
 
 const app = express()
+app.use(express.json())
 app.use(cors())
 const port = 3001
 
-app.get('/getToken/:channelId/:username', (req, res) => {
-  const { channelId, username } = req.params
-  console.log(channelId, username)
-  res.send(createToken(channelId, username))
+app.post('/getToken', (req, res) => {
+  const { channelId, id, username, image } = req.body
+  res.send(createToken(channelId, id, username, image))
 })
 
 app.listen(port, () => {

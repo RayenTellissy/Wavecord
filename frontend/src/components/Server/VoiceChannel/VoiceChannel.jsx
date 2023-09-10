@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import { HiSpeakerWave } from "react-icons/hi2"
-import { useRoomContext } from '@livekit/components-react';
+import { useRoomContext, useParticipants, VideoConference } from '@livekit/components-react';
 
 // components
 import { Context } from '../../Context/Context';
@@ -9,15 +9,26 @@ import UserInRoom from './UserInRoom/UserInRoom';
 
 // styles
 import "./VoiceChannel.css"
+import useMapParticipant from '../../../hooks/useMapParticipant';
 
 const VoiceChannel = ({ id, name, setCurrentChannelType, setCurrentVoiceChannelId }) => {
-  const { user } = useContext(Context)
+  const { user, socket } = useContext(Context)
+  const room = useRoomContext()
   const [users,setUsers] = useState([])
+  // const { mappedUsers } = useMapParticipant(users)
 
   useEffect(() => {
     fetchUsersInRoom()
-    return () => leaveRoom()
   },[])
+
+  useEffect(() => {
+    socket.on("receive_join", data => {
+      fetchUsersInRoom()
+    })
+    socket.on("receive_leave", data => {
+      fetchUsersInRoom()
+    })
+  },[socket])
 
   const fetchUsersInRoom = async () => {
     try {
@@ -34,21 +45,19 @@ const VoiceChannel = ({ id, name, setCurrentChannelType, setCurrentVoiceChannelI
       id: user.id,
       username: user.username,
       image: user.image,
-      muted: user.muted,
-      deafened: user.deafened
+      channelId: id
     }
-    setUsers(prevUsers => [...prevUsers, userDetails])
+    var inRoom = false
+    users.map(e => {
+      if(e.id === user.id){
+        inRoom = true
+      }
+    })
+    if(!inRoom){
+      setUsers(prevUsers => [...prevUsers, userDetails])
+    }
     setCurrentVoiceChannelId(id)
     setCurrentChannelType("voice")
-    try {
-      await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/joinVoiceRoom`,{
-        userId: user.id,
-        channelId: id
-      })
-    }
-    catch(error){
-      console.log(error)
-    }
   }
 
   // function to leave the current voice room
@@ -77,6 +86,7 @@ const VoiceChannel = ({ id, name, setCurrentChannelType, setCurrentVoiceChannelI
           image={e.image}
         />
       })}
+      {/* <VideoConference/> */}
     </button>
   );
 };

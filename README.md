@@ -30,7 +30,7 @@ Wavecord is built with React and Node.js, allowing users to add friends, chat wi
 
 Wavecord doesn't need to be installed; you can access it freely at [wavecord.netlify.app](https://wavecord.netlify.app). Simply open your web browser and navigate to the provided URL to start using Wavecord.
 
-If you would like to contribute to the development of Wavecord, please refer to the [Contributing](#contributing) section for instructions on setting up a development environment.
+If you would like to contribute to the development of Wavecord, please refer to the [Contributing](#contributing) section for instructions on how to help with the development.
 
 ## Usage 📖
 

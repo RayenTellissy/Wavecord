@@ -34,6 +34,17 @@ io.on("connection", socket => {
     socket.to(data.conversation).emit("receive_message", data)
   })
 
+  socket.on("join_voice", data => {
+    socket.join(data.channelId)
+    console.log(data)
+    socket.to(data.channelId).emit("receive_join", data)
+  })
+
+  socket.on("leave_voice", data => {
+    console.log(data)
+    socket.to(data.channelId).emit("receive_leave", data)
+  })
+
   io.on("disconnect", socket => {
     console.log("user disconnected", socket.id)
   })

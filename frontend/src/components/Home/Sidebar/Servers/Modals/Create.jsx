@@ -104,8 +104,6 @@ const Create = ({ setScreen, onClose }) => {
       const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/create/${user.id}`,{
         name: serverName,
         image: url
-      },{
-        withCredentials: true
       })
       
       if(response.data.success === false){
@@ -119,7 +117,7 @@ const Create = ({ setScreen, onClose }) => {
             })
           }
       onClose() // closing modal
-      navigate(`/server/${response.data.id}`) // reloads
+      navigate(`/server/${response.data.id}`)
     }
     catch(error){
       console.log(error)

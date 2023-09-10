@@ -7,6 +7,7 @@ import VoiceChannel from '../VoiceChannel/VoiceChannel';
 
 // styles
 import "./Category.css"
+import { LiveKitRoom, VideoConference } from '@livekit/components-react';
 
 const Category = ({
   id,
@@ -19,7 +20,8 @@ const Category = ({
   setCurrentTextChannel,
   setCurrentTextChannelId,
   setCurrentChannelType,
-  setCurrentVoiceChannelId
+  setCurrentVoiceChannelId,
+  voiceTokens
 }) => {
   const [hovered,setHovered] = useState(false)
 
@@ -56,13 +58,21 @@ const Category = ({
         />
       })}
       {voice.map((e,i) => {
-        return <VoiceChannel
-          key={i}
-          id={e.id}
-          name={e.name}
-          setCurrentChannelType={setCurrentChannelType}
-          setCurrentVoiceChannelId={setCurrentVoiceChannelId}
-        />
+        return <LiveKitRoom
+          serverUrl={import.meta.env.VITE_LIVEKIT_PUBLIC_URL}
+          token={voiceTokens[e.id]}
+          connect={true}
+          audio={true}
+        >
+          <VoiceChannel
+            key={i}
+            id={e.id}
+            name={e.name}
+            setCurrentChannelType={setCurrentChannelType}
+            setCurrentVoiceChannelId={setCurrentVoiceChannelId}
+            token={voiceTokens[e.id]}
+          />
+        </LiveKitRoom>
       })}
     </div>
   );
