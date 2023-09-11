@@ -22,7 +22,6 @@ const VoiceChannel = ({
 }) => {
   const { user, socket } = useContext(Context)
   const [users,setUsers] = useState([])
-  const participants = useParticipants()
   const room = useRoomContext()
   
 

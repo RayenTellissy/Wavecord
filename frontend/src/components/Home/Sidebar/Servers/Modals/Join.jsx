@@ -81,10 +81,11 @@ const Join = ({ onClose, setScreen }) => {
             <p id='home-server-bar-modal-seperator-label'>Invite link</p>
             <input 
               id='home-server-bar-modal-seperator-input' 
-              type="text" 
+              type="text"
               onChange={e => setInvite(e.target.value)}
               autoFocus
               autoComplete='off'
+              value={invite}
             />
           </div>
           <div id='home-server-bar-modal-seperator-create-buttons'>

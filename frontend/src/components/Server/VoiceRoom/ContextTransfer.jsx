@@ -9,7 +9,6 @@ import returnParticipantsInfo from "../../../utils/Helper/returnParticipantsInfo
 
 const ContextTransfer = ({ serverId, channelId, voiceChannels, setVoiceChannels }) => {
   const { socket } = useContext(Context)
-  const room = useRoomContext()
   const participants = useParticipants()
   
   useEffect(() => {
@@ -18,8 +17,6 @@ const ContextTransfer = ({ serverId, channelId, voiceChannels, setVoiceChannels 
       channelId,
       users: returnParticipantsInfo(participants)
     })
-    // console.log(participants[0].connectionQuality)
-    // handleVoiceEvent()
   },[participants])
 
   // const handleVoiceEvent = () => {
