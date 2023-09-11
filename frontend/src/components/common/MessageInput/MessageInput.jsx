@@ -143,8 +143,6 @@ const MessageInput = ({ user, conversationName, setMessages, conversationType, c
         senderId: user.id,
         message: url,
         type: "LINK"
-      },{
-        withCredentials: true
       })
       await socket.emit("send_message", messageDetails)
       setMessages(prevMessages => [...prevMessages, messageDetails])

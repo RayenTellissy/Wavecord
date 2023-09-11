@@ -5,6 +5,7 @@ const cors = require("cors")
 const morgan = require("morgan")
 const helmet = require("helmet")
 const { Server } = require("socket.io")
+const axios = require("axios")
 
 const app = express()
 const PORT = 5000
@@ -29,20 +30,28 @@ io.on("connection", socket => {
   socket.on("join_room", data => {
     socket.join(data)
   })
-
+  
   socket.on("send_message", data => {
     socket.to(data.conversation).emit("receive_message", data)
   })
-
-  socket.on("join_voice", data => {
-    socket.join(data.channelId)
-    console.log(data)
-    socket.to(data.channelId).emit("receive_join", data)
+  
+  socket.on("open_server", data => {
+    socket.join(data)
+  })
+  socket.on("voice_updated", data => {
+    socket.to(data.serverId).emit("receive_voice_update", data)
   })
 
-  socket.on("leave_voice", data => {
-    console.log(data)
-    socket.to(data.channelId).emit("receive_leave", data)
+  socket.on("leave_voice", async (data) => {
+    try {
+      const response = await axios.post(`${process.env.MAIN_API}/servers/leaveVoiceRoom`,{
+        id: data.user
+      })
+      console.log(response.data)
+    }
+    catch(error){
+      console.log(error)
+    }
   })
 
   io.on("disconnect", socket => {

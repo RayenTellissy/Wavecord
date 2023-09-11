@@ -12,7 +12,7 @@ import Topbar from "../Topbar/Topbar"
 import "./ChannelMessages.css"
 import Twemoji from 'react-twemoji';
 
-const ChannelMessages = ({ serverId, currentTextChannel, currentTextChannelId }) => {
+const ChannelMessages = ({ serverId, currentTextChannel, currentTextChannelId, user }) => {
   const { socket } = useContext(Context)
   const [messages,setMessages] = useState([])
   const messagesContainerRef = useRef(null)
@@ -75,6 +75,7 @@ const ChannelMessages = ({ serverId, currentTextChannel, currentTextChannelId })
                 conversationType="server"
                 conversationName={currentTextChannel}
                 channelId={currentTextChannelId}
+                user={user}
               />
             </div>
           </div>

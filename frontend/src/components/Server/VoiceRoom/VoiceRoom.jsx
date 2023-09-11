@@ -7,9 +7,21 @@ import { LiveKitRoom, VideoConference } from "@livekit/components-react"
 import { Context } from '../../Context/Context';
 import ContextTransfer from './ContextTransfer';
 
-const VoiceRoom = ({ channelId, setCurrentChannelType, setVoiceTokens }) => {
+const VoiceRoom = ({
+  serverId,
+  channelId,
+  setCurrentChannelType,
+  setVoiceTokens,
+  voiceChannels,
+  setVoiceChannels,
+  setCurrentVoiceChannelId
+}) => {
   const { user, socket } = useContext(Context)
   const [token,setToken] = useState("")
+
+  useEffect(() => {
+    socket.emit("open_server", serverId)
+  },[])
 
   useEffect(() => {
     getToken()
@@ -36,12 +48,6 @@ const VoiceRoom = ({ channelId, setCurrentChannelType, setVoiceTokens }) => {
   const handleConnect = async () => {
     if(!channelId) return
     try {
-      socket.emit("join_voice", { channelId, user: {
-        id: user.id,
-        username: user.username,
-        image: user.image
-     }
-    })
       await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/joinVoiceRoom`,{
         userId: user.id,
         channelId
@@ -56,14 +62,12 @@ const VoiceRoom = ({ channelId, setCurrentChannelType, setVoiceTokens }) => {
   const handleDisconnect = async () => {
     if(!channelId) return
     try {
-      socket.emit("leave_voice", { channelId, user: {
-        id: user.id,
-        username: user.username,
-        image: user.image
-      }})
-      await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/leaveVoiceRoom`,{
-        id: user.id
-      })
+      if(voiceChannels[channelId]){
+        var channelArray = voiceChannels[channelId]
+        const filteredChannel = channelArray.filter(e => JSON.parse(e.metadata).id === user.id)
+        setVoiceChannels(prevChannels => ({...prevChannels, [channelId]: filteredChannel}))
+      }
+      setCurrentVoiceChannelId("")
       setCurrentChannelType("")
     }
     catch(error){
@@ -81,7 +85,12 @@ const VoiceRoom = ({ channelId, setCurrentChannelType, setVoiceTokens }) => {
         onConnected={handleConnect}
         onDisconnected={handleDisconnect}
       >
-        {/* <ContextTransfer/> */}
+        <ContextTransfer
+          serverId={serverId}
+          channelId={channelId}
+          voiceChannels={voiceChannels}
+          setVoiceChannels={setVoiceChannels}
+        />
         <VideoConference/>
       </LiveKitRoom>
     </div>

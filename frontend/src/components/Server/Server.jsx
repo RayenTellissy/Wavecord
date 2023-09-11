@@ -46,6 +46,7 @@ const Server = () => {
   const [currentTextChannel,setCurrentTextChannel] = useState("")
   const [currentTextChannelId,setCurrentTextChannelId] = useState("")
   const [currentVoiceChannelId,setCurrentVoiceChannelId] = useState("")
+  const [voiceChannels,setVoiceChannels] = useState({})
   const [voiceTokens,setVoiceTokens] = useState({})
   const [currentChannelType,setCurrentChannelType] = useState("")
   const [categoryChosen,setCategoryChosen] = useState("")
@@ -60,6 +61,17 @@ const Server = () => {
     socket.emit("open_server", id)
     fetchData()
   },[])
+
+  // useEffect(() => {
+  //   socket.on("receive_voice_update", data => {
+  //     console.log(data)
+  //     // console.log(data.users)
+  //   })
+  // },[socket])
+
+  // useEffect(() => {
+  //   console.log(voiceChannels)
+  // },[voiceChannels])
 
   const fetchData = async () => {
     try {
@@ -165,13 +177,17 @@ const Server = () => {
                 text={e.Text_channels}
                 voice={e.Voice_channels}
                 onOpen={onOpen}
+                serverId={id}
                 setCategoryChosen={setCategoryChosen}
                 setCategoryIdChosen={setCategoryIdChosen}
                 setCurrentTextChannel={setCurrentTextChannel}
                 setCurrentTextChannelId={setCurrentTextChannelId}
                 setCurrentChannelType={setCurrentChannelType}
+                currentVoiceChannelId={currentVoiceChannelId}
                 setCurrentVoiceChannelId={setCurrentVoiceChannelId}
                 voiceTokens={voiceTokens}
+                voiceChannels={voiceChannels}
+                setVoiceChannels={setVoiceChannels}
               />
             })}
           </div>
@@ -183,10 +199,16 @@ const Server = () => {
           serverId={id}
           currentTextChannel={currentTextChannel}
           currentTextChannelId={currentTextChannelId}
+          user={user}
         />}
-        {currentChannelType === "voice" && <VoiceRoom channelId={currentVoiceChannelId}
+        {currentChannelType === "voice" && <VoiceRoom
+          serverId={server.id}
+          channelId={currentVoiceChannelId}
           setCurrentChannelType={setCurrentChannelType}
           setVoiceTokens={setVoiceTokens}
+          voiceChannels={voiceChannels}
+          setVoiceChannels={setVoiceChannels}
+          setCurrentVoiceChannelId={setCurrentVoiceChannelId}
         />}
       </div>
       <Modal isOpen={isOpen} onClose={closeModal} isCentered size="lg">

@@ -29,7 +29,7 @@ const {
   unbanUser,
   joinVoiceRoom,
   leaveVoiceRoom,
-  fetchUsersInRoom
+  fetchUsersInRoom,
 } = require("../controllers/servers")
 const { createLimit, joinLimit, deleteLimit, leaveLimit } = require("../middleware/serverLimiter")
 const authentication = require("../middleware/authentication")
