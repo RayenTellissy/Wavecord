@@ -44,6 +44,7 @@ const Join = ({ onClose, setScreen }) => {
       userId: user.id,
       invite
     })
+    console.log(response.data)
 
     if(response.data.status === "BANNED"){
       onClose()
