@@ -223,19 +223,8 @@ module.exports = {
       //     userId
       //   }
       // })
-
-      const banCheck = await prisma.servers.findFirst({
-        where: {
-          id: serverId,
-          Bans: {
-            some: {
-              userId
-            }
-          }
-        }
-      })
-      console.log(banCheck)
-      if(banCheck) return res.send({ status: "BANNED", error: "You are banned from this server." })
+      // console.log(banCheck)
+      // if(banCheck) return res.send({ status: "BANNED", error: "You are banned from this server." })
       console.log(3)
     
     await prisma.usersInServers.create({
