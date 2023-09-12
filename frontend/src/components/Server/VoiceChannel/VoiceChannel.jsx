@@ -24,6 +24,10 @@ const VoiceChannel = ({
   },[])
 
   useEffect(() => {
+    console.log(users)
+  },[users])
+
+  useEffect(() => {
     socket.on("receive_voice_update", data => {
       if(data.channelId === id){
         setUsers(data.users)

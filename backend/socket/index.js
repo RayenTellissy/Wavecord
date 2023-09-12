@@ -43,7 +43,6 @@ io.on("connection", socket => {
   })
 
   socket.on("leave_voice", data => {
-    console.log("left voice!")
     socket.to(data.serverId).emit("receive_leave_voice", data)
   })
 
