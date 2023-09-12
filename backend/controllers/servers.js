@@ -186,7 +186,8 @@ module.exports = {
           id: true
         }
       })
-
+      console.log(1)
+      
       if(!server){
         return res.send({
           status: "error",
@@ -194,16 +195,17 @@ module.exports = {
           message: "Invite code doesn't exist."
         })
       }
-
+      
       const serverId = server.id
-
+      
       const memberCheck = await prisma.usersInServers.findFirst({
         where: {
           userId: userId,
           serverId: serverId
         }
       })
-
+      console.log(2)
+      
       // if user is already a member return an error
       if(memberCheck){
         return res.send({
@@ -212,7 +214,7 @@ module.exports = {
           message: "You are already a member of this server.",
         })
       }
-
+      
       const banCheck = await prisma.bans.findFirst({
         where: {
           serverId,
@@ -220,22 +222,24 @@ module.exports = {
         }
       })
       if(banCheck) return res.send({ status: "BANNED", error: "You are banned from this server." })
+      console.log(3)
     
-      await prisma.usersInServers.create({
-        data: {
-          userId: userId,
-          serverId: serverId
-        }
-      })
-
-      res.send({
-        success: true,
-        message: "Joined server.",
+    await prisma.usersInServers.create({
+      data: {
+        userId: userId,
         serverId: serverId
-      })
-    }
-    catch(error){
-      res.send(error)
+      }
+    })
+    console.log(4)
+    
+    res.send({
+      success: true,
+      message: "Joined server.",
+      serverId: serverId
+    })
+  }
+  catch(error){
+    res.send(error)
     }
   },
 

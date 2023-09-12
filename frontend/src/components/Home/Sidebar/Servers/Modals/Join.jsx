@@ -22,6 +22,7 @@ const Join = ({ onClose, setScreen }) => {
 
   useEffect(() => {
     console.log(invite)
+    console.log(user.id)
   },[invite])
 
   const handleSubmit = async () => {
