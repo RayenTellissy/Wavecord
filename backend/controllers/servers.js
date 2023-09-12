@@ -217,10 +217,21 @@ module.exports = {
       }
       console.log(2.5)
       
-      const banCheck = await prisma.bans.findMany({
+      // const banCheck = await prisma.bans.findFirst({
+      //   where: {
+      //     serverId,
+      //     userId
+      //   }
+      // })
+
+      const banCheck = await prisma.servers.findFirst({
         where: {
-          serverId,
-          userId
+          id: serverId,
+          Bans: {
+            some: {
+              userId
+            }
+          }
         }
       })
       console.log(banCheck)
