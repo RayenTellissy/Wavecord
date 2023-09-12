@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useNavigate } from "react-router-dom"
 import {
   ModalHeader,
@@ -20,11 +20,6 @@ const Join = ({ onClose, setScreen }) => {
   const toast = useToast()
   const navigate = useNavigate()
 
-  useEffect(() => {
-    console.log(invite)
-    console.log(user.id)
-  },[invite])
-
   const handleSubmit = async () => {
     if(invite === ""){
       return toast({
@@ -45,7 +40,6 @@ const Join = ({ onClose, setScreen }) => {
       userId: user.id,
       invite
     })
-    console.log(response.data)
 
     if(response.data.status === "BANNED"){
       onClose()

@@ -42,12 +42,16 @@ io.on("connection", socket => {
     socket.to(data.serverId).emit("receive_voice_update", data)
   })
 
-  socket.on("leave_voice", async (data) => {
+  socket.on("leave_voice", data => {
+    console.log("left voice!")
+    socket.to(data.serverId).emit("receive_leave_voice", data)
+  })
+
+  socket.on("voice_disconnect", async (data) => {
     try {
-      const response = await axios.post(`${process.env.MAIN_API}/servers/leaveVoiceRoom`,{
+      await axios.post(`${process.env.MAIN_API}/servers/leaveVoiceRoom`,{
         id: data.user
       })
-      console.log(response.data)
     }
     catch(error){
       console.log(error)

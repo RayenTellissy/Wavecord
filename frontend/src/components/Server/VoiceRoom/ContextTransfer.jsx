@@ -6,12 +6,27 @@ import { Context } from '../../Context/Context';
 
 // helper functions
 import returnParticipantsInfo from "../../../utils/Helper/returnParticipantsInfo"
+import {
+  localMute,
+  localUnmute,
+  handleLocalCamera,
+  handleSpeaking,
+  handleLocalScreenShare
+} from '../../../utils/Helper/roomEventsHandler';
 
-const ContextTransfer = ({ serverId, channelId, voiceChannels, setVoiceChannels }) => {
-  const { socket } = useContext(Context)
+const ContextTransfer = ({ serverId, channelId }) => {
+  const {
+    socket,
+    setMicEnabled,
+    setCameraEnabled,
+    setIsSpeaking,
+    setScreenShareEnabled
+  } = useContext(Context)
   const participants = useParticipants()
+  const room = useRoomContext()
   
   useEffect(() => {
+    handleRoomEvents()
     socket.emit("voice_updated", {
       serverId,
       channelId,
@@ -19,21 +34,24 @@ const ContextTransfer = ({ serverId, channelId, voiceChannels, setVoiceChannels 
     })
   },[participants])
 
-  // const handleVoiceEvent = () => {
-  //   // console.log("event!!")
-  //   var users = voiceChannels
-  //   users[channelId] = participants
-  //   socket.emit("voice_updated", {
-  //     users,
-  //     serverId
-  //   })
-  // }
+  useEffect(() => {
+    // handling localparticipant's camera activity
+    handleLocalCamera(room.localParticipant.isCameraEnabled,setCameraEnabled)
+  },[room.localParticipant.isCameraEnabled])
+
+  useEffect(() => {
+    // handling localparticipant's screen share activity
+    handleLocalScreenShare(room.localParticipant.isScreenShareEnabled,setScreenShareEnabled)
+  },[room.localParticipant.isScreenShareEnabled])
+
+  const handleRoomEvents = () => {
+    room.localParticipant.on("trackUnmuted", () => localUnmute(setMicEnabled))
+    room.localParticipant.on("trackMuted", () => localMute(setMicEnabled))
+    room.localParticipant.on("isSpeakingChanged", (localSpeaking) => handleSpeaking(localSpeaking,setIsSpeaking))
+  }
 
   return (
     <div>
-      {/* {participants.map((e,i) => {
-        return <p>{e}</p>
-      })} */}
     </div>
   );
 };

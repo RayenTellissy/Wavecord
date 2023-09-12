@@ -11,7 +11,6 @@ const VoiceRoom = ({
   serverId,
   channelId,
   setCurrentChannelType,
-  setVoiceTokens,
   voiceChannels,
   setVoiceChannels,
   setCurrentVoiceChannelId
@@ -37,7 +36,6 @@ const VoiceRoom = ({
         image: user.image
       })
       setToken(response.data)
-      setVoiceTokens(prevVoiceTokens => ({...prevVoiceTokens, [channelId]: response.data}))
     }
     catch(error){
       console.log(error)
@@ -61,14 +59,17 @@ const VoiceRoom = ({
   // callback function when user disonnect from a voice room
   const handleDisconnect = async () => {
     if(!channelId) return
+    setCurrentVoiceChannelId("")
+    setCurrentChannelType("")
+    socket.emit("leave_voice", {
+      serverId,
+      channelId,
+      userId: user.id
+    })
     try {
-      if(voiceChannels[channelId]){
-        var channelArray = voiceChannels[channelId]
-        const filteredChannel = channelArray.filter(e => JSON.parse(e.metadata).id === user.id)
-        setVoiceChannels(prevChannels => ({...prevChannels, [channelId]: filteredChannel}))
-      }
-      setCurrentVoiceChannelId("")
-      setCurrentChannelType("")
+      await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/leaveVoiceRoom`,{
+        id: user.id
+      })
     }
     catch(error){
       console.log(error)

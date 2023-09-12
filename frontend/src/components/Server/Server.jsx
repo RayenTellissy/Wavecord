@@ -185,9 +185,6 @@ const Server = () => {
                 setCurrentChannelType={setCurrentChannelType}
                 currentVoiceChannelId={currentVoiceChannelId}
                 setCurrentVoiceChannelId={setCurrentVoiceChannelId}
-                voiceTokens={voiceTokens}
-                voiceChannels={voiceChannels}
-                setVoiceChannels={setVoiceChannels}
               />
             })}
           </div>

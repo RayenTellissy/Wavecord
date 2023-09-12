@@ -5,8 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon index.js",
-    "socket": "nodemon socket/index.js",
-    "generate": "npx prisma generate"
+    "socket": "nodemon socket/index.js"
   },
   "keywords": [],
   "author": "",

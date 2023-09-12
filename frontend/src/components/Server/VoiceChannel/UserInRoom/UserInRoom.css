@@ -2,7 +2,9 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin: 10px 25px;
+  justify-content: space-between;
+  margin: 10px 10%;
+  width: 90%;
 }
 
 #user-in-room-image {
@@ -11,7 +13,29 @@
   border-radius: 50%;
 }
 
+#user-in-room-image-speaking {
+  height: 30px;
+  width: 30px;
+  border-radius: 50%;
+  border: 3px #23a559 solid;
+}
+
 #user-in-room-name {
   font-family: UbuntuRegular;
   margin-left: 8px;
+}
+
+#user-in-room-name-container {
+  display: flex;
+  flex-direction: row;
+}
+
+#user-in-room-icons {
+  display: flex;
+  flex-direction: row;
+  margin-right: 8px;
+}
+
+.user-in-room-icon {
+  margin-left: 6px;
 }

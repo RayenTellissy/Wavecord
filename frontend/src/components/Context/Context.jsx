@@ -5,6 +5,9 @@ import io from "socket.io-client"
 
 export const Context = createContext()
 
+// hooks
+import useMic from "../../hooks/useMic";
+
 export const ContextProvider = ({ children }) => {
   const [user,setUser] = useState({
     loggedIn: null,
@@ -13,6 +16,10 @@ export const ContextProvider = ({ children }) => {
   })
   const [socket,setSocket] = useState(null)
   const [conversationChosen,setConversationChosen] = useState({})
+  const [micEnabled,setMicEnabled] = useMic()
+  const [cameraEnabled,setCameraEnabled] = useState(false)
+  const [isSpeaking,setIsSpeaking] = useState(false)
+  const [screenShareEnabled,setScreenShareEnabled] = useState(false)
 
   useEffect(() => {
     authenticateSession()
@@ -37,7 +44,21 @@ export const ContextProvider = ({ children }) => {
   }
 
   return (
-    <Context.Provider value={{ user, setUser, socket, conversationChosen, setConversationChosen }}>
+    <Context.Provider value={{
+      user,
+      setUser,
+      socket,
+      conversationChosen,
+      setConversationChosen,
+      micEnabled,
+      setMicEnabled,
+      cameraEnabled,
+      setCameraEnabled,
+      isSpeaking,
+      setIsSpeaking,
+      screenShareEnabled,
+      setScreenShareEnabled
+    }}>
       {children}
     </Context.Provider>
   )
