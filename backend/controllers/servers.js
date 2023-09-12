@@ -243,16 +243,14 @@ module.exports = {
     try {
       const { userId, serverId } = req.body
       
-      const result = await prisma.usersInServers.delete({
+      await prisma.usersInServers.deleteMany({
         where: {
-          usersId_serversId: {
-            userId: userId,
-            serverId: serverId
-          }
+          userId,
+          serverId
         }
       })
       
-      res.send(result)
+      res.send({ success: true, message: `user ${userId} has left server ${serverId}`})
     }
     catch(error){
       res.send(error)

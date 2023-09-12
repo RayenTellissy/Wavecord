@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import { BsFillPersonPlusFill } from "react-icons/bs"
 import { MdSettings } from "react-icons/md"
 import { BiSolidFolderPlus } from "react-icons/bi"
@@ -49,6 +50,13 @@ const AllButtons = ({ user, ownerId, onOpen, server }) => {
           ? <IoIosRemoveCircle color={hovered === "Delete Server" ? "white" : '#da373c'} size={20}/>
           : <RiDoorOpenLine color={hovered === "Leave Server" ? "white" : '#da373c'} size={20}
         />}
+        callback={async () => {
+          const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/leave`,{
+          userId: user.id,
+          serverId: server.id
+        })
+        navigate("/")
+      }}
       />
     </div>
   );

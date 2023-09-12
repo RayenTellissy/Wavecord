@@ -58,13 +58,13 @@ router.post("/banUser", banUser)
 router.post("/unbanUser", unbanUser)
 router.post("/joinVoiceRoom", joinVoiceRoom)
 router.post("/leaveVoiceRoom", leaveVoiceRoom)
+router.post("/leave", leaveServer)
 
 router.put("/resetServerLink", resetServerLink)
 router.put("/changeServerImage", changeServerImage)
 router.put("/changeServerName", changeServerName)
 router.put("/removeRoleFromUser", removeRoleFromUser)
 
-router.delete("/leave", leaveServer)
 router.delete("/delete", deleteServer)
 router.delete("/removeRole/:roleId", removeRole)
 
