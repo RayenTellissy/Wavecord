@@ -217,7 +217,7 @@ module.exports = {
       }
       console.log(2.5)
       
-      const banCheck = await prisma.bans.findFirst({
+      const banCheck = await prisma.bans.findMany({
         where: {
           serverId,
           userId
