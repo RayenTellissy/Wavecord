@@ -205,6 +205,7 @@ module.exports = {
         }
       })
       console.log(2)
+      console.log(memberCheck)
       
       // if user is already a member return an error
       if(memberCheck){
@@ -214,6 +215,7 @@ module.exports = {
           message: "You are already a member of this server.",
         })
       }
+      console.log(2.5)
       
       const banCheck = await prisma.bans.findFirst({
         where: {
@@ -221,6 +223,7 @@ module.exports = {
           userId
         }
       })
+      console.log(banCheck)
       if(banCheck) return res.send({ status: "BANNED", error: "You are banned from this server." })
       console.log(3)
     
