@@ -26,23 +26,35 @@ const VoiceChannel = ({
   useEffect(() => {
     console.log(users)
   },[users])
-
+  
   useEffect(() => {
-    socket.on("receive_voice_update", data => {
-      if(data.channelId === id){
-        setUsers(data.users)
+    socket.on("receive_voice_connected", data => {
+      if(id === data.channelId){
+        console.log("received event!")
+        setUsers(prevUsers => [...prevUsers, data.user])
       }
     })
+    // socket.on("receive_voice_update", data => {
+    //   if(data.channelId === id){
+    //     setUsers(data.users)
+    //   }
+    // })
     socket.on("receive_leave_voice", data => {
+      // console.log(data)
       if(data.channelId === id){
+        console.log("z")
         setUsers(users.filter(e => e.id !== data.userId))
       }
     })
+    return () => {
+      // socket.off("receive_voice_connected")
+      socket.off("receive_voice_update")
+    }
   },[socket])
 
   useEffect(() => {
-    // locally remove the user from this voice channel when currentvoicechannelid changes
-    if(currentVoiceChannelId !== id){
+    // locally remove the user from this voice channel when he leaves
+    if(!currentVoiceChannelId){
       setUsers(users.filter(e => e.id !== user.id))
     }
   },[currentVoiceChannelId])

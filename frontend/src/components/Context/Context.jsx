@@ -20,6 +20,7 @@ export const ContextProvider = ({ children }) => {
   const [cameraEnabled,setCameraEnabled] = useState(false)
   const [isSpeaking,setIsSpeaking] = useState(false)
   const [screenShareEnabled,setScreenShareEnabled] = useState(false)
+  const [conenctionQuality,setConnectionQuality] = useState(null)
 
   useEffect(() => {
     authenticateSession()
@@ -57,7 +58,9 @@ export const ContextProvider = ({ children }) => {
       isSpeaking,
       setIsSpeaking,
       screenShareEnabled,
-      setScreenShareEnabled
+      setScreenShareEnabled,
+      conenctionQuality,
+      setConnectionQuality
     }}>
       {children}
     </Context.Provider>

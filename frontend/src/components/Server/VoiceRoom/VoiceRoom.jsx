@@ -11,11 +11,9 @@ const VoiceRoom = ({
   serverId,
   channelId,
   setCurrentChannelType,
-  voiceChannels,
-  setVoiceChannels,
   setCurrentVoiceChannelId
 }) => {
-  const { user, socket } = useContext(Context)
+  const { user, socket, micEnabled } = useContext(Context)
   const [token,setToken] = useState("")
 
   useEffect(() => {
@@ -46,6 +44,16 @@ const VoiceRoom = ({
   const handleConnect = async () => {
     if(!channelId) return
     try {
+      socket.emit("voice_connected", {
+        serverId,
+        channelId,
+        user: {
+          id: user.id,
+          username: user.username,
+          image: user.image,
+          micEnabled
+        }
+      })
       await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/joinVoiceRoom`,{
         userId: user.id,
         channelId
@@ -66,14 +74,6 @@ const VoiceRoom = ({
       channelId,
       userId: user.id
     })
-    try {
-      await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/leaveVoiceRoom`,{
-        id: user.id
-      })
-    }
-    catch(error){
-      console.log(error)
-    }
   }
 
   return (
@@ -89,8 +89,6 @@ const VoiceRoom = ({
         <ContextTransfer
           serverId={serverId}
           channelId={channelId}
-          voiceChannels={voiceChannels}
-          setVoiceChannels={setVoiceChannels}
         />
         <VideoConference/>
       </LiveKitRoom>

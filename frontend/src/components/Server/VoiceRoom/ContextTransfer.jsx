@@ -1,5 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 import { useRoomContext, useParticipants } from '@livekit/components-react';
+import axios from 'axios';
 
 // components
 import { Context } from '../../Context/Context';
@@ -16,7 +17,9 @@ import {
 
 const ContextTransfer = ({ serverId, channelId }) => {
   const {
+    user,
     socket,
+    micEnabled,
     setMicEnabled,
     setCameraEnabled,
     setIsSpeaking,
@@ -24,14 +27,35 @@ const ContextTransfer = ({ serverId, channelId }) => {
   } = useContext(Context)
   const participants = useParticipants()
   const room = useRoomContext()
+
+  useEffect(() => {
+    // room.on("connected", () => {
+    //   console.log("connection emitted")
+    // })
+    room.on("disconnected", async () => {
+      try {
+        await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/leaveVoiceRoom`, {
+          id: user.id
+        })
+      }
+      catch(error){
+        console.log(error)
+      }
+    })
+  },[room])
+
+  useEffect(() => {
+    // setting micenabled to the set cookie
+    room.localParticipant.setMicrophoneEnabled(micEnabled)
+  },[room.localParticipant.isMicrophoneEnabled])
   
   useEffect(() => {
     handleRoomEvents()
-    socket.emit("voice_updated", {
-      serverId,
-      channelId,
-      users: returnParticipantsInfo(participants)
-    })
+    // socket.emit("voice_updated", {
+    //   serverId,
+    //   channelId,
+    //   users: returnParticipantsInfo(participants)
+    // })
   },[participants])
 
   useEffect(() => {
@@ -45,8 +69,8 @@ const ContextTransfer = ({ serverId, channelId }) => {
   },[room.localParticipant.isScreenShareEnabled])
 
   const handleRoomEvents = () => {
-    room.localParticipant.on("trackUnmuted", () => localUnmute(setMicEnabled))
     room.localParticipant.on("trackMuted", () => localMute(setMicEnabled))
+    room.localParticipant.on("trackUnmuted", () => localUnmute(setMicEnabled))
     room.localParticipant.on("isSpeakingChanged", (localSpeaking) => handleSpeaking(localSpeaking,setIsSpeaking))
   }
 

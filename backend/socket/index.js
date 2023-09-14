@@ -38,11 +38,17 @@ io.on("connection", socket => {
   socket.on("open_server", data => {
     socket.join(data)
   })
+
   socket.on("voice_updated", data => {
     socket.to(data.serverId).emit("receive_voice_update", data)
   })
 
+  socket.on("voice_connected", data => {
+    socket.to(data.serverId).emit("receive_voice_connected", data)
+  })
+
   socket.on("leave_voice", data => {
+    console.log(data)
     socket.to(data.serverId).emit("receive_leave_voice", data)
   })
 

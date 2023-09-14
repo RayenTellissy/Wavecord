@@ -36,6 +36,9 @@ import VoiceRoom from './VoiceRoom/VoiceRoom';
 // styles
 import "./Server.css"
 
+// storing the current room for "beforeunload" event
+let storedVoiceRoom = ""
+
 const Server = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { isOpen: isOpenDropdown, onOpen: onOpenDropdown, onClose: onCloseDropdown } = useDisclosure()
@@ -46,8 +49,6 @@ const Server = () => {
   const [currentTextChannel,setCurrentTextChannel] = useState("")
   const [currentTextChannelId,setCurrentTextChannelId] = useState("")
   const [currentVoiceChannelId,setCurrentVoiceChannelId] = useState("")
-  const [voiceChannels,setVoiceChannels] = useState({})
-  const [voiceTokens,setVoiceTokens] = useState({})
   const [currentChannelType,setCurrentChannelType] = useState("")
   const [categoryChosen,setCategoryChosen] = useState("")
   const [categoryIdChosen,setCategoryIdChosen] = useState("")
@@ -58,20 +59,15 @@ const Server = () => {
   const [showDropdown,setShowDropdown] = useState(false)
   
   useEffect(() => {
+    window.addEventListener("beforeunload", handleUnload)
     socket.emit("open_server", id)
     fetchData()
+    return () => window.removeEventListener("beforeunload", handleUnload)
   },[])
 
-  // useEffect(() => {
-  //   socket.on("receive_voice_update", data => {
-  //     console.log(data)
-  //     // console.log(data.users)
-  //   })
-  // },[socket])
-
-  // useEffect(() => {
-  //   console.log(voiceChannels)
-  // },[voiceChannels])
+  useEffect(() => {
+    storedVoiceRoom = currentVoiceChannelId
+  },[currentVoiceChannelId])
 
   const fetchData = async () => {
     try {
@@ -134,6 +130,18 @@ const Server = () => {
   const closeModal = () => {
     setPrivateChecked(false)
     onClose()
+  }
+
+  // leaves voice room before unloading app
+  const handleUnload = () => {
+    socket.emit("leave_voice", {
+      serverId: id,
+      channelId: storedVoiceRoom,
+      userId: user.id
+    })
+    socket.emit("voice_disconnect", {
+      user: user.id
+    })
   }
 
   return (
@@ -202,9 +210,6 @@ const Server = () => {
           serverId={server.id}
           channelId={currentVoiceChannelId}
           setCurrentChannelType={setCurrentChannelType}
-          setVoiceTokens={setVoiceTokens}
-          voiceChannels={voiceChannels}
-          setVoiceChannels={setVoiceChannels}
           setCurrentVoiceChannelId={setCurrentVoiceChannelId}
         />}
       </div>
