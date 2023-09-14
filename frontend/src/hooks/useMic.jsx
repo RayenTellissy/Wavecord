@@ -7,12 +7,13 @@ const useMic = () => {
   const [micEnabled,setMicEnabled] = useState(cookie ? JSON.parse(cookie) : undefined)
 
   useEffect(() => {
-    if(micEnabled) return // if microphone is enabled don't do anything
     // if cookie is not set it will set microphoneEnabled to true automatically
     if(micEnabled === undefined){
-      return Cookies.set("microphoneEnabled", true)
+      Cookies.set("microphoneEnabled", true)
     }
-    Cookies.set("microphoneEnabled", false)
+    else if(micEnabled === false){
+      Cookies.set("microphoneEnabled", false)
+    }
   },[micEnabled])
 
   return [micEnabled,setMicEnabled]

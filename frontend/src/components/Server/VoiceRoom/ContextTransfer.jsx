@@ -29,13 +29,14 @@ const ContextTransfer = ({ serverId, channelId }) => {
   const room = useRoomContext()
 
   useEffect(() => {
-    // room.on("connected", () => {
-    //   console.log("connection emitted")
-    // })
     room.on("disconnected", async () => {
       try {
         await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/leaveVoiceRoom`, {
           id: user.id
+        })
+        socket.emit("leave_voice", {
+          serverId,
+          channelId
         })
       }
       catch(error){
@@ -51,11 +52,11 @@ const ContextTransfer = ({ serverId, channelId }) => {
   
   useEffect(() => {
     handleRoomEvents()
-    // socket.emit("voice_updated", {
-    //   serverId,
-    //   channelId,
-    //   users: returnParticipantsInfo(participants)
-    // })
+    socket.emit("voice_updated", {
+      serverId,
+      channelId,
+      users: returnParticipantsInfo(participants)
+    })
   },[participants])
 
   useEffect(() => {

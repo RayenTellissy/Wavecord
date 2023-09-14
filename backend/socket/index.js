@@ -43,12 +43,7 @@ io.on("connection", socket => {
     socket.to(data.serverId).emit("receive_voice_update", data)
   })
 
-  socket.on("voice_connected", data => {
-    socket.to(data.serverId).emit("receive_voice_connected", data)
-  })
-
   socket.on("leave_voice", data => {
-    console.log(data)
     socket.to(data.serverId).emit("receive_leave_voice", data)
   })
 
