@@ -35,7 +35,7 @@ const VoiceChannel = ({
       }
     })
     return () => {
-      // socket.off("receive_voice_connected")
+      socket.off("receive_leave_voice")
       socket.off("receive_voice_update")
     }
   },[socket])

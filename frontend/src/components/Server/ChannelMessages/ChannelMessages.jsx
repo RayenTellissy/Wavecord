@@ -59,12 +59,12 @@ const ChannelMessages = ({ serverId, currentTextChannel, currentTextChannelId, u
               <Twemoji options={{ className: 'twemoji' }}>
                 {messages.length !== 0 && messages.map((e,i) => {
                   return <Message
-                  key={i}
-                  username={e.sender.username}
-                  image={e.sender.image}
-                  message={e.message}
-                  type="TEXT"
-                  created_at={e.created_at}
+                    key={i}
+                    username={e.sender.username}
+                    image={e.sender.image}
+                    message={e.message}
+                    type={e.type}
+                    created_at={e.created_at}
                   />
                 })}
               </Twemoji>

@@ -383,16 +383,16 @@ module.exports = {
 
   sendMessage: async (req,res) => {
     try {
-      const { senderId, channelId, message } = req.body
+      const { senderId, channelId, message, type } = req.body
 
       const result = await prisma.serverMessages.create({
         data: {
-          senderId: senderId,
-          channelId: channelId,
-          message: message
+          senderId,
+          channelId,
+          message,
+          type
         }
       })
-
       res.send(result)
     }
     catch(error){

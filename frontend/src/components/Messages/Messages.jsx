@@ -47,8 +47,6 @@ const Messages = () => {
       const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/conversations/messages`,{
         conversationId: id,
         userId: user.id
-      },{
-        withCredentials: true
       })
 
       // if user tries to enter a conversation he's not a part of it will redirect without fetching messages
@@ -88,8 +86,8 @@ const Messages = () => {
             {messages.length !== 0 && messages.map((e,i) => {
               return <Message 
                 key={i}
-                username={e.usersId.username} 
-                image={e.usersId.image} 
+                username={e.sender.username} 
+                image={e.sender.image} 
                 message={e.message}
                 type={e.type}
                 created_at={e.created_at}

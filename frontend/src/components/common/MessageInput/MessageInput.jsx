@@ -42,7 +42,7 @@ const MessageInput = ({ user, conversationName, setMessages, conversationType, c
     if(conversationType === "dm"){
       const messageDetails = {
         conversation: id,
-        usersId: {
+        sender: {
           username: user.username,
           image: user.image
         },
@@ -50,8 +50,13 @@ const MessageInput = ({ user, conversationName, setMessages, conversationType, c
         type: "TEXT",
         created_at: new Date(Date.now())
       }
-      await socket.emit("send_message", messageDetails)
+      socket.emit("send_message", messageDetails)
       setMessages(prevMessages => [...prevMessages, messageDetails])
+      await axios.post(`${import.meta.env.VITE_SERVER_URL}/conversations/sendMessage`,{
+        conversationId: id,
+        senderId: user.id,
+        message: storedMessage
+      })
     }
     else if(conversationType === "server"){
       const messageDetails = {
@@ -64,32 +69,13 @@ const MessageInput = ({ user, conversationName, setMessages, conversationType, c
         type: "TEXT",
         created_at: new Date(Date.now())
       }
-      await socket.emit("send_message", messageDetails)
+      socket.emit("send_message", messageDetails)
       setMessages(prevMessages => [...prevMessages, messageDetails])
-    }
-    
-    try {
-      if(conversationType === "dm"){
-        await axios.post(`${import.meta.env.VITE_SERVER_URL}/conversations/sendMessage`,{
-          conversationId: id,
-          senderId: user.id,
-          message: storedMessage
-        },{
-          withCredentials: true
-        })
-      }
-      else if(conversationType === "server"){
-        await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/sendMessage`,{
-          channelId: channelId,
-          senderId: user.id,
-          message: message
-        },{
-          withCredentials: true
-        })
-      }
-    }
-    catch(error){
-      console.log(error)
+      await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/sendMessage`,{
+        channelId: channelId,
+        senderId: user.id,
+        message: message
+      })
     }
   }
 
@@ -127,29 +113,55 @@ const MessageInput = ({ user, conversationName, setMessages, conversationType, c
     await uploadBytes(imageRef, compressedImage) // uploading image
 
     const url = await getDownloadURL(imageRef)
-    const messageDetails = {
-      conversation: id,
-      usersId: { 
-        username: user.username,
-        image: user.image
-      },
-      message: url,
-      type: "LINK",
-      created_at: new Date(Date.now())
-    }
-    try {
-      await axios.post(`${import.meta.env.VITE_SERVER_URL}/conversations/sendMessage`,{
-        conversationId: id,
-        senderId: user.id,
+    if(conversationType === "dm"){
+      const messageDetails = {
+        conversation: id,
+        sender: {
+          username: user.username,
+          image: user.image
+        },
         message: url,
-        type: "LINK"
-      })
-      await socket.emit("send_message", messageDetails)
-      setMessages(prevMessages => [...prevMessages, messageDetails])
-      
+        type: "LINK",
+        created_at: new Date(Date.now())
+      }
+      try {
+        socket.emit("send_message", messageDetails)
+        setMessages(prevMessages => [...prevMessages, messageDetails])
+        await axios.post(`${import.meta.env.VITE_SERVER_URL}/conversations/sendMessage`,{
+          conversationId: id,
+          senderId: user.id,
+          message: url,
+          type: "LINK"
+        })
+      }
+      catch(error){
+        console.log(error)
+      }
     }
-    catch(error){
-      console.log(error)
+    else if(conversationType === "server"){
+      const messageDetails = {
+        conversation: channelId,
+        sender: { 
+          username: user.username,
+          image: user.image
+        },
+        message: url,
+        type: "LINK",
+        created_at: new Date(Date.now())
+      }
+      try {
+        socket.emit("send_message", messageDetails)
+        setMessages(prevMessages => [...prevMessages, messageDetails])
+        await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/sendMessage`,{
+          channelId: channelId,
+          senderId: user.id,
+          message: url,
+          type: "LINK"
+        })
+      }
+      catch(error){
+        console.log(error)
+      }
     }
     onClose()
     setImage(null)

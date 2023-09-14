@@ -140,14 +140,14 @@ model Conversations {
 }
 
 model DirectMessages {
-  id              String        @id @default(cuid())
-  sender          String
-  usersId         Users         @relation(fields: [sender], references: [id])
-  conversation    Conversations @relation(fields: [conversationsId], references: [id])
-  conversationsId String
-  message         String
-  type            MessageType   @default(TEXT)
-  created_at      DateTime      @default(now())
+  id             String        @id @default(cuid())
+  sender         Users         @relation(fields: [senderId], references: [id])
+  senderId       String
+  conversation   Conversations @relation(fields: [conversationId], references: [id])
+  conversationId String
+  message        String
+  type           MessageType   @default(TEXT)
+  created_at     DateTime      @default(now())
 }
 
 model ServerMessages {
