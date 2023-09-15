@@ -20,6 +20,7 @@ const AllButtons = ({ user, ownerId, onOpen, server }) => {
   const [hovered,setHovered] = useState("")
   const [isLoading,setIsLoading] = useState(false)
   const [query,setQuery] = useState("")
+  const [incorrect,setIncorrect] = useState(false)
   const navigate = useNavigate()
 
   const leaveServer = async () => {
@@ -38,6 +39,9 @@ const AllButtons = ({ user, ownerId, onOpen, server }) => {
   }
 
   const deleteServer = async () => {
+    if(query !== server.name){
+      return setIncorrect(true)
+    }
     try {
       setIsLoading(true)
       await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/deleteServer`, {
@@ -54,6 +58,13 @@ const AllButtons = ({ user, ownerId, onOpen, server }) => {
 
   const launchConfirmation = () => {
     onOpenConfirmation()
+  }
+
+  const closeModal = () => {
+    onClose()
+    setIncorrect(false)
+    setIsLoading(false)
+    setQuery("")
   }
 
   return (
@@ -95,31 +106,45 @@ const AllButtons = ({ user, ownerId, onOpen, server }) => {
         callback={launchConfirmation}
       />
 
-      <Modal isOpen={isOpen} onClose={onClose} isCentered>
-        <ModalOverlay/>
+      <Modal isOpen={isOpen} onClose={onClose} size="lg" isCentered>
+        <ModalOverlay bgColor={"blackAlpha.800"}/>
         <ModalContent bgColor="#313338">
           {ownerId !== user.id ? 
           <>
             <ModalHeader borderTopRadius={3}>
-              <p id='server-leaving-confirmation-header'>Leave '{ server.name }'</p>
+              <p className='server-confirmation-header'>Leave '{ server.name }'</p>
             </ModalHeader>
             <ModalBody marginBottom={3}>
-              <h4 id='server-leaving-confirmation-text'>Are you sure you want to leave <span id='server-leaving-confirmation-server-name'>{ server.name }</span>?
+              <h4 id='server-leave-confirmation-text'>Are you sure you want to leave <span id='server-leave-confirmation-server-name'>{ server.name }</span>?
               </h4>
             </ModalBody>
             <ModalFooter bgColor="#2b2d31" h={75} borderBottomRadius={3}>
-              <button id='server-leaving-confirmation-cancel-button' onClick={() => onClose()}>Cancel</button>
-              <button id='server-leaving-confirmation-leave-button' onClick={() => leaveServer()}>
-                {isLoading ? <BeatLoader size={10} color='white'/> : "Leave Server"}
+              <button className='server-confirmation-cancel-button' onClick={closeModal}>Cancel</button>
+              <button className='server-confirmation-submit-button' onClick={() => leaveServer()}>
+                {isLoading ? <BeatLoader size={9} color='white'/> : "Leave Server"}
               </button>
             </ModalFooter>
           </> :
           <>
+          <ModalHeader>
+            <p className='server-confirmation-header'>Delete '{ server.name }'</p>
+          </ModalHeader>
           <ModalBody>
-            Write the server's name to confirm
-            <p>{ server.name }</p>
-            <input value={query} onChange={e => setQuery(e.target.value)} />
+            <div id='server-delete-confirmation-container'>
+              <p id='server-delete-confirmation-text'>
+                Are you sure you want to delete <span id='server-delete-confirmation-server-name'>{ server.name }</span>? This action cannot be undone.
+              </p>
+            </div>
+            <p id='server-delete-confirmation-enter-name'>ENTER SERVER NAME</p>
+            <input id='server-delete-confirmation-input' value={query} onChange={e => setQuery(e.target.value)} />
+            {incorrect && <p id='server-delete-confirmation-incorrect'>You didn't enter the server name correctly</p>}
           </ModalBody>
+          <ModalFooter bgColor="#2b2d31" h={75} borderBottomRadius={3}>
+            <button className='server-confirmation-cancel-button' onClick={closeModal}>Cancel</button>
+            <button className='server-confirmation-submit-button' onClick={() => deleteServer()}>
+              {isLoading ? <BeatLoader size={9} color='white'/> : "Leave Server"}
+            </button>
+          </ModalFooter>
           </>}
         </ModalContent>
       </Modal>

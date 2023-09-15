@@ -107,17 +107,17 @@ const Create = ({ setScreen, onClose }) => {
       })
       
       if(response.data.success === false){
-          onClose()
-          return toast({
-              title: "Failed",
-              description: response.data.message,
-              status: "warning",
-              duration: 3000,
-              isClosable: true
-            })
-          }
+        onClose()
+        return toast({
+          title: "Failed",
+          description: response.data.message,
+          status: "warning",
+          duration: 3000,
+          isClosable: true
+        })
+      }
       onClose() // closing modal
-      navigate(`/server/${response.data.id}`)
+      navigate(`/server/${response.data.id}`) // navigating to the newly created server
     }
     catch(error){
       console.log(error)

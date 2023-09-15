@@ -1,21 +1,21 @@
-#server-leaving-confirmation-header {
-  font-size: 26px;
+.server-confirmation-header {
+  font-size: 24px;
   font-family: UbuntuRegular;
 }
 
-#server-leaving-confirmation-server-name {
+#server-leave-confirmation-server-name {
   font-family: UbuntuBold;
   font-size: 20px;
   color: #dbdee1;
 }
 
-#server-leaving-confirmation-text {
+#server-leave-confirmation-text {
   font-family: UbuntuRegular;
   font-size: 19px;
   color: #cdd0d4;
 }
 
-#server-leaving-confirmation-leave-button {
+.server-confirmation-submit-button {
   background-color: #da373c;
   padding: 9px;
   width: 130px;
@@ -25,18 +25,57 @@
   margin-left: 20px;
 }
 
-#server-leaving-confirmation-leave-button:hover {
+.server-confirmation-submit-button:hover {
   background-color: #a12828;
 }
 
-#server-leaving-confirmation-leave-button:active {
+.server-confirmation-submit-button:active {
   background-color: #8f2022;
 }
 
-#server-leaving-confirmation-cancel-button {
+.server-confirmation-cancel-button {
   font-family: UbuntuMedium;
 }
 
-#server-leaving-confirmation-cancel-button:hover {
+.server-confirmation-cancel-button:hover {
   text-decoration: underline;
+}
+
+#server-delete-confirmation-container {
+  background-color: #f0b132;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+#server-delete-confirmation-text {
+  font-size: 18px;
+  font-family: UbuntuRegular;
+}
+
+#server-delete-confirmation-server-name {
+  font-family: UbuntuBold;
+  font-size: 19px;
+}
+
+#server-delete-confirmation-enter-name {
+  font-family: UbuntuMedium;
+  color: #b5bac1;
+  font-size: 15px;
+  margin-bottom: 10px;
+}
+
+#server-delete-confirmation-input {
+  font-family: UbuntuRegular;
+  background-color: #1e1f22;
+  padding: 10px;
+  width: 100%;
+  border-radius: 3px;
+  margin-bottom: 7px;
+}
+
+#server-delete-confirmation-incorrect {
+  font-family: UbuntuLight;
+  font-size: 13px;
+  color: #e16f73;
 }
