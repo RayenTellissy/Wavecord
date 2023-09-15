@@ -49,6 +49,10 @@ const ChannelMessages = ({ serverId, currentTextChannel, currentTextChannelId, u
     messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight
   }
 
+  const removeMessageLocally = (messageId) => {
+    setMessages(messages.filter(e => e.id !== messageId))
+  }
+
   return (
     <>
       <div id='server-messages-container'>
@@ -60,11 +64,16 @@ const ChannelMessages = ({ serverId, currentTextChannel, currentTextChannelId, u
                 {messages.length !== 0 && messages.map((e,i) => {
                   return <Message
                     key={i}
+                    id={e.id}
+                    isSender={user.id === e.sender.id}
+                    senderId={e.sender.id}
                     username={e.sender.username}
                     image={e.sender.image}
                     message={e.message}
                     type={e.type}
                     created_at={e.created_at}
+                    conversationType="server"
+                    removeMessageLocally={removeMessageLocally}
                   />
                 })}
               </Twemoji>

@@ -17,7 +17,7 @@ import "./Messages.css"
 
 const Messages = () => {
   const { user, socket, conversationChosen } = useContext(Context)
-  const { id } = useParams() // conversation's id
+  const { id } = useParams()
   const [messages,setMessages] = useState([])
   const [isLoading,setIsLoading] = useState(true)
   const messagesContainerRef = useRef(null)
@@ -44,6 +44,7 @@ const Messages = () => {
   // function to fetch messages from current conversation
   const fetchMessages = async () => {
     try {
+      setIsLoading(true)
       const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/conversations/messages`,{
         conversationId: id,
         userId: user.id
@@ -65,6 +66,10 @@ const Messages = () => {
     messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight
   }
 
+  const removeMessageLocally = (messageId) => {
+    setMessages(messages.filter(e => e.id !== messageId))
+  }
+
   return (
     <div id='messages-container'>
       <Sidebar/>
@@ -84,13 +89,18 @@ const Messages = () => {
           {isLoading && <LoadingMessages/>}
           <Twemoji options={{ className: 'twemoji' }}>
             {messages.length !== 0 && messages.map((e,i) => {
-              return <Message 
+              return <Message
                 key={i}
+                id={e.id}
+                isSender={user.id === e.sender.id}
+                senderId={e.sender.id}
                 username={e.sender.username} 
                 image={e.sender.image} 
                 message={e.message}
                 type={e.type}
                 created_at={e.created_at}
+                conversationType="dm"
+                removeMessageLocally={removeMessageLocally}
               />
             })}
           </Twemoji>

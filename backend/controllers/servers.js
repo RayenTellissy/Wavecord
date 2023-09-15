@@ -111,7 +111,7 @@ module.exports = {
 
       const ownerCheck = await prisma.servers.findFirst({
         where: {
-          ownerId: ownerId,
+          ownerId,
           id: serverId
         }
       })
@@ -383,10 +383,11 @@ module.exports = {
 
   sendMessage: async (req,res) => {
     try {
-      const { senderId, channelId, message, type } = req.body
+      const { id, senderId, channelId, message, type } = req.body
 
       const result = await prisma.serverMessages.create({
         data: {
+          id,
           senderId,
           channelId,
           message,
@@ -927,6 +928,25 @@ module.exports = {
         }
       })
 
+      res.send(result)
+    }
+    catch(error){
+      res.send(error)
+    }
+  },
+  
+  deleteMessage: async (req,res) => {
+    try {
+      const { senderId, messageId } = req.body
+      console.log(senderId, messageId)
+
+      const result = await prisma.serverMessages.delete({
+        where: {
+          id: messageId,
+          senderId
+        }
+      })
+      
       res.send(result)
     }
     catch(error){

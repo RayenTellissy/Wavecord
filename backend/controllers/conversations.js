@@ -74,6 +74,7 @@ module.exports = {
             include: {
               sender: {
                 select: {
+                  id: true,
                   username: true,
                   image: true
                 }
@@ -118,10 +119,11 @@ module.exports = {
 
   sendMessage: async (req,res) => {
     try {
-      const { conversationId, senderId, message, type } = req.body
+      const { id, conversationId, senderId, message, type } = req.body
 
       const result = await prisma.directMessages.create({
         data: {
+          id,
           senderId,
           conversationId,
           message: message,
@@ -171,6 +173,24 @@ module.exports = {
             ]
           },
           type: "DIRECT"
+        }
+      })
+
+      res.send(result)
+    }
+    catch(error){
+      res.send(error)
+    }
+  },
+
+  deleteMessage: async (req,res) => {
+    try {
+      const { senderId, messageId } = req.body
+
+      const result = await prisma.directMessages.delete({
+        where: {
+          id: messageId,
+          senderId
         }
       })
 

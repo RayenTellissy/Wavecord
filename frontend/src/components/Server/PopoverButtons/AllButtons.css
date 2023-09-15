@@ -1,0 +1,42 @@
+#server-leaving-confirmation-header {
+  font-size: 26px;
+  font-family: UbuntuRegular;
+}
+
+#server-leaving-confirmation-server-name {
+  font-family: UbuntuBold;
+  font-size: 20px;
+  color: #dbdee1;
+}
+
+#server-leaving-confirmation-text {
+  font-family: UbuntuRegular;
+  font-size: 19px;
+  color: #cdd0d4;
+}
+
+#server-leaving-confirmation-leave-button {
+  background-color: #da373c;
+  padding: 9px;
+  width: 130px;
+  border-radius: 3px;
+  font-family: UbuntuMedium;
+  transition: .2s ease;
+  margin-left: 20px;
+}
+
+#server-leaving-confirmation-leave-button:hover {
+  background-color: #a12828;
+}
+
+#server-leaving-confirmation-leave-button:active {
+  background-color: #8f2022;
+}
+
+#server-leaving-confirmation-cancel-button {
+  font-family: UbuntuMedium;
+}
+
+#server-leaving-confirmation-cancel-button:hover {
+  text-decoration: underline;
+}

@@ -30,11 +30,19 @@
 #dm-username-message-container{
   display: flex;
   flex-direction: column;
+  width: 90%;
+  justify-content: space-between;
 }
 
 #dm-message-username{
   font-family: UbuntuMedium;
   margin-right: 1rem;
+}
+
+#dm-message-username-deleting {
+  font-family: UbuntuMedium;
+  margin-right: 1rem;
+  color: #b5b5b5;
 }
 
 #dm-message-createdat{
@@ -45,6 +53,11 @@
 #dm-message-message{
   font-family: UbuntuRegular;
   color: #DDDEE9;
+}
+
+#dm-message-message-deleting {
+  font-family: UbuntuRegular;
+  color: #b5b5b5;
 }
 
 #dm-username-createdat{
@@ -61,6 +74,10 @@
 #dm-messages-container{
   height: 83%;
   overflow-y: scroll;
+}
+
+#dm-message-remove-button {
+  cursor: pointer;
 }
 
 .twemoji{

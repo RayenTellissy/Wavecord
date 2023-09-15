@@ -4,6 +4,7 @@ import axios from 'axios';
 import { BsEmojiSmileFill, BsLink45Deg } from "react-icons/bs"
 import imageCompression from 'browser-image-compression';
 import { v4 } from "uuid"
+import { createId } from "@paralleldrive/cuid2"
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { 
   useDisclosure, 
@@ -40,9 +41,12 @@ const MessageInput = ({ user, conversationName, setMessages, conversationType, c
     setMessage("")
     
     if(conversationType === "dm"){
+      const messageId = createId()
       const messageDetails = {
         conversation: id,
+        id: messageId, // temporary id to be able to delete messages with re-fetching data
         sender: {
+          id: user.id,
           username: user.username,
           image: user.image
         },
@@ -53,15 +57,19 @@ const MessageInput = ({ user, conversationName, setMessages, conversationType, c
       socket.emit("send_message", messageDetails)
       setMessages(prevMessages => [...prevMessages, messageDetails])
       await axios.post(`${import.meta.env.VITE_SERVER_URL}/conversations/sendMessage`,{
+        id: messageId,
         conversationId: id,
         senderId: user.id,
         message: storedMessage
       })
     }
     else if(conversationType === "server"){
+      const messageId = createId()
       const messageDetails = {
         conversation: channelId,
-        sender: { 
+        id: messageId, // temporary id to be able to delete messages with re-fetching data
+        sender: {
+          id: user.id,
           username: user.username,
           image: user.image
         },
@@ -72,6 +80,7 @@ const MessageInput = ({ user, conversationName, setMessages, conversationType, c
       socket.emit("send_message", messageDetails)
       setMessages(prevMessages => [...prevMessages, messageDetails])
       await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/sendMessage`,{
+        id: messageId,
         channelId: channelId,
         senderId: user.id,
         message: message
@@ -79,6 +88,7 @@ const MessageInput = ({ user, conversationName, setMessages, conversationType, c
     }
   }
 
+  // function to import an image from the user's device
   const importImage = (e) => {
     const file = e.target.files[0]
     setImage(file)
@@ -95,6 +105,7 @@ const MessageInput = ({ user, conversationName, setMessages, conversationType, c
     onOpen()
   }
 
+  // function to upload the imported image to a cloud storage, and send it as a message
   const uploadImage = async () => {
     setIsLoading(true)
     const response = await axios.get(image, {
@@ -114,9 +125,12 @@ const MessageInput = ({ user, conversationName, setMessages, conversationType, c
 
     const url = await getDownloadURL(imageRef)
     if(conversationType === "dm"){
+      const messageId = createId()
       const messageDetails = {
         conversation: id,
+        id: messageId,
         sender: {
+          id: user.id,
           username: user.username,
           image: user.image
         },
@@ -128,6 +142,7 @@ const MessageInput = ({ user, conversationName, setMessages, conversationType, c
         socket.emit("send_message", messageDetails)
         setMessages(prevMessages => [...prevMessages, messageDetails])
         await axios.post(`${import.meta.env.VITE_SERVER_URL}/conversations/sendMessage`,{
+          id: messageId,
           conversationId: id,
           senderId: user.id,
           message: url,
@@ -139,9 +154,12 @@ const MessageInput = ({ user, conversationName, setMessages, conversationType, c
       }
     }
     else if(conversationType === "server"){
+      const messageId = createId()
       const messageDetails = {
         conversation: channelId,
-        sender: { 
+        id: messageId,
+        sender: {
+          id: user.id,
           username: user.username,
           image: user.image
         },
@@ -153,7 +171,8 @@ const MessageInput = ({ user, conversationName, setMessages, conversationType, c
         socket.emit("send_message", messageDetails)
         setMessages(prevMessages => [...prevMessages, messageDetails])
         await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/sendMessage`,{
-          channelId: channelId,
+          id: messageId,
+          channelId,
           senderId: user.id,
           message: url,
           type: "LINK"

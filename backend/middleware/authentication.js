@@ -12,7 +12,6 @@ const authentication = ( req, res, next ) => {
   catch(error){
     res.send({ error: "Invalid Token" })
   }
-
 }
 
 module.exports = authentication

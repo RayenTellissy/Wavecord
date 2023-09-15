@@ -30,6 +30,7 @@ const {
   joinVoiceRoom,
   leaveVoiceRoom,
   fetchUsersInRoom,
+  deleteMessage,
 } = require("../controllers/servers")
 const { createLimit, joinLimit, deleteLimit, leaveLimit } = require("../middleware/serverLimiter")
 const authentication = require("../middleware/authentication")
@@ -51,6 +52,7 @@ router.post("/createTextChannel", createTextChannel)
 router.post("/createVoiceChannel", createVoiceChannel)
 router.post("/fetchTextChannelMessages", fetchTextChannelMessages)
 router.post("/sendMessage", sendMessage)
+router.post("/deleteMessage", deleteMessage)
 router.post("/createRole", createRole)
 router.post("/giveRole", giveRole)
 router.post("/kickUser", kickUser)
@@ -58,14 +60,14 @@ router.post("/banUser", banUser)
 router.post("/unbanUser", unbanUser)
 router.post("/joinVoiceRoom", joinVoiceRoom)
 router.post("/leaveVoiceRoom", leaveVoiceRoom)
-router.post("/leave", leaveServer)
+router.post("/leaveServer", leaveServer)
+router.post("/deleteServer", deleteServer)
 
 router.put("/resetServerLink", resetServerLink)
 router.put("/changeServerImage", changeServerImage)
 router.put("/changeServerName", changeServerName)
 router.put("/removeRoleFromUser", removeRoleFromUser)
 
-router.delete("/delete", deleteServer)
 router.delete("/removeRole/:roleId", removeRole)
 
 module.exports = router
