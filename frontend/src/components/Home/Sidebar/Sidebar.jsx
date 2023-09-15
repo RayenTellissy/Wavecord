@@ -21,9 +21,7 @@ const Sidebar = ({ highlighted }) => {
   // function to fetch servers for the current user
   const fetchServers = async () => {
     try{
-      const servers = await axios.get(`${import.meta.env.VITE_SERVER_URL}/servers/fetchByUser/${user.id}`,{
-        withCredentials: true
-      })
+      const servers = await axios.get(`${import.meta.env.VITE_SERVER_URL}/servers/fetchByUser/${user.id}`)
       setServers(servers.data)
     }
     catch(error){

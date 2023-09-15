@@ -33,11 +33,11 @@ module.exports = {
   // function to fetch server details
   fetch: async (req,res) => {
     try{
-      const { id } = req.params // server's id
+      const { serverId, userId } = req.body
 
-      const result = await prisma.servers.findFirst({
+      const server = await prisma.servers.findFirst({
         where: {
-          id: id
+          id: serverId
         },
         include: {
           UsersInServers: true,
@@ -49,8 +49,24 @@ module.exports = {
           }
         }
       })
+
+      const adminCheck = await prisma.usersInServers.findFirst({
+        where: {
+          userId,
+          role: {
+            isAdmin: true
+          }
+        }
+      })
+      var isAdmin
+      if(adminCheck){
+        isAdmin = true
+      }
+      else {
+        isAdmin = false
+      }
       
-      res.send(result)
+      res.send({ server, isAdmin })
     }
     catch(error){
       res.send(error)

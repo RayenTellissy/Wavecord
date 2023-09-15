@@ -36,7 +36,6 @@ const { createLimit, joinLimit, deleteLimit, leaveLimit } = require("../middlewa
 const authentication = require("../middleware/authentication")
 
 router.get("/fetchByUser/:id", fetchByUser)
-router.get("/fetch/:id", fetch)
 router.get("/count/:id", count)
 router.get("/fetchUsersByRoles/:serverId", fetchUsersByRoles)
 router.get("/fetchServerRoles/:serverId", fetchServerRoles)
@@ -45,6 +44,7 @@ router.get("/fetchOnlyRoles/:serverId", fetchOnlyRoles)
 router.get("/fetchBannedUsers/:serverId", fetchBannedUsers)
 router.get("/fetchUsersInRoom/:channelId", fetchUsersInRoom)
 
+router.post("/fetch", fetch)
 router.post("/create/:id", createServer)
 router.post("/join", joinServer)
 router.post("/createCategory", createCategory)

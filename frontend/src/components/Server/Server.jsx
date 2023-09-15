@@ -57,6 +57,7 @@ const Server = () => {
   const [privateChecked,setPrivateChecked] = useState(false)
   const [createDisabled,setCreateDisabled] = useState(true)
   const [showDropdown,setShowDropdown] = useState(false)
+  const [isAdmin,setIsAdmin] = useState(null)
   
   useEffect(() => {
     window.addEventListener("beforeunload", handleUnload)
@@ -71,8 +72,12 @@ const Server = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/servers/fetch/${id}`)
-      setServer(response.data)
+      const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/fetch`,{
+        serverId: id,
+        userId: user.id
+      })
+      setServer(response.data.server)
+      setIsAdmin(response.data.isAdmin)
     }
     catch(error){
       console.log(error)
@@ -180,6 +185,7 @@ const Server = () => {
             {server.categories && server.categories.map((e,i) => {
               return <Category
                 key={i}
+                isAdmin={isAdmin}
                 id={e.id}
                 name={e.name}
                 text={e.Text_channels}

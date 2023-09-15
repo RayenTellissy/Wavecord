@@ -9,6 +9,7 @@ import VoiceChannel from '../VoiceChannel/VoiceChannel';
 import "./Category.css"
 
 const Category = ({
+  isAdmin,
   id,
   name,
   text,
@@ -44,9 +45,9 @@ const Category = ({
         >
           {name}
         </p>
-        <button id='server-category-plus-button' onClick={handleClick}>
+        {isAdmin && <button id='server-category-plus-button' onClick={handleClick}>
           <BsPlus id='server-category-plus-button' size={30}/>
-        </button>
+        </button>}
       </div>
       {text.map((e,i) => {
         return <TextChannel 
