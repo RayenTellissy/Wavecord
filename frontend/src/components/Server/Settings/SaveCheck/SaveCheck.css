@@ -1,9 +1,9 @@
 #server-settings-modal-save-check-text {
-  font-family: UbuntuRegular;
+  font-family: GibsonRegular;
 }
 
 #server-settings-modal-save-check-reset {
-  font-family: UbuntuRegular;
+  font-family: GibsonRegular;
   color: #d5d7da;
 }
 
@@ -16,7 +16,7 @@
   padding: 7px 15px;
   background-color: #248046;
   border-radius: 4px;
-  font-family: UbuntuRegular;
+  font-family: GibsonRegular;
   transition: .2s ease;
 }
 

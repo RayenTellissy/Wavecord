@@ -16,16 +16,16 @@ const BlockedUser = ({ id, username, image, status, setIsUnblocking, fetchBlocks
   const unblockUser = async () => {
     setIsUnblocking(true)
     try {
-      await axios.post(`${import.meta.env.VITE_SERVER_URL}/friends/unblockUser`,{
+      await axios.post(`${import.meta.env.VITE_SERVER_URL}/friends/unblockUser`, {
         blocker: user.id,
         blocked: id
-      },{
+      }, {
         withCredentials: true
       })
       fetchBlocks()
       setIsUnblocking(false)
     }
-    catch(error){
+    catch (error) {
       console.log(error)
     }
   }
@@ -34,7 +34,7 @@ const BlockedUser = ({ id, username, image, status, setIsUnblocking, fetchBlocks
     <button>
       <div id='blockeduser-button-container'>
         <div id='blockeduser-button-details-container'>
-          <Avatar image={image} status={status}/>
+          <Avatar image={image} status={status} />
           <div id='blockeduser-button-username-status-container'>
             <p id='blockeduser-button-username'>{username}</p>
             <p id='blockeduser-button-status'>
@@ -43,12 +43,12 @@ const BlockedUser = ({ id, username, image, status, setIsUnblocking, fetchBlocks
           </div>
         </div>
         <div id='blockeduser-button-buttons-container'>
-        <Tooltip
+          <Tooltip
             label="Unblock"
             placement="top"
             color="white"
             backgroundColor="black"
-            fontFamily="UbuntuMedium"
+            fontFamily="GibsonMedium"
             hasArrow={true}
             arrowSize={10}
             padding={3}
@@ -56,7 +56,7 @@ const BlockedUser = ({ id, username, image, status, setIsUnblocking, fetchBlocks
             openDelay={500}
           >
             <button id='blockeduser-button-unblock' onClick={unblockUser}>
-              <IoClose color='#FFFFFF' size={40}/>
+              <IoClose color='#FFFFFF' size={40} />
             </button>
           </Tooltip>
         </div>

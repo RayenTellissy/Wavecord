@@ -1,4 +1,4 @@
-#message-input-container{
+#message-input-container {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -6,70 +6,70 @@
   position: relative;
 }
 
-#dm-conversation-input{
+#dm-conversation-input {
   width: 98%;
   border-radius: 4px;
   padding: 15px;
   background-color: #383a40;
-  font-family: UbuntuRegular;
+  font-family: GibsonRegular;
   color: #DDDEE9;
 }
 
-#message-input-emoji-picker{
+#message-input-emoji-picker {
   position: absolute;
   right: 30px;
 }
 
-#emoji-picker-container{
+#emoji-picker-container {
   position: absolute;
   right: 40px;
   bottom: 100px;
 }
 
-#message-input-link-label{
+#message-input-link-label {
   position: absolute;
   right: 75px;
 }
 
-#message-input-link-label:hover{
+#message-input-link-label:hover {
   cursor: pointer;
 }
 
-#message-input-link-input{
+#message-input-link-input {
   display: none;
 }
 
-#dm-upload-header{
+#dm-upload-header {
   display: flex;
   justify-content: center;
 }
 
-#dm-upload-header-text{
-  font-family: UbuntuBold;
+#dm-upload-header-text {
+  font-family: GibsonBold;
   font-size: 24px;
 }
 
-#dm-upload-footer{
+#dm-upload-footer {
   width: 100%;
   display: flex;
   flex-direction: row;
   justify-content: center;
 }
 
-#dm-upload-footer-submit{
+#dm-upload-footer-submit {
   background-color: #6064f4;
   padding: 15px;
   border-radius: 7px;
   width: 8rem;
-  font-family: UbuntuMedium;
+  font-family: GibsonMedium;
   margin-right: 10px;
 }
 
-#dm-upload-footer-cancel{
+#dm-upload-footer-cancel {
   margin-left: 10px;
   padding: 15px;
   border: 1px #6064f4 solid;
   border-radius: 7px;
   width: 8rem;
-  font-family: UbuntuMedium;
+  font-family: GibsonMedium;
 }

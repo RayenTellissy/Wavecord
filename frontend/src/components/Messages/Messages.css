@@ -1,78 +1,78 @@
-#messages-container{
+#messages-container {
   display: flex;
   flex-direction: row;
   height: 100vh;
 }
 
-#message-container:hover{
+#message-container:hover {
   background-color: #2e3035;
 }
 
-#messages-top-bar{
+#messages-top-bar {
   display: flex;
   align-items: center;
   height: 8%;
   background-color: #252525;
 }
 
-#dm-conversation-container{
+#dm-conversation-container {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
   background-color: #313338;
 }
 
-#message-container{
+#message-container {
   display: flex;
   flex-direction: row;
   padding: 15px;
 }
 
-#dm-username-message-container{
+#dm-username-message-container {
   display: flex;
   flex-direction: column;
   width: 90%;
   justify-content: space-between;
 }
 
-#dm-message-username{
-  font-family: UbuntuMedium;
+#dm-message-username {
+  font-family: GibsonMedium;
   margin-right: 1rem;
 }
 
 #dm-message-username-deleting {
-  font-family: UbuntuMedium;
+  font-family: GibsonMedium;
   margin-right: 1rem;
   color: #b5b5b5;
 }
 
-#dm-message-createdat{
-  font-family: UbuntuLight;
+#dm-message-createdat {
+  font-family: GibsonLight;
   color: rgb(173, 173, 173);
 }
 
-#dm-message-message{
-  font-family: UbuntuRegular;
+#dm-message-message {
+  font-family: GibsonRegular;
   color: #DDDEE9;
 }
 
 #dm-message-message-deleting {
-  font-family: UbuntuRegular;
+  font-family: GibsonRegular;
   color: #b5b5b5;
 }
 
-#dm-username-createdat{
+#dm-username-createdat {
   display: flex;
   flex-direction: row;
 }
 
-#dm-conversation-input-container{
+#dm-conversation-input-container {
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-#dm-messages-container{
+#dm-messages-container {
   height: 83%;
   overflow-y: scroll;
 }
@@ -81,11 +81,11 @@
   cursor: pointer;
 }
 
-.twemoji{
+.twemoji {
   height: 30px;
 }
 
-.dm-message-link{
+.dm-message-link {
   color: #6da7ff;
   text-decoration: underline;
 }

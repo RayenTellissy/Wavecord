@@ -3,12 +3,12 @@
 }
 
 #server-settings-roles-title {
-  font-family: UbuntuBold;
+  font-family: GibsonBold;
   font-size: 25px;
 }
 
 #server-settings-roles-under-title {
-  font-family: UbuntuRegular;
+  font-family: GibsonRegular;
   color: #b5bac1;
 }
 
@@ -27,7 +27,7 @@
 }
 
 #server-settings-roles-search-input {
-  font-family: UbuntuRegular;
+  font-family: GibsonRegular;
   background-color: #1e1f22;
   padding-left: 15px;
   border-radius: 4px;
@@ -46,7 +46,7 @@
 }
 
 #server-settings-roles-create-role {
-  font-family: UbuntuMedium;
+  font-family: GibsonMedium;
   background-color: #5865f2;
   padding: 10px 15px;
   border-radius: 4px;
@@ -71,6 +71,6 @@
 }
 
 #server-settings-roles-number-title {
-  font-family: UbuntuMedium;
+  font-family: GibsonMedium;
   width: 200px;
 }

@@ -1,11 +1,11 @@
-#home-right-topbar{
+#home-right-topbar {
   background-color: #252525;
   height: 85px;
   width: 100%;
   box-shadow: black 2px 2px;
 }
 
-#home-right-topbar-friends{
+#home-right-topbar-friends {
   height: 100%;
   display: flex;
   flex-direction: row;
@@ -13,13 +13,13 @@
   margin-left: 20px;
 }
 
-#home-right-topbar-friends-text{
-  font-family: UbuntuMedium;
+#home-right-topbar-friends-text {
+  font-family: GibsonMedium;
   font-size: 20px;
   margin-left: 15px;
 }
 
-#home-right-topbar-friends-seperator{
+#home-right-topbar-friends-seperator {
   height: 50%;
   width: 2px;
   background-color: #464646;
@@ -27,41 +27,41 @@
   border-radius: 11px;
 }
 
-.home-right-topbar-friends-button{
+.home-right-topbar-friends-button {
   padding: 5px 15px;
   margin: 20px;
-  font-family: UbuntuMedium;
+  font-family: GibsonMedium;
   border-radius: 7px;
 }
 
-.home-right-topbar-friends-button-selected{
+.home-right-topbar-friends-button-selected {
   padding: 5px 15px;
   margin: 20px;
-  font-family: UbuntuMedium;
+  font-family: GibsonMedium;
   border-radius: 7px;
   background-color: #42434a;
-  
+
 }
 
-.home-right-topbar-friends-button:hover{
+.home-right-topbar-friends-button:hover {
   background-color: #36373d;
 }
 
-.home-right-topbar-friends-button:active{
+.home-right-topbar-friends-button:active {
   background-color: #42434a;
 }
 
-#home-right-topbar-friends-add-button{
+#home-right-topbar-friends-add-button {
   background-color: #248046;
   padding: 5px 15px;
   border-radius: 7px;
-  font-family: UbuntuMedium;
+  font-family: GibsonMedium;
   margin: 20px;
 }
 
-#home-right-topbar-friends-add-button-selected{
+#home-right-topbar-friends-add-button-selected {
   color: #29be5f;
   padding: 5px 15px;
   margin: 20px;
-  font-family: UbuntuMedium;
+  font-family: GibsonMedium;
 }

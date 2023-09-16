@@ -12,6 +12,7 @@ const useMic = () => {
       Cookies.set("microphoneEnabled", true)
     }
     else if(micEnabled === false){
+      console.log("H")
       Cookies.set("microphoneEnabled", false)
     }
   },[micEnabled])

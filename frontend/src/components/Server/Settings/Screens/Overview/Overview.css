@@ -4,7 +4,7 @@
 }
 
 #server-settings-overview-title {
-  font-family: UbuntuBold;
+  font-family: GibsonBold;
   font-size: 25px;
 }
 
@@ -30,7 +30,7 @@
 }
 
 #server-settings-overview-server-p {
-  font-family: UbuntuRegular;
+  font-family: GibsonRegular;
   color: #b5bac1;
   width: 250px;
 }
@@ -41,7 +41,7 @@
   width: 55%;
   border: 1px solid #4e5058;
   border-radius: 4px;
-  font-family: UbuntuMedium;
+  font-family: GibsonMedium;
   transition: 0.2s ease;
 }
 
@@ -55,7 +55,7 @@
 
 #server-settings-overview-server-name-text {
   color: #b5bac1;
-  font-family: UbuntuMedium;
+  font-family: GibsonMedium;
 }
 
 #server-settings-overview-server-name-input {
@@ -63,7 +63,7 @@
   padding: 10px;
   width: 100%;
   border-radius: 4px;
-  font-family: UbuntuRegular;
+  font-family: GibsonRegular;
 }
 
 #server-settings-overview-upload-image-input {

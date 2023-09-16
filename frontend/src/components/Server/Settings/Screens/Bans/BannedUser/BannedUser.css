@@ -7,7 +7,7 @@
   border-radius: 11px;
   background-color: #3f4147;
   transition: .2s ease;
-  font-family: UbuntuRegular;
+  font-family: GibsonRegular;
 }
 
 #server-settings-bans-banned-user:hover {

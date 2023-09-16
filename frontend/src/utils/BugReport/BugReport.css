@@ -10,20 +10,20 @@
 #bug-report-header-container {
   display: flex;
   justify-content: center;
-  font-family: UbuntuMedium;
+  font-family: GibsonMedium;
   font-size: 25px;
 }
 
 #bug-report-textarea {
   width: 100%;
-  font-family: UbuntuRegular;
+  font-family: GibsonRegular;
   padding: 10px;
 }
 
 #bug-report-send-ticket {
   height: 45px;
   width: 120px;
-  font-family: UbuntuRegular;
+  font-family: GibsonRegular;
   border-radius: 4px;
   background-color: #5865f2;
   transition: .2s ease;

@@ -9,21 +9,21 @@ import "./HomeButton.css"
 
 const HomeButton = () => {
   const navigate = useNavigate()
-  
+
   return <Tooltip label="Home"
-    placement='right' 
-    bg="blackAlpha.900" 
+    placement='right'
+    bg="blackAlpha.900"
     color="white"
     padding={3}
     hasArrow={true}
     arrowSize={10}
     margin={5}
-    fontFamily="UbuntuMedium"
+    fontFamily="GibsonMedium"
   >
     <button id='home-button' onClick={() => navigate("/")}>
-      <Logo style={{ height: "85%", margin: "auto"}}/>
+      <Logo style={{ height: "85%", margin: "auto" }} />
     </button>
-  </Tooltip> 
+  </Tooltip>
 };
 
 export default HomeButton;

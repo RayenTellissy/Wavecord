@@ -4,7 +4,7 @@
 }
 
 #server-name {
-  font-family: UbuntuBold;
+  font-family: GibsonBold;
   font-size: 23px;
   margin: 30px 20px
 }
@@ -69,20 +69,20 @@
 }
 
 #server-category-modal-header-1 {
-  font-family: UbuntuMedium;
+  font-family: GibsonMedium;
   font-size: 25px;
   color: #f2f3f5;
 }
 
 #server-category-modal-header-2 {
-  font-family: UbuntuLight;
+  font-family: GibsonLight;
   font-size: 16px;
   color: #adb1b9;
 }
 
 #server-category-modal-body-channel-type {
   color: #a5aab2;
-  font-family: UbuntuMedium;
+  font-family: GibsonMedium;
   font-size: 15px;
   margin-bottom: 5px;
 }
@@ -105,14 +105,14 @@
 }
 
 .server-category-modal-body-type-title {
-  font-family: UbuntuMedium;
+  font-family: GibsonMedium;
   font-size: 20px;
   color: #d6d8db;
   margin-bottom: 8px;
 }
 
 .server-category-modal-body-type-description {
-  font-family: UbuntuRegular;
+  font-family: GibsonRegular;
   font-size: 14px;
   color: #a5aab1;
 }
@@ -127,7 +127,7 @@
 
 #server-category-modal-body-channel-name {
   color: #a5aab2;
-  font-family: UbuntuMedium;
+  font-family: GibsonMedium;
   font-size: 15px;
   margin-top: 15px;
 }
@@ -137,7 +137,7 @@
   width: 100%;
   padding: 8px;
   border-radius: 3px;
-  font-family: UbuntuRegular;
+  font-family: GibsonRegular;
   padding-left: 30px;
 }
 
@@ -173,12 +173,12 @@
 }
 
 #server-category-modal-body-private-text {
-  font-family: UbuntuMedium;
+  font-family: GibsonMedium;
   font-size: 18px;
 }
 
 #server-category-modal-body-private-description {
-  font-family: UbuntuRegular;
+  font-family: GibsonRegular;
   font-size: 14px;
   color: #a5aab1;
   margin: 5px 0px;
@@ -187,7 +187,7 @@
 .server-category-modal-body-private-create-button {
   padding: 10px 15px;
   border-radius: 4px;
-  font-family: UbuntuRegular;
+  font-family: GibsonRegular;
   margin-left: 20px;
 }
 
@@ -207,7 +207,7 @@
 }
 
 #server-category-modal-body-private-cancel-button {
-  font-family: UbuntuRegular;
+  font-family: GibsonRegular;
 }
 
 #server-category-modal-body-private-cancel-button:hover {

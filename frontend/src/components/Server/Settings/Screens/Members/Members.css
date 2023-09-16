@@ -3,12 +3,12 @@
 }
 
 #server-settings-members-title {
-  font-family: UbuntuMedium;
+  font-family: GibsonMedium;
   font-size: 25px;
 }
 
 #server-settings-members-count {
-  font-family: UbuntuRegular;
+  font-family: GibsonRegular;
   margin: 15px 0px;
 }
 
@@ -27,7 +27,7 @@
   padding: 7px 20px;
   background-color: #1e1f22;
   border-radius: 4px;
-  font-family: UbuntuRegular;
+  font-family: GibsonRegular;
 }
 
 #server-settings-members-search-container {

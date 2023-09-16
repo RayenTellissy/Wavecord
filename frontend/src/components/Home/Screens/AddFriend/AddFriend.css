@@ -11,14 +11,14 @@
 }
 
 #home-right-display-addfriend-title {
-  font-family: UbuntuBold;
+  font-family: GibsonBold;
   font-size: 19px;
   color: #DDDEE9;
   margin: 20px;
 }
 
 #home-right-display-addfriend-text {
-  font-family: UbuntuRegular;
+  font-family: GibsonRegular;
   margin: 10px;
   font-size: 15px;
   color: #a4a4a4;
@@ -33,10 +33,10 @@
   background-color: #1c1c24;
   padding-left: 20px;
   color: #DDDEE9;
-  font-family: UbuntuMedium;
+  font-family: GibsonMedium;
 }
 
-.home-right-display-addfriend-input:focus{
+.home-right-display-addfriend-input:focus {
   border: 1px solid rgb(57, 110, 255);
 }
 
@@ -46,33 +46,33 @@
 
 .home-right-display-addfriend-submit {
   position: absolute;
-  font-family: UbuntuMedium;
+  font-family: GibsonMedium;
   padding: 8px 20px;
   border-radius: 4px;
   right: 21%;
 }
 
-#addfriend-submit-active{
+#addfriend-submit-active {
   color: #DDDEE9;
   background-color: #5c64f4;
   transition: 0.3s ease;
 }
 
-#addfriend-submit-active:hover{
+#addfriend-submit-active:hover {
   background-color: #4c52c7;
 }
 
-#addfriend-submit-active:active{
+#addfriend-submit-active:active {
   background-color: #393e95;
 }
 
-#addfriend-submit-inactive{
+#addfriend-submit-inactive {
   color: #8a8a8a;
   background-color: #35398f;
-  cursor:default;
+  cursor: default;
 }
 
-#home-right-display-addfriend-input-container{
+#home-right-display-addfriend-input-container {
   position: relative;
   width: 100%;
   display: flex;

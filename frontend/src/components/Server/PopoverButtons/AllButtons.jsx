@@ -136,7 +136,7 @@ const AllButtons = ({ user, ownerId, onOpen, server }) => {
               </p>
             </div>
             <p id='server-delete-confirmation-enter-name'>ENTER SERVER NAME</p>
-            <input id='server-delete-confirmation-input' value={query} onChange={e => setQuery(e.target.value)} />
+            <input id='server-delete-confirmation-input' value={query} onChange={e => setQuery(e.target.value)} autoFocus/>
             {incorrect && <p id='server-delete-confirmation-incorrect'>You didn't enter the server name correctly</p>}
           </ModalBody>
           <ModalFooter bgColor="#2b2d31" h={75} borderBottomRadius={3}>

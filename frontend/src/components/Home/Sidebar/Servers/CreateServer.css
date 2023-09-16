@@ -1,54 +1,54 @@
-#home-server-bar-create{
+#home-server-bar-create {
   height: 70px;
   width: 70px;
   background-color: #313338;
   border-radius: 100px;
   margin: 10px;
-  transition: border-radius 0.2s, background-color 0.3s ;
+  transition: border-radius 0.2s, background-color 0.3s;
 }
 
-#home-server-bar-create:hover{
+#home-server-bar-create:hover {
   background-color: #23a559;
   border-radius: 25px;
 }
 
-#home-server-bar-create-icon-unhovered{
+#home-server-bar-create-icon-unhovered {
   color: #23a559;
   transition: color 0.3s;
 }
 
-#home-server-bar-create-icon-hovered{
+#home-server-bar-create-icon-hovered {
   color: white;
 }
 
-.home-server-bar-modal-text{
-  font-family: UbuntuRegular;
+.home-server-bar-modal-text {
+  font-family: GibsonRegular;
   font-size: 15px;
   text-align: center;
 }
 
-#home-server-bar-modal-create{
+#home-server-bar-modal-create {
   display: flex;
   border: 1px #a4a4a4 solid;
   border-radius: 5px;
   padding: 20px;
   margin-top: 20px;
-  font-family: UbuntuMedium;
+  font-family: GibsonMedium;
   width: 100%;
   text-align: left;
   align-items: center;
 }
 
-#home-server-bar-modal-create:hover{
+#home-server-bar-modal-create:hover {
   background-color: #36495d;
 }
 
-#home-server-bar-modal-create-text{
+#home-server-bar-modal-create-text {
   font-size: 20px;
   margin-left: 15px;
 }
 
-#home-server-bar-modal-seperator{
+#home-server-bar-modal-seperator {
   margin-top: auto;
   align-items: center;
   text-align: center;
@@ -56,83 +56,83 @@
   bottom: 20px;
 }
 
-.home-server-bar-modal-seperator-text{
-  font-family: UbuntuRegular;
+.home-server-bar-modal-seperator-text {
+  font-family: GibsonRegular;
   margin: 10px;
 }
 
-#home-server-bar-modal-seperator-join{
+#home-server-bar-modal-seperator-join {
   background-color: #706c7c;
   width: 100%;
   padding: 15px;
   border-radius: 4px;
-  font-family: UbuntuMedium;
+  font-family: GibsonMedium;
   margin-top: 5px;
 }
 
-#home-server-bar-modal-create-camera{
+#home-server-bar-modal-create-camera {
   display: none;
 }
 
-#home-server-bar-modal-seperator-create{
+#home-server-bar-modal-seperator-create {
   width: 100%;
 }
 
-#home-server-bar-modal-seperator-label{
+#home-server-bar-modal-seperator-label {
   margin-bottom: 5px;
-  font-family: UbuntuRegular;
+  font-family: GibsonRegular;
 }
 
-#home-server-bar-modal-seperator-input{
+#home-server-bar-modal-seperator-input {
   width: 100%;
   background-color: #4f4f4f;
   padding: 10px;
   border-radius: 4px;
-  font-family: UbuntuRegular;
+  font-family: GibsonRegular;
 }
 
-#home-server-bar-modal-seperator-create-container{
+#home-server-bar-modal-seperator-create-container {
   display: flex;
   flex-direction: column;
   width: 100%;
 }
 
-#home-server-bar-modal-seperator-create-buttons{
+#home-server-bar-modal-seperator-create-buttons {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-top: 20px;
 }
 
-.home-server-bar-modal-seperator-create-button{
-  font-family: UbuntuRegular;
+.home-server-bar-modal-seperator-create-button {
+  font-family: GibsonRegular;
 }
 
-#home-server-bar-modal-seperator-create-create{
+#home-server-bar-modal-seperator-create-create {
   background-color: #6064f4;
   padding: 15px;
   border-radius: 7px;
   width: 8rem;
 }
 
-#home-server-bar-modal-container{
+#home-server-bar-modal-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
 }
 
-#home-server-bar-modal-create-camera-label{
+#home-server-bar-modal-create-camera-label {
   margin: 20px;
   cursor: pointer;
 }
 
-#home-server-bar-modal-create-picture{
+#home-server-bar-modal-create-picture {
   height: 150px;
   width: 150px;
   border-radius: 100px;
 }
 
-#home-server-bar-modal-create-chev{
+#home-server-bar-modal-create-chev {
   margin-left: auto;
 }

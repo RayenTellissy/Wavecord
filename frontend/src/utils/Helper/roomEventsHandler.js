@@ -1,13 +1,9 @@
-import Cookies from "js-cookie"
-
 const localMute = (setMicEnabled) => {
   setMicEnabled(false)
-  Cookies.set("microphoneEnabled", false)
 }
 
 const localUnmute = (setMicEnabled) => {
   setMicEnabled(true)
-  Cookies.set("microphoneEnabled", true)
 }
 
 const handleLocalCamera = (isCameraEnabled,setCameraEnabled) => {

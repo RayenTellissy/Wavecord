@@ -2,7 +2,7 @@
   background-color: #1e1f22;
   padding: 10px;
   border-radius: 4px;
-  font-family: UbuntuMedium;
+  font-family: GibsonMedium;
 }
 
 #create-role-modal-picker-container {
@@ -19,12 +19,12 @@
 }
 
 #create-role-modal-title {
-  font-family: UbuntuMedium;
+  font-family: GibsonMedium;
   font-size: 18px;
 }
 
 #create-role-modal-create-button {
-  font-family: UbuntuMedium;
+  font-family: GibsonMedium;
   background-color: #5865f2;
   padding: 10px;
   width: 120px;
@@ -55,7 +55,7 @@
 }
 
 #create-role-modal-switch-title {
-  font-family: UbuntuMedium;
+  font-family: GibsonMedium;
   font-size: 17px;
   margin-right: 10px;
 }

@@ -1,17 +1,17 @@
-#conversation-other-users-container{
+#conversation-other-users-container {
   display: flex;
   align-items: center;
 }
 
-#conversation-other-users-details{
+#conversation-other-users-details {
   display: flex;
   flex-direction: row;
   align-items: center;
   margin-left: 2rem;
 }
 
-#conversation-other-users-username{
-  font-family: UbuntuBold;
+#conversation-other-users-username {
+  font-family: GibsonBold;
   font-size: 20px;
   margin-left: 0.5rem;
 }

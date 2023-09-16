@@ -1,11 +1,11 @@
-#home-container{
+#home-container {
   display: flex;
   flex-direction: row;
   height: 100vh;
   overflow: hidden
 }
 
-#home-loader{
+#home-loader {
   position: absolute;
   top: 0;
   bottom: 0;
@@ -17,26 +17,26 @@
   background-color: rgba(0, 0, 0, 0.2);
 }
 
-#home-contacts-search-container{
+#home-contacts-search-container {
   display: flex;
-  justify-content: center;
   align-items: center;
 }
 
-#home-contacts-search{
-  margin: 2rem;
+#home-contacts-search {
+  margin: 20px 10px;
   border-radius: 11px;
   padding: 10px 20px;
-  font-family: UbuntuMedium;
+  font-family: GibsonRegular;
   background-color: #1E1E1E;
   color: #DDDEE9;
+  width: 100%
 }
 
-#home-contacts-search::placeholder{
+#home-contacts-search::placeholder {
   color: #ACACAC;
 }
 
-#home-right-container{
+#home-right-container {
   background-color: #313338;
-  width: 100%;
+  width: 78%;
 }

@@ -20,7 +20,7 @@ const FriendButton = ({ id, username, image, status, setIsUpdating, fetchUsers, 
   const removeFriend = async () => {
     setIsUpdating(true)
     try {
-      await axios.post(`${import.meta.env.VITE_SERVER_URL}/friends/removeFriend`,{
+      await axios.post(`${import.meta.env.VITE_SERVER_URL}/friends/removeFriend`, {
         remover: user.id,
         removed: id
       })
@@ -32,7 +32,7 @@ const FriendButton = ({ id, username, image, status, setIsUpdating, fetchUsers, 
         duration: 2000
       })
     }
-    catch(error){
+    catch (error) {
       console.log(error)
     }
   }
@@ -40,7 +40,7 @@ const FriendButton = ({ id, username, image, status, setIsUpdating, fetchUsers, 
   const blockUser = async () => {
     setIsUpdating(true)
     try {
-      await axios.post(`${import.meta.env.VITE_SERVER_URL}/friends/blockUser`,{
+      await axios.post(`${import.meta.env.VITE_SERVER_URL}/friends/blockUser`, {
         blocker: user.id,
         blocked: id
       })
@@ -52,7 +52,7 @@ const FriendButton = ({ id, username, image, status, setIsUpdating, fetchUsers, 
         duration: 2000
       })
     }
-    catch(error){
+    catch (error) {
       console.log(error)
     }
   }
@@ -63,7 +63,7 @@ const FriendButton = ({ id, username, image, status, setIsUpdating, fetchUsers, 
       image,
       status
     })
-    if(!conversationId){
+    if (!conversationId) {
       const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/conversations/createDM`, {
         currentUser: user.id,
         otherUser: id
@@ -77,7 +77,7 @@ const FriendButton = ({ id, username, image, status, setIsUpdating, fetchUsers, 
     <div id='friend-button-main-div'>
       <div id='friend-button-container' onClick={handleNavigation}>
         <div id='friend-button-details-container'>
-          <Avatar image={image} status={status}/>
+          <Avatar image={image} status={status} />
           <div id='friend-button-username-status-container'>
             <p id='friend-button-username'>{username}</p>
             <p id='friend-button-status'>
@@ -87,12 +87,12 @@ const FriendButton = ({ id, username, image, status, setIsUpdating, fetchUsers, 
         </div>
         <div>
 
-        <Tooltip
+          <Tooltip
             label="Unfriend"
             placement="top"
             color="white"
             backgroundColor="black"
-            fontFamily="UbuntuMedium"
+            fontFamily="GibsonMedium"
             hasArrow={true}
             arrowSize={10}
             padding={3}
@@ -101,7 +101,7 @@ const FriendButton = ({ id, username, image, status, setIsUpdating, fetchUsers, 
             onClick={removeFriend}
           >
             <button className='friend-button-remove-friend' onClick={removeFriend}>
-              <FaUserMinus size={35}/>
+              <FaUserMinus size={35} />
             </button>
           </Tooltip>
 
@@ -110,7 +110,7 @@ const FriendButton = ({ id, username, image, status, setIsUpdating, fetchUsers, 
             placement="top"
             color="white"
             backgroundColor="black"
-            fontFamily="UbuntuMedium"
+            fontFamily="GibsonMedium"
             hasArrow={true}
             arrowSize={10}
             padding={3}
@@ -118,7 +118,7 @@ const FriendButton = ({ id, username, image, status, setIsUpdating, fetchUsers, 
             openDelay={500}
           >
             <button className='friend-button-remove-friend' onClick={blockUser}>
-              <BiBlock size={35}/>
+              <BiBlock size={35} />
             </button>
           </Tooltip>
         </div>

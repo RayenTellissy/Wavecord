@@ -36,7 +36,7 @@
   padding-left: 10px;
   width: 100%;
   border-radius: 4px;
-  font-family: UbuntuRegular;
+  font-family: GibsonRegular;
 }
 
 #server-settings-members-member-roles-mapping {
@@ -73,7 +73,7 @@
   text-align: left;
   padding: 6px;
   border-radius: 2px;
-  font-family: UbuntuRegular;
+  font-family: GibsonRegular;
   padding-left: 10px;
   margin-bottom: 3px;
 }
@@ -83,7 +83,7 @@
   width: 100%;
   padding: 6px;
   border-radius: 2px;
-  font-family: UbuntuRegular;
+  font-family: GibsonRegular;
   padding-left: 10px;
   margin-bottom: 3px;
   display: flex;

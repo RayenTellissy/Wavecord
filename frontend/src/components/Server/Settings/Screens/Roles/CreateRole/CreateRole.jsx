@@ -12,16 +12,16 @@ import Switch from "../../../../../common/Switch/Switch"
 import "./CreateRole.css"
 
 const CreateRole = ({ isOpen, onClose, serverId, fetchRoles, setQuery }) => {
-  const [roleName,setRoleName] = useState("")
-  const [roleColor,setRoleColor] = useState("#fff")
-  const [checked,setChecked] = useState(false)
-  const [isLoading,setIsLoading] = useState(false)
+  const [roleName, setRoleName] = useState("")
+  const [roleColor, setRoleColor] = useState("#fff")
+  const [checked, setChecked] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   const handleSubmit = async () => {
-    if(!roleName || !roleColor) return
+    if (!roleName || !roleColor) return
     try {
       setIsLoading(true)
-      await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/createRole`,{
+      await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/createRole`, {
         roleName: roleName,
         roleColor: roleColor,
         isAdmin: checked,
@@ -33,7 +33,7 @@ const CreateRole = ({ isOpen, onClose, serverId, fetchRoles, setQuery }) => {
       setIsLoading(false)
       await fetchRoles()
     }
-    catch(error){
+    catch (error) {
       console.log(error)
     }
   }
@@ -44,9 +44,9 @@ const CreateRole = ({ isOpen, onClose, serverId, fetchRoles, setQuery }) => {
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      <ModalOverlay/>
+      <ModalOverlay />
       <ModalContent bg="#313338">
-        <ModalHeader display="flex" justifyContent="center" fontFamily="UbuntuMedium" fontSize={25}>
+        <ModalHeader display="flex" justifyContent="center" fontFamily="GibsonMedium" fontSize={25}>
           <p>Create Role</p>
         </ModalHeader>
         <ModalBody display="flex" flexDirection="column" justifyContent="center">
@@ -61,7 +61,7 @@ const CreateRole = ({ isOpen, onClose, serverId, fetchRoles, setQuery }) => {
             <div id='create-role-modal-picker-container'>
               <div id='create-role-modal-title-container'>
                 <p id='create-role-modal-title'>Role color</p>
-                <RiShieldUserFill color={roleColor} size={45}/>
+                <RiShieldUserFill color={roleColor} size={45} />
               </div>
               <TwitterPicker
                 triangle='hide'
@@ -72,13 +72,13 @@ const CreateRole = ({ isOpen, onClose, serverId, fetchRoles, setQuery }) => {
             </div>
             <div id='create-role-modal-switch-container'>
               <p id='create-role-modal-switch-title'>Admin Role</p>
-              <Switch checked={checked} setChecked={setChecked}/>
+              <Switch checked={checked} setChecked={setChecked} />
             </div>
           </div>
         </ModalBody>
         <ModalFooter display="flex" justifyContent="center">
           <button id='create-role-modal-create-button' onClick={handleSubmit}>
-            {isLoading ? <BeatLoader size={8} color='white'/> : `Create Role`}
+            {isLoading ? <BeatLoader size={8} color='white' /> : `Create Role`}
           </button>
         </ModalFooter>
       </ModalContent>

@@ -3,13 +3,13 @@
   flex-direction: column;
 }
 
-#home-right-display-all-count{
-  font-family: UbuntuMedium;
+#home-right-display-all-count {
+  font-family: GibsonMedium;
   font-size: 15px;
   margin: 15px;
 }
 
-#home-right-display-all-users-container{
+#home-right-display-all-users-container {
   overflow-y: scroll;
   max-height: 78vh;
 }

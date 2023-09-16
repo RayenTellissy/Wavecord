@@ -1,10 +1,10 @@
-#home-conversation-container{
+#home-conversation-container {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.home-conversation-conversation{
+.home-conversation-conversation {
   display: flex;
   flex-direction: row;
   width: 90%;
@@ -14,15 +14,15 @@
 }
 
 
-.home-conversation-conversation:hover{
+.home-conversation-conversation:hover {
   background-color: #36373d
 }
 
-.home-conversation-conversation:active{
+.home-conversation-conversation:active {
   background-color: #42434a;
 }
 
-.home-conversation-conversation-highlighted{
+.home-conversation-conversation-highlighted {
   display: flex;
   flex-direction: row;
   width: 90%;
@@ -32,22 +32,22 @@
   margin: 3px;
 }
 
-.home-conversation-conversation-highlighted:hover{
+.home-conversation-conversation-highlighted:hover {
   background-color: #36373d
 }
 
-.home-conversation-conversation-highlighted:active{
+.home-conversation-conversation-highlighted:active {
   background-color: #42434a;
 }
 
-.home-conversation-username-container{
+.home-conversation-username-container {
   display: flex;
   align-items: center;
   height: 100%;
   margin-left: 5px;
 }
 
-.home-conversation-username-text{
-  font-family: UbuntuMedium;
-  font-size: 18px;
+.home-conversation-username-text {
+  font-family: GibsonRegular;
+  font-size: 19px;
 }

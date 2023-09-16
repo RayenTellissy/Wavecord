@@ -9,12 +9,12 @@ import Avatar from '../../common/Avatar/Avatar';
 import "./Roles.css"
 
 const Roles = ({ serverId }) => {
-  const [roles,setRoles] = useState([])
-  const [noRoles,setNoRoles] = useState([])
+  const [roles, setRoles] = useState([])
+  const [noRoles, setNoRoles] = useState([])
 
   useEffect(() => {
     fetchRoles()
-  },[])
+  }, [])
 
   const fetchRoles = async () => {
     try {
@@ -22,7 +22,7 @@ const Roles = ({ serverId }) => {
       setRoles(response.data.withRole)
       setNoRoles(response.data.noRole)
     }
-    catch(error){
+    catch (error) {
       console.log(error)
     }
   }
@@ -30,15 +30,15 @@ const Roles = ({ serverId }) => {
   return (
     <div id='server-roles-bar-container'>
       <div id='server-roles-bar-main-container'>
-        {roles.map((e,i) => {
-          return <Role key={i} roleName={e.name} roleColor={e.color} users={e.UsersInServers}/>
+        {roles.map((e, i) => {
+          return <Role key={i} roleName={e.name} roleColor={e.color} users={e.UsersInServers} />
         })}
         <div id='one-role-main-container'>
           <p id='one-role-name'>ONLINE - {noRoles.length}</p>
-          {noRoles.map((e,i) => {
+          {noRoles.map((e, i) => {
             return <button key={i} id='one-role-container'>
               <Avatar status={e.user.status} />
-              <p style={{color: "#a6aeb3", fontFamily: "UbuntuMedium"}}>{e.user.username}</p>
+              <p style={{ color: "#a6aeb3", fontFamily: "GibsonRegular" }}>{e.user.username}</p>
             </button>
           })}
         </div>

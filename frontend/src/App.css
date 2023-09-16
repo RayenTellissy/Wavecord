@@ -5,12 +5,14 @@ body {
   overflow-y: hidden;
 }
 
-input, textarea:focus {
+input,
+textarea:focus {
   outline: none;
   caret-color: #0c6cfb;
 }
 
-input, textarea::selection {
+input,
+textarea::selection {
   background-color: #62CAC2;
 }
 
@@ -19,22 +21,22 @@ textarea {
 }
 
 @font-face {
-  font-family: UbuntuRegular;
+  font-family: GibsonRegular;
   src: url("./assets/fonts/Ubuntu/Ubuntu-Regular.ttf");
 }
 
 @font-face {
-  font-family: UbuntuBold;
+  font-family: GibsonBold;
   src: url("./assets/fonts/Ubuntu/Ubuntu-Bold.ttf");
 }
 
 @font-face {
-  font-family: UbuntuMedium;
+  font-family: GibsonMedium;
   src: url("./assets/fonts/Ubuntu/Ubuntu-Medium.ttf");
 }
 
 @font-face {
-  font-family: UbuntuLight;
+  font-family: GibsonLight;
   src: url("./assets/fonts/Ubuntu/Ubuntu-Light.ttf");
 }
 
@@ -53,7 +55,8 @@ textarea {
   border: 2px solid #27282c;
 }
 
-p:not(.selectable) {
+p,
+h1:not(.selectable) {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;

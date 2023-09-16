@@ -1,0 +1,13 @@
+#turbo-container {
+  background-image: linear-gradient(#3e55d2, #966cc0);
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+#turbo-title {
+  font-family: GibsonBold;
+  font-size: 70px;
+  margin-top: 50px;
+}

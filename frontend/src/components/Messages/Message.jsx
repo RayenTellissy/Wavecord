@@ -21,13 +21,13 @@ const Message = ({
   conversationType,
   removeMessageLocally
 }) => {
-  const [isDeleting,setIsDeleting] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
 
   const deleteMessage = async () => {
     try {
       setIsDeleting(true)
-      if(conversationType === "dm"){
-        await axios.post(`${import.meta.env.VITE_SERVER_URL}/conversations/deleteMessage`,{
+      if (conversationType === "dm") {
+        await axios.post(`${import.meta.env.VITE_SERVER_URL}/conversations/deleteMessage`, {
           senderId,
           messageId: id
         })
@@ -39,7 +39,7 @@ const Message = ({
       })
       removeMessageLocally(id)
     }
-    catch(error){
+    catch (error) {
       console.log(error)
     }
   }
@@ -67,19 +67,19 @@ const Message = ({
           </Tooltip>
         </div>
         {type === "TEXT"
-        ?
-        <p id={isDeleting ? 'dm-message-message-deleting' : 'dm-message-message'} className='selectable'>{message}</p>
-        :
-        <a className='dm-message-link' href={message} target="_blank" rel="noopener noreferrer">
-          {message}
-          <img
-            src={message}
-            style={isDeleting
-            ? { maxWidth: '100%', marginTop: '5px', opacity: "0.2" }
-            : { maxWidth: '100%', marginTop: '5px'}
-          }
-          />
-        </a>
+          ?
+          <p id={isDeleting ? 'dm-message-message-deleting' : 'dm-message-message'} className='selectable'>{message}</p>
+          :
+          <a className='dm-message-link' href={message} target="_blank" rel="noopener noreferrer">
+            {message}
+            <img
+              src={message}
+              style={isDeleting
+                ? { maxWidth: '100%', marginTop: '5px', opacity: "0.2" }
+                : { maxWidth: '100%', marginTop: '5px' }
+              }
+            />
+          </a>
         }
       </div>
       {isSender && <Tooltip
@@ -92,10 +92,10 @@ const Message = ({
         padding={3}
         borderRadius={7}
         openDelay={500}
-        fontFamily="UbuntuMedium"
+        fontFamily="GibsonMedium"
       >
         <div id='dm-message-remove-button' onClick={deleteMessage}>
-          <BiSolidTrash color='#da373c' size={25}/>
+          <BiSolidTrash color='#da373c' size={25} />
         </div>
       </Tooltip>}
     </div>

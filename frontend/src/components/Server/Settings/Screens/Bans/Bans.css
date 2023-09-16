@@ -3,26 +3,24 @@
 }
 
 #server-settings-bans-title {
-  font-family: UbuntuBold;
+  font-family: GibsonBold;
   font-size: 25px;
 }
 
 #server-settings-bans-search-container {
   position: relative;
   display: flex;
-  align-items: center ;
+  align-items: center;
 }
 
 #server-settings-bans-search-input {
   background-color: #1e1f22;
   border-radius: 4px;
-  font-family: UbuntuRegular;
+  font-family: GibsonRegular;
   padding: 7px;
   width: 100%;
   margin: 20px 0px;
   padding-left: 20px;
 }
 
-#server-settings-bans-banned-users-container {
-
-}
+#server-settings-bans-banned-users-container {}

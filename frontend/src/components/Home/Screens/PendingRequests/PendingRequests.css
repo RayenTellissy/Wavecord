@@ -26,7 +26,7 @@
 }
 
 #home-right-display-pending-count {
-  font-family: UbuntuMedium;
+  font-family: GibsonMedium;
   font-size: 15px;
   margin: 15px 0px;
 }
@@ -38,11 +38,11 @@
 }
 
 #home-right-display-pending-username-username {
-  font-family: UbuntuBold;
+  font-family: GibsonBold;
 }
 
 #home-right-display-pending-username-status {
-  font-family: UbuntuRegular;
+  font-family: GibsonRegular;
   color: #ACACAC;
 }
 

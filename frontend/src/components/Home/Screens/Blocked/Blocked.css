@@ -14,11 +14,11 @@
 }
 
 #blockeduser-button-username {
-  font-family: UbuntuBold;
+  font-family: GibsonBold;
 }
 
 #blockeduser-button-status {
-  font-family: UbuntuRegular;
+  font-family: GibsonRegular;
   color: #ACACAC;
 }
 
@@ -28,7 +28,7 @@
 }
 
 #home-right-display-blocked-count {
-  font-family: UbuntuMedium;
+  font-family: GibsonMedium;
   font-size: 15px;
   margin: 15px 0px;
 }

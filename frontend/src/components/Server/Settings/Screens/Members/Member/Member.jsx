@@ -15,14 +15,14 @@ import "./Member.css"
 
 const Member = ({ id, username, image, role, roles, setRoles, constantRoles, serverId, fetchMembers, user }) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const [query,setQuery] = useState("")
-  const [isLoading,setIsLoading] = useState(false)
-  const [isBanning,setIsBanning] = useState(false)
-  const [isKicking,setIsKicking] = useState(false)
+  const [query, setQuery] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
+  const [isBanning, setIsBanning] = useState(false)
+  const [isKicking, setIsKicking] = useState(false)
 
   useEffect(() => {
     filterRoles()
-  },[query])
+  }, [query])
 
   const filterRoles = () => {
     setRoles(constantRoles.filter(e => e.name.toUpperCase().includes(query.toUpperCase())))
@@ -31,7 +31,7 @@ const Member = ({ id, username, image, role, roles, setRoles, constantRoles, ser
   const kickUser = async () => {
     try {
       setIsKicking(true)
-      await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/kickUser`,{
+      await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/kickUser`, {
         kicker: user.id,
         kicked: id,
         serverId
@@ -39,7 +39,7 @@ const Member = ({ id, username, image, role, roles, setRoles, constantRoles, ser
       await fetchMembers()
       setIsKicking(false)
     }
-    catch(error){
+    catch (error) {
       console.log(error)
     }
   }
@@ -47,7 +47,7 @@ const Member = ({ id, username, image, role, roles, setRoles, constantRoles, ser
   const banUser = async () => {
     try {
       setIsBanning(true)
-      await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/banUser`,{
+      await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/banUser`, {
         banner: user.id,
         banned: id,
         serverId
@@ -55,7 +55,7 @@ const Member = ({ id, username, image, role, roles, setRoles, constantRoles, ser
       await fetchMembers()
       setIsBanning(false)
     }
-    catch(error){
+    catch (error) {
       console.log(error)
     }
   }
@@ -65,23 +65,23 @@ const Member = ({ id, username, image, role, roles, setRoles, constantRoles, ser
       <div id='server-settings-members-member-avatar'>
         <Avatar image={image} />
         <p
-          style={role ? {color: role.color, fontFamily: "UbuntuRegular"} : {color: "white", fontFamily: "UbuntuRegular"}}
+          style={role ? { color: role.color, fontFamily: "GibsonRegular" } : { color: "white", fontFamily: "GibsonRegular" }}
         >
-          { username }
+          {username}
         </p>
       </div>
       <div id='server-settings-members-member-add-button-container'>
         {role ? <HasRole
-            userId={id}
-            serverId={serverId}
-            name={role.name}
-            color={role.color}
-            fetchMembers={fetchMembers}
-          />
-        : <Popover isOpen={isOpen} onClose={onClose}>
+          userId={id}
+          serverId={serverId}
+          name={role.name}
+          color={role.color}
+          fetchMembers={fetchMembers}
+        />
+          : <Popover isOpen={isOpen} onClose={onClose}>
             <PopoverTrigger>
               <button onClick={onOpen} style={{ padding: 5, backgroundColor: '#232428', borderRadius: 7 }}>
-                <BiPlus id='server-settings-members-member-add-icon' size={20}/>
+                <BiPlus id='server-settings-members-member-add-icon' size={20} />
               </button>
             </PopoverTrigger>
             <PopoverContent bg="#313338" w={280}>
@@ -93,23 +93,23 @@ const Member = ({ id, username, image, role, roles, setRoles, constantRoles, ser
                       placeholder='Role'
                       onChange={e => setQuery(e.target.value)}
                     />
-                      <BiSearch id='server-settings-members-member-role-search-icon' size={25}/>
+                    <BiSearch id='server-settings-members-member-role-search-icon' size={25} />
                   </div>
                   <div id='server-settings-members-member-roles-mapping'>
-                    {isLoading ? ( <Loader/> ) : 
-                    (roles.map((e,i) => {
-                      return <Role
-                        key={i}
-                        id={e.id}
-                        name={e.name}
-                        color={e.color}
-                        userId={id}
-                        onClose={onClose}
-                        serverId={serverId}
-                        fetchMembers={fetchMembers}
-                        setIsLoading={setIsLoading}
-                      />
-                    }))}
+                    {isLoading ? (<Loader />) :
+                      (roles.map((e, i) => {
+                        return <Role
+                          key={i}
+                          id={e.id}
+                          name={e.name}
+                          color={e.color}
+                          userId={id}
+                          onClose={onClose}
+                          serverId={serverId}
+                          fetchMembers={fetchMembers}
+                          setIsLoading={setIsLoading}
+                        />
+                      }))}
                   </div>
                 </div>
               </PopoverBody>
@@ -120,27 +120,27 @@ const Member = ({ id, username, image, role, roles, setRoles, constantRoles, ser
         <Popover>
           <PopoverTrigger>
             <button>
-              <BiDotsVerticalRounded size={25}/>
+              <BiDotsVerticalRounded size={25} />
             </button>
           </PopoverTrigger>
           <PopoverContent bg="#111214" w={220}>
             <PopoverBody>
-              {!role?.isAdmin &&<>
+              {!role?.isAdmin && <>
                 <button className={
                   isKicking
-                  ? 'server-settings-members-member-dots-red-button-active'
-                  : 'server-settings-members-member-dots-red-button'}
+                    ? 'server-settings-members-member-dots-red-button-active'
+                    : 'server-settings-members-member-dots-red-button'}
                   onClick={kickUser}
                 >
                   {isKicking
-                  ? <BeatLoader size={13} color='white' cssOverride={{ alignSelf: "center"}}/>
-                  : `Kick ${ username }`}
+                    ? <BeatLoader size={13} color='white' cssOverride={{ alignSelf: "center" }} />
+                    : `Kick ${username}`}
                 </button>
                 <button className={
                   isBanning
-                  ? 'server-settings-members-member-dots-red-button-active'
-                  : 'server-settings-members-member-dots-red-button'} onClick={banUser}>
-                  {isBanning ? <BeatLoader color='#ce373a'/> : `Ban ${ username }`}
+                    ? 'server-settings-members-member-dots-red-button-active'
+                    : 'server-settings-members-member-dots-red-button'} onClick={banUser}>
+                  {isBanning ? <BeatLoader color='#ce373a' /> : `Ban ${username}`}
                 </button>
               </>}
             </PopoverBody>

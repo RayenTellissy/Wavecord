@@ -1,7 +1,7 @@
-#home-navigator-button{
+#home-navigator-button {
   border-radius: 7px;
   transition: background-color 0.1s ease;
-  font-family: UbuntuBold;
+  font-family: GibsonMedium;
   width: 90%;
   height: 60px;
   text-align: left;
@@ -9,10 +9,10 @@
   align-items: center;
 }
 
-#home-navigator-button-selected{
+#home-navigator-button-selected {
   border-radius: 7px;
   transition: background-color 0.1s ease;
-  font-family: UbuntuBold;
+  font-family: GibsonMedium;
   width: 90%;
   height: 60px;
   text-align: left;
@@ -21,15 +21,15 @@
   background-color: #42434a
 }
 
-#home-navigator-button:hover{
+#home-navigator-button:hover {
   background-color: #36373d;
 }
 
-#home-navigator-button:active{
+#home-navigator-button:active {
   background-color: #42434a;
 }
 
-.home-navigator-icon{
+.home-navigator-icon {
   height: 30px;
   width: 30px;
   margin: 15px;
