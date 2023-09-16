@@ -5,10 +5,15 @@
 #friend-button-container {
   display: flex;
   flex-direction: row;
-  border-top: 1px solid #33315b;
-  margin: 15px;
-  padding-top: 20px;
+  border-top: 1px solid #3e4047;
+  margin: 0px 15px;
+  padding: 20px 10px;
   justify-content: space-between;
+}
+
+#friend-button-container:hover {
+  background-color: #393b41;
+  border-radius: 11px;
 }
 
 #friend-button-details-container {

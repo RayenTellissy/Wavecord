@@ -7,6 +7,7 @@ export const Context = createContext()
 
 // hooks
 import useMic from "../../hooks/useMic";
+import useConversation from "../../hooks/useConversation"
 
 export const ContextProvider = ({ children }) => {
   const [user,setUser] = useState({
@@ -15,7 +16,7 @@ export const ContextProvider = ({ children }) => {
     id: localStorage.getItem("wavecord-id")
   })
   const [socket,setSocket] = useState(null)
-  const [conversationChosen,setConversationChosen] = useState({})
+  const [conversationChosen,setConversationChosen] = useConversation()
   const [micEnabled,setMicEnabled] = useMic()
   const [cameraEnabled,setCameraEnabled] = useState(false)
   const [isSpeaking,setIsSpeaking] = useState(false)
@@ -29,7 +30,6 @@ export const ContextProvider = ({ children }) => {
 
   const authenticateSession = async () => {
     const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/users/login`, {
-      withCredentials: true,
       headers: {
         "authorization": user.token,
         "x-refresh-token": localStorage.getItem("wavecord-refreshToken")

@@ -16,7 +16,7 @@ const {
 router.get("/fetchPending/:id", fetchPending)
 router.get("/removeRequest/:id", removeRequest)
 router.get("/fetchBlocks/:id", fetchBlocks)
-router.get("/fetchFriendsWithNoConversations/:userId", fetchFriendsWithNoConversation)
+router.get("/fetchFriendsWithNoConversations/:id", fetchFriendsWithNoConversation)
 
 router.post("/fetchOnlineFriends", fetchOnlineFriends)
 router.post("/fetchAllFriends", fetchAllFriends)

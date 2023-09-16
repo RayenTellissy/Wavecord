@@ -164,6 +164,18 @@ module.exports = {
       })
       if(conversationCheck) return res.send({ error: "Users already have a conversation." })
 
+      const existingFriends = await prisma.friends.findFirst({
+        where: {
+          users: {
+            every: {
+              id: {
+                in: [currentUser, otherUser]
+              }
+            }
+          }
+        }
+      })
+
       const result = await prisma.conversations.create({
         data: {
           users: {
@@ -172,7 +184,10 @@ module.exports = {
               { id: otherUser }
             ]
           },
-          type: "DIRECT"
+          type: "DIRECT",
+          Friends: {
+            connect: { id: existingFriends.id }
+          }
         }
       })
 

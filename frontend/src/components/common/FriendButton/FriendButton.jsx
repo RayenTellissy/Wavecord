@@ -1,8 +1,10 @@
 import React, { useContext } from 'react';
-import { TbFriendsOff } from "react-icons/tb"
+import { useNavigate } from 'react-router-dom';
 import { BiBlock } from "react-icons/bi"
 import { Tooltip } from '@chakra-ui/react';
 import axios from 'axios';
+import { FaUserMinus } from "react-icons/fa"
+import Cookies from "js-cookie"
 
 // components
 import { Context } from '../../Context/Context';
@@ -11,8 +13,9 @@ import Avatar from '../Avatar/Avatar';
 // styles
 import "./FriendButton.css"
 
-const FriendButton = ({ id, username, image, status, setIsUpdating, fetchUsers, toast }) => {
-  const { user } = useContext(Context)
+const FriendButton = ({ id, username, image, status, setIsUpdating, fetchUsers, toast, conversationId }) => {
+  const { user, setConversationChosen } = useContext(Context)
+  const navigate = useNavigate()
 
   const removeFriend = async () => {
     setIsUpdating(true)
@@ -20,8 +23,6 @@ const FriendButton = ({ id, username, image, status, setIsUpdating, fetchUsers, 
       await axios.post(`${import.meta.env.VITE_SERVER_URL}/friends/removeFriend`,{
         remover: user.id,
         removed: id
-      },{
-        withCredentials: true
       })
       await fetchUsers()
       setIsUpdating(false)
@@ -29,7 +30,6 @@ const FriendButton = ({ id, username, image, status, setIsUpdating, fetchUsers, 
         description: "Friend removed.",
         status: "success",
         duration: 2000
-
       })
     }
     catch(error){
@@ -43,8 +43,6 @@ const FriendButton = ({ id, username, image, status, setIsUpdating, fetchUsers, 
       await axios.post(`${import.meta.env.VITE_SERVER_URL}/friends/blockUser`,{
         blocker: user.id,
         blocked: id
-      },{
-        withCredentials: true
       })
       await fetchUsers()
       setIsUpdating(false)
@@ -59,9 +57,25 @@ const FriendButton = ({ id, username, image, status, setIsUpdating, fetchUsers, 
     }
   }
 
+  const handleNavigation = async () => {
+    setConversationChosen({
+      username,
+      image,
+      status
+    })
+    if(!conversationId){
+      const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/conversations/createDM`, {
+        currentUser: user.id,
+        otherUser: id
+      })
+      return navigate(`/dm/${response.data.id}`)
+    }
+    navigate(`/dm/${conversationId}`)
+  }
+
   return (
     <div id='friend-button-main-div'>
-      <div id='friend-button-container'>
+      <div id='friend-button-container' onClick={handleNavigation}>
         <div id='friend-button-details-container'>
           <Avatar image={image} status={status}/>
           <div id='friend-button-username-status-container'>
@@ -87,7 +101,7 @@ const FriendButton = ({ id, username, image, status, setIsUpdating, fetchUsers, 
             onClick={removeFriend}
           >
             <button className='friend-button-remove-friend' onClick={removeFriend}>
-              <TbFriendsOff size={35}/>
+              <FaUserMinus size={35}/>
             </button>
           </Tooltip>
 

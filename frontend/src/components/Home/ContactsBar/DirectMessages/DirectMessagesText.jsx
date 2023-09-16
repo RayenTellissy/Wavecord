@@ -37,9 +37,8 @@ const DirectMessagesText = ({ id, fetchConversations }) => {
   const fetchFriends = async () => {
     try {
       setIsLoading(true)
-      const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/friends/fetchFriendsWithNoConversations/${id}`,{
-        withCredentials: true
-      })
+      const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/friends/fetchFriendsWithNoConversations/${id}`)
+      console.log(response.data)
       setFriends(response.data)
       setConstantFriends(response.data)
       setIsLoading(false)
@@ -108,20 +107,20 @@ const DirectMessagesText = ({ id, fetchConversations }) => {
               {isLoading ? (
               <div id='add-dm-popover-loader-container'>
                 <Loader/>
-              </div>) : 
-                friends.map((e, i) => {
+              </div>) : (friends.length === 0 ? "d" : friends.map((e, i) => {
                   return (
                     <AddDM
                       key={i}
-                      id={e.id}
-                      username={e.username}
-                      image={e.image}
-                      status={e.status}
+                      id={e.users[0].id}
+                      username={e.users[0].username}
+                      image={e.users[0].image}
+                      status={e.users[0].status}
                       checked={checked}
                       setChecked={setChecked}
                     />
                   );
-                })
+                }))
+                
               }
             </PopoverBody>
             <PopoverFooter padding="20px 0px" bgColor="#313338" borderBottomRadius={4} borderColor="#292929">

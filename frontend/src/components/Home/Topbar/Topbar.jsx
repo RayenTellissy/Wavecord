@@ -7,11 +7,11 @@ import TopbarButton from './TopbarButton';
 // styles
 import "./Topbar.css"
 
-const Topbar = ({ selectedScreen, setSelectedScreen}) => {
+const Topbar = ({ selected, selectedScreen, setSelectedScreen }) => {
 
   return (
     <div id='home-right-topbar'>
-      <div id='home-right-topbar-friends'>
+      {selected === "Friends" ? <div id='home-right-topbar-friends'>
         <FaUserGroup size={30} color='#A1A1A1'/>
         <p id='home-right-topbar-friends-text'>Friends</p>
         <span id='home-right-topbar-friends-seperator'/>
@@ -27,7 +27,9 @@ const Topbar = ({ selectedScreen, setSelectedScreen}) => {
         >
           Add Friend
         </button>
-      </div>
+      </div> : <div>
+        Turbo
+      </div>}
     </div>
   );
 };

@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from "react-router-dom"
 import axios from 'axios';
 import Twemoji from "react-twemoji"
+import Cookies from 'js-cookie';
 
 // components
 import Sidebar from '../Home/Sidebar/Sidebar'
@@ -16,18 +17,25 @@ import MessageInput from '../common/MessageInput/MessageInput';
 import "./Messages.css"
 
 const Messages = () => {
-  const { user, socket, conversationChosen } = useContext(Context)
+  const { user, socket, conversationChosen, setConversationChosen } = useContext(Context)
   const { id } = useParams()
   const [messages,setMessages] = useState([])
   const [isLoading,setIsLoading] = useState(true)
   const messagesContainerRef = useRef(null)
   const navigate = useNavigate()
+
+  useEffect(() => {
+    if(!conversationChosen){
+      setConversationChosen(JSON.parse(Cookies.get("conversationChosen")))
+    }
+  },[])
   
   // handling conversation switching
   useEffect(() => {
     fetchMessages()
     socket.emit("join_room", id) // emitting a join room event to the socket server
     scrollToBottom()
+    Cookies.set("conversationChosen", JSON.stringify(conversationChosen), { expires: 1 })
   },[id])
 
   // socket watching to update messages upon receiving socket

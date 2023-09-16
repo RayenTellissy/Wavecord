@@ -36,7 +36,8 @@ module.exports = {
                 }
               ]
             }
-          }
+          },
+          conversation: true
         }
       })
 
@@ -78,7 +79,8 @@ module.exports = {
                 }
               ]
             }
-          }
+          },
+          conversation: true
         }
       })
       const allFriends = result.filter(e => e.users.length !== 0)
@@ -447,17 +449,26 @@ module.exports = {
     try {
       const { id } = req.params
 
-      const result = await prisma.users.findMany({
+      const result = await prisma.friends.findMany({
         where: {
-          Friends: {
-            some: {
-              id: id
+          AND: [
+            {
+              users: {
+                some: {
+                  id
+                }
+              }
+            },
+            {
+              conversationId: null
             }
-          },
-          NOT: {
-            Conversations: {
-              some: {
-                id: id
+          ]
+        },
+        select: {
+          users: {
+            where: {
+              id: {
+                not: id
               }
             }
           }

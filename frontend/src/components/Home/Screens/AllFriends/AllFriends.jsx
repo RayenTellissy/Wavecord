@@ -30,8 +30,6 @@ const AllFriends = ({ query, setShowSearch }) => {
     try {
       const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/friends/fetchAllFriends`,{
         id: user.id
-      },{
-        withCredentials: true
       })
       setUsers(response.data)
       setConstantUsers(response.data)
@@ -68,6 +66,7 @@ const AllFriends = ({ query, setShowSearch }) => {
             setIsUpdating={setIsUpdating}
             fetchUsers={fetchUsers}
             toast={toast}
+            conversationId={e.conversation ? e.conversation.id : null}
           />
         })}
         {isUpdating && <Loader/>}

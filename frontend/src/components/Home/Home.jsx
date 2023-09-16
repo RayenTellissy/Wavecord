@@ -22,13 +22,8 @@ const Home = () => {
         <ContactsBar selected={selected} setSelected={setSelected}/>
 
         <div id='home-right-container'>
-          <Topbar selectedScreen={selectedScreen} setSelectedScreen={setSelectedScreen}/>
+          <Topbar selected={selected} selectedScreen={selectedScreen} setSelectedScreen={setSelectedScreen}/>
           <Display selectedScreen={selectedScreen}/>
-          {/* <button onClick={async () => {
-            await axios.get(`${import.meta.env.VITE_SERVER_URL}/users/logout`, { withCredentials: true })
-          }}>
-            log out
-          </button> */}
         </div>
 
       </div>

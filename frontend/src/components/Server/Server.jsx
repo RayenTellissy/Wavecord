@@ -64,7 +64,7 @@ const Server = () => {
     socket.emit("open_server", id)
     fetchData()
     return () => window.removeEventListener("beforeunload", handleUnload)
-  },[])
+  },[id])
 
   useEffect(() => {
     storedVoiceRoom = currentVoiceChannelId

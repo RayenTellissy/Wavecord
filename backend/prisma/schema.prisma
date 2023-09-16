@@ -119,9 +119,11 @@ model Voice_channels {
 }
 
 model Friends {
-  id         String   @id @default(cuid())
-  users      Users[]
-  created_at DateTime @default(now())
+  id             String         @id @default(cuid())
+  users          Users[]
+  conversation   Conversations? @relation(fields: [conversationId], references: [id])
+  conversationId String?        @unique
+  created_at     DateTime       @default(now())
 }
 
 model FriendRequest {
@@ -137,6 +139,7 @@ model Conversations {
   users          Users[]
   type           ConversationType
   DirectMessages DirectMessages[]
+  Friends        Friends?
 }
 
 model DirectMessages {
