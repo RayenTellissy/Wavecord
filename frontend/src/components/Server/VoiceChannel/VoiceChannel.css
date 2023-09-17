@@ -1,3 +1,9 @@
+#server-voice-channel-title-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
 #server-voice-channel-button {
   display: flex;
   flex-direction: column;
@@ -5,12 +11,6 @@
   padding: 6px;
   display: flex;
   border-radius: 3px;
-}
-
-#server-voice-channel-title-container {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
 }
 
 #server-voice-channel-button:hover {
@@ -23,9 +23,17 @@
 
 #server-voice-channel-name {
   font-family: GibsonRegular;
+  color: #949ba4;
+  font-size: 19px;
+}
+
+#server-voice-channel-name-active {
+  font-family: GibsonRegular;
+  color: white;
+  font-size: 19px;
 }
 
 #server-voice-channel-speaker {
   margin-right: 7px;
-  color: gray;
+  color: #949ba4;
 }

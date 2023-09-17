@@ -18,8 +18,7 @@ import {
 import { FaHashtag } from "react-icons/fa"
 import { MdOutlineRadioButtonChecked, MdOutlineRadioButtonUnchecked } from "react-icons/md"
 import { HiSpeakerWave } from "react-icons/hi2"
-import { IoMdLock } from "react-icons/io"
-import { RiArrowDropDownLine } from "react-icons/ri"
+import { IoMdLock, IoIosArrowDown } from "react-icons/io"
 import { MdClose } from "react-icons/md"
 
 // components
@@ -44,11 +43,13 @@ const Server = () => {
   const { isOpen: isOpenDropdown, onOpen: onOpenDropdown, onClose: onCloseDropdown } = useDisclosure()
   const { isOpen: isOpenServerLink, onOpen: onOpenServerLink, onClose: onCloseServerLink } = useDisclosure()
   const { id } = useParams()
-  const { user, socket } = useContext(Context)
+  const { user, socket, displayRoom, setDisplayRoom } = useContext(Context)
   const [server,setServer] = useState({})
   const [currentTextChannel,setCurrentTextChannel] = useState("")
   const [currentTextChannelId,setCurrentTextChannelId] = useState("")
+  const [hoveredTextChannelId,setHoveredTextChannelId] = useState("")
   const [currentVoiceChannelId,setCurrentVoiceChannelId] = useState("")
+  const [hoveredVoiceChannelId,setHoveredVoiceChannelId] = useState("")
   const [currentChannelType,setCurrentChannelType] = useState("")
   const [categoryChosen,setCategoryChosen] = useState("")
   const [categoryIdChosen,setCategoryIdChosen] = useState("")
@@ -58,7 +59,7 @@ const Server = () => {
   const [createDisabled,setCreateDisabled] = useState(true)
   const [showDropdown,setShowDropdown] = useState(false)
   const [role,setRole] = useState({})
-  
+
   useEffect(() => {
     window.addEventListener("beforeunload", handleUnload)
     socket.emit("open_server", id)
@@ -138,7 +139,12 @@ const Server = () => {
   }
 
   // leaves voice room before unloading app
-  const handleUnload = () => {
+  const handleUnload = (e) => {
+    if(storedVoiceRoom){
+      e.returnValue = ""
+      setHoveredTextChannelId("")
+      setCurrentChannelType("")
+    }
     socket.emit("leave_voice", {
       serverId: id,
       channelId: storedVoiceRoom,
@@ -165,7 +171,9 @@ const Server = () => {
                 <div id='server-popover-name-icon'>
                   <p id='server-name'>{server.name}</p>
                   <div id='server-banner-icon-container'>
-                    {showDropdown ? <MdClose size={22}/> : <RiArrowDropDownLine size={40}/>}
+                    {showDropdown
+                    ? <MdClose size={25}/>
+                    : <IoIosArrowDown size={25}/>}
                   </div>
                 </div>
               </button>
@@ -195,10 +203,15 @@ const Server = () => {
                 setCategoryChosen={setCategoryChosen}
                 setCategoryIdChosen={setCategoryIdChosen}
                 setCurrentTextChannel={setCurrentTextChannel}
+                currentTextChannelId={currentTextChannelId}
                 setCurrentTextChannelId={setCurrentTextChannelId}
+                hoveredTextChannelId={hoveredTextChannelId}
+                setHoveredTextChannelId={setHoveredTextChannelId}
                 setCurrentChannelType={setCurrentChannelType}
                 currentVoiceChannelId={currentVoiceChannelId}
                 setCurrentVoiceChannelId={setCurrentVoiceChannelId}
+                hoveredVoiceChannelId={hoveredVoiceChannelId}
+                setHoveredVoiceChannelId={setHoveredVoiceChannelId}
               />
             })}
           </div>
@@ -206,19 +219,19 @@ const Server = () => {
         </div>
       </div>
       <div id='server-right-display-content'>
-        {currentChannelType !== "voice" && <ChannelMessages
+        {!displayRoom && <ChannelMessages
           serverId={id}
           currentTextChannel={currentTextChannel}
           currentTextChannelId={currentTextChannelId}
           user={user}
           roleColor={role ? role.color : "white"}
         />}
-        {currentChannelType === "voice" && <VoiceRoom
+        <VoiceRoom
           serverId={server.id}
           channelId={currentVoiceChannelId}
           setCurrentChannelType={setCurrentChannelType}
           setCurrentVoiceChannelId={setCurrentVoiceChannelId}
-        />}
+        />
       </div>
       <Modal isOpen={isOpen} onClose={closeModal} isCentered size="lg">
         <ModalOverlay/>

@@ -17,9 +17,17 @@
 
 #server-text-channel-name {
   font-family: GibsonRegular;
+  color: #949ba4;
+  font-size: 19px;
+}
+
+#server-text-channel-name-active {
+  font-family: GibsonRegular;
+  color: white;
+  font-size: 19px;
 }
 
 #server-text-channel-hashtag {
   margin-right: 7px;
-  color: gray;
+  color: #949ba4;
 }

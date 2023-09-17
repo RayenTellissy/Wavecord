@@ -10,7 +10,7 @@ import { Context } from '../../../Context/Context';
 import "./UserBar.css"
 
 const UserBar = () => {
-  const { user } = useContext(Context)
+  const { user, micEnabled, setMicEnabled, displayRoom, setDisplayRoom } = useContext(Context)
 
   return (
     <div id='home-contacts-userbar-container'>
@@ -27,8 +27,12 @@ const UserBar = () => {
       </div>
 
       <div id='home-contacts-userbar-icons-section'>
-        <button><FontAwesomeIcon className='home-contacts-userbar-icon' icon={faMicrophone} /></button>
-        <button><FontAwesomeIcon className='home-contacts-userbar-icon' icon={faHeadset} /></button>
+        <button onClick={() => setMicEnabled(!micEnabled)}>
+          <FontAwesomeIcon className='home-contacts-userbar-icon' icon={faMicrophone} />
+        </button>
+        <button onClick={() => setDisplayRoom(!displayRoom)}>
+          <FontAwesomeIcon className='home-contacts-userbar-icon' icon={faHeadset} />
+        </button>
         <button><FontAwesomeIcon className='home-contacts-userbar-icon' icon={faGear} /></button>
       </div>
         

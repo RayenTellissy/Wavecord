@@ -49,6 +49,10 @@ const ContextTransfer = ({ serverId, channelId }) => {
     // setting micenabled to the set cookie
     room.localParticipant.setMicrophoneEnabled(micEnabled)
   },[room.localParticipant.isMicrophoneEnabled])
+
+  useEffect(() => {
+    room.localParticipant.setMicrophoneEnabled(micEnabled)
+  },[micEnabled])
   
   useEffect(() => {
     handleRoomEvents()

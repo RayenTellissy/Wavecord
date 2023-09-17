@@ -19,10 +19,15 @@ const Category = ({
   setCategoryChosen,
   setCategoryIdChosen,
   setCurrentTextChannel,
+  currentTextChannelId,
   setCurrentTextChannelId,
+  hoveredTextChannelId,
+  setHoveredTextChannelId,
   setCurrentChannelType,
   currentVoiceChannelId,
   setCurrentVoiceChannelId,
+  hoveredVoiceChannelId,
+  setHoveredVoiceChannelId
 }) => {
   const [hovered,setHovered] = useState(false)
 
@@ -55,7 +60,10 @@ const Category = ({
           id={e.id} 
           name={e.name} 
           setCurrentTextChannel={setCurrentTextChannel}
+          currentTextChannelId={currentTextChannelId}
           setCurrentTextChannelId={setCurrentTextChannelId}
+          hoveredTextChannelId={hoveredTextChannelId}
+          setHoveredTextChannelId={setHoveredTextChannelId}
         />
       })}
       {voice.map((e,i) => {
@@ -67,6 +75,8 @@ const Category = ({
           setCurrentChannelType={setCurrentChannelType}
           currentVoiceChannelId={currentVoiceChannelId}
           setCurrentVoiceChannelId={setCurrentVoiceChannelId}
+          hoveredVoiceChannelId={hoveredVoiceChannelId}
+          setHoveredVoiceChannelId={setHoveredVoiceChannelId}
         />
       })}
     </div>

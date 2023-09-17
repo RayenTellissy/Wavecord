@@ -15,6 +15,8 @@ const VoiceChannel = ({
   setCurrentChannelType,
   currentVoiceChannelId,
   setCurrentVoiceChannelId,
+  hoveredVoiceChannelId,
+  setHoveredVoiceChannelId
 }) => {
   const { user, socket } = useContext(Context)
   const [users,setUsers] = useState([])
@@ -46,6 +48,7 @@ const VoiceChannel = ({
     // locally remove the user from this voice channel when he leaves
     if(!currentVoiceChannelId){
       setUsers(users.filter(e => e.id !== user.id))
+      setHoveredVoiceChannelId("")
     }
   },[currentVoiceChannelId])
 
@@ -76,11 +79,30 @@ const VoiceChannel = ({
     }
   }
 
+  const handleActive = (boolean) => {
+    if(currentVoiceChannelId === id) return
+    if(boolean){
+      return setHoveredVoiceChannelId(id)
+    }
+    setHoveredVoiceChannelId("")
+  }
+
+  currentVoiceChannelId === id
+
   return (
-    <button id='server-voice-channel-button' onClick={handleClick}>
+    <button id='server-voice-channel-button'
+      onClick={handleClick} 
+      onMouseEnter={() => handleActive(true)}
+      onMouseLeave={() => handleActive(false)}
+    >
       <div id='server-voice-channel-title-container'>
         <HiSpeakerWave id='server-voice-channel-speaker'/>
-        <p id='server-voice-channel-name'>{ name }</p>
+        <p id={currentVoiceChannelId === id || hoveredVoiceChannelId === id
+          ? 'server-voice-channel-name-active'
+          : 'server-voice-channel-name'}
+        >
+          { name }
+        </p>
       </div>
       {users && users.map((e,i) => {
         return <UserInRoom

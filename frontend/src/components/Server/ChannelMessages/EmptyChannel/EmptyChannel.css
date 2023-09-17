@@ -1,0 +1,23 @@
+#empty-channel-container {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+#empty-channel-welcome-div {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+#empty-channel-welcome-text {
+  font-family: GibsonBold;
+  font-size: 25px;
+  margin-left: 10px;
+}
+
+#empty-channel-start-text {
+  color: #b5bac1;
+  font-family: GibsonRegular;
+  margin-top: 5px;
+}

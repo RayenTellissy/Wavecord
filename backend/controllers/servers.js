@@ -611,7 +611,15 @@ module.exports = {
           serverId: serverId
         },
         select: {
-          user: true,
+          user: {
+            include: {
+              servers_created: {
+                where: {
+                  id: serverId
+                }
+              }
+            }
+          },
           role: true
         }
       })

@@ -222,8 +222,12 @@
 
 #server-banner-icon-container {
   display: flex;
-  flex: 1;
+  align-items: center;
   justify-content: center;
+  margin-right: 20px;
+  position: relative;
+  height: 40px;
+  width: 40px;
 }
 
 #server-category-main-container {
@@ -245,4 +249,8 @@
 #server-category-main-container::-webkit-scrollbar-track {
   background-color: inherit;
   border-radius: 10px;
+}
+
+#server-voice-room-container-hide {
+  display: none;
 }

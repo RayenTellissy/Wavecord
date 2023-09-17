@@ -88,6 +88,7 @@ const Members = ({ server }) => {
             serverId={server.id}
             fetchMembers={fetchMembers}
             user={user}
+            isOwner={e.user.servers_created.length !== 0}
           />
         })}
         {isLoading && <BeatLoader size={8} color='white'/>}

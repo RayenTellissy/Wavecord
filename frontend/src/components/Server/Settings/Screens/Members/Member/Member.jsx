@@ -13,7 +13,7 @@ import Loader from "../../../../../common/Loader/Loader"
 // styles
 import "./Member.css"
 
-const Member = ({ id, username, image, role, roles, setRoles, constantRoles, serverId, fetchMembers, user }) => {
+const Member = ({ id, username, image, role, roles, setRoles, constantRoles, serverId, fetchMembers, user, isOwner }) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [query, setQuery] = useState("")
   const [isLoading, setIsLoading] = useState(false)
@@ -126,7 +126,7 @@ const Member = ({ id, username, image, role, roles, setRoles, constantRoles, ser
           </PopoverTrigger>
           <PopoverContent bg="#111214" w={220}>
             <PopoverBody>
-              {!role?.isAdmin && <>
+              {!role?.isAdmin && !isOwner && <>
                 <button className={
                   isKicking
                     ? 'server-settings-members-member-dots-red-button-active'
@@ -134,7 +134,7 @@ const Member = ({ id, username, image, role, roles, setRoles, constantRoles, ser
                   onClick={kickUser}
                 >
                   {isKicking
-                    ? <BeatLoader size={13} color='white' cssOverride={{ alignSelf: "center" }} />
+                    ? <BeatLoader size={13} color='#ce373a' cssOverride={{ alignSelf: "center" }} />
                     : `Kick ${username}`}
                 </button>
                 <button className={

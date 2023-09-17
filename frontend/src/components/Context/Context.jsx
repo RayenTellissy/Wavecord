@@ -22,6 +22,7 @@ export const ContextProvider = ({ children }) => {
   const [isSpeaking,setIsSpeaking] = useState(false)
   const [screenShareEnabled,setScreenShareEnabled] = useState(false)
   const [conenctionQuality,setConnectionQuality] = useState(null)
+  const [displayRoom,setDisplayRoom] = useState(false)
 
   useEffect(() => {
     authenticateSession()
@@ -60,7 +61,9 @@ export const ContextProvider = ({ children }) => {
       screenShareEnabled,
       setScreenShareEnabled,
       conenctionQuality,
-      setConnectionQuality
+      setConnectionQuality,
+      displayRoom,
+      setDisplayRoom
     }}>
       {children}
     </Context.Provider>

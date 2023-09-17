@@ -7,6 +7,7 @@ import MessageInput from "../../common/MessageInput/MessageInput"
 import Message from '../../Messages/Message';
 import Roles from '../Roles/Roles';
 import Topbar from "../Topbar/Topbar"
+import EmptyChannel from './EmptyChannel/EmptyChannel';
 
 // styles
 import "./ChannelMessages.css"
@@ -60,7 +61,8 @@ const ChannelMessages = ({ serverId, currentTextChannel, currentTextChannelId, u
         <div id='server-content-container'>
           <div id='server-content-main'>
             <Topbar currentTextChannel={currentTextChannel}/>
-            <div id='server-messages-channel-messages' ref={messagesContainerRef} >
+            <div id='server-messages-channel-messages' ref={messagesContainerRef}>
+              <EmptyChannel channelName={currentTextChannel}/>
               <Twemoji options={{ className: 'twemoji' }}>
                 {messages.length !== 0 && messages.map((e,i) => {
                   return <Message
