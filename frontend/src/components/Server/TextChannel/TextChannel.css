@@ -1,5 +1,5 @@
 #server-text-channel-button {
-  width: 280px;
+  width: 100%;
   padding: 6px;
   display: flex;
   flex-direction: row;

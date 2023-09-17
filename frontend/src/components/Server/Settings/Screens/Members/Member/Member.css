@@ -42,7 +42,7 @@
 #server-settings-members-member-roles-mapping {
   padding-top: 10px;
   height: 300px;
-  overflow-y: scroll;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   align-items: center;

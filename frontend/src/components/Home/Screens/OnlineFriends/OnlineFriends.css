@@ -10,6 +10,6 @@
 }
 
 #home-right-display-online-users-container {
-  overflow-y: scroll;
+  overflow-y: auto;
   max-height: 78vh;
 }

@@ -19,7 +19,8 @@ const Message = ({
   type,
   created_at,
   conversationType,
-  removeMessageLocally
+  removeMessageLocally,
+  usernameColor
 }) => {
   const [isDeleting, setIsDeleting] = useState(false)
 
@@ -52,7 +53,12 @@ const Message = ({
 
       <div id='dm-username-message-container'>
         <div id='dm-username-createdat'>
-          <p id={isDeleting ? 'dm-message-username-deleting' : 'dm-message-username'}>{username}</p>
+          <p
+            id={isDeleting ? 'dm-message-username-deleting' : 'dm-message-username'}
+            style={{ color: usernameColor ? usernameColor : "white" }}
+          >
+            { username }
+          </p>
           <Tooltip label={moment(created_at).format('dddd, MMMM Do YYYY, h:mm A')}
             placement='top'
             bg="black"
@@ -62,6 +68,7 @@ const Message = ({
             openDelay={500}
             padding={2}
             borderRadius={5}
+            fontFamily="GibsonRegular"
           >
             <p id='dm-message-createdat'>{moment(created_at).calendar()}</p>
           </Tooltip>

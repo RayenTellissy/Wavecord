@@ -25,7 +25,7 @@ import Emoji from '../Emoji/Emoji';
 // styles
 import "./MessageInput.css"
 
-const MessageInput = ({ user, conversationName, setMessages, conversationType, channelId }) => {
+const MessageInput = ({ user, conversationName, setMessages, conversationType, channelId, roleColor }) => {
   const { socket } = useContext(Context)
   const { id } = useParams()
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -71,7 +71,14 @@ const MessageInput = ({ user, conversationName, setMessages, conversationType, c
         sender: {
           id: user.id,
           username: user.username,
-          image: user.image
+          image: user.image,
+          UsersInServers: [
+            {
+              role: {
+                color: roleColor
+              }
+            }
+          ]
         },
         message: storedMessage,
         type: "TEXT",
@@ -161,7 +168,14 @@ const MessageInput = ({ user, conversationName, setMessages, conversationType, c
         sender: {
           id: user.id,
           username: user.username,
-          image: user.image
+          image: user.image,
+          UsersInServers: [
+            {
+              role: {
+                color: roleColor
+              }
+            }
+          ]
         },
         message: url,
         type: "LINK",

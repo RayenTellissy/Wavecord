@@ -4,7 +4,7 @@
   width: 300px;
   height: 100%;
   background-color: #2b2d31;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 #server-roles-bar-main-container{

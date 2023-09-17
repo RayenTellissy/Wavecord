@@ -28,3 +28,16 @@
 #add-dm-button-username {
   font-family: GibsonMedium;
 }
+
+#create-dm-no-friends-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#create-dm-no-friends-text {
+  margin-top: 10px;
+  font-family: GibsonRegular;
+  font-size: 18px;
+}

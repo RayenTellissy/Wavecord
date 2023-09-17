@@ -1,8 +1,8 @@
 #home-right-topbar {
-  background-color: #252525;
+  background-color: #313338;
   height: 85px;
   width: 100%;
-  box-shadow: black 2px 2px;
+  box-shadow: 0px 2px 2px #27292d;
 }
 
 #home-right-topbar-friends {

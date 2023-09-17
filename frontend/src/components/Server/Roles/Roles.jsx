@@ -9,12 +9,12 @@ import Avatar from '../../common/Avatar/Avatar';
 import "./Roles.css"
 
 const Roles = ({ serverId }) => {
-  const [roles, setRoles] = useState([])
-  const [noRoles, setNoRoles] = useState([])
+  const [roles,setRoles] = useState([])
+  const [noRoles,setNoRoles] = useState([])
 
   useEffect(() => {
     fetchRoles()
-  }, [])
+  },[])
 
   const fetchRoles = async () => {
     try {
@@ -22,7 +22,7 @@ const Roles = ({ serverId }) => {
       setRoles(response.data.withRole)
       setNoRoles(response.data.noRole)
     }
-    catch (error) {
+    catch(error) {
       console.log(error)
     }
   }
@@ -38,7 +38,7 @@ const Roles = ({ serverId }) => {
           {noRoles.map((e, i) => {
             return <button key={i} id='one-role-container'>
               <Avatar status={e.user.status} />
-              <p style={{ color: "#a6aeb3", fontFamily: "GibsonRegular" }}>{e.user.username}</p>
+              <p style={{ color: "#a6aeb3", fontFamily: "GibsonRegular", fontSize: 18 }}>{e.user.username}</p>
             </button>
           })}
         </div>

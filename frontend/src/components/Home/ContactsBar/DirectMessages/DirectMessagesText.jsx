@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom"
 import { AddIcon } from "@chakra-ui/icons"
 import axios from 'axios';
@@ -11,15 +11,19 @@ import {
   useDisclosure
 } from '@chakra-ui/react'
 import BeatLoader from "react-spinners/BeatLoader"
+import Cookies from "js-cookie"
 
 // components
 import AddDM from './AddDM';
 import Loader from "../../../common/Loader/noMarginLoader"
+import NoFriends from './NoFriends';
+import { Context } from "../../../Context/Context"
 
 // styles
 import "./DirectMessagesText.css"
 
 const DirectMessagesText = ({ id, fetchConversations }) => {
+  const { setConversationChosen } = useContext(Context)
   const { onOpen, onClose, isOpen } = useDisclosure()
   const [friends,setFriends] = useState([])
   const [query,setQuery] = useState("")
@@ -38,7 +42,6 @@ const DirectMessagesText = ({ id, fetchConversations }) => {
     try {
       setIsLoading(true)
       const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/friends/fetchFriendsWithNoConversations/${id}`)
-      console.log(response.data)
       setFriends(response.data)
       setConstantFriends(response.data)
       setIsLoading(false)
@@ -56,12 +59,13 @@ const DirectMessagesText = ({ id, fetchConversations }) => {
       setSubmitDisabled(true)
       const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/conversations/createDM`,{
         currentUser: id,
-        otherUser: checked
+        otherUser: checked.id
       })
       setIsCreating(false)
       onClose() // closing popover
       setChecked("") // resetting chosen user
       fetchConversations()
+      setConversationChosen(checked)
       navigate(`/dm/${response.data.id}`)
       setSubmitDisabled(false)
     }
@@ -71,10 +75,12 @@ const DirectMessagesText = ({ id, fetchConversations }) => {
   }
 
   const filterFriends = () => {
-    if(!query){
-      return setFriends(constantFriends)
-    }
-    setFriends(friends.filter(e => e.users[0].username.toUpperCase().includes(query.toUpperCase())))
+    setFriends(constantFriends.filter(e => e.users[0].username.toUpperCase().includes(query.toUpperCase())))
+  }
+
+  const openPopover = () => {
+    setQuery("")
+    onOpen()
   }
 
   return (
@@ -82,13 +88,18 @@ const DirectMessagesText = ({ id, fetchConversations }) => {
       <p id='home-contacts-side-message-text'>
         DIRECT MESSAGES
       </p>
-      <Popover isOpen={isOpen} onOpen={onOpen} onClose={onClose} placement='bottom-start'>
+      <Popover isOpen={isOpen} onOpen={openPopover} onClose={onClose} placement='bottom-start'>
         <PopoverTrigger>
           <button onClick={fetchFriends}>
             <AddIcon/>
           </button>
         </PopoverTrigger>
-        <PopoverContent minW={{ base: "100%", lg: "max-content" }} borderRadius={4} backgroundColor="#313338" border="1px solid #222327">
+        <PopoverContent
+          minW={{ base: "100%", lg: "max-content" }}
+          borderRadius={4}
+          backgroundColor="#313338"
+          border="1px solid #222327"
+        >
           <div id='add-dm-popover-container'>
             <div id='add-dm-popover-header-main'>
               <div id='add-dm-popover-header-container'>
@@ -100,6 +111,8 @@ const DirectMessagesText = ({ id, fetchConversations }) => {
                   type='text' 
                   placeholder='Type the username of a friend'
                   onChange={e => setQuery(e.target.value)}
+                  autoComplete='off'
+                  value={query}
                 />
               </div>
             </div>
@@ -107,7 +120,7 @@ const DirectMessagesText = ({ id, fetchConversations }) => {
               {isLoading ? (
               <div id='add-dm-popover-loader-container'>
                 <Loader/>
-              </div>) : (friends.length === 0 ? "d" : friends.map((e, i) => {
+              </div>) : (friends.length === 0 && !query ? <NoFriends/> : friends.map((e, i) => {
                   return (
                     <AddDM
                       key={i}

@@ -92,6 +92,7 @@ const Member = ({ id, username, image, role, roles, setRoles, constantRoles, ser
                       id='server-settings-members-member-roles-search'
                       placeholder='Role'
                       onChange={e => setQuery(e.target.value)}
+                      autoComplete='off'
                     />
                     <BiSearch id='server-settings-members-member-role-search-icon' size={25} />
                   </div>

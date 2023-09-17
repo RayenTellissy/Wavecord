@@ -42,7 +42,12 @@ const Bans = ({ server }) => {
     <div id='server-settings-bans-container'>
       <p id='server-settings-bans-title'>Server Bans</p>
       <div id='server-settings-bans-search-container'>
-        <input id='server-settings-bans-search-input' placeholder='Search' onChange={e => setQuery(e.target.value)} />
+        <input
+          id='server-settings-bans-search-input'
+          placeholder='Search'
+          onChange={e => setQuery(e.target.value)}
+          autoComplete='off'
+        />
         <BiSearch id='server-settings-members-search-input-icon' size={25}/>
       </div>
       <div id='server-settings-bans-banned-users-container'>

@@ -49,6 +49,6 @@
 }
 
 #home-right-display-blocked-users-container {
-  overflow-y: scroll;
+  overflow-y: auto;
   max-height: 78vh;
 }

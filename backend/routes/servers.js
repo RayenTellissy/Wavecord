@@ -31,6 +31,7 @@ const {
   leaveVoiceRoom,
   fetchUsersInRoom,
   deleteMessage,
+  fetchUserRole,
 } = require("../controllers/servers")
 const { createLimit, joinLimit, deleteLimit, leaveLimit } = require("../middleware/serverLimiter")
 const authentication = require("../middleware/authentication")

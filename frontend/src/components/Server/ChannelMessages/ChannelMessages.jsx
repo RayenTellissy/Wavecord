@@ -12,7 +12,7 @@ import Topbar from "../Topbar/Topbar"
 import "./ChannelMessages.css"
 import Twemoji from 'react-twemoji';
 
-const ChannelMessages = ({ serverId, currentTextChannel, currentTextChannelId, user }) => {
+const ChannelMessages = ({ serverId, currentTextChannel, currentTextChannelId, user, roleColor }) => {
   const { socket } = useContext(Context)
   const [messages,setMessages] = useState([])
   const messagesContainerRef = useRef(null)
@@ -36,7 +36,8 @@ const ChannelMessages = ({ serverId, currentTextChannel, currentTextChannelId, u
   const fetchMessages = async () => {
     try {
       const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/fetchTextChannelMessages`,{
-        channelId: currentTextChannelId
+        channelId: currentTextChannelId,
+        serverId
       })
       setMessages(response.data)
     }
@@ -74,6 +75,7 @@ const ChannelMessages = ({ serverId, currentTextChannel, currentTextChannelId, u
                     created_at={e.created_at}
                     conversationType="server"
                     removeMessageLocally={removeMessageLocally}
+                    usernameColor={e.sender.UsersInServers[0].role?.color}
                   />
                 })}
               </Twemoji>
@@ -85,6 +87,7 @@ const ChannelMessages = ({ serverId, currentTextChannel, currentTextChannelId, u
                 conversationName={currentTextChannel}
                 channelId={currentTextChannelId}
                 user={user}
+                roleColor={roleColor}
               />
             </div>
           </div>

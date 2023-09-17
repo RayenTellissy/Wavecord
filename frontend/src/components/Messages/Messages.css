@@ -18,7 +18,7 @@
 #dm-conversation-container {
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
+  flex: 1;
   background-color: #313338;
 }
 
@@ -74,7 +74,7 @@
 
 #dm-messages-container {
   height: 83%;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 #dm-message-remove-button {

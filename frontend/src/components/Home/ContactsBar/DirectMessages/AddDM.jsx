@@ -11,7 +11,12 @@ const AddDM = ({ id, username, image, status, checked, setChecked }) => {
 
   const handleClick = () => {
     if(checked !== id){
-      setChecked(id)
+      setChecked({
+        id,
+        username,
+        image,
+        status
+      })
     }
     else {
       setChecked("")
@@ -26,7 +31,7 @@ const AddDM = ({ id, username, image, status, checked, setChecked }) => {
           <p id='add-dm-button-username'>{ username }</p>
         </div>
         <div id='add-dm-button-check-container'>
-          {checked === id ? <BsCheckSquare size={25}/> : <BsSquare size={25}/>}
+          {checked.id === id ? <BsCheckSquare size={25}/> : <BsSquare size={25}/>}
         </div>
       </button>
     </div>

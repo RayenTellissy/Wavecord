@@ -50,23 +50,16 @@ module.exports = {
         }
       })
 
-      const adminCheck = await prisma.usersInServers.findFirst({
+      const role = await prisma.usersInServers.findFirst({
         where: {
           userId,
-          role: {
-            isAdmin: true
-          }
+        },
+        select: {
+          role: true
         }
       })
-      var isAdmin
-      if(adminCheck){
-        isAdmin = true
-      }
-      else {
-        isAdmin = false
-      }
       
-      res.send({ server, isAdmin })
+      res.send({ server, role: role.role })
     }
     catch(error){
       res.send(error)
@@ -379,14 +372,32 @@ module.exports = {
 
   fetchTextChannelMessages: async (req,res) => {
     try {
-      const { channelId } = req.body
+      const { channelId, serverId } = req.body
 
       const result = await prisma.serverMessages.findMany({
         where: {
           channelId : channelId
         },
         include: {
-          sender: true
+          sender: {
+            include: {
+              UsersInServers: {
+                where: {
+                  serverId
+                },
+                include: {
+                  role: {
+                    where: {
+                      serverId
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        orderBy: {
+          created_at: "asc"
         }
       })
 
@@ -954,7 +965,6 @@ module.exports = {
   deleteMessage: async (req,res) => {
     try {
       const { senderId, messageId } = req.body
-      console.log(senderId, messageId)
 
       const result = await prisma.serverMessages.delete({
         where: {

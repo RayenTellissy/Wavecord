@@ -13,7 +13,7 @@ const Role = ({ roleName, roleColor, users }) => {
       {users.map((e, i) => {
         return <button id='one-role-container' key={i}>
           <Avatar status={e.user.status} />
-          <p style={{ color: roleColor, fontFamily: "GibsonRegular" }}>{e.user.username}</p>
+          <p style={{ color: roleColor, fontFamily: "GibsonRegular", fontSize: 18 }}>{e.user.username}</p>
         </button>
       })}
     </div>

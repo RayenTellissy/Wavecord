@@ -57,7 +57,7 @@ const Server = () => {
   const [privateChecked,setPrivateChecked] = useState(false)
   const [createDisabled,setCreateDisabled] = useState(true)
   const [showDropdown,setShowDropdown] = useState(false)
-  const [isAdmin,setIsAdmin] = useState(null)
+  const [role,setRole] = useState({})
   
   useEffect(() => {
     window.addEventListener("beforeunload", handleUnload)
@@ -77,7 +77,7 @@ const Server = () => {
         userId: user.id
       })
       setServer(response.data.server)
-      setIsAdmin(response.data.isAdmin)
+      setRole(response.data.role)
     }
     catch(error){
       console.log(error)
@@ -185,7 +185,7 @@ const Server = () => {
             {server.categories && server.categories.map((e,i) => {
               return <Category
                 key={i}
-                isAdmin={isAdmin}
+                isAdmin={role ? role.isAdmin : false}
                 id={e.id}
                 name={e.name}
                 text={e.Text_channels}
@@ -211,6 +211,7 @@ const Server = () => {
           currentTextChannel={currentTextChannel}
           currentTextChannelId={currentTextChannelId}
           user={user}
+          roleColor={role ? role.color : "white"}
         />}
         {currentChannelType === "voice" && <VoiceRoom
           serverId={server.id}

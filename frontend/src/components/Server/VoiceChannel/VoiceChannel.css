@@ -1,7 +1,7 @@
 #server-voice-channel-button {
   display: flex;
   flex-direction: column;
-  width: 280px;
+  width: 100%;
   padding: 6px;
   display: flex;
   border-radius: 3px;

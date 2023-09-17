@@ -230,4 +230,19 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  overflow-y: auto;
+}
+
+#server-category-main-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+#server-category-main-container::-webkit-scrollbar-thumb {
+  background: #1a1b1e;
+  width: 2px;
+}
+
+#server-category-main-container::-webkit-scrollbar-track {
+  background-color: inherit;
+  border-radius: 10px;
 }
