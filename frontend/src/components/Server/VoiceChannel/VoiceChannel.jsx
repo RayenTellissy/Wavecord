@@ -26,7 +26,9 @@ const VoiceChannel = ({
   useEffect(() => {
     socket.on("receive_voice_update", data => {
       if(data.channelId === id){
-        setUsers(data.users)
+        if(data.users.length){
+          setUsers(data.users)
+        }
       }
     })
     socket.on("receive_leave_voice", data => {
@@ -69,7 +71,6 @@ const VoiceChannel = ({
       if(users){
         setUsers(prevUsers => [...prevUsers, userDetails])
       }
-      setUsers([userDetails])
       setCurrentVoiceChannelId(id)
       setCurrentChannelType("voice")
     }
