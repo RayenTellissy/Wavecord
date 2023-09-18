@@ -17,8 +17,11 @@ import ConversationStart from './ConversationStart/ConversationStart';
 // styles
 import "./Messages.css"
 
+// helper functions
+import sortConversations from '../../utils/Helper/sortConversations';
+
 const Messages = () => {
-  const { user, socket, conversationChosen, setConversationChosen } = useContext(Context)
+  const { user, socket, conversations, conversationChosen, setConversationChosen } = useContext(Context)
   const { id } = useParams()
   const [messages,setMessages] = useState([])
   const [isLoading,setIsLoading] = useState(true)
@@ -42,8 +45,16 @@ const Messages = () => {
   // socket watching to update messages upon receiving socket
   useEffect(() => {
     socket.on("receive_message", data => {
+      sortConversations(data.conversation, conversations)
       setMessages(prevMessages => [...prevMessages, data])
     })
+    socket.on("receive_delete_message", data => {
+      setMessages(prevMessages => prevMessages.filter(message => message.id !== data.messageId))
+    })
+    return () => {
+      socket.off("receive_message")
+      socket.off("receive_delete_message")
+    }
   },[socket])
 
   useEffect(() => {
@@ -96,7 +107,7 @@ const Messages = () => {
 
         <div id='dm-messages-container' ref={messagesContainerRef}>
           {isLoading && <LoadingMessages/>}
-          <ConversationStart username={conversationChosen.username} image={conversationChosen.image}/>
+          {!isLoading && <ConversationStart username={conversationChosen.username} image={conversationChosen.image}/>}
           <Twemoji options={{ className: 'twemoji' }}>
             {messages.length !== 0 && messages.map((e,i) => {
               return <Message
@@ -111,6 +122,7 @@ const Messages = () => {
                 created_at={e.created_at}
                 conversationType="dm"
                 removeMessageLocally={removeMessageLocally}
+                conversation={id}
               />
             })}
           </Twemoji>

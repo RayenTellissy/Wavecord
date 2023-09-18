@@ -11,7 +11,6 @@ import {
   useDisclosure
 } from '@chakra-ui/react'
 import BeatLoader from "react-spinners/BeatLoader"
-import Cookies from "js-cookie"
 
 // components
 import AddDM from './AddDM';

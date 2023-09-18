@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import axios from "axios"
 import moment from "moment/moment"
 import { Tooltip } from "@chakra-ui/react"
@@ -6,6 +6,7 @@ import { BiSolidTrash } from "react-icons/bi"
 
 // components
 import Avatar from '../common/Avatar/Avatar';
+import { Context } from '../Context/Context';
 
 import "./Messages.css"
 
@@ -20,12 +21,18 @@ const Message = ({
   created_at,
   conversationType,
   removeMessageLocally,
-  usernameColor
+  usernameColor,
+  conversation
 }) => {
   const [isDeleting, setIsDeleting] = useState(false)
+  const { socket } = useContext(Context)
 
   const deleteMessage = async () => {
     try {
+      socket.emit("delete_message", {
+        messageId: id,
+        conversation
+      })
       setIsDeleting(true)
       if (conversationType === "dm") {
         await axios.post(`${import.meta.env.VITE_SERVER_URL}/conversations/deleteMessage`, {

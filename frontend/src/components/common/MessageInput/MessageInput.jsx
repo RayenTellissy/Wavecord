@@ -25,8 +25,11 @@ import Emoji from '../Emoji/Emoji';
 // styles
 import "./MessageInput.css"
 
+// helper functions
+import sortConversations from '../../../utils/Helper/sortConversations';
+
 const MessageInput = ({ user, conversationName, setMessages, conversationType, channelId, roleColor }) => {
-  const { socket } = useContext(Context)
+  const { socket, conversations, setConversations } = useContext(Context)
   const { id } = useParams()
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [showEmoji,setShowEmoji] = useState(false)
@@ -44,7 +47,7 @@ const MessageInput = ({ user, conversationName, setMessages, conversationType, c
       const messageId = createId()
       const messageDetails = {
         conversation: id,
-        id: messageId, // temporary id to be able to delete messages with re-fetching data
+        id: messageId,
         sender: {
           id: user.id,
           username: user.username,
@@ -54,6 +57,7 @@ const MessageInput = ({ user, conversationName, setMessages, conversationType, c
         type: "TEXT",
         created_at: new Date(Date.now())
       }
+      sortConversations(id,conversations)
       socket.emit("send_message", messageDetails)
       setMessages(prevMessages => [...prevMessages, messageDetails])
       await axios.post(`${import.meta.env.VITE_SERVER_URL}/conversations/sendMessage`,{
@@ -67,7 +71,7 @@ const MessageInput = ({ user, conversationName, setMessages, conversationType, c
       const messageId = createId()
       const messageDetails = {
         conversation: channelId,
-        id: messageId, // temporary id to be able to delete messages with re-fetching data
+        id: messageId,
         sender: {
           id: user.id,
           username: user.username,

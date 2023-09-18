@@ -4,7 +4,7 @@ module.exports = {
   
   fetchConversations: async (req,res) => {
     try {
-      const { id, query } = req.body
+      const { id } = req.body
 
       const result = await prisma.conversations.findMany({
         where: {
@@ -17,21 +17,15 @@ module.exports = {
         select: {
           id: true,
           users: {
-            where: {
-              AND: [
-                {
-                  id: {
-                    not: id
-                  }    
-                },
-                {
-                  username: {
-                    contains: query
-                  }
-                }
-              ]
+          where: {
+              id: {
+                not: id
+              }    
             }
-          },
+          }
+        },
+        orderBy: {
+          updated_at: "desc"
         }
       })
 
@@ -48,6 +42,7 @@ module.exports = {
     try {
       const { userId, conversationId } = req.body
 
+      // checking if the user has access to this conversation
       const checkUser = await prisma.conversations.findFirst({
         where: {
           id: conversationId,
@@ -91,36 +86,11 @@ module.exports = {
     }
   },
 
-  fetchOtherUsers: async (req,res) => {
-    try {
-      const { userId, conversationId } = req.body // conversation's id
-
-      const result = await prisma.conversations.findFirst({
-        where: {
-          id: conversationId
-        },
-        select: {
-          users: {
-            where: {
-              id: {
-                not: userId
-              }
-            }
-          }
-        }
-      })
-
-      res.send(result)
-    }
-    catch(error){
-      res.send(error)
-    }
-  },
-
   sendMessage: async (req,res) => {
     try {
       const { id, conversationId, senderId, message, type } = req.body
 
+      // creating a message row with the details given
       const result = await prisma.directMessages.create({
         data: {
           id,
@@ -131,6 +101,16 @@ module.exports = {
         }
       })
 
+      // updating conversation updated_at field for accurate conversations sorting on the frontend
+      await prisma.conversations.update({
+        where: {
+          id: conversationId
+        },
+        data: {
+          updated_at: new Date()
+        }
+      })
+
       res.send(result)
     }
     catch(error){
@@ -138,6 +118,7 @@ module.exports = {
     }
   },
 
+  // function to create a new conversation for 2 users
   createDM: async (req,res) => {
     try {
       const { currentUser, otherUser } = req.body
@@ -198,6 +179,7 @@ module.exports = {
     }
   },
 
+  // function to delete a message from a conversation
   deleteMessage: async (req,res) => {
     try {
       const { senderId, messageId } = req.body

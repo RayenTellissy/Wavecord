@@ -8,10 +8,10 @@ import Message from '../../Messages/Message';
 import Roles from '../Roles/Roles';
 import Topbar from "../Topbar/Topbar"
 import EmptyChannel from './EmptyChannel/EmptyChannel';
+import Twemoji from 'react-twemoji';
 
 // styles
 import "./ChannelMessages.css"
-import Twemoji from 'react-twemoji';
 
 const ChannelMessages = ({ serverId, currentTextChannel, currentTextChannelId, user, roleColor }) => {
   const { socket } = useContext(Context)
@@ -28,6 +28,13 @@ const ChannelMessages = ({ serverId, currentTextChannel, currentTextChannelId, u
     socket.on("receive_message", data => {
       setMessages(prevMessages => [...prevMessages, data])
     })
+    socket.on("receive_delete_message", data => {
+      setMessages(prevMessages => prevMessages.filter(message => message.id !== data.messageId))
+    })
+    return () => {
+      socket.off("receive_message")
+      socket.off("receive_delete_message")
+    }
   },[socket])
 
   useEffect(() => {
@@ -78,6 +85,8 @@ const ChannelMessages = ({ serverId, currentTextChannel, currentTextChannelId, u
                     conversationType="server"
                     removeMessageLocally={removeMessageLocally}
                     usernameColor={e.sender.UsersInServers[0].role?.color}
+                    conversation={currentTextChannelId}
+                    socket={socket}
                   />
                 })}
               </Twemoji>

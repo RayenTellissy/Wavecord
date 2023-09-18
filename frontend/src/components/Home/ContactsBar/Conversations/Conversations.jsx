@@ -2,7 +2,6 @@ import React from 'react';
 
 import Conversation from "./Conversation"
 
-//! THIS ONLY WORKS WITH DIRECT MESSAGES, WITH GROUP CHATS YOU'LL HAVE TO CHANGE THE WAY YOU HANDLE THE USERS ARRAY
 const Conversations = ({ conversations, highlighted }) => {
 
   return (

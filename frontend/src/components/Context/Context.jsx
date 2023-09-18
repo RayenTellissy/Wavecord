@@ -16,28 +16,43 @@ export const ContextProvider = ({ children }) => {
     id: localStorage.getItem("wavecord-id")
   })
   const [socket,setSocket] = useState(null)
+  const [conversations,setConversations] = useState([])
   const [conversationChosen,setConversationChosen] = useConversation()
   const [micEnabled,setMicEnabled] = useMic()
   const [cameraEnabled,setCameraEnabled] = useState(false)
   const [isSpeaking,setIsSpeaking] = useState(false)
   const [screenShareEnabled,setScreenShareEnabled] = useState(false)
-  const [conenctionQuality,setConnectionQuality] = useState(null)
+  const [connectionQuality,setConnectionQuality] = useState(null)
   const [displayRoom,setDisplayRoom] = useState(false)
+  const [status,setStatus] = useState("")
 
   useEffect(() => {
     authenticateSession()
     handleSocket()
+    return () => window.removeEventListener("beforeunload", handleDisconnect)
   },[])
 
+  useEffect(() => {
+    handleConnect()
+    if(socket){
+      window.addEventListener("beforeunload", handleDisconnect)
+    }
+  },[socket])
+
   const authenticateSession = async () => {
-    const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/users/login`, {
-      headers: {
-        "authorization": user.token,
-        "x-refresh-token": localStorage.getItem("wavecord-refreshToken")
-      }
-    })
-    localStorage.setItem("wavecord-token", response.data.token)
-    setUser(response.data)
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/users/login`, {
+        headers: {
+          "authorization": user.token,
+          "x-refresh-token": localStorage.getItem("wavecord-refreshToken")
+        }
+      })
+      localStorage.setItem("wavecord-token", response.data.token)
+      setUser(response.data)
+    }
+    catch(error){
+      console.log(error)
+    }
   }
 
   const handleSocket = () => {
@@ -45,11 +60,31 @@ export const ContextProvider = ({ children }) => {
     setSocket(socket)
   }
 
+  const handleConnect = () => {
+    if(socket){
+      socket.emit("statusChanged", {
+        id: user.id,
+        status: "ONLINE"
+      })
+      setStatus("ONLINE")
+    }
+  }
+
+  const handleDisconnect = () => {
+    socket.emit("statusChanged", {
+      id: user.id,
+      status: "OFFLINE"
+    })
+    setStatus("OFFLINE")
+  }
+
   return (
     <Context.Provider value={{
       user,
       setUser,
       socket,
+      conversations,
+      setConversations,
       conversationChosen,
       setConversationChosen,
       micEnabled,
@@ -60,10 +95,12 @@ export const ContextProvider = ({ children }) => {
       setIsSpeaking,
       screenShareEnabled,
       setScreenShareEnabled,
-      conenctionQuality,
+      connectionQuality,
       setConnectionQuality,
       displayRoom,
-      setDisplayRoom
+      setDisplayRoom,
+      status,
+      setStatus
     }}>
       {children}
     </Context.Provider>

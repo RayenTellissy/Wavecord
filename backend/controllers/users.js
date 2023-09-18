@@ -348,26 +348,23 @@ module.exports = {
     }
   },
 
-  fetchUserbar: async (req,res) => {
+  setStatus: async (req,res) => {
     try {
-      const { id } = req.params
+      const { id, status } = req.body
 
-      const result = await prisma.users.findFirst({
+      const result = await prisma.users.update({
         where: {
           id
         },
-        select: {
-          username: true,
-          image: true,
-          status: true
+        data: {
+          status
         }
       })
-
+      
       res.send(result)
     }
     catch(error){
       res.send(error)
     }
   }
-
 }

@@ -4,7 +4,6 @@ import { BiBlock } from "react-icons/bi"
 import { Tooltip } from '@chakra-ui/react';
 import axios from 'axios';
 import { FaUserMinus } from "react-icons/fa"
-import Cookies from "js-cookie"
 
 // components
 import { Context } from '../../Context/Context';

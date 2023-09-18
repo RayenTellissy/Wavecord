@@ -27,12 +27,31 @@ const io = new Server(server, {
 io.on("connection", socket => {
   console.log("user connected", socket.id)
 
+  socket.on("statusChanged", async (data) => {
+    if(data.status === "ONLINE"){
+      socket.join(data.id)
+    }
+    try {
+      await axios.put(`${process.env.MAIN_API}/users/setStatus`, {
+        id: data.id,
+        status: data.status
+      })
+    }
+    catch(error){
+      console.log(error)
+    }
+  })
+
   socket.on("join_room", data => {
     socket.join(data)
   })
   
   socket.on("send_message", data => {
     socket.to(data.conversation).emit("receive_message", data)
+  })
+
+  socket.on("delete_message", data => {
+    socket.to(data.conversation).emit("receive_delete_message", data)
   })
   
   socket.on("open_server", data => {

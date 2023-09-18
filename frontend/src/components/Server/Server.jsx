@@ -20,7 +20,6 @@ import { MdOutlineRadioButtonChecked, MdOutlineRadioButtonUnchecked } from "reac
 import { HiSpeakerWave } from "react-icons/hi2"
 import { IoMdLock, IoIosArrowDown } from "react-icons/io"
 import { MdClose } from "react-icons/md"
-import Cookies from 'js-cookie';
 
 // components
 import Sidebar from '../Home/Sidebar/Sidebar';
