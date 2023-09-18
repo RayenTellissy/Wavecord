@@ -12,6 +12,7 @@ import OtherUsers from './OtherUsers/OtherUsers';
 import Message from "./Message"
 import LoadingMessages from "./LoadingMessages/LoadingMessages"
 import MessageInput from '../common/MessageInput/MessageInput';
+import ConversationStart from './ConversationStart/ConversationStart';
 
 // styles
 import "./Messages.css"
@@ -37,7 +38,7 @@ const Messages = () => {
     scrollToBottom()
     Cookies.set("conversationChosen", JSON.stringify(conversationChosen), { expires: 1 })
   },[id])
-
+  
   // socket watching to update messages upon receiving socket
   useEffect(() => {
     socket.on("receive_message", data => {
@@ -95,6 +96,7 @@ const Messages = () => {
 
         <div id='dm-messages-container' ref={messagesContainerRef}>
           {isLoading && <LoadingMessages/>}
+          <ConversationStart username={conversationChosen.username} image={conversationChosen.image}/>
           <Twemoji options={{ className: 'twemoji' }}>
             {messages.length !== 0 && messages.map((e,i) => {
               return <Message

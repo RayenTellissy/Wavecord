@@ -1,0 +1,33 @@
+#conversation-start-container {
+  padding: 30px;
+}
+
+#conversation-start-avatar-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+#conversation-start-image {
+  height: 100px;
+  width: 100px;
+  border-radius: 50%;
+}
+
+#conversation-start-username {
+  font-family: GibsonBold;
+  font-size: 30px;
+  margin-left: 20px;
+}
+
+#conversation-start-text {
+  margin-top: 20px;
+  font-family: GibsonRegular;
+  color: #b5bac1;
+}
+
+#conversation-start-text-username {
+  font-family: GibsonMedium;
+  color: #b5babc;
+  font-size: 17px;
+}

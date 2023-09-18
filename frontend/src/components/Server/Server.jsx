@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import { useDisclosure } from '@chakra-ui/react';
 import {
+  useDisclosure,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -20,6 +20,7 @@ import { MdOutlineRadioButtonChecked, MdOutlineRadioButtonUnchecked } from "reac
 import { HiSpeakerWave } from "react-icons/hi2"
 import { IoMdLock, IoIosArrowDown } from "react-icons/io"
 import { MdClose } from "react-icons/md"
+import Cookies from 'js-cookie';
 
 // components
 import Sidebar from '../Home/Sidebar/Sidebar';
@@ -34,6 +35,9 @@ import VoiceRoom from './VoiceRoom/VoiceRoom';
 
 // styles
 import "./Server.css"
+
+// helper functions
+import { applyMemorization, memorizeTextChannel } from "../../utils/Helper/memorizeTextChannel"
 
 // storing the current room for "beforeunload" event
 let storedVoiceRoom = ""
@@ -63,6 +67,7 @@ const Server = () => {
   useEffect(() => {
     window.addEventListener("beforeunload", handleUnload)
     socket.emit("open_server", id)
+    applyMemorization(id, setCurrentTextChannelId, setCurrentTextChannel) // text channel memo
     fetchData()
     return () => window.removeEventListener("beforeunload", handleUnload)
   },[id])
@@ -70,6 +75,10 @@ const Server = () => {
   useEffect(() => {
     storedVoiceRoom = currentVoiceChannelId
   },[currentVoiceChannelId])
+
+  useEffect(() => {
+    memorizeTextChannel(id,currentTextChannelId,currentTextChannel)
+  },[currentTextChannelId])
 
   const fetchData = async () => {
     try {
@@ -226,12 +235,12 @@ const Server = () => {
           user={user}
           roleColor={role ? role.color : "white"}
         />}
-        <VoiceRoom
+        {currentChannelType === "voice" && <VoiceRoom
           serverId={server.id}
           channelId={currentVoiceChannelId}
           setCurrentChannelType={setCurrentChannelType}
           setCurrentVoiceChannelId={setCurrentVoiceChannelId}
-        />
+        />}
       </div>
       <Modal isOpen={isOpen} onClose={closeModal} isCentered size="lg">
         <ModalOverlay/>
