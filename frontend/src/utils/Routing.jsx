@@ -17,11 +17,11 @@ import Messages from '../components/Messages/Messages';
 import ServerSettings from '../components/Server/Settings/ServerSettings';
 
 const Routing = () => {
-  const { user } = useContext(Context)
+  const { user, globalLoading } = useContext(Context)
 
   return (
     <Routes>
-      {user.loggedIn === null ? <Route path='/' element={<NullRouting/>}/> : 
+      {user.loggedIn === null || globalLoading ? <Route path='/' element={<NullRouting/>}/> : 
         user.loggedIn ? (
           <>
             <Route path='/' element={<Home/>}/>

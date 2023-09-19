@@ -23,7 +23,7 @@ const Home = () => {
       <div id='home-container'>
         
         <Sidebar/>
-        <ContactsBar selected={selected}/>
+        <ContactsBar selected={selected} setSelected={setSelected}/>
 
         <div id='home-right-container'>
           <Topbar selected={selected} selectedScreen={selectedScreen} setSelectedScreen={setSelectedScreen}/>

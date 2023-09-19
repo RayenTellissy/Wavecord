@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useRoomContext, useParticipants } from '@livekit/components-react';
 import axios from 'axios';
 
@@ -27,6 +27,7 @@ const ContextTransfer = ({ serverId, channelId }) => {
   } = useContext(Context)
   const participants = useParticipants()
   const room = useRoomContext()
+  const [connected,setConnected] = useState(false)
 
   useEffect(() => {
     room.on("disconnected", async () => {
@@ -36,22 +37,28 @@ const ContextTransfer = ({ serverId, channelId }) => {
         })
         socket.emit("leave_voice", {
           serverId,
-          channelId
+          channelId,
+          userId: user.id
         })
       }
       catch(error){
         console.log(error)
       }
     })
+
+    room.on("connected", () => setConnected(true))
   },[room])
 
   useEffect(() => {
-    // setting micenabled to the set cookie
-    room.localParticipant.setMicrophoneEnabled(micEnabled)
+    if(connected){ // test room.test
+      room.localParticipant.setMicrophoneEnabled(micEnabled)
+    }
   },[room.localParticipant.isMicrophoneEnabled])
 
   useEffect(() => {
-    room.localParticipant.setMicrophoneEnabled(micEnabled)
+    if(connected){
+      room.localParticipant.setMicrophoneEnabled(micEnabled)
+    }
   },[micEnabled])
   
   useEffect(() => {

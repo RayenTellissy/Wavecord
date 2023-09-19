@@ -58,6 +58,10 @@ io.on("connection", socket => {
     socket.join(data)
   })
 
+  socket.on("server_member_status_changed", data => {
+    socket.to(data.serverRooms).emit("receive_member_status", data)
+  })
+
   socket.on("voice_updated", data => {
     socket.to(data.serverId).emit("receive_voice_update", data)
   })

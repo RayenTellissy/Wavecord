@@ -11,23 +11,7 @@ import { Context } from '../../Context/Context';
 import "./Sidebar.css"
 
 const Sidebar = ({ highlighted }) => {
-  const { user } = useContext(Context)
-  const [servers,setServers] = useState([])
-
-  useEffect(() => {
-    fetchServers()
-  },[])
-
-  // function to fetch servers for the current user
-  const fetchServers = async () => {
-    try{
-      const servers = await axios.get(`${import.meta.env.VITE_SERVER_URL}/servers/fetchByUser/${user.id}`)
-      setServers(servers.data)
-    }
-    catch(error){
-      console.log(error)
-    }
-  }
+  const { servers } = useContext(Context)
 
   return (
     <div id='home-server-bar'>

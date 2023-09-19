@@ -4,13 +4,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import "./HomeNavigator.css"
 
-const HomeNavigator = ({ selected, icon, text, style }) => {
+const HomeNavigator = ({ selected, setSelected, icon, text, style }) => {
   const navigate = useNavigate()
 
   const handleClick = () => {
     navigate("/", {
       state: text
     })
+    setSelected(text)
   }
 
   return (

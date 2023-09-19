@@ -46,7 +46,7 @@ const VoiceChannel = ({
 
   useEffect(() => {
     // locally remove the user from this voice channel when he leaves
-    if(!currentVoiceChannelId){
+    if(currentVoiceChannelId !== id){
       setUsers(users.filter(e => e.id !== user.id))
       setHoveredVoiceChannelId("")
     }
@@ -64,6 +64,7 @@ const VoiceChannel = ({
 
   const handleClick = async () => {
     // checking if user is already connected to the room
+    if(currentVoiceChannelId) return
     if(currentVoiceChannelId !== id){
       const userDetails = {
         id: user.id,

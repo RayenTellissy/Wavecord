@@ -432,11 +432,17 @@ module.exports = {
     try {
       const { serverId } = req.params
 
-      const result = await prisma.roles.findMany({
+      const withRole = await prisma.roles.findMany({
         where: {
-          serverId: serverId,
+          serverId,
           UsersInServers: {
-            some: {}
+            some: {
+              user: {
+                status: {
+                  not: "OFFLINE"
+                }
+              }
+            }
           }
         },
         include: {
@@ -453,7 +459,7 @@ module.exports = {
 
       const noRole = await prisma.usersInServers.findMany({
         where: {
-          serverId: serverId,
+          serverId,
           rolesId: null
         },
         select: {
@@ -461,9 +467,23 @@ module.exports = {
         }
       })
 
+      const offline = await prisma.usersInServers.findMany({
+        where: {
+          serverId,
+          user: {
+            status: "OFFLINE"
+          }
+        },
+        select: {
+          user: true,
+          role: true
+        }
+      })
+
       res.send({
-        withRole: result,
-        noRole: noRole
+        withRole,
+        noRole,
+        offline
       })
     }
     catch(error){

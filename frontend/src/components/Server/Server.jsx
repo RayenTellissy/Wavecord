@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import Cookies from "js-cookie"
 import {
   useDisclosure,
   Modal,
@@ -38,9 +39,6 @@ import "./Server.css"
 // helper functions
 import { applyMemorization, memorizeTextChannel } from "../../utils/Helper/memorizeTextChannel"
 
-// storing the current room for "beforeunload" event
-let storedVoiceRoom = ""
-
 const Server = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { isOpen: isOpenDropdown, onOpen: onOpenDropdown, onClose: onCloseDropdown } = useDisclosure()
@@ -72,7 +70,7 @@ const Server = () => {
   },[id])
 
   useEffect(() => {
-    storedVoiceRoom = currentVoiceChannelId
+    Cookies.set("cachedVoiceChannel", currentVoiceChannelId)
   },[currentVoiceChannelId])
 
   useEffect(() => {
@@ -148,14 +146,15 @@ const Server = () => {
 
   // leaves voice room before unloading app
   const handleUnload = (e) => {
-    if(storedVoiceRoom){
+    const cachedVoiceChannel = Cookies.get("cachedVoiceChannel")
+    if(cachedVoiceChannel){
       e.returnValue = ""
       setHoveredTextChannelId("")
       setCurrentChannelType("")
     }
     socket.emit("leave_voice", {
       serverId: id,
-      channelId: storedVoiceRoom,
+      channelId: cachedVoiceChannel,
       userId: user.id
     })
     socket.emit("voice_disconnect", {

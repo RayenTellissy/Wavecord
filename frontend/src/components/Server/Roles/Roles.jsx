@@ -1,26 +1,36 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 
 // components
 import Role from './Role';
 import Avatar from '../../common/Avatar/Avatar';
+import { Context } from '../../Context/Context';
 
 // styles
 import "./Roles.css"
 
 const Roles = ({ serverId }) => {
+  const { socket } = useContext(Context)
   const [roles,setRoles] = useState([])
   const [noRoles,setNoRoles] = useState([])
+  const [offline,setOffline] = useState([])
 
   useEffect(() => {
     fetchRoles()
   },[])
+
+  useEffect(() => {
+    socket.on("receive_member_status", () => {
+      fetchRoles()
+    })
+  },[socket])
 
   const fetchRoles = async () => {
     try {
       const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/servers/fetchUsersByRoles/${serverId}`)
       setRoles(response.data.withRole)
       setNoRoles(response.data.noRole)
+      setOffline(response.data.offline)
     }
     catch(error) {
       console.log(error)
@@ -33,12 +43,19 @@ const Roles = ({ serverId }) => {
         {roles.map((e, i) => {
           return <Role key={i} roleName={e.name} roleColor={e.color} users={e.UsersInServers} />
         })}
-        <div id='one-role-main-container'>
-          <p id='one-role-name'>ONLINE - {noRoles.length}</p>
+        <div className='one-role-main-container'>
+          {noRoles.length !== 0 && <p className='one-role-name'>ONLINE - { noRoles.length }</p>}
           {noRoles.map((e, i) => {
-            return <button key={i} id='one-role-container'>
+            return <button key={i} className='one-role-container'>
               <Avatar status={e.user.status} />
-              <p style={{ color: "#a6aeb3", fontFamily: "GibsonRegular", fontSize: 18 }}>{e.user.username}</p>
+              <p className='one-role-username'>{e.user.username}</p>
+            </button>
+          })}
+          {offline.length !== 0 && <p className='one-role-name'>OFFLINE - { offline.length }</p>}
+          {offline.map((e, i) => {
+            return <button key={i} className='one-role-offline'>
+              <Avatar status={e.user.status} />
+              <p style={e.role ? { color: e.role.color } : { color: '#a6aeb3'}}>{e.user.username}</p>
             </button>
           })}
         </div>

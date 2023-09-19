@@ -2,12 +2,16 @@ import React from "react";
 import { createContext, useEffect, useState } from "react";
 import axios from "axios";
 import io from "socket.io-client"
+import Cookies from "js-cookie"
 
 export const Context = createContext()
 
 // hooks
 import useMic from "../../hooks/useMic";
 import useConversation from "../../hooks/useConversation"
+
+// helper functions
+import returnServerIds from "../../utils/Helper/returnServerId";
 
 export const ContextProvider = ({ children }) => {
   const [user,setUser] = useState({
@@ -25,9 +29,12 @@ export const ContextProvider = ({ children }) => {
   const [connectionQuality,setConnectionQuality] = useState(null)
   const [displayRoom,setDisplayRoom] = useState(false)
   const [status,setStatus] = useState("")
+  const [currentVoiceChannelId,setCurrentVoiceChannelId] = useState("")
+  const [servers,setServers] = useState([])
 
   useEffect(() => {
     authenticateSession()
+    fetchServers()
     handleSocket()
     return () => window.removeEventListener("beforeunload", handleDisconnect)
   },[])
@@ -85,6 +92,26 @@ export const ContextProvider = ({ children }) => {
       status: "OFFLINE"
     })
     setStatus("OFFLINE")
+    const cachedServers = Cookies.get("cachedServers")
+    if(cachedServers){
+      const serverRooms = returnServerIds(JSON.parse(cachedServers))
+      socket.emit("server_member_status_changed", {
+        userId: user.id,
+        serverRooms,
+        status: "OFFLINE"
+      })
+    }
+  }
+
+  const fetchServers = async () => {
+    try{
+      const servers = await axios.get(`${import.meta.env.VITE_SERVER_URL}/servers/fetchByUser/${user.id}`)
+      setServers(servers.data)
+      Cookies.set("cachedServers", JSON.stringify(servers.data))
+    }
+    catch(error){
+      console.log(error)
+    }
   }
 
   return (
@@ -109,7 +136,11 @@ export const ContextProvider = ({ children }) => {
       displayRoom,
       setDisplayRoom,
       status,
-      setStatus
+      setStatus,
+      currentVoiceChannelId,
+      setCurrentVoiceChannelId,
+      servers,
+      setServers
     }}>
       {children}
     </Context.Provider>

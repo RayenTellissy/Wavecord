@@ -1,10 +1,10 @@
-#one-role-main-container {
+.one-role-main-container {
   display: flex;
   flex-direction: column;
   margin-bottom: 15px;
 }
 
-#one-role-container {
+.one-role-container {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -12,17 +12,39 @@
   border-radius: 7px;
 }
 
-#one-role-container:hover {
+.one-role-container:hover {
   background-color: #35373c;
 }
 
-#one-role-container:active {
+.one-role-container:active {
   background-color: #3c3e44;
 }
 
-#one-role-name {
+.one-role-name {
   color: #949ba4;
   font-family: GibsonMedium;
   margin-bottom: 5px;
   font-size: 15px;
+}
+
+.one-role-username {
+  color: #a6aeb3;
+  font-family: GibsonRegular;
+  font-size: 18px;
+}
+
+.one-role-offline {
+  color: #a6aeb3;
+  padding: 10px;
+  font-family: GibsonRegular;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  border-radius: 7px;
+  opacity: 40%;
+}
+
+.one-role-offline:hover {
+  background-color: #35373c;
+  opacity: 100%;
 }
