@@ -7,7 +7,7 @@
 }
 
 #signup-title {
-  font-family: GibsonBold;
+  font-family: GibsonMedium;
   font-size: 35px;
   margin-bottom: 10px;
 }
@@ -29,7 +29,7 @@
   border: 2px solid #3F4750;
   border-radius: 11px;
   padding: 8px;
-  font-family: GibsonMedium;
+  font-family: GibsonRegular;
   width: 23rem;
   padding-left: 20px;
 }
@@ -39,7 +39,7 @@
 }
 
 .signup-auth {
-  font-family: GibsonBold;
+  font-family: GibsonMedium;
   border-radius: 11px;
   padding: 10px;
   margin: 4px;
@@ -52,10 +52,4 @@
 #signup-back {
   width: 11rem;
   height: 55;
-}
-
-#signup-forgot-password {
-  cursor: pointer;
-  font-family: GibsonBold;
-  color: #DDDEE9;
 }

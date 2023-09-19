@@ -9,9 +9,12 @@ import Turbo from './Turbo/Turbo';
 
 // styles
 import "./Home.css"
+import { useLocation } from 'react-router-dom';
 
 const Home = () => {
-  const [selected,setSelected] = useState("Friends")
+  const location = useLocation()
+  const selectedLocation = location.state
+  const [selected,setSelected] = useState(selectedLocation ? selectedLocation : "Friends")
   const [selectedScreen,setSelectedScreen] = useState("Online")
 
   return (
@@ -20,7 +23,7 @@ const Home = () => {
       <div id='home-container'>
         
         <Sidebar/>
-        <ContactsBar selected={selected} setSelected={setSelected}/>
+        <ContactsBar selected={selected}/>
 
         <div id='home-right-container'>
           <Topbar selected={selected} selectedScreen={selectedScreen} setSelectedScreen={setSelectedScreen}/>

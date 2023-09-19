@@ -18,6 +18,16 @@ module.exports = {
     try{
       const { username, email, password } = req.body
 
+      const usernameExists = await prisma.users.findFirst({
+        where: {
+          username
+        }
+      })
+      if(usernameExists) return res.send({
+        success: false,
+        message: "Username already in use."
+      })
+
       const response = await createUserWithEmailAndPassword(auth, email, password)
       const id = response.user.uid
 
@@ -62,12 +72,6 @@ module.exports = {
         res.send({
           success: false,
           message: "Weak Password."
-        })
-      }
-      else if(errorCode === "P2002"){
-        res.send({
-          success: false,
-          message: "Username already in use."
         })
       }
     }

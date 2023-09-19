@@ -66,10 +66,10 @@ const Signup = () => {
       setIsLoading(true)
   
       const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/users/signup`, {
-        username: username,
-        email: email,
-        password: password
-      }, { withCredentials: true })
+        username,
+        email,
+        password
+      })
   
       setIsLoading(false)
   

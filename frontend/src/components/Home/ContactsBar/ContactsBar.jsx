@@ -13,7 +13,7 @@ import { Context } from '../../Context/Context';
 // styles
 import "./ContactsBar.css"
 
-const ContactsBar = ({ highlighted, selected, setSelected }) => {
+const ContactsBar = ({ highlighted, selected }) => {
   const { user, conversations, setConversations } = useContext(Context)
   const [constantConversations,setConstantConversations] = useState([])
   const [query,setQuery] = useState("")
@@ -49,8 +49,8 @@ const ContactsBar = ({ highlighted, selected, setSelected }) => {
       <Search setQuery={setQuery}/>
 
       <div id='home-contacts-navigators'>
-        <HomeNavigator selected={selected} setSelected={setSelected} text="Friends" icon={faUserGroup}/>
-        <HomeNavigator selected={selected} setSelected={setSelected} text="Turbo" icon={faBolt} style={{ marginTop: 5 }}/>
+        <HomeNavigator selected={selected} text="Friends" icon={faUserGroup}/>
+        <HomeNavigator selected={selected} text="Turbo" icon={faBolt} style={{ marginTop: 5 }}/>
       </div>
 
       <DirectMessagesText id={user.id} fetchConversations={fetchConversations}/>

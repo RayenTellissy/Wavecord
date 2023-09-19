@@ -39,6 +39,15 @@ export const ContextProvider = ({ children }) => {
     }
   },[socket])
 
+  useEffect(() => {
+    if(socket){
+      socket.emit("statusChanged", {
+        id: user.id,
+        status
+      })
+    }
+  },[status])
+
   const authenticateSession = async () => {
     try {
       const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/users/login`, {

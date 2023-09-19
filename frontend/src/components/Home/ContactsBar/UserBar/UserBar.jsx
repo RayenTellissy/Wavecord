@@ -10,18 +10,18 @@ import { Context } from '../../../Context/Context';
 import "./UserBar.css"
 
 const UserBar = () => {
-  const { user, micEnabled, setMicEnabled, displayRoom, setDisplayRoom } = useContext(Context)
+  const { user, micEnabled, setMicEnabled, displayRoom, setDisplayRoom, status, setStatus } = useContext(Context)
 
   return (
     <div id='home-contacts-userbar-container'>
 
       <div id='home-contacts-userbar-avatar-section'>
 
-        <Avatar image={user.image} status={user.status}/>
+        <Avatar image={user.image} status={status}/>
 
         <div id='home-contacts-userbar-avatar-name-status'>
           <p id='home-contacts-userbar-username'>{user.username}</p>
-          <p id='home-contacts-userbar-status'>{user.status === "ONLINE" ? "Online" : (user.status === "BUSY" ? "Busy" : "Invisible")}</p>
+          <p id='home-contacts-userbar-status'>{status === "ONLINE" ? "Online" : (status === "BUSY" ? "Busy" : "Invisible")}</p>
         </div>
 
       </div>
