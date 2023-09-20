@@ -13,12 +13,10 @@ const VoiceChannel = ({
   id,
   name,
   setCurrentChannelType,
-  currentVoiceChannelId,
-  setCurrentVoiceChannelId,
   hoveredVoiceChannelId,
   setHoveredVoiceChannelId
 }) => {
-  const { user, socket } = useContext(Context)
+  const { user, socket, currentVoiceChannelId, setCurrentVoiceChannelId } = useContext(Context)
   const [users,setUsers] = useState([])
 
   useEffect(() => {
@@ -87,8 +85,6 @@ const VoiceChannel = ({
     }
     setHoveredVoiceChannelId("")
   }
-
-  currentVoiceChannelId === id
 
   return (
     <button id='server-voice-channel-button'

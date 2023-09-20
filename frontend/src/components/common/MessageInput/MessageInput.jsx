@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { BsEmojiSmileFill, BsLink45Deg } from "react-icons/bs"
@@ -28,14 +28,27 @@ import "./MessageInput.css"
 // helper functions
 import sortConversations from '../../../utils/Helper/sortConversations';
 
-const MessageInput = ({ user, conversationName, setMessages, conversationType, channelId, roleColor }) => {
-  const { socket, conversations, setConversations } = useContext(Context)
+const MessageInput = ({
+  message,
+  setMessage,
+  user,
+  conversationName,
+  setMessages,
+  conversationType,
+  channelId,
+  roleColor
+}) => {
+  const { socket, conversations } = useContext(Context)
   const { id } = useParams()
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [showEmoji,setShowEmoji] = useState(false)
-  const [message,setMessage] = useState("")
   const [image,setImage] = useState(null)
   const [isLoading,setIsLoading] = useState(false)
+  const inputRef = useRef(null)
+
+  useEffect(() => {
+    inputRef.current.focus()
+  },[channelId,id])
 
   // function to send a message 
   const sendMessage = async () => {
@@ -60,7 +73,7 @@ const MessageInput = ({ user, conversationName, setMessages, conversationType, c
       sortConversations(id,conversations)
       socket.emit("send_message", messageDetails)
       setMessages(prevMessages => [...prevMessages, messageDetails])
-      await axios.post(`${import.meta.env.VITE_SERVER_URL}/conversations/sendMessage`,{
+      await axios.post(`${import.meta.env.VITE_SERVER_URL}/conversations/sendMessage`, {
         id: messageId,
         conversationId: id,
         senderId: user.id,
@@ -228,8 +241,8 @@ const MessageInput = ({ user, conversationName, setMessages, conversationType, c
         onKeyDown={e => {
           e.key === "Enter" && sendMessage()
         }}
-        autoFocus
         autoComplete='off'
+        ref={inputRef}
       />
 
       <Modal isOpen={isOpen} onClose={onClose}>

@@ -1,5 +1,7 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useState, useRef } from 'react';
 import axios from 'axios';
+import Cookies from "js-cookie"
+import Twemoji from 'react-twemoji';
 
 // components
 import { Context } from '../../Context/Context';
@@ -8,21 +10,31 @@ import Message from '../../Messages/Message';
 import Roles from '../Roles/Roles';
 import Topbar from "../Topbar/Topbar"
 import EmptyChannel from './EmptyChannel/EmptyChannel';
-import Twemoji from 'react-twemoji';
 
 // styles
 import "./ChannelMessages.css"
 
+// caching state
+var currentMessage = ""
+
 const ChannelMessages = ({ serverId, currentTextChannel, currentTextChannelId, user, roleColor }) => {
   const { socket } = useContext(Context)
   const [messages,setMessages] = useState([])
+  const [message,setMessage] = useState("")
   const messagesContainerRef = useRef(null)
 
   useEffect(() => {
+    handleCachedMessage()
     fetchMessages()
     socket.emit("join_room", currentTextChannelId)
     scrollToBottom()
+    return () => handleChannelSwitch()
   },[currentTextChannelId])
+
+  useEffect(() => {
+    // storing state to cache in cookies
+    currentMessage = message
+  },[message])
 
   useEffect(() => {
     socket.on("receive_message", data => {
@@ -62,6 +74,31 @@ const ChannelMessages = ({ serverId, currentTextChannel, currentTextChannelId, u
     setMessages(messages.filter(e => e.id !== messageId))
   }
 
+  const handleChannelSwitch = () => {
+    const cachedMessages = Cookies.get("cachedServerMessages")
+    if(cachedMessages){
+      var parsed = JSON.parse(cachedMessages)
+      parsed[currentTextChannelId] = currentMessage
+      Cookies.set("cachedServerMessages", JSON.stringify(parsed))
+    }
+    else {
+      Cookies.set("cachedServerMessages", JSON.stringify({
+        [currentTextChannelId]: currentMessage
+      }))
+    }
+    setMessage("")
+  }
+
+  const handleCachedMessage = () => {
+    const cachedMessages = Cookies.get("cachedServerMessages")
+    if(cachedMessages){
+      const parsed = JSON.parse(cachedMessages)
+      if(parsed[currentTextChannelId]){
+        setMessage(parsed[currentTextChannelId])
+      }
+    }
+  }
+
   return (
     <>
       <div id='server-messages-container'>
@@ -93,6 +130,8 @@ const ChannelMessages = ({ serverId, currentTextChannel, currentTextChannelId, u
             </div>
             <div id='server-message-input-container'>
               <MessageInput
+                message={message}
+                setMessage={setMessage}
                 setMessages={setMessages}
                 conversationType="server"
                 conversationName={currentTextChannel}

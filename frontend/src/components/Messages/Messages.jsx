@@ -20,10 +20,14 @@ import "./Messages.css"
 // helper functions
 import sortConversations from '../../utils/Helper/sortConversations';
 
+// caching state
+var currentMessage = ""
+
 const Messages = () => {
   const { user, socket, conversations, conversationChosen, setConversationChosen } = useContext(Context)
   const { id } = useParams()
   const [messages,setMessages] = useState([])
+  const [message,setMessage] = useState("")
   const [isLoading,setIsLoading] = useState(true)
   const messagesContainerRef = useRef(null)
   const navigate = useNavigate()
@@ -36,10 +40,12 @@ const Messages = () => {
   
   // handling conversation switching
   useEffect(() => {
+    handleCachedMessage()
     fetchMessages()
     socket.emit("join_room", id) // emitting a join room event to the socket server
     scrollToBottom()
     Cookies.set("conversationChosen", JSON.stringify(conversationChosen), { expires: 1 })
+    return () => handleContactSwitch()
   },[id])
   
   // socket watching to update messages upon receiving socket
@@ -60,6 +66,10 @@ const Messages = () => {
   useEffect(() => {
     scrollToBottom()
   },[messages])
+
+  useEffect(() => {
+    currentMessage = message
+  },[message])
 
   // function to fetch messages from current conversation
   const fetchMessages = async () => {
@@ -88,6 +98,30 @@ const Messages = () => {
 
   const removeMessageLocally = (messageId) => {
     setMessages(messages.filter(e => e.id !== messageId))
+  }
+
+  const handleContactSwitch = () => {
+    const cachedMessages = Cookies.get("cachedDirectMessages")
+    if(cachedMessages){
+      var parsed = JSON.parse(cachedMessages)
+      parsed[id] = currentMessage
+      Cookies.set('cachedDirectMessages', JSON.stringify(parsed))
+    }
+    else {
+      Cookies.set("cachedDirectMessages", JSON.stringify({
+        [id]: currentMessage
+      }))
+    }
+    setMessage("")
+  }
+
+  const handleCachedMessage = () => {
+    const cachedMessages = Cookies.get("cachedDirectMessages")
+    if(cachedMessages){
+      const parsed = JSON.parse(cachedMessages)
+      if(parsed[id])
+      setMessage(parsed[id])
+    }
   }
 
   return (
@@ -130,6 +164,8 @@ const Messages = () => {
 
         <div id='dm-conversation-input-container'>
           <MessageInput
+            message={message}
+            setMessage={setMessage}
             conversationName={conversationChosen.username}
             setMessages={setMessages}
             scrollToBottom={scrollToBottom}

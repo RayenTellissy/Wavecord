@@ -36,8 +36,6 @@ const UserBar = () => {
         <button><FontAwesomeIcon className='home-contacts-userbar-icon' icon={faGear} /></button>
       </div>
         
-
-
     </div>
   );
 };

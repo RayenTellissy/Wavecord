@@ -16,7 +16,6 @@ const Blocked = ({ query, setShowSearch }) => {
   const [isLoading,setIsLoading] = useState(true)
   const [isUnblocking,setIsUnblocking] = useState(false)
 
-
   useEffect(() => {
     fetchBlocks()
     return () => setShowSearch(false)

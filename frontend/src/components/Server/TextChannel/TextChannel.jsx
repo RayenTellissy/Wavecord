@@ -29,7 +29,7 @@ const TextChannel = ({
 
   return (
     <button
-      id='server-text-channel-button'
+      id={currentTextChannelId === id ? 'server-text-channel-connected' : 'server-text-channel-button'}
       onClick={handleClick}
       onMouseEnter={() => handleActive(true)}
       onMouseLeave={() => handleActive(false)}

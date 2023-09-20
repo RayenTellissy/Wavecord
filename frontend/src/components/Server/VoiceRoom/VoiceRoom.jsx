@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import axios from 'axios';
 import "@livekit/components-styles"
 import { LiveKitRoom, VideoConference } from "@livekit/components-react"
@@ -11,10 +11,9 @@ const VoiceRoom = ({
   serverId,
   channelId,
   setCurrentChannelType,
-  setCurrentVoiceChannelId
 }) => {
-  const { user, socket, micEnabled } = useContext(Context)
-  const [token,setToken] = useState("")
+  const { user, socket, micEnabled, setCurrentVoiceChannelId } = useContext(Context)
+  const { token, setToken } = useContext(Context)
 
   useEffect(() => {
     socket.emit("open_server", serverId)

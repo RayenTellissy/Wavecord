@@ -185,10 +185,12 @@
 }
 
 .server-category-modal-body-private-create-button {
-  padding: 10px 15px;
+  padding: 10px;
+  width: 140px;
   border-radius: 4px;
   font-family: GibsonRegular;
   margin-left: 20px;
+  align-items: center;
 }
 
 #server-category-modal-body-private-create-button-active {

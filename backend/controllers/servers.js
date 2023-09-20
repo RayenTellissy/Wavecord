@@ -460,7 +460,12 @@ module.exports = {
       const noRole = await prisma.usersInServers.findMany({
         where: {
           serverId,
-          rolesId: null
+          rolesId: null,
+          user: {
+            status: {
+              not: "OFFLINE"
+            }
+          }
         },
         select: {
           user: true

@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import axios from 'axios';
 import { IoClose } from "react-icons/io5"
 import { Tooltip } from "@chakra-ui/react"
 
@@ -8,7 +9,6 @@ import { Context } from '../../../Context/Context';
 
 // styles
 import "./Blocked.css"
-import axios from 'axios';
 
 const BlockedUser = ({ id, username, image, status, setIsUnblocking, fetchBlocks }) => {
   const { user } = useContext(Context)
@@ -19,8 +19,6 @@ const BlockedUser = ({ id, username, image, status, setIsUnblocking, fetchBlocks
       await axios.post(`${import.meta.env.VITE_SERVER_URL}/friends/unblockUser`, {
         blocker: user.id,
         blocked: id
-      }, {
-        withCredentials: true
       })
       fetchBlocks()
       setIsUnblocking(false)
@@ -31,7 +29,7 @@ const BlockedUser = ({ id, username, image, status, setIsUnblocking, fetchBlocks
   }
 
   return (
-    <button>
+    <button id='blocked-user-button'>
       <div id='blockeduser-button-container'>
         <div id='blockeduser-button-details-container'>
           <Avatar image={image} status={status} />

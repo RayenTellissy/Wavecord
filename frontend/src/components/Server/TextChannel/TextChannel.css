@@ -5,6 +5,18 @@
   flex-direction: row;
   align-items: center;
   border-radius: 3px;
+  margin-bottom: 3px;
+}
+
+#server-text-channel-connected {
+  width: 100%;
+  padding: 6px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border-radius: 3px;
+  margin-bottom: 3px;
+  background-color: #3f4248;
 }
 
 #server-text-channel-button:hover {

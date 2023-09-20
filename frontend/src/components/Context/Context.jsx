@@ -26,11 +26,13 @@ export const ContextProvider = ({ children }) => {
   const [cameraEnabled,setCameraEnabled] = useState(false)
   const [isSpeaking,setIsSpeaking] = useState(false)
   const [screenShareEnabled,setScreenShareEnabled] = useState(false)
-  const [connectionQuality,setConnectionQuality] = useState(null)
+  const [connectionQuality,setConnectionQuality] = useState("")
+  const [connectionState,setConnectionState] = useState("")
   const [displayRoom,setDisplayRoom] = useState(false)
   const [status,setStatus] = useState("")
   const [currentVoiceChannelId,setCurrentVoiceChannelId] = useState("")
   const [servers,setServers] = useState([])
+  const [token,setToken] = useState("")
 
   useEffect(() => {
     authenticateSession()
@@ -83,6 +85,15 @@ export const ContextProvider = ({ children }) => {
         status: "ONLINE"
       })
       setStatus("ONLINE")
+      const cachedServers = Cookies.get("cachedServers")
+      if(cachedServers){
+        const serverRooms = returnServerIds(JSON.parse(cachedServers))
+        // emitting a status change event to all servers that the user is in
+        socket.emit("server_member_status_changed", {
+          userId: user.id,
+          serverRooms
+        })
+      }
     }
   }
 
@@ -97,8 +108,7 @@ export const ContextProvider = ({ children }) => {
       const serverRooms = returnServerIds(JSON.parse(cachedServers))
       socket.emit("server_member_status_changed", {
         userId: user.id,
-        serverRooms,
-        status: "OFFLINE"
+        serverRooms
       })
     }
   }
@@ -140,7 +150,12 @@ export const ContextProvider = ({ children }) => {
       currentVoiceChannelId,
       setCurrentVoiceChannelId,
       servers,
-      setServers
+      setServers,
+      fetchServers,
+      token,
+      setToken,
+      connectionState,
+      setConnectionState
     }}>
       {children}
     </Context.Provider>

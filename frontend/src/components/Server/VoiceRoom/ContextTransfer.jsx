@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useRoomContext, useParticipants } from '@livekit/components-react';
 import axios from 'axios';
 
@@ -23,40 +23,40 @@ const ContextTransfer = ({ serverId, channelId }) => {
     setMicEnabled,
     setCameraEnabled,
     setIsSpeaking,
-    setScreenShareEnabled
+    setScreenShareEnabled,
+    setCurrentVoiceChannelId
   } = useContext(Context)
   const participants = useParticipants()
   const room = useRoomContext()
-  const [connected,setConnected] = useState(false)
 
   useEffect(() => {
     room.on("disconnected", async () => {
       try {
-        await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/leaveVoiceRoom`, {
-          id: user.id
-        })
+        setCurrentVoiceChannelId("")
         socket.emit("leave_voice", {
           serverId,
           channelId,
           userId: user.id
+        })
+        await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/leaveVoiceRoom`, {
+          id: user.id
         })
       }
       catch(error){
         console.log(error)
       }
     })
-
-    room.on("connected", () => setConnected(true))
   },[room])
 
   useEffect(() => {
-    if(connected){ // test room.test
+    if(room.state === "connected"){
       room.localParticipant.setMicrophoneEnabled(micEnabled)
     }
   },[room.localParticipant.isMicrophoneEnabled])
 
   useEffect(() => {
-    if(connected){
+    if(room.state === "connected"){
+      console.log(room.disconnect())
       room.localParticipant.setMicrophoneEnabled(micEnabled)
     }
   },[micEnabled])

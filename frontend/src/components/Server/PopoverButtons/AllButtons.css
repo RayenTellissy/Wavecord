@@ -4,7 +4,7 @@
 }
 
 #server-leave-confirmation-server-name {
-  font-family: GibsonBold;
+  font-family: GibsonMedium;
   font-size: 20px;
   color: #dbdee1;
 }
@@ -20,7 +20,7 @@
   padding: 9px;
   width: 130px;
   border-radius: 3px;
-  font-family: GibsonMedium;
+  font-family: GibsonRegular;
   transition: .2s ease;
   margin-left: 20px;
 }
@@ -34,7 +34,7 @@
 }
 
 .server-confirmation-cancel-button {
-  font-family: GibsonMedium;
+  font-family: GibsonRegular;
 }
 
 .server-confirmation-cancel-button:hover {
@@ -54,7 +54,7 @@
 }
 
 #server-delete-confirmation-server-name {
-  font-family: GibsonBold;
+  font-family: GibsonMedium;
   font-size: 19px;
 }
 
@@ -78,4 +78,54 @@
   font-family: GibsonLight;
   font-size: 13px;
   color: #e16f73;
+}
+
+#create-category-modal-header {
+  font-family: GibsonMedium;
+  font-size: 25px;
+}
+
+#create-category-modal-input-title {
+  font-family: GibsonMedium;
+  font-size: 14px;
+  color: #d6d8db;
+  margin-bottom: 5px;
+}
+
+#create-category-modal-input {
+  font-family: GibsonRegular;
+  width: 100%;
+  padding: 10px;
+  background-color: #1e1f22;
+  border-radius: 3px;
+  margin-bottom: 10px;
+}
+
+#create-category-modal-submit-button {
+  background-color: #5865f2;
+  padding: 9px;
+  width: 150px;
+  border-radius: 3px;
+  font-family: GibsonRegular;
+  transition: .2s ease;
+  margin-left: 20px;
+}
+
+#create-category-modal-submit-button:hover {
+  background-color: #4752c4;
+}
+
+#create-category-modal-submit-button:active {
+  background-color: #3c45a5;
+}
+
+#create-category-modal-submit-disabled {
+  background-color: #414891;
+  padding: 9px;
+  width: 150px;
+  border-radius: 3px;
+  font-family: GibsonRegular;
+  margin-left: 20px;
+  color: #949396;
+  cursor: not-allowed;
 }

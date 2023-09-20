@@ -21,6 +21,7 @@ import { MdOutlineRadioButtonChecked, MdOutlineRadioButtonUnchecked } from "reac
 import { HiSpeakerWave } from "react-icons/hi2"
 import { IoMdLock, IoIosArrowDown } from "react-icons/io"
 import { MdClose } from "react-icons/md"
+import BeatLoader from 'react-spinners/BeatLoader';
 
 // components
 import Sidebar from '../Home/Sidebar/Sidebar';
@@ -40,16 +41,22 @@ import "./Server.css"
 import { applyMemorization, memorizeTextChannel } from "../../utils/Helper/memorizeTextChannel"
 
 const Server = () => {
+  const { 
+    user,
+    socket,
+    displayRoom,
+    setDisplayRoom,
+    fetchServers,
+    currentVoiceChannelId
+  } = useContext(Context)
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { isOpen: isOpenDropdown, onOpen: onOpenDropdown, onClose: onCloseDropdown } = useDisclosure()
   const { isOpen: isOpenServerLink, onOpen: onOpenServerLink, onClose: onCloseServerLink } = useDisclosure()
   const { id } = useParams()
-  const { user, socket, displayRoom, setDisplayRoom } = useContext(Context)
   const [server,setServer] = useState({})
   const [currentTextChannel,setCurrentTextChannel] = useState("")
   const [currentTextChannelId,setCurrentTextChannelId] = useState("")
   const [hoveredTextChannelId,setHoveredTextChannelId] = useState("")
-  const [currentVoiceChannelId,setCurrentVoiceChannelId] = useState("")
   const [hoveredVoiceChannelId,setHoveredVoiceChannelId] = useState("")
   const [currentChannelType,setCurrentChannelType] = useState("")
   const [categoryChosen,setCategoryChosen] = useState("")
@@ -59,11 +66,13 @@ const Server = () => {
   const [privateChecked,setPrivateChecked] = useState(false)
   const [createDisabled,setCreateDisabled] = useState(true)
   const [showDropdown,setShowDropdown] = useState(false)
+  const [isLoading,setisLoading] = useState(false)
   const [role,setRole] = useState({})
 
   useEffect(() => {
     window.addEventListener("beforeunload", handleUnload)
     socket.emit("open_server", id)
+    fetchServers()
     applyMemorization(id, setCurrentTextChannelId, setCurrentTextChannel) // text channel memo
     fetchData()
     return () => window.removeEventListener("beforeunload", handleUnload)
@@ -76,7 +85,7 @@ const Server = () => {
   useEffect(() => {
     memorizeTextChannel(id,currentTextChannelId,currentTextChannel)
   },[currentTextChannelId])
-
+  
   const fetchData = async () => {
     try {
       const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/fetch`,{
@@ -102,6 +111,7 @@ const Server = () => {
     if(createDisabled) return
     setCreateDisabled(true) // disabling the submit button (anti-spam)
     try {
+      setisLoading(true)
       if(modalChannelType === "text"){
         await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/createTextChannel`,{
           name: modalChannelName,
@@ -116,8 +126,9 @@ const Server = () => {
           serverId: id
         })
       }
-      fetchData() // refreshing data
+      await fetchData() // refreshing data
       onClose() // closing modal
+      setisLoading(false)
       // resetting states after submitting
       setCategoryChosen("")
       setCategoryIdChosen("")
@@ -145,10 +156,9 @@ const Server = () => {
   }
 
   // leaves voice room before unloading app
-  const handleUnload = (e) => {
+  const handleUnload = () => {
     const cachedVoiceChannel = Cookies.get("cachedVoiceChannel")
     if(cachedVoiceChannel){
-      e.returnValue = ""
       setHoveredTextChannelId("")
       setCurrentChannelType("")
     }
@@ -192,6 +202,7 @@ const Server = () => {
                   onOpen={onOpenServerLink}
                   user={user}
                   server={server}
+                  fetchData={fetchData}
                 />
               </PopoverBody>
             </PopoverContent>
@@ -215,8 +226,6 @@ const Server = () => {
                 hoveredTextChannelId={hoveredTextChannelId}
                 setHoveredTextChannelId={setHoveredTextChannelId}
                 setCurrentChannelType={setCurrentChannelType}
-                currentVoiceChannelId={currentVoiceChannelId}
-                setCurrentVoiceChannelId={setCurrentVoiceChannelId}
                 hoveredVoiceChannelId={hoveredVoiceChannelId}
                 setHoveredVoiceChannelId={setHoveredVoiceChannelId}
               />
@@ -237,11 +246,10 @@ const Server = () => {
           serverId={server.id}
           channelId={currentVoiceChannelId}
           setCurrentChannelType={setCurrentChannelType}
-          setCurrentVoiceChannelId={setCurrentVoiceChannelId}
         />}
       </div>
       <Modal isOpen={isOpen} onClose={closeModal} isCentered size="lg">
-        <ModalOverlay/>
+        <ModalOverlay bgColor="blackAlpha.800"/>
         <ModalContent  borderRadius={10} bg="#313338">
           <ModalHeader>
             <p id='server-category-modal-header-1'>Create Channel</p>
@@ -320,7 +328,7 @@ const Server = () => {
                 id={modalChannelName !== "" && modalChannelName.length < 15 ? 'server-category-modal-body-private-create-button-active' : 'server-category-modal-body-private-create-button-inactive'}
                 onClick={createChannel}
               >
-                Create Channel
+                {isLoading ? <BeatLoader size={9} color='white'/> : "Create Channel"}
               </button>
             </div>
           </ModalFooter>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { BsFillPersonPlusFill } from "react-icons/bs"
@@ -11,17 +11,38 @@ import BeatLoader from 'react-spinners/BeatLoader';
 
 // components
 import PopoverButton from './PopoverButton';
+import { Context } from '../../Context/Context';
 
 // styles
 import "./AllButtons.css"
 
-const AllButtons = ({ user, ownerId, onOpen, server }) => {
+const AllButtons = ({ user, ownerId, onOpen, server, fetchData }) => {
+  const { fetchServers } = useContext(Context)
   const { isOpen, onOpen: onOpenConfirmation, onClose } = useDisclosure()
+  const { isOpen: isOpenCategory, onOpen: onOpenCategory, onClose: onCloseCategory } = useDisclosure()
   const [hovered,setHovered] = useState("")
   const [isLoading,setIsLoading] = useState(false)
   const [query,setQuery] = useState("")
+  const [categoryQuery,setCategoryQuery] = useState("")
   const [incorrect,setIncorrect] = useState(false)
   const navigate = useNavigate()
+
+  const createCategory = async () => {
+    if(!categoryQuery) return
+    try {
+      setIsLoading(true)
+      await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/createCategory`, {
+        name: categoryQuery,
+        serverId: server.id
+      })
+      await fetchData()
+      closeCategoryModal()
+      setIsLoading(false)
+    }
+    catch(error){
+      console.log(error)
+    }
+  }
 
   const leaveServer = async () => {
     try {
@@ -31,6 +52,7 @@ const AllButtons = ({ user, ownerId, onOpen, server }) => {
         serverId: server.id
       })
       navigate("/")
+      fetchServers()
       setIsLoading(false)
     }
     catch(error){
@@ -49,6 +71,7 @@ const AllButtons = ({ user, ownerId, onOpen, server }) => {
         serverId: server.id
       })
       navigate("/")
+      fetchServers()
       setIsLoading(false)
     }
     catch(error){
@@ -65,6 +88,11 @@ const AllButtons = ({ user, ownerId, onOpen, server }) => {
     setIncorrect(false)
     setIsLoading(false)
     setQuery("")
+  }
+
+  const closeCategoryModal = () => {
+    onCloseCategory()
+    setCategoryQuery("")
   }
 
   return (
@@ -92,6 +120,7 @@ const AllButtons = ({ user, ownerId, onOpen, server }) => {
           setHovered={setHovered}
           text="Create Category"
           icon={<BiSolidFolderPlus size={20}/>}
+          callback={() => onOpenCategory()}
         />
       </>}
       <PopoverButton
@@ -152,6 +181,33 @@ const AllButtons = ({ user, ownerId, onOpen, server }) => {
             </button>
           </ModalFooter>
           </>}
+        </ModalContent>
+      </Modal>
+      <Modal isOpen={isOpenCategory} onClose={closeCategoryModal} size="lg" isCentered>
+        <ModalOverlay bgColor={"blackAlpha.800"}/>
+        <ModalContent bgColor="#313338" borderRadius={11}>
+          <ModalHeader>
+            <p id='create-category-modal-header'>Create Category</p>
+          </ModalHeader>
+          <ModalBody>
+            <div>
+              <p id='create-category-modal-input-title'>CATEGORY NAME</p>
+              <input
+                id='create-category-modal-input'
+                placeholder='New Category'
+                onChange={e => setCategoryQuery(e.target.value)}
+              />
+            </div>
+          </ModalBody>
+          <ModalFooter bgColor="#2b2d31" h={75} borderBottomRadius={11}>
+            <button className='server-confirmation-cancel-button' onClick={closeCategoryModal}>Cancel</button>
+            <button
+              id={categoryQuery ? 'create-category-modal-submit-button' : 'create-category-modal-submit-disabled'}
+              onClick={createCategory}
+            >
+              {isLoading ? <BeatLoader size={9} color='white'/> : "Create Category"}
+            </button>
+          </ModalFooter>
         </ModalContent>
       </Modal>
     </div>

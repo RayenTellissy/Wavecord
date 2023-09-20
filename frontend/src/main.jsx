@@ -9,7 +9,7 @@ import theme from './theme/theme'
 import { ContextProvider } from './components/Context/Context'
 
 // disabling react dev tools in production (for security)
-if(process.env.NODE_ENV === "development"){
+if(process.env.NODE_ENV === "production"){
   disableReactDevTools()
 }
 
