@@ -46,37 +46,37 @@ const Roles = ({ server }) => {
 
   return (
     <div id='server-settings-roles-container'>
-      <p id='server-settings-roles-title'>Roles</p>
-      <p id='server-settings-roles-under-title'>Use roles to group your server members and assign permissions.</p>
-      <div id='server-settings-roles-search-create-container'>
-        <div id='server-settings-roles-search-container'>
-          <input
-            id='server-settings-roles-search-input'
-            type='text'
-            placeholder='Search Roles'
-            value={query}
-            onChange={e => setQuery(e.target.value)}
-            autoComplete='off'
-          />
-          <BiSearch id='server-settings-roles-search-input-search-icon' color='#a4aab0' size={25}/>
-        </div>
-        <button id='server-settings-roles-create-role' onClick={onOpen}>Create Role</button>
-      </div>
-      <div id='server-settings-roles-display'>
-        <p id='server-settings-roles-number-title'>ROLES - {roles.length}</p>
-        <div id='server-settings-roles-display-mapping'>
-          {roles.map((e,i) => {
-            return <Role
-              key={i}
-              id={e.id}
-              name={e.name}
-              color={e.color}
-              members={e.UsersInServers.length}
-              fetchRoles={fetchRoles}
+      <div id='server-settings-roles-display-header'>
+        <p id='server-settings-roles-title'>Roles</p>
+        <p id='server-settings-roles-under-title'>Use roles to group your server members and assign permissions.</p>
+        <div id='server-settings-roles-search-create-container'>
+          <div id='server-settings-roles-search-container'>
+            <input
+              id='server-settings-roles-search-input'
+              type='text'
+              placeholder='Search Roles'
+              value={query}
+              onChange={e => setQuery(e.target.value)}
+              autoComplete='off'
             />
-          })}
-          {isLoading && <BeatLoader size={8} color='white'/>}
+            <BiSearch id='server-settings-roles-search-input-search-icon' color='#a4aab0' size={25}/>
+          </div>
+          <button id='server-settings-roles-create-role' onClick={onOpen}>Create Role</button>
         </div>
+      </div>
+      <p id='server-settings-roles-number-title'>ROLES - {roles.length}</p>
+      <div id='server-settings-roles-display-mapping' className='default-scrollbar'>
+        {roles.map((e,i) => {
+          return <Role
+            key={i}
+            id={e.id}
+            name={e.name}
+            color={e.color}
+            members={e.UsersInServers.length}
+            fetchRoles={fetchRoles}
+          />
+        })}
+        {isLoading && <BeatLoader size={8} color='white'/>}
       </div>
       <CreateRole
         isOpen={isOpen}

@@ -1,5 +1,8 @@
 #server-settings-members-container {
   width: 65%;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
 }
 
 #server-settings-members-title {
@@ -14,6 +17,7 @@
 
 #server-settings-members-mapping {
   margin-top: 25px;
+  overflow-y: auto;
 }
 
 #server-settings-members-count-input-container {
@@ -40,4 +44,9 @@
 #server-settings-members-search-input-icon {
   position: absolute;
   right: 10px;
+}
+
+#server-settings-members-header {
+  height: 200px;
+  margin-top: 50px;
 }

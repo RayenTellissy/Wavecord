@@ -55,7 +55,7 @@ const AllFriends = ({ query, setShowSearch }) => {
     <div id='home-right-display-all-container'>
       {isLoading && <Loader/>}
       {!isLoading && <p id='home-right-display-all-count'>ALL FRIENDS - {users.length}</p>}
-      <div id='home-right-display-all-users-container'>
+      <div id='home-right-display-all-users-container' className='default-scrollbar'>
         {users.map((e,i) => {
           return <FriendButton
             key={i}

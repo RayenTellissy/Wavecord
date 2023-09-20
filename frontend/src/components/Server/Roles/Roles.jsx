@@ -17,7 +17,7 @@ const Roles = ({ serverId }) => {
 
   useEffect(() => {
     fetchRoles()
-  },[])
+  },[serverId])
 
   useEffect(() => {
     socket.on("receive_member_status", () => {
@@ -38,7 +38,7 @@ const Roles = ({ serverId }) => {
   }
 
   return (
-    <div id='server-roles-bar-container'>
+    <div id='server-roles-bar-container' className='default-scrollbar'>
       <div id='server-roles-bar-main-container'>
         {roles.map((e, i) => {
           return <Role key={i} roleName={e.name} roleColor={e.color} users={e.UsersInServers} />

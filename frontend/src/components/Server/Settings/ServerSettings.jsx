@@ -79,7 +79,7 @@ const ServerSettings = () => {
           <div id='server-settings-leave-div'>
             <IoClose size={40} color='#a4a8af'/>
           </div>
-          <Kbd padding={2}>ESC</Kbd>
+          <Kbd fontFamily="GibsonLight" padding={2}>ESC</Kbd>
         </button>
         </div>
       </div>

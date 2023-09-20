@@ -1,10 +1,11 @@
 #server-settings-overview-container {
   display: flex;
   flex-direction: column;
+  margin-top: 50px;
 }
 
 #server-settings-overview-title {
-  font-family: GibsonBold;
+  font-family: GibsonMedium;
   font-size: 25px;
 }
 

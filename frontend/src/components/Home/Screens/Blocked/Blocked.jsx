@@ -54,7 +54,7 @@ const Blocked = ({ query, setShowSearch }) => {
       <div id='home-right-display-blocked-users'>
         {!isLoading && <p id='home-right-display-blocked-count'>BLOCKED - { users.length }</p>}
         {isLoading && <Loader/>}
-        <div id='home-right-display-blocked-users-container'>
+        <div id='home-right-display-blocked-users-container' className='default-scrollbar'>
           {users.map((e,i) => {
             return <BlockedUser
               key={i}

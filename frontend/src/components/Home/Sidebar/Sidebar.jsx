@@ -1,5 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useContext, useEffect } from 'react';
 
 // components
 import HomeButton from "./HomeButton/HomeButton"
@@ -11,7 +10,11 @@ import { Context } from '../../Context/Context';
 import "./Sidebar.css"
 
 const Sidebar = ({ highlighted }) => {
-  const { servers } = useContext(Context)
+  const { servers, fetchServers } = useContext(Context)
+
+  useEffect(() => {
+    fetchServers()
+  },[])
 
   return (
     <div id='home-server-bar'>

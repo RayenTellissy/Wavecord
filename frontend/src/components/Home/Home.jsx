@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 
 // components
 import Sidebar from './Sidebar/Sidebar';
@@ -9,7 +10,6 @@ import Turbo from './Turbo/Turbo';
 
 // styles
 import "./Home.css"
-import { useLocation } from 'react-router-dom';
 
 const Home = () => {
   const location = useLocation()

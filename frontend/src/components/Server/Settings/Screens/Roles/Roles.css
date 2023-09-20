@@ -1,9 +1,12 @@
 #server-settings-roles-container {
   width: 65%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 #server-settings-roles-title {
-  font-family: GibsonBold;
+  font-family: GibsonMedium;
   font-size: 25px;
 }
 
@@ -68,9 +71,16 @@
 
 #server-settings-roles-display-mapping {
   margin-top: 10px;
+  overflow-y: scroll;
+  flex: 1;
 }
 
 #server-settings-roles-number-title {
   font-family: GibsonMedium;
   width: 200px;
+}
+
+#server-settings-roles-display-header {
+  height: 200px;
+  margin-top: 50px;
 }

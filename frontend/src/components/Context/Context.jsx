@@ -33,10 +33,10 @@ export const ContextProvider = ({ children }) => {
   const [currentVoiceChannelId,setCurrentVoiceChannelId] = useState("")
   const [servers,setServers] = useState([])
   const [token,setToken] = useState("")
+  const [serversLoading,setServersLoading] = useState(true)
 
   useEffect(() => {
     authenticateSession()
-    fetchServers()
     handleSocket()
     return () => window.removeEventListener("beforeunload", handleDisconnect)
   },[])
@@ -118,6 +118,7 @@ export const ContextProvider = ({ children }) => {
       const servers = await axios.get(`${import.meta.env.VITE_SERVER_URL}/servers/fetchByUser/${user.id}`)
       setServers(servers.data)
       Cookies.set("cachedServers", JSON.stringify(servers.data))
+      setServersLoading(false)
     }
     catch(error){
       console.log(error)
@@ -151,11 +152,13 @@ export const ContextProvider = ({ children }) => {
       setCurrentVoiceChannelId,
       servers,
       setServers,
-      fetchServers,
       token,
       setToken,
       connectionState,
-      setConnectionState
+      setConnectionState,
+      serversLoading,
+      setServersLoading,
+      fetchServers
     }}>
       {children}
     </Context.Provider>

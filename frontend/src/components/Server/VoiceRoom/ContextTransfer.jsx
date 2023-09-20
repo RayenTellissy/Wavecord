@@ -1,6 +1,10 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useRoomContext, useParticipants } from '@livekit/components-react';
 import axios from 'axios';
+import useSound from "use-sound"
+
+// sounds
+import JoinRoom from "../../../assets/sounds/JoinRoom.mp3"
 
 // components
 import { Context } from '../../Context/Context';
@@ -28,6 +32,8 @@ const ContextTransfer = ({ serverId, channelId }) => {
   } = useContext(Context)
   const participants = useParticipants()
   const room = useRoomContext()
+  const [connected,setConnected] = useState(false)
+  const [play] = useSound(JoinRoom, { volume: 0.2 })
 
   useEffect(() => {
     room.on("disconnected", async () => {
@@ -46,17 +52,26 @@ const ContextTransfer = ({ serverId, channelId }) => {
         console.log(error)
       }
     })
+
+    room.on("connected", () => {
+      console.log(1)
+      play()
+      console.log(1)
+      setConnected(true)
+    })
+
+    room.on("participantConnected", () => play())
   },[room])
 
   useEffect(() => {
-    if(room.state === "connected"){
+    if(connected){
       room.localParticipant.setMicrophoneEnabled(micEnabled)
     }
   },[room.localParticipant.isMicrophoneEnabled])
 
   useEffect(() => {
-    if(room.state === "connected"){
-      console.log(room.disconnect())
+    if(connected){
+      // console.log(room.disconnect())
       room.localParticipant.setMicrophoneEnabled(micEnabled)
     }
   },[micEnabled])
@@ -86,10 +101,7 @@ const ContextTransfer = ({ serverId, channelId }) => {
     room.localParticipant.on("isSpeakingChanged", (localSpeaking) => handleSpeaking(localSpeaking,setIsSpeaking))
   }
 
-  return (
-    <div>
-    </div>
-  );
+  return <></>
 };
 
 export default ContextTransfer;

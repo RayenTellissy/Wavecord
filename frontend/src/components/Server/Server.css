@@ -240,19 +240,16 @@
 }
 
 #server-category-main-container::-webkit-scrollbar {
-  width: 6px;
+  width: 4px;
 }
 
 #server-category-main-container::-webkit-scrollbar-thumb {
   background: #1a1b1e;
   width: 2px;
+  border-radius: 11px;
 }
 
 #server-category-main-container::-webkit-scrollbar-track {
   background-color: inherit;
   border-radius: 10px;
-}
-
-#server-voice-room-container-hide {
-  display: none;
 }

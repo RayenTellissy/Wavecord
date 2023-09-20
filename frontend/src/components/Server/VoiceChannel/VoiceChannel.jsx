@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
+import useSound from 'use-sound'
 import { HiSpeakerWave } from "react-icons/hi2"
 
 // components
@@ -8,6 +9,9 @@ import UserInRoom from './UserInRoom/UserInRoom';
 
 // styles
 import "./VoiceChannel.css"
+
+// sounds
+import JoinRoom from "../../../assets/sounds/JoinRoom.mp3"
 
 const VoiceChannel = ({
   id,
@@ -18,6 +22,7 @@ const VoiceChannel = ({
 }) => {
   const { user, socket, currentVoiceChannelId, setCurrentVoiceChannelId } = useContext(Context)
   const [users,setUsers] = useState([])
+  const [play] = useSound(JoinRoom, { volume: 0.2 })
 
   useEffect(() => {
     fetchUsersInRoom()
@@ -31,10 +36,8 @@ const VoiceChannel = ({
         }
       }
     })
-    socket.on("receive_leave_voice", data => {
-      if(data.channelId === id){
-        fetchUsersInRoom()
-      }
+    socket.on("receive_leave_voice", () => {
+      fetchUsersInRoom()
     })
     return () => {
       socket.off("receive_leave_voice")
@@ -64,6 +67,9 @@ const VoiceChannel = ({
     // checking if user is already connected to the room
     if(currentVoiceChannelId) return
     if(currentVoiceChannelId !== id){
+      console.log(1)
+      play()
+      console.log(1)
       const userDetails = {
         id: user.id,
         username: user.username,

@@ -1,9 +1,10 @@
 #server-settings-bans-container {
   width: 65%;
+  margin-top: 50px;
 }
 
 #server-settings-bans-title {
-  font-family: GibsonBold;
+  font-family: GibsonMedium;
   font-size: 25px;
 }
 
@@ -22,5 +23,3 @@
   margin: 20px 0px;
   padding-left: 20px;
 }
-
-#server-settings-bans-banned-users-container {}

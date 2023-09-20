@@ -115,7 +115,7 @@ const DirectMessagesText = ({ id, fetchConversations }) => {
                 />
               </div>
             </div>
-            <PopoverBody maxHeight="30vh" overflowY="scroll" bgColor="#313338">
+            <PopoverBody maxHeight="30vh" overflowY="auto" bgColor="#313338">
               {isLoading ? (
               <div id='add-dm-popover-loader-container'>
                 <Loader/>

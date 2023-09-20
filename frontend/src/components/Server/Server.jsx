@@ -79,7 +79,16 @@ const Server = () => {
   },[id])
 
   useEffect(() => {
-    Cookies.set("cachedVoiceChannel", currentVoiceChannelId)
+    handleDefaultChannel()
+  },[server])
+
+  useEffect(() => {
+    if(!currentVoiceChannelId){
+      Cookies.remove("cachedVoiceChannel")
+    }
+    else {
+      Cookies.set("cachedVoiceChannel", currentVoiceChannelId)
+    }
   },[currentVoiceChannelId])
 
   useEffect(() => {
@@ -157,11 +166,9 @@ const Server = () => {
 
   // leaves voice room before unloading app
   const handleUnload = () => {
+    setHoveredTextChannelId("")
+    setCurrentChannelType("")
     const cachedVoiceChannel = Cookies.get("cachedVoiceChannel")
-    if(cachedVoiceChannel){
-      setHoveredTextChannelId("")
-      setCurrentChannelType("")
-    }
     socket.emit("leave_voice", {
       serverId: id,
       channelId: cachedVoiceChannel,
@@ -170,6 +177,14 @@ const Server = () => {
     socket.emit("voice_disconnect", {
       user: user.id
     })
+  }
+
+  const handleDefaultChannel = () => {
+    if(!currentTextChannelId && server.categories && server.categories[0].Text_channels){
+      const channel = server.categories[0].Text_channels[0]
+      setCurrentTextChannelId(channel.id)
+      setCurrentTextChannel(channel.name)
+    }
   }
 
   return (
@@ -238,9 +253,11 @@ const Server = () => {
         {!displayRoom && <ChannelMessages
           serverId={id}
           currentTextChannel={currentTextChannel}
+          setCurrentTextChannel={setCurrentTextChannel}
           currentTextChannelId={currentTextChannelId}
-          user={user}
+          setCurrentTextChannelId={setCurrentTextChannelId}
           roleColor={role ? role.color : "white"}
+          server={server}
         />}
         {currentChannelType === "voice" && <VoiceRoom
           serverId={server.id}

@@ -53,31 +53,32 @@ const PendingRequests = ({ query, setShowSearch }) => {
       <div id='home-right-display-pending-users'>
         {isLoading && <Loader/>}
         {!isLoading && <p id='home-right-display-pending-count'>PENDING - {users.length}</p>}
-        <div id='home-right-display-pending-users-container'></div>
-        {users.map((e,i) => {
-          if(e.recipient.id === user.id){
-            return <Received key={i}
-              requestId={e.id}
-              id={e.sender.id}
-              username={e.sender.username} 
-              image={e.sender.image} 
-              status={e.sender.status}
-              fetchRequests={fetchRequests}
-              setIsAccepting={setIsAccepting}
-            />
-          }
-          else {
-            return <Sent key={i}
-              requestId={e.id}
-              username={e.recipient.username} 
-              image={e.recipient.image} 
-              status={e.recipient.status} 
-              fetchRequests={fetchRequests}
-              setIsAccepting={setIsAccepting}
-            />
-          }
-        })}
-        {isAccepting && <Loader/>}
+        <div id='home-right-display-pending-users-container' className='default-scrollbar'>
+          {users.map((e,i) => {
+            if(e.recipient.id === user.id){
+              return <Received key={i}
+                requestId={e.id}
+                id={e.sender.id}
+                username={e.sender.username} 
+                image={e.sender.image} 
+                status={e.sender.status}
+                fetchRequests={fetchRequests}
+                setIsAccepting={setIsAccepting}
+              />
+            }
+            else {
+              return <Sent key={i}
+                requestId={e.id}
+                username={e.recipient.username} 
+                image={e.recipient.image} 
+                status={e.recipient.status} 
+                fetchRequests={fetchRequests}
+                setIsAccepting={setIsAccepting}
+              />
+            }
+          })}
+          {isAccepting && <Loader/>}
+        </div>
       </div>
     </div>
   );

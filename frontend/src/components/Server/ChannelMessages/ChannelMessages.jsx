@@ -10,6 +10,7 @@ import Message from '../../Messages/Message';
 import Roles from '../Roles/Roles';
 import Topbar from "../Topbar/Topbar"
 import EmptyChannel from './EmptyChannel/EmptyChannel';
+import LoadingMessages from '../../Messages/LoadingMessages/LoadingMessages';
 
 // styles
 import "./ChannelMessages.css"
@@ -17,10 +18,16 @@ import "./ChannelMessages.css"
 // caching state
 var currentMessage = ""
 
-const ChannelMessages = ({ serverId, currentTextChannel, currentTextChannelId, user, roleColor }) => {
-  const { socket } = useContext(Context)
+const ChannelMessages = ({
+  serverId,
+  currentTextChannel,
+  currentTextChannelId,
+  roleColor
+}) => {
+  const { user, socket } = useContext(Context)
   const [messages,setMessages] = useState([])
   const [message,setMessage] = useState("")
+  const [isLoading,setIsLoading] = useState(false)
   const messagesContainerRef = useRef(null)
 
   useEffect(() => {
@@ -55,11 +62,13 @@ const ChannelMessages = ({ serverId, currentTextChannel, currentTextChannelId, u
 
   const fetchMessages = async () => {
     try {
+      setIsLoading(true)
       const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/fetchTextChannelMessages`,{
         channelId: currentTextChannelId,
         serverId
       })
       setMessages(response.data)
+      setIsLoading(false)
     }
     catch(error){
       console.log(error)
@@ -75,6 +84,7 @@ const ChannelMessages = ({ serverId, currentTextChannel, currentTextChannelId, u
   }
 
   const handleChannelSwitch = () => {
+    setMessages([]) // resetting state
     const cachedMessages = Cookies.get("cachedServerMessages")
     if(cachedMessages){
       var parsed = JSON.parse(cachedMessages)
@@ -105,8 +115,9 @@ const ChannelMessages = ({ serverId, currentTextChannel, currentTextChannelId, u
         <div id='server-content-container'>
           <div id='server-content-main'>
             <Topbar currentTextChannel={currentTextChannel}/>
-            <div id='server-messages-channel-messages' ref={messagesContainerRef}>
-              <EmptyChannel channelName={currentTextChannel}/>
+            <div id='server-messages-channel-messages' className='default-scrollbar' ref={messagesContainerRef}>
+              {isLoading && <LoadingMessages/>}
+              {!isLoading && <EmptyChannel channelName={currentTextChannel}/>}
               <Twemoji options={{ className: 'twemoji' }}>
                 {messages.length !== 0 && messages.map((e,i) => {
                   return <Message
@@ -121,9 +132,8 @@ const ChannelMessages = ({ serverId, currentTextChannel, currentTextChannelId, u
                     created_at={e.created_at}
                     conversationType="server"
                     removeMessageLocally={removeMessageLocally}
-                    usernameColor={e.sender.UsersInServers[0].role?.color}
+                    usernameColor={e.sender.UsersInServers[0]?.role?.color}
                     conversation={currentTextChannelId}
-                    socket={socket}
                   />
                 })}
               </Twemoji>

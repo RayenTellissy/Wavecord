@@ -8,6 +8,8 @@
   background-color: #3f4147;
   transition: .2s ease;
   font-family: GibsonRegular;
+  margin-bottom: 5px;
+  cursor: pointer;
 }
 
 #server-settings-bans-banned-user:hover {
@@ -22,4 +24,47 @@
 
 #server-settings-bans-unban-button {
   margin-right: 10px;
+}
+
+#unban-modal-username {
+  height: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: GibsonMedium;
+  font-size: 25px;
+}
+
+#unban-modal-buttons-container {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+#unban-modal-done-button {
+  font-family: GibsonRegular;
+  background-color: #5865f2;
+  padding: 10px;
+  width: 120px;
+  border-radius: 4px;
+  transition: .2s ease;
+}
+
+#unban-modal-done-button:hover {
+  background-color: #4752c4;
+}
+
+#unban-modal-done-button:active {
+  background-color: #3c45a5;
+}
+
+#unban-modal-revoke-button {
+  color: #fa777c;
+  font-family: GibsonRegular;
+  font-size: 17px;
+}
+
+#unban-modal-revoke-button:hover {
+  text-decoration: underline;
 }

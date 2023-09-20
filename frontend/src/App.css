@@ -40,19 +40,18 @@ textarea {
   src: url("./assets/fonts/Ubuntu/Ubuntu-Light.ttf");
 }
 
-::-webkit-scrollbar {
-  width: 13px;
+.default-scrollbar::-webkit-scrollbar {
+  width: 10px;
 }
 
-::-webkit-scrollbar-track {
+.default-scrollbar::-webkit-scrollbar-track {
   background-color: #27282c;
   border-radius: 5px;
 }
 
-::-webkit-scrollbar-thumb {
+.default-scrollbar::-webkit-scrollbar-thumb {
   background-color: #191a1d;
   border-radius: 10px;
-  border: 2px solid #27282c;
 }
 
 p,

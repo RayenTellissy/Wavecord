@@ -61,20 +61,22 @@ const Members = ({ server }) => {
 
   return (
     <div id='server-settings-members-container'>
-      <p id='server-settings-members-title'>Server Members</p>
-      {!isLoading && <div id='server-settings-members-count-input-container'>
-        <p id='server-settings-members-count'>{constantUsers.length} Members</p>
-        <div id='server-settings-members-search-container'>
-          <input
-            id='server-settings-members-search-input'
-            placeholder='Search'
-            onChange={e => setQuery(e.target.value)}
-            autoComplete='off'
-          />
-          <BiSearch id='server-settings-members-search-input-icon' size={25}/>
-        </div>
-      </div>}
-      <div id='server-settings-members-mapping'>
+      <div id='server-settings-members-header'>
+        <p id='server-settings-members-title'>Server Members</p>
+        {!isLoading && <div id='server-settings-members-count-input-container'>
+          <p id='server-settings-members-count'>{constantUsers.length} Members</p>
+          <div id='server-settings-members-search-container'>
+            <input
+              id='server-settings-members-search-input'
+              placeholder='Search'
+              onChange={e => setQuery(e.target.value)}
+              autoComplete='off'
+            />
+            <BiSearch id='server-settings-members-search-input-icon' size={25}/>
+          </div>
+        </div>}
+      </div>
+      <div id='server-settings-members-mapping' className='default-scrollbar'>
         {users.map((e,i) => {
           return <Member
             key={i}

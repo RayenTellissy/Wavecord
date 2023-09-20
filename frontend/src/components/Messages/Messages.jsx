@@ -28,7 +28,7 @@ const Messages = () => {
   const { id } = useParams()
   const [messages,setMessages] = useState([])
   const [message,setMessage] = useState("")
-  const [isLoading,setIsLoading] = useState(true)
+  const [isLoading,setIsLoading] = useState(false)
   const messagesContainerRef = useRef(null)
   const navigate = useNavigate()
 
@@ -44,7 +44,7 @@ const Messages = () => {
     fetchMessages()
     socket.emit("join_room", id) // emitting a join room event to the socket server
     scrollToBottom()
-    Cookies.set("conversationChosen", JSON.stringify(conversationChosen), { expires: 1 })
+    Cookies.set("conversationChosen", JSON.stringify(conversationChosen))
     return () => handleContactSwitch()
   },[id])
   
@@ -101,6 +101,7 @@ const Messages = () => {
   }
 
   const handleContactSwitch = () => {
+    setMessages([]) // resetting messages state
     const cachedMessages = Cookies.get("cachedDirectMessages")
     if(cachedMessages){
       var parsed = JSON.parse(cachedMessages)
@@ -139,7 +140,7 @@ const Messages = () => {
           />
         </div>
 
-        <div id='dm-messages-container' ref={messagesContainerRef}>
+        <div id='dm-messages-container' className='default-scrollbar' ref={messagesContainerRef}>
           {isLoading && <LoadingMessages/>}
           {!isLoading && <ConversationStart username={conversationChosen.username} image={conversationChosen.image}/>}
           <Twemoji options={{ className: 'twemoji' }}>

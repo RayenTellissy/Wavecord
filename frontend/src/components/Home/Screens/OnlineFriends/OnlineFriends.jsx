@@ -54,7 +54,7 @@ const OnlineFriends = ({ query, setShowSearch }) => {
     <div id='home-right-display-online-container'>
       {isLoading && <Loader/>}
       {!isLoading && <p id='home-right-display-online-count'>ONLINE - {users.length}</p>}
-      <div id='home-right-display-online-users-container'>
+      <div id='home-right-display-online-users-container' className='default-scrollbar'>
         {users.map((e,i) => {
           return <FriendButton
             key={i}
