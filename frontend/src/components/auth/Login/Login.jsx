@@ -16,7 +16,7 @@ import Facebook from '../../common/FacebookButton/Facebook';
 import "./Login.css"
 
 const Login = () => {
-  const { setUser } = useContext(Context)
+  const { setUser, handleConnect } = useContext(Context)
   const [username,setUsername] = useState("")
   const [password,setPassword] = useState("")
   const [isLoading,setIsLoading] = useState(false)
@@ -74,6 +74,7 @@ const Login = () => {
         localStorage.setItem("wavecord-refreshToken", result.refreshToken)
         localStorage.setItem("wavecord-id", result.id)
         setUser(response.data)
+        handleConnect() // status update
       }
 
       // response alert

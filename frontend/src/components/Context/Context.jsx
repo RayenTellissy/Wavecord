@@ -42,8 +42,8 @@ export const ContextProvider = ({ children }) => {
   },[])
 
   useEffect(() => {
-    handleConnect()
     if(socket){
+      handleConnect()
       window.addEventListener("beforeunload", handleDisconnect)
     }
   },[socket])
@@ -81,7 +81,7 @@ export const ContextProvider = ({ children }) => {
   const handleConnect = () => {
     if(socket){
       socket.emit("statusChanged", {
-        id: user.id,
+        id: localStorage.getItem("wavecord-id"),
         status: "ONLINE"
       })
       setStatus("ONLINE")
@@ -158,7 +158,8 @@ export const ContextProvider = ({ children }) => {
       setConnectionState,
       serversLoading,
       setServersLoading,
-      fetchServers
+      fetchServers,
+      handleConnect
     }}>
       {children}
     </Context.Provider>

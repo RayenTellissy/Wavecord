@@ -15,7 +15,7 @@ import "./Signup.css"
 
 const Signup = () => {
 
-  const { setUser } = useContext(Context)
+  const { setUser, handleConnect } = useContext(Context)
   const [username,setUsername] = useState("")
   const [email,setEmail] = useState("")
   const [password,setPassword] = useState("")
@@ -80,6 +80,7 @@ const Signup = () => {
         localStorage.setItem("wavecord-refreshToken", result.refreshToken)
         localStorage.setItem("wavecord-id", result.id)
         setUser(response.data)
+        handleConnect() // status update
       }
   
       toast({
