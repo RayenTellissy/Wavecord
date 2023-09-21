@@ -22,7 +22,6 @@
   border-bottom: 3px solid #3c3f45;
 }
 
-
 #server-bar-container {
   width: 300px;
   height: 100vh;
@@ -96,6 +95,7 @@
   display: flex;
   flex-direction: row;
   align-items: center;
+  position: relative;
 }
 
 .server-category-modal-body-type-details {
@@ -122,7 +122,8 @@
 }
 
 .server-category-modal-body-radio-container {
-  margin: auto;
+  position: absolute;
+  right: 10px;
 }
 
 #server-category-modal-body-channel-name {

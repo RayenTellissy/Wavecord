@@ -10,6 +10,8 @@ import "./Category.css"
 
 const Category = ({
   isAdmin,
+  ownerId,
+  user,
   id,
   name,
   text,
@@ -48,7 +50,7 @@ const Category = ({
         >
           {name}
         </p>
-        {isAdmin && <button id='server-category-plus-button' onClick={handleClick}>
+        {(isAdmin || user.id === ownerId) && <button id='server-category-plus-button' onClick={handleClick}>
           <BsPlus id='server-category-plus-button' size={30}/>
         </button>}
       </div>
@@ -56,7 +58,7 @@ const Category = ({
         return <TextChannel 
           key={i}
           id={e.id} 
-          name={e.name} 
+          name={e.name}
           setCurrentTextChannel={setCurrentTextChannel}
           currentTextChannelId={currentTextChannelId}
           setCurrentTextChannelId={setCurrentTextChannelId}

@@ -1,6 +1,5 @@
 import React, { useContext, useState } from "react"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faGoogle } from "@fortawesome/free-brands-svg-icons"
+import { FaGoogle } from "react-icons/fa";
 import {
   IconButton,
   useDisclosure,
@@ -85,7 +84,7 @@ const Google = ({ size, color, margin }) => {
         id: id,
         username: username,
         email: email
-      }, { withCredentials: true })
+      })
 
       const cookie = response.data.cookie
 
@@ -111,7 +110,7 @@ const Google = ({ size, color, margin }) => {
       <IconButton
         margin={margin ? margin : "3"}
         size={size} color={color}
-        icon={<FontAwesomeIcon icon={faGoogle} />}
+        icon={<FaGoogle/>}
         onClick={signIn}
       />
       <Modal isOpen={isOpen} onClose={onClose} isCentered>

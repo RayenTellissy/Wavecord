@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
-import { faBolt, faUserGroup } from "@fortawesome/free-solid-svg-icons"
 
 // components
 import Search from './SearchBar/Search';
@@ -49,8 +48,8 @@ const ContactsBar = ({ highlighted, selected, setSelected }) => {
       <Search setQuery={setQuery}/>
 
       <div id='home-contacts-navigators'>
-        <HomeNavigator selected={selected} setSelected={setSelected} text="Friends" icon={faUserGroup}/>
-        <HomeNavigator selected={selected} setSelected={setSelected} text="Turbo" icon={faBolt} style={{ marginTop: 5 }}/>
+        <HomeNavigator selected={selected} setSelected={setSelected} text="Friends"/>
+        <HomeNavigator selected={selected} setSelected={setSelected} text="Turbo" style={{ marginTop: 5 }}/>
       </div>
 
       <DirectMessagesText id={user.id} fetchConversations={fetchConversations}/>

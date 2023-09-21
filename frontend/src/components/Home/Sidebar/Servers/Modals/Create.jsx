@@ -1,7 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { useNavigate } from "react-router-dom"
-import { faCamera } from "@fortawesome/free-solid-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { FaCamera } from 'react-icons/fa';
 import BeatLoader from "react-spinners/BeatLoader"
 import {
   ModalHeader,
@@ -130,7 +129,7 @@ const Create = ({ setScreen, onClose }) => {
       <div id='home-server-bar-modal-container'>
         <p className='home-server-bar-modal-text'>Give your new server a personality with a name and an icon. You can always change it later.</p>
         <label id='home-server-bar-modal-create-camera-label' htmlFor='home-server-bar-modal-create-camera'>
-          {image ? <img id='home-server-bar-modal-create-picture' src={image} /> : <FontAwesomeIcon style={{ height: 40, width: 40 }} icon={faCamera} />}
+          {image ? <img id='home-server-bar-modal-create-picture' src={image} /> : <FaCamera/>}
         </label>
         <input id='home-server-bar-modal-create-camera' type='file' onChange={importImage} />
       </div>

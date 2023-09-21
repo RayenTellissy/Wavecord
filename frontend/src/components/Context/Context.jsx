@@ -99,10 +99,9 @@ export const ContextProvider = ({ children }) => {
 
   const handleDisconnect = () => {
     socket.emit("statusChanged", {
-      id: user.id,
+      id: localStorage.getItem("wavecord-id"),
       status: "OFFLINE"
     })
-    setStatus("OFFLINE")
     const cachedServers = Cookies.get("cachedServers")
     if(cachedServers){
       const serverRooms = returnServerIds(JSON.parse(cachedServers))

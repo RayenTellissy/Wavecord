@@ -16,7 +16,7 @@ import { Context } from '../../Context/Context';
 // styles
 import "./AllButtons.css"
 
-const AllButtons = ({ user, ownerId, onOpen, server, fetchData }) => {
+const AllButtons = ({ user, ownerId, onOpen, server, fetchData, isAdmin }) => {
   const { fetchServers } = useContext(Context)
   const { isOpen, onOpen: onOpenConfirmation, onClose } = useDisclosure()
   const { isOpen: isOpenCategory, onOpen: onOpenCategory, onClose: onCloseCategory } = useDisclosure()
@@ -105,7 +105,7 @@ const AllButtons = ({ user, ownerId, onOpen, server, fetchData }) => {
         icon={<BsFillPersonPlusFill size={20} color={hovered === "Invite People" ? 'white' : '#949cf7'}/>}
         callback={() => onOpen()}
       />
-      {user.id === ownerId && <>
+      {(isAdmin || user.id === ownerId) && <>
         <PopoverButton
           hovered={hovered}
           setHovered={setHovered}

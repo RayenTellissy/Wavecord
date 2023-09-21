@@ -71,8 +71,8 @@ const MessageInput = ({
         created_at: new Date(Date.now())
       }
       sortConversations(id,conversations)
-      socket.emit("send_message", messageDetails)
       setMessages(prevMessages => [...prevMessages, messageDetails])
+      socket.emit("send_message", messageDetails)
       await axios.post(`${import.meta.env.VITE_SERVER_URL}/conversations/sendMessage`, {
         id: messageId,
         conversationId: id,
@@ -101,8 +101,8 @@ const MessageInput = ({
         type: "TEXT",
         created_at: new Date(Date.now())
       }
-      socket.emit("send_message", messageDetails)
       setMessages(prevMessages => [...prevMessages, messageDetails])
+      socket.emit("send_message", messageDetails)
       await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/sendMessage`,{
         id: messageId,
         channelId: channelId,
@@ -163,8 +163,8 @@ const MessageInput = ({
         created_at: new Date(Date.now())
       }
       try {
-        socket.emit("send_message", messageDetails)
         setMessages(prevMessages => [...prevMessages, messageDetails])
+        socket.emit("send_message", messageDetails)
         await axios.post(`${import.meta.env.VITE_SERVER_URL}/conversations/sendMessage`,{
           id: messageId,
           conversationId: id,
@@ -199,8 +199,8 @@ const MessageInput = ({
         created_at: new Date(Date.now())
       }
       try {
-        socket.emit("send_message", messageDetails)
         setMessages(prevMessages => [...prevMessages, messageDetails])
+        socket.emit("send_message", messageDetails)
         await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/sendMessage`,{
           id: messageId,
           channelId,

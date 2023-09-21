@@ -67,9 +67,7 @@ const VoiceChannel = ({
     // checking if user is already connected to the room
     if(currentVoiceChannelId) return
     if(currentVoiceChannelId !== id){
-      console.log(1)
       play()
-      console.log(1)
       const userDetails = {
         id: user.id,
         username: user.username,

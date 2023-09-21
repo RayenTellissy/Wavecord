@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { AiOutlineAudioMuted } from "react-icons/ai"
+import { BiSolidMicrophoneOff } from "react-icons/bi"
 import { BsCameraVideoFill } from "react-icons/bs"
 
 // components
@@ -34,11 +34,11 @@ const UserInRoom = ({
           {user.id !== id ? <>
             {userScreenShareEnabled && <Live/>}
             {userCameraEnabled && <BsCameraVideoFill className='user-in-room-icon' size={20}/>}
-            {!userMicEnabled && <AiOutlineAudioMuted className='user-in-room-icon' size={20}/>}
+            {!userMicEnabled && <BiSolidMicrophoneOff className='user-in-room-icon' size={20}/>}
           </> : <>
             {screenShareEnabled && <Live/>}
             {cameraEnabled && <BsCameraVideoFill className='user-in-room-icon' size={20}/>}
-            {!micEnabled && <AiOutlineAudioMuted className='user-in-room-icon' size={20}/>}
+            {!micEnabled && <BiSolidMicrophoneOff className='user-in-room-icon' size={20}/>}
           </>}
         </div>
       </div>}

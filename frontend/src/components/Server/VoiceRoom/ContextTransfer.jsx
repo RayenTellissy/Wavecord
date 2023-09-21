@@ -35,6 +35,13 @@ const ContextTransfer = ({ serverId, channelId }) => {
   const [connected,setConnected] = useState(false)
   const [play] = useSound(JoinRoom, { volume: 0.2 })
 
+  // watching if user left the room
+  useEffect(() => {
+    if(!channelId){
+      room.disconnect()
+    }
+  },[channelId])
+
   useEffect(() => {
     room.on("disconnected", async () => {
       try {
@@ -53,12 +60,7 @@ const ContextTransfer = ({ serverId, channelId }) => {
       }
     })
 
-    room.on("connected", () => {
-      console.log(1)
-      play()
-      console.log(1)
-      setConnected(true)
-    })
+    room.on("connected", () => setConnected(true))
 
     room.on("participantConnected", () => play())
   },[room])
@@ -71,7 +73,6 @@ const ContextTransfer = ({ serverId, channelId }) => {
 
   useEffect(() => {
     if(connected){
-      // console.log(room.disconnect())
       room.localParticipant.setMicrophoneEnabled(micEnabled)
     }
   },[micEnabled])

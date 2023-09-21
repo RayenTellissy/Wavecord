@@ -218,6 +218,7 @@ const Server = () => {
                   user={user}
                   server={server}
                   fetchData={fetchData}
+                  isAdmin={role ? role.isAdmin : false}
                 />
               </PopoverBody>
             </PopoverContent>
@@ -227,6 +228,8 @@ const Server = () => {
               return <Category
                 key={i}
                 isAdmin={role ? role.isAdmin : false}
+                ownerId={server.ownerId}
+                user={user}
                 id={e.id}
                 name={e.name}
                 text={e.Text_channels}
@@ -259,7 +262,7 @@ const Server = () => {
           roleColor={role ? role.color : "white"}
           server={server}
         />}
-        {currentChannelType === "voice" && <VoiceRoom
+        {currentVoiceChannelId && <VoiceRoom
           serverId={server.id}
           channelId={currentVoiceChannelId}
           setCurrentChannelType={setCurrentChannelType}

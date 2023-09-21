@@ -23,6 +23,7 @@ const VoiceRoom = ({
     getToken()
   },[user,channelId])
 
+  // getting token from the server to access voice channel
   const getToken = async () => {
     if(!channelId) return
     try {
@@ -84,6 +85,7 @@ const VoiceRoom = ({
         audio={true}
         onConnected={handleConnect}
         onDisconnected={handleDisconnect}
+        style={{ backgroundColor: "black"}}
       >
         <ContextTransfer
           serverId={serverId}
