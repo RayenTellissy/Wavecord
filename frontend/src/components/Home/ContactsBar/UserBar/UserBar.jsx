@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BiSolidMicrophone, BiSolidMicrophoneOff } from "react-icons/bi"
 import { MdHeadset, MdHeadsetOff } from "react-icons/md"
@@ -21,37 +21,74 @@ const UserBar = () => {
     setDisplayRoom,
     status,
     setStatus,
-    setCurrentVoiceChannelId
+    setCurrentVoiceChannelId,
+    socket
   } = useContext(Context)
   const navigate = useNavigate()
   const { isOpen, onOpen, onClose } = useDisclosure()
+  const [statusHovered,setStatusHovered] = useState("")
 
   const disconnect = () => {
     setCurrentVoiceChannelId("")
   }
 
+  const handleCustomStatus = (chosenStatus) => {
+    if(chosenStatus === status) return
+    if(chosenStatus === "ONLINE"){
+      localStorage.removeItem("customStatus")
+    }
+    if(chosenStatus !== "ONLINE"){
+      localStorage.setItem("customStatus", status)
+    }
+    setStatus(chosenStatus)
+    onClose()
+  }
+
   return (
     <div id='home-contacts-userbar-container'>
 
-      <Popover>
+      <Popover isOpen={isOpen} onClose={onClose}>
         <div id='home-contacts-userbar-avatar-section'>
-            <button id='home-contacts-userbar-popover-button'>
           <PopoverTrigger>
-            <>
+            <button className='home-contacts-userbar-popover-button' onClick={onOpen}>
               <Avatar image={user.image} status={status}/>
               <div id='home-contacts-userbar-avatar-name-status'>
                 <p id='home-contacts-userbar-username'>{user.username}</p>
                 <p id='home-contacts-userbar-status'>
-                  {status === "ONLINE" ? "Online" : (status === "BUSY" ? "Busy" : "Invisible")}
+                {status === "ONLINE" ? "Online" : (status === "BUSY" ? "Busy" : "Invisible")}
                 </p>
               </div>
-            </>
-          </PopoverTrigger>
             </button>
+          </PopoverTrigger>
         </div>
-        <PopoverContent>
-          <PopoverBody>
-            
+        <PopoverContent bgColor="#111214" border="none">
+          <PopoverBody padding="10px 10px">
+            <div id='home-contacts-userbar-status-buttons-container'>
+              <button className='home-contacts-userbar-status-button'
+                onMouseEnter={() => setStatusHovered("online")}
+                onMouseLeave={() => setStatusHovered("")}
+                onClick={() => handleCustomStatus("ONLINE")}
+              >
+                <div id={statusHovered === "online" ? 'user-bar-hovered-status' : 'user-bar-online-circle'}/>
+                Online
+              </button>
+              <button className='home-contacts-userbar-status-button'
+                onMouseEnter={() => setStatusHovered("busy")}
+                onMouseLeave={() => setStatusHovered("")}
+                onClick={() => handleCustomStatus("BUSY")}
+              >
+                <div id={statusHovered === "busy" ? 'user-bar-hovered-status' : 'user-bar-busy-circle'}/>
+                Busy
+              </button>
+              <button className='home-contacts-userbar-status-button'
+                onMouseEnter={() => setStatusHovered("invisible")}
+                onMouseLeave={() => setStatusHovered("")}
+                onClick={() => handleCustomStatus("OFFLINE")}
+              >
+                <div id={statusHovered === "invisible" ? 'user-bar-hovered-status' : 'user-bar-invisible-circle'}/>
+                Invisible
+              </button>
+            </div>
           </PopoverBody>
         </PopoverContent>
       </Popover>

@@ -47,7 +47,7 @@ const Server = () => {
     displayRoom,
     setDisplayRoom,
     fetchServers,
-    currentVoiceChannelId
+    currentVoiceChannelId,
   } = useContext(Context)
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { isOpen: isOpenDropdown, onOpen: onOpenDropdown, onClose: onCloseDropdown } = useDisclosure()
@@ -169,14 +169,16 @@ const Server = () => {
     setHoveredTextChannelId("")
     setCurrentChannelType("")
     const cachedVoiceChannel = Cookies.get("cachedVoiceChannel")
-    socket.emit("leave_voice", {
-      serverId: id,
-      channelId: cachedVoiceChannel,
-      userId: user.id
-    })
-    socket.emit("voice_disconnect", {
-      user: user.id
-    })
+    if(cachedVoiceChannel){
+      socket.emit("leave_voice", {
+        serverId: id,
+        channelId: cachedVoiceChannel,
+        userId: user.id
+      })
+      socket.emit("voice_disconnect", {
+        user: user.id
+      })
+    }
   }
 
   const handleDefaultChannel = () => {

@@ -54,6 +54,14 @@ export const ContextProvider = ({ children }) => {
         id: user.id,
         status
       })
+      const cachedServers = Cookies.get("cachedServers")
+      if(cachedServers){
+        const serverRooms = returnServerIds(JSON.parse(cachedServers))
+        socket.emit("server_member_status_changed", {
+          id: user.id,
+          serverRooms
+        })
+      }
     }
   },[status])
 
@@ -80,19 +88,44 @@ export const ContextProvider = ({ children }) => {
 
   const handleConnect = () => {
     if(socket){
-      socket.emit("statusChanged", {
-        id: localStorage.getItem("wavecord-id"),
-        status: "ONLINE"
-      })
-      setStatus("ONLINE")
-      const cachedServers = Cookies.get("cachedServers")
-      if(cachedServers){
-        const serverRooms = returnServerIds(JSON.parse(cachedServers))
-        // emitting a status change event to all servers that the user is in
-        socket.emit("server_member_status_changed", {
-          userId: user.id,
-          serverRooms
+      // custom status is memorized to keep the status that the user chose persistent
+      const customStatus = localStorage.getItem("customStatus")
+      if(customStatus){
+        if(customStatus === "OFFLINE"){
+          setStatus("OFFLINE")
+        }
+        else if(customStatus !== "OFFLINE"){
+          socket.emit("statusChanged", {
+            id: localStorage.getItem("wavecord-id"),
+            status: customStatus
+          })
+          setStatus(customStatus)
+          const cachedServers = Cookies.get("cachedServers")
+          if(cachedServers){
+            const serverRooms = returnServerIds(JSON.parse(cachedServers))
+            // emitting a status change event to all servers that the user is in
+            socket.emit("server_member_status_changed", {
+              userId: user.id,
+              serverRooms
+            })
+          }
+        }
+      }
+      else {
+        socket.emit("statusChanged", {
+          id: localStorage.getItem("wavecord-id"),
+          status: "ONLINE"
         })
+        setStatus("ONLINE")
+        const cachedServers = Cookies.get("cachedServers")
+        if(cachedServers){
+          const serverRooms = returnServerIds(JSON.parse(cachedServers))
+          // emitting a status change event to all servers that the user is in
+          socket.emit("server_member_status_changed", {
+            userId: user.id,
+            serverRooms
+          })
+        }
       }
     }
   }

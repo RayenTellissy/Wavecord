@@ -16,9 +16,9 @@ import "./Member.css"
 const Member = ({ id, username, image, role, roles, setRoles, constantRoles, serverId, fetchMembers, user, isOwner }) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [query, setQuery] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
-  const [isBanning, setIsBanning] = useState(false)
-  const [isKicking, setIsKicking] = useState(false)
+  const [isLoading,setIsLoading] = useState(false)
+  const [isBanning,setIsBanning] = useState(false)
+  const [isKicking,setIsKicking] = useState(false)
 
   useEffect(() => {
     filterRoles()

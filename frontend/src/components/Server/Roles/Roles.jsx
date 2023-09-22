@@ -23,6 +23,13 @@ const Roles = ({ serverId }) => {
     socket.on("receive_member_status", () => {
       fetchRoles()
     })
+    socket.on("receive_member_role_updated", () => {
+      fetchRoles()
+    })
+    return () => {
+      socket.off("receive_member_status")
+      socket.off("server_member_role_updated")
+    }
   },[socket])
 
   const fetchRoles = async () => {
@@ -31,6 +38,7 @@ const Roles = ({ serverId }) => {
       setRoles(response.data.withRole)
       setNoRoles(response.data.noRole)
       setOffline(response.data.offline)
+      console.log(roles)
     }
     catch(error) {
       console.log(error)

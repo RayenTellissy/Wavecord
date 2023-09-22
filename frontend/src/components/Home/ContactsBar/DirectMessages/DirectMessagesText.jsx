@@ -132,10 +132,9 @@ const DirectMessagesText = ({ id, fetchConversations }) => {
                     />
                   );
                 }))
-                
               }
             </PopoverBody>
-            <PopoverFooter padding="20px 0px" bgColor="#313338" borderBottomRadius={4} borderColor="#292929">
+            <PopoverFooter border="1px solid #222327" padding="20px 0px" bgColor="#313338" borderBottomRadius={4} borderColor="#292929">
               <div id='add-dm-popover-submit-container'>
                 <button id='add-dm-popover-submit' onClick={createDM}>
                   {isCreating ? <BeatLoader size={8} color='white'/> : <p id='add-dm-popover-submit-text'>Create DM</p>}

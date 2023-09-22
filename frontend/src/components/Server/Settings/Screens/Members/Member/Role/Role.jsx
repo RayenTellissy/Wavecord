@@ -1,15 +1,23 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import axios from 'axios';
+
+// components
+import { Context } from '../../../../../../Context/Context';
 
 // styles
 import "./Role.css"
 
 const Role = ({ id, name, color, userId, onClose, serverId, fetchMembers, setIsLoading }) => {
+  const { socket } = useContext(Context)
 
   const giveRole = async () => {
     try {
       setIsLoading(true)
-      await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/giveRole`,{
+      socket.emit("server_member_role_updated", {
+        id: userId,
+        serverId
+      })
+      await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/giveRole`, {
         userId,
         roleId: id,
         serverId

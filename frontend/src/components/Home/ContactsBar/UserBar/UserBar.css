@@ -27,6 +27,7 @@
 #home-contacts-userbar-avatar-name-status {
   display: flex;
   flex-direction: column;
+  text-align: left;
 }
 
 .home-contacts-userbar-icon {
@@ -42,7 +43,7 @@
   flex-direction: row;
 }
 
-#home-contacts-userbar-popover-button {
+.home-contacts-userbar-popover-button {
   display: flex;
   flex-direction: row;
   width: 100%;
@@ -50,6 +51,60 @@
   border-radius: 7px;
 }
 
-#home-contacts-userbar-popover-button:hover {
+.home-contacts-userbar-popover-button:hover {
   background-color: #3c3e44;
+}
+
+#home-contacts-userbar-status-buttons-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.home-contacts-userbar-status-button {
+  text-align: left;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  color: #b3b8bf;
+  font-family: GibsonRegular;
+  padding: 5px;
+  border-radius: 3px;
+}
+
+.home-contacts-userbar-status-button:hover {
+  background-color: #4752c4;
+  color: white;
+}
+
+#user-bar-online-circle {
+  height: 13px;
+  width: 13px;
+  border-radius: 50%;
+  background-color: #23a559;
+  margin-right: 7px;
+}
+
+#user-bar-busy-circle {
+  height: 13px;
+  width: 13px;
+  border-radius: 50%;
+  background-color: #f23f42;
+  margin-right: 7px;
+}
+
+#user-bar-invisible-circle {
+  height: 13px;
+  width: 13px;
+  border-radius: 50%;
+  background-color: #f23f42;
+  margin-right: 7px;
+  background-color: #80848e;
+}
+
+#user-bar-hovered-status {
+  height: 13px;
+  width: 13px;
+  border-radius: 50%;
+  background-color: white;
+  margin-right: 7px;
 }

@@ -28,9 +28,6 @@ io.on("connection", socket => {
   console.log("user connected", socket.id)
 
   socket.on("statusChanged", async (data) => {
-    if(data.status === "ONLINE"){
-      socket.join(data.id)
-    }
     try {
       await axios.put(`${process.env.MAIN_API}/users/setStatus`, {
         id: data.id,
@@ -40,6 +37,10 @@ io.on("connection", socket => {
     catch(error){
       console.log(error)
     }
+  })
+
+  socket.on("userConnected", data => {
+    socket.join(data.id)
   })
 
   socket.on("join_room", data => {
@@ -60,6 +61,14 @@ io.on("connection", socket => {
 
   socket.on("server_member_status_changed", data => {
     socket.to(data.serverRooms).emit("receive_member_status", data)
+  })
+
+  socket.on("server_member_role_updated", data => {
+    socket.to(data.serverId).emit("receive_member_role_updated", data)
+  })
+
+  socket.on("receive_member_status", data => {
+    console.log(data)
   })
 
   socket.on("voice_updated", data => {

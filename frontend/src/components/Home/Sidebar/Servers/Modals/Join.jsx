@@ -15,8 +15,8 @@ import { Context } from '../../../../Context/Context';
 const Join = ({ onClose, setScreen }) => {
   const { user } = useContext(Context)
   const [joinDisabled, setJoinDisabled] = useState(false)
-  const [invite, setInvite] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
+  const [invite,setInvite] = useState("")
+  const [isLoading,setIsLoading] = useState(false)
   const toast = useToast()
   const navigate = useNavigate()
 
