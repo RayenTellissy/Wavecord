@@ -25,9 +25,13 @@ const ContextTransfer = ({ serverId, channelId }) => {
     socket,
     micEnabled,
     setMicEnabled,
+    cameraEnabled,
     setCameraEnabled,
     setIsSpeaking,
     setScreenShareEnabled,
+    selectScreenShare,
+    setSelectScreenShare,
+    setConnectionQuality,
     setCurrentVoiceChannelId
   } = useContext(Context)
   const participants = useParticipants()
@@ -46,6 +50,7 @@ const ContextTransfer = ({ serverId, channelId }) => {
     room.on("disconnected", async () => {
       try {
         setCurrentVoiceChannelId("")
+        setConnectionQuality(null)
         socket.emit("leave_voice", {
           serverId,
           channelId,
@@ -60,7 +65,10 @@ const ContextTransfer = ({ serverId, channelId }) => {
       }
     })
 
-    room.on("connected", () => setConnected(true))
+    room.on("connected", () => {
+      setConnected(true)
+      setConnectionQuality(room.localParticipant.connectionQuality)
+    })
 
     room.on("participantConnected", () => play())
   },[room])
@@ -76,6 +84,17 @@ const ContextTransfer = ({ serverId, channelId }) => {
       room.localParticipant.setMicrophoneEnabled(micEnabled)
     }
   },[micEnabled])
+
+  useEffect(() => {
+    if(connected){
+      room.localParticipant.setCameraEnabled(cameraEnabled)
+    }
+  },[cameraEnabled])
+
+  useEffect(() => {
+    room.localParticipant.setScreenShareEnabled(selectScreenShare)
+    setSelectScreenShare(false)
+  },[selectScreenShare])
   
   useEffect(() => {
     handleRoomEvents()
@@ -93,6 +112,7 @@ const ContextTransfer = ({ serverId, channelId }) => {
 
   useEffect(() => {
     // handling localparticipant's screen share activity
+    setScreenShareEnabled(room.localParticipant.isScreenShareEnabled)
     handleLocalScreenShare(room.localParticipant.isScreenShareEnabled,setScreenShareEnabled)
   },[room.localParticipant.isScreenShareEnabled])
 
@@ -100,6 +120,7 @@ const ContextTransfer = ({ serverId, channelId }) => {
     room.localParticipant.on("trackMuted", () => localMute(setMicEnabled))
     room.localParticipant.on("trackUnmuted", () => localUnmute(setMicEnabled))
     room.localParticipant.on("isSpeakingChanged", (localSpeaking) => handleSpeaking(localSpeaking,setIsSpeaking))
+    room.localParticipant.on("connectionQualityChanged", quality => setConnectionQuality(quality))
   }
 
   return <></>

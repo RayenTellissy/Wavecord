@@ -1,13 +1,19 @@
 #home-contacts-userbar-container {
   display: flex;
-  flex-direction: row;
-  padding: 8px;
+  flex-direction: column;
   justify-content: space-between;
   align-items: center;
   margin-top: auto;
   background-color: #232428;
 }
 
+#home-contacts-userbar-bottom-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+  padding: 8px;
+}
 
 #home-contacts-userbar-avatar-section {
   display: flex;
@@ -107,4 +113,37 @@
   border-radius: 50%;
   background-color: white;
   margin-right: 7px;
+}
+
+#home-contacts-userbar-voice-tools-container {
+  width: 100%;
+  border-bottom: 1px solid #37393f;
+  padding: 10px;
+}
+
+#home-contacts-userbar-voice-status {
+  position: relative;
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-family: GibsonMedium;
+  gap: 3px;
+}
+
+#home-contacts-userbar-voice-tools-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+#userbar-disconnect-button {
+  position: absolute;
+  right: 10px;
+  padding: 5px;
+  border-radius: 4px;
+}
+
+#userbar-disconnect-button:hover {
+  background-color: #3b3d43;
 }

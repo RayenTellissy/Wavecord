@@ -1,0 +1,14 @@
+.userbar-tool-button {
+  padding: 7px;
+  width: 49%;
+  background-color: #313338;
+  border-radius: 4px;
+  transition: .1s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.userbar-tool-button:hover {
+  background-color: #2b2d31;
+}

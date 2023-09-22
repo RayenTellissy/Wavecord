@@ -25,8 +25,9 @@ export const ContextProvider = ({ children }) => {
   const [micEnabled,setMicEnabled] = useMic()
   const [cameraEnabled,setCameraEnabled] = useState(false)
   const [isSpeaking,setIsSpeaking] = useState(false)
+  const [selectScreenShare,setSelectScreenShare] = useState(false)
   const [screenShareEnabled,setScreenShareEnabled] = useState(false)
-  const [connectionQuality,setConnectionQuality] = useState("")
+  const [connectionQuality,setConnectionQuality] = useState(null)
   const [connectionState,setConnectionState] = useState("")
   const [displayRoom,setDisplayRoom] = useState(false)
   const [status,setStatus] = useState("")
@@ -174,6 +175,8 @@ export const ContextProvider = ({ children }) => {
       setIsSpeaking,
       screenShareEnabled,
       setScreenShareEnabled,
+      selectScreenShare,
+      setSelectScreenShare,
       connectionQuality,
       setConnectionQuality,
       displayRoom,

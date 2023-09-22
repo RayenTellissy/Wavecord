@@ -20,7 +20,7 @@ const VoiceChannel = ({
   hoveredVoiceChannelId,
   setHoveredVoiceChannelId
 }) => {
-  const { user, socket, currentVoiceChannelId, setCurrentVoiceChannelId } = useContext(Context)
+  const { user, socket, currentVoiceChannelId, setCurrentVoiceChannelId, displayRoom, setDisplayRoom } = useContext(Context)
   const [users,setUsers] = useState([])
   const [play] = useSound(JoinRoom, { volume: 0.2 })
 
@@ -65,7 +65,9 @@ const VoiceChannel = ({
 
   const handleClick = async () => {
     // checking if user is already connected to the room
-    if(currentVoiceChannelId) return
+    if(currentVoiceChannelId === id){
+      return setDisplayRoom(!displayRoom)
+    }
     if(currentVoiceChannelId !== id){
       play()
       const userDetails = {

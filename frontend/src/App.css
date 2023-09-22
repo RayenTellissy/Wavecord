@@ -22,22 +22,22 @@ textarea {
 
 @font-face {
   font-family: GibsonRegular;
-  src: url("./assets/fonts/Ubuntu/Ubuntu-Regular.ttf");
+  src: url("./assets/fonts/Gibson/Gibson-Regular.ttf");
 }
 
 @font-face {
   font-family: GibsonBold;
-  src: url("./assets/fonts/Ubuntu/Ubuntu-Bold.ttf");
+  src: url("./assets/fonts/Gibson/Gibson-Bold.ttf");
 }
 
 @font-face {
   font-family: GibsonMedium;
-  src: url("./assets/fonts/Ubuntu/Ubuntu-Medium.ttf");
+  src: url("./assets/fonts/Gibson/Gibson-Medium.ttf");
 }
 
 @font-face {
   font-family: GibsonLight;
-  src: url("./assets/fonts/Ubuntu/Ubuntu-Light.ttf");
+  src: url("./assets/fonts/Gibson/Gibson-Light.ttf");
 }
 
 .default-scrollbar::-webkit-scrollbar {

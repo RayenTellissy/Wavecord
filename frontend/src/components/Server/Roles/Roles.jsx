@@ -38,7 +38,6 @@ const Roles = ({ serverId }) => {
       setRoles(response.data.withRole)
       setNoRoles(response.data.noRole)
       setOffline(response.data.offline)
-      console.log(roles)
     }
     catch(error) {
       console.log(error)
