@@ -34,7 +34,8 @@ export const ContextProvider = ({ children }) => {
   const [servers,setServers] = useState([])
   const [token,setToken] = useState("")
   const [serversLoading,setServersLoading] = useState(true)
-  const [notifications,setNotifications] = useState(null)
+  const [directMessageNotifications,setDirectMessageNotifications] = useState(null)
+  const [friendRequestNotifications,setFriendRequestNotifications] = useState(null)
 
   useEffect(() => {
     authenticateSession()
@@ -45,9 +46,6 @@ export const ContextProvider = ({ children }) => {
 
   useEffect(() => {
     if(socket){
-      socket.on("receive_notification", () => {
-        fetchNotifications()
-      })
       handleConnect()
       window.addEventListener("beforeunload", handleDisconnect)
     }
@@ -169,7 +167,8 @@ export const ContextProvider = ({ children }) => {
   const fetchNotifications = async () => {
     try {
       const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/notifications/fetchAllNotifications/${user.id}`)
-      setNotifications(response.data)
+      setDirectMessageNotifications(response.data.DirectMessageNotifications)
+      setFriendRequestNotifications(response.data.FriendRequestNotifications)
     }
     catch(error){
       console.log(error)
@@ -213,8 +212,10 @@ export const ContextProvider = ({ children }) => {
       setServersLoading,
       fetchServers,
       handleConnect,
-      notifications,
-      setNotifications
+      directMessageNotifications,
+      setDirectMessageNotifications,
+      friendRequestNotifications,
+      setFriendRequestNotifications
     }}>
       {children}
     </Context.Provider>

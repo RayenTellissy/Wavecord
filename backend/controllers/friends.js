@@ -88,7 +88,10 @@ module.exports = {
 
   addFriend: async (req,res) => {
     try {
-      const { sender, recipient } = req.body
+      const { senderUsername, sender, recipient } = req.body
+
+      // checking if it is not the user himself
+      if(senderUsername === recipient) return res.send({ invitingSelf: true })
 
       // user exists check
       const userExists = await prisma.users.findFirst({
@@ -207,7 +210,7 @@ module.exports = {
           recipientId: query.id
         }
       })
-      res.send({ success: true })
+      res.send({ success: true, id: query.id  })
     }
     catch(error){
       res.send(error)

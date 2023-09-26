@@ -31,22 +31,24 @@ const Messages = () => {
     conversations,
     conversationChosen,
     setConversationChosen,
-    notifications,
-    setNotifications
+    directMessageNotifications
   } = useContext(Context)
   const { id } = useParams()
-  const [messages, setMessages] = useState([])
-  const [message, setMessage] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
+  const [messages,setMessages] = useState([])
+  const [message,setMessage] = useState("")
+  const [isLoading,setIsLoading] = useState(false)
   const messagesContainerRef = useRef(null)
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (!conversationChosen) {
+    if(!conversationChosen){
       setConversationChosen(JSON.parse(Cookies.get("conversationChosen")))
     }
+    return () => {
+      Cookies.remove("conversationChosen")
+    }
   }, [])
-
+  
   // handling conversation switching
   useEffect(() => {
     window.addEventListener("beforeunload", handleUnload)
@@ -149,9 +151,9 @@ const Messages = () => {
         conversationId: id,
         userId: user.id
       })
-      if (notifications && conversationHasNotification(notifications.DirectMessageNotifications, id)) {
+      if (directMessageNotifications && conversationHasNotification(directMessageNotifications, id)) {
         // removing notification after entering the conversation
-        delete notifications.DirectMessageNotifications[id]
+        delete directMessageNotifications[id]
         await axios.post(`${import.meta.env.VITE_SERVER_URL}/notifications/removeDirectMessageNotification`, {
           conversationId: id,
           recipientId: user.id

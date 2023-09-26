@@ -1,4 +1,5 @@
 import React, { useContext, useEffect } from 'react';
+import axios from "axios"
 
 // components
 import HomeButton from "./HomeButton/HomeButton"
@@ -11,22 +12,42 @@ import Notification from './Notification/Notification';
 import "./Sidebar.css"
 
 const Sidebar = ({ highlighted }) => {
-  const { servers, fetchServers, notifications } = useContext(Context)
+  const { user, socket, servers, fetchServers, directMessageNotifications, setDirectMessageNotifications } = useContext(Context)
 
   useEffect(() => {
     fetchServers()
   },[])
 
+  useEffect(() => {
+    socket.on("receive_direct_message_notification", () => {
+      fetchDirectMessageNotifications()
+    })
+    socket.off("receive_direct_message_notification")
+  },[socket])
+
+  const fetchDirectMessageNotifications = async () => {
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/notifications/fetchDirectMessageNotifications/${user.id}`)
+      console.log(response.data)
+      setDirectMessageNotifications(response.data)
+    }
+    catch(error){
+      console.log(error)
+    }
+  }
+
   return (
     <div id='home-server-bar'>
-      {notifications && Object.keys(notifications.DirectMessageNotifications).length
-      ? Object.keys(notifications.DirectMessageNotifications).map((key,i) => {
-        const e = notifications.DirectMessageNotifications[key]
+      {directMessageNotifications && Object.keys(directMessageNotifications).length
+      ? Object.keys(directMessageNotifications).map((key,i) => {
+        const e = directMessageNotifications[key]
         return <Notification
           key={i}
           conversationId={e.conversationId}
+          id={e.sender.id}
           username={e.sender.username}
           image={e.sender.image}
+          status={e.sender.status}
           messages={e.messages}
         />
       }) : <HomeButton/>}

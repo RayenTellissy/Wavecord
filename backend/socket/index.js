@@ -83,10 +83,15 @@ io.on("connection", socket => {
     socket.to(data.serverId).emit("receive_leave_voice", data)
   })
 
-  socket.on("send_notification", data => {
-    socket.to(data.userId).emit("receive_notification", data)
+  socket.on("send_direct_message_notification", data => {
+    socket.to(data.userId).emit("receive_direct_message_notification", data)
   })
 
+  socket.on("send_friend_request_notification", data => {
+    console.log(data)
+    socket.to(data.userId).emit("receive_friend_request_notification")
+  })
+  
   io.on("disconnect", socket => {
     console.log("user disconnected", socket.id)
   })

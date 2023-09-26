@@ -1,13 +1,34 @@
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import { FaUserGroup } from 'react-icons/fa6';
+import axios from 'axios';
 
 // components
 import TopbarButton from './TopbarButton';
+import { Context } from '../../Context/Context';
 
 // styles
 import "./Topbar.css"
 
 const Topbar = ({ selected, selectedScreen, setSelectedScreen }) => {
+  const { user, socket, friendRequestNotifications, setFriendRequestNotifications } = useContext(Context)
+
+  useEffect(() => {
+    socket.on("receive_friend_request_notification", () => {
+      fetchFriendRequestNotifications()
+    })
+
+    return () => socket.off("receive_friend_request_notification")
+  },[socket])
+
+  const fetchFriendRequestNotifications = async () => {
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/notifications/fetchFriendRequestNotifications/${user.id}`)
+      setFriendRequestNotifications(response.data)
+    }
+    catch(error){
+      console.log(error)
+    }
+  }
 
   return (
     <div id='home-right-topbar'>
@@ -17,7 +38,12 @@ const Topbar = ({ selected, selectedScreen, setSelectedScreen }) => {
         <span id='home-right-topbar-friends-seperator'/>
         <TopbarButton text="Online" selectedScreen={selectedScreen} setSelectedScreen={setSelectedScreen}/>
         <TopbarButton text="All" selectedScreen={selectedScreen} setSelectedScreen={setSelectedScreen}/>
-        <TopbarButton text="Pending" selectedScreen={selectedScreen} setSelectedScreen={setSelectedScreen}/>
+        <TopbarButton
+          text="Pending"
+          selectedScreen={selectedScreen}
+          setSelectedScreen={setSelectedScreen}
+          notifications={friendRequestNotifications}
+        />
         <TopbarButton text="Blocked" selectedScreen={selectedScreen} setSelectedScreen={setSelectedScreen}/>
         <button 
           onClick={() => setSelectedScreen("AddFriend")} 

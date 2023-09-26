@@ -62,7 +62,7 @@ module.exports = {
     try {
       const { id } = req.params
 
-      const result = await prisma.directMessageNotifications.findMany({
+      const directMessageNotifications = await prisma.directMessageNotifications.findMany({
         where: {
           recipientId: id
         },
@@ -71,13 +71,20 @@ module.exports = {
         }
       })
 
+      const friendRequestNotifications = await prisma.friendRequestNotifications.count({
+        where: {
+          recipientId: id
+        }
+      })
+
       var directMessageNotificationsObject = {}
-      for(var i in result){
-        directMessageNotificationsObject[result[i].conversationId] = result[i]
+      for(var i in directMessageNotifications){
+        directMessageNotificationsObject[directMessageNotifications[i].conversationId] = directMessageNotifications[i]
       }
 
       res.send({
-        DirectMessageNotifications: directMessageNotificationsObject
+        DirectMessageNotifications: Object.keys(directMessageNotificationsObject).length ? directMessageNotificationsObject : null,
+        FriendRequestNotifications: friendRequestNotifications ? friendRequestNotifications : null
       })
     }
     catch(error){
@@ -97,6 +104,85 @@ module.exports = {
       })
 
       res.send(result)
+    }
+    catch(error){
+      res.send(error)
+    }
+  },
+
+  createFriendRequestNotification: async (req,res) => {
+    try {
+      const { senderId, recipientId } = req.body
+
+      await prisma.friendRequestNotifications.create({
+        data: {
+          senderId,
+          recipientId
+        }
+      })
+
+      res.send({ success: true })
+    }
+    catch(error){
+      res.send(error)
+    }
+  },
+
+  removeFriendRequestNotification: async (req,res) => {
+    try {
+      const { recipientId } = req.body
+
+      await prisma.friendRequestNotifications.delete({
+        where: {
+          recipientId
+        }
+      })
+
+      res.send({ success: true })
+    }
+    catch(error){
+      res.send(error)
+    }
+  },
+
+  fetchDirectMessageNotifications: async (req,res) => {
+    try {
+      const { id } = req.params
+
+      const directMessageNotifications = await prisma.directMessageNotifications.findMany({
+        where: {
+          recipientId: id
+        },
+        include: {
+          sender: true
+        }
+      })
+
+      var directMessageNotificationsObject = {}
+      for(var i in directMessageNotifications){
+        directMessageNotificationsObject[directMessageNotifications[i].conversationId] = directMessageNotifications[i]
+      }
+
+      res.send(directMessageNotificationsObject)
+    }
+    catch(error){
+      res.send(error)
+    }
+  },
+
+  fetchFriendRequestNotifications: async (req,res) => {
+    try {
+      const { id } = req.params
+
+      const friendRequestNotifications = await prisma.friendRequestNotifications.count({
+        where: {
+          recipientId: id
+        }
+      })
+
+      if(friendRequestNotifications === 0) res.send(null)
+
+      res.send(String(friendRequestNotifications))
     }
     catch(error){
       res.send(error)

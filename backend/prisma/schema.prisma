@@ -35,6 +35,8 @@ model Users {
   BugReports                         BugReports[]
   sentDirectMessageNotifications     DirectMessageNotifications[] @relation("NotificationSender")
   receivedDirectMessageNotifications DirectMessageNotifications[] @relation("NotificationRecipient")
+  sentFriendRequestNotifications     FriendRequestNotifications[] @relation("NotificationSender")
+  receivedFriendRequestNotifications FriendRequestNotifications[] @relation("NotificationRecipient")
 }
 
 model Servers {
@@ -180,6 +182,14 @@ model DirectMessageNotifications {
   conversation   Conversations @relation(fields: [conversationId], references: [id])
   conversationId String
   messages       Int           @default(1)
+}
+
+model FriendRequestNotifications {
+  id          String @id @default(cuid())
+  sender      Users  @relation("NotificationSender", fields: [senderId], references: [id])
+  senderId    String @unique
+  recipient   Users  @relation("NotificationRecipient", fields: [recipientId], references: [id])
+  recipientId String @unique
 }
 
 model BugReports {

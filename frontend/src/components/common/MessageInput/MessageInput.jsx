@@ -85,15 +85,13 @@ const MessageInput = ({
         conversationId: id
       })
       // if notification was created (recipient is not in the room). emit socket event
-      console.log(response.data.success)
       if(response.data.success){
-        socket.emit("send_notification", {
+        socket.emit("send_direct_message_notification", {
           conversationId: id,
           userId: conversationChosen.id,
           username: user.username,
           image: user.image,
-          message: storedMessage,
-          type: "DirectMessage"
+          message: storedMessage
         })
       }
     }
@@ -197,8 +195,7 @@ const MessageInput = ({
         if(response.data.success){
           socket.emit("send_notification", {
             userId: conversationChosen.id,
-            message: url,
-            type: "DirectMessage"
+            message: url
           })
         }
       }

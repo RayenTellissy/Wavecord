@@ -11,7 +11,7 @@ import Loader from "../../../common/Loader/Loader"
 import "./PendingRequests.css"
 
 const PendingRequests = ({ query, setShowSearch }) => {
-  const { user } = useContext(Context)
+  const { user, friendRequestNotifications, setFriendRequestNotifications } = useContext(Context)
   const [users,setUsers] = useState([])
   const [constantUsers,setConstantUsers] = useState([])
   const [isLoading,setIsLoading] = useState(true)
@@ -19,7 +19,11 @@ const PendingRequests = ({ query, setShowSearch }) => {
 
   useEffect(() => {
     fetchRequests()
-    return () => setShowSearch(false)
+    removeFriendRequestNotifications()
+    return () => {
+      setShowSearch(false)
+      removeFriendRequestNotifications()
+    }
   },[])
 
   useEffect(() => {
@@ -45,6 +49,20 @@ const PendingRequests = ({ query, setShowSearch }) => {
     }
     catch(error){
       console.log(error)
+    }
+  }
+
+  const removeFriendRequestNotifications = async () => {
+    if(friendRequestNotifications){
+      try {
+        setFriendRequestNotifications(null)
+        await axios.post(`${import.meta.env.VITE_SERVER_URL}/notifications/removeFriendRequestNotification`, {
+          recipientId: user.id
+        })
+      }
+      catch(error){
+        console.log(error)
+      }
     }
   }
 

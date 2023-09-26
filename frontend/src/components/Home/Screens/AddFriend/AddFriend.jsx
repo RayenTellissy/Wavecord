@@ -10,7 +10,7 @@ import Loader from '../../../common/Loader/Loader';
 import "./AddFriend.css"
 
 const AddFriend = ({ setShowSearch }) => {
-  const { user } = useContext(Context)
+  const { user, socket } = useContext(Context)
   const [query,setQuery] = useState("")
   const [isLoading,setIsLoading] = useState(false)
   const [isDisabled,setIsDisabled] = useState(false)
@@ -27,9 +27,29 @@ const AddFriend = ({ setShowSearch }) => {
     setIsLoading(true)
     try {
       const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/friends/addFriend`,{
+        senderUsername: user.username,
         sender: user.id,
         recipient: query
       })
+
+      // friend request successfully created
+      if(response.data.success){
+        await axios.post(`${import.meta.env.VITE_SERVER_URL}/notifications/createFriendRequestNotification`, {
+          senderId: user.id,
+          recipientId: response.data.id
+        })
+        socket.emit("send_friend_request_notification", {
+          userId: response.data.id
+        })
+      }
+
+      if(response.data.invitingSelf){
+        toast({
+          description: "You cannot send yourself a friend request.",
+          status: "warning",
+          duration: 2000
+        })
+      }
 
       if(response.data.userExists === false){
         toast({
