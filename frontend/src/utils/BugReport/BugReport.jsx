@@ -50,7 +50,7 @@ const BugReport = () => {
               <p>Bug Report</p>
             </div>
           </ModalHeader>
-          <ModalBody id='asdljnbasoiujdnas'>
+          <ModalBody>
             <textarea value={message} id='bug-report-textarea' rows={9} onChange={e => setMessage(e.target.value)}/>
           </ModalBody>
           <ModalFooter justifyContent="center">

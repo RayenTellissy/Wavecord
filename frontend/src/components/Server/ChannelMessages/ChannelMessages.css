@@ -15,6 +15,7 @@
   flex-direction: column;
   flex: 1;
   background-color: #313338;
+  height: 100vh;
 }
 
 #server-message-input-container{

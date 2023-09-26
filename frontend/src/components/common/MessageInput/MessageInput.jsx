@@ -38,7 +38,7 @@ const MessageInput = ({
   channelId,
   roleColor
 }) => {
-  const { socket, conversations } = useContext(Context)
+  const { socket, conversations, conversationChosen } = useContext(Context)
   const { id } = useParams()
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [showEmoji,setShowEmoji] = useState(false)
@@ -79,6 +79,23 @@ const MessageInput = ({
         senderId: user.id,
         message: storedMessage
       })
+      const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/notifications/createDirectMessageNotification`, {
+        senderId: user.id,
+        recipientId: conversationChosen.id,
+        conversationId: id
+      })
+      // if notification was created (recipient is not in the room). emit socket event
+      console.log(response.data.success)
+      if(response.data.success){
+        socket.emit("send_notification", {
+          conversationId: id,
+          userId: conversationChosen.id,
+          username: user.username,
+          image: user.image,
+          message: storedMessage,
+          type: "DirectMessage"
+        })
+      }
     }
     else if(conversationType === "server"){
       const messageId = createId()
@@ -172,6 +189,18 @@ const MessageInput = ({
           message: url,
           type: "LINK"
         })
+        const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/notifications/createDirectMessageNotification`, {
+          senderId: user.id,
+          recipientId: conversationChosen.id
+        })
+        // if notification was created (recipient is not in the room). emit socket event
+        if(response.data.success){
+          socket.emit("send_notification", {
+            userId: conversationChosen.id,
+            message: url,
+            type: "DirectMessage"
+          })
+        }
       }
       catch(error){
         console.log(error)

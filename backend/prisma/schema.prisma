@@ -8,29 +8,33 @@ generator client {
 }
 
 model Users {
-  id                     String           @id
-  username               String           @unique
-  email                  String
-  image                  String?
-  status                 Status           @default(ONLINE)
-  current_vc             Voice_channels?  @relation(fields: [voice_channelId], references: [id])
-  voice_channelId        String?
-  muted                  Boolean          @default(false)
-  deafened               Boolean          @default(false)
-  role                   Role             @default(BASIC)
-  created_at             DateTime         @default(now())
-  UsersInServers         UsersInServers[]
-  Friends                Friends[]
-  Conversations          Conversations[]
-  DirectMessages         DirectMessages[]
-  servers_created        Servers[]
-  Bans                   Bans[]
-  sentFriendRequests     FriendRequest[]  @relation("FriendRequestSender")
-  receivedFriendRequests FriendRequest[]  @relation("FriendRequestRecipient")
-  blockedUsers           BlockedUsers[]   @relation("blockedUsers")
-  blockedByUsers         BlockedUsers[]   @relation("blockedByUsers")
-  ServerMessages         ServerMessages[]
-  BugReports             BugReports[]
+  id                                 String                       @id
+  username                           String                       @unique
+  email                              String
+  image                              String?
+  status                             Status                       @default(ONLINE)
+  current_vc                         Voice_channels?              @relation(fields: [voice_channelId], references: [id])
+  voice_channelId                    String?
+  muted                              Boolean                      @default(false)
+  deafened                           Boolean                      @default(false)
+  role                               Role                         @default(BASIC)
+  created_at                         DateTime                     @default(now())
+  UsersInServers                     UsersInServers[]
+  Friends                            Friends[]
+  Conversations                      Conversations[]              @relation("Users")
+  activeConversation                 Conversations?               @relation(fields: [activeConversationId], references: [id])
+  activeConversationId               String?
+  DirectMessages                     DirectMessages[]
+  servers_created                    Servers[]
+  Bans                               Bans[]
+  sentFriendRequests                 FriendRequest[]              @relation("FriendRequestSender")
+  receivedFriendRequests             FriendRequest[]              @relation("FriendRequestRecipient")
+  blockedUsers                       BlockedUsers[]               @relation("blockedUsers")
+  blockedByUsers                     BlockedUsers[]               @relation("blockedByUsers")
+  ServerMessages                     ServerMessages[]
+  BugReports                         BugReports[]
+  sentDirectMessageNotifications     DirectMessageNotifications[] @relation("NotificationSender")
+  receivedDirectMessageNotifications DirectMessageNotifications[] @relation("NotificationRecipient")
 }
 
 model Servers {
@@ -135,12 +139,14 @@ model FriendRequest {
 }
 
 model Conversations {
-  id             String           @id @default(cuid())
-  users          Users[]
-  type           ConversationType
-  DirectMessages DirectMessages[]
-  Friends        Friends?
-  updated_at     DateTime         @updatedAt
+  id                         String                       @id @default(cuid())
+  users                      Users[]                      @relation("Users")
+  usersInRoom                Users[]
+  type                       ConversationType
+  DirectMessages             DirectMessages[]
+  Friends                    Friends?
+  updated_at                 DateTime                     @updatedAt
+  DirectMessageNotifications DirectMessageNotifications[]
 }
 
 model DirectMessages {
@@ -163,6 +169,17 @@ model ServerMessages {
   message    String
   type       MessageType   @default(TEXT)
   created_at DateTime      @default(now())
+}
+
+model DirectMessageNotifications {
+  id             String        @id @default(cuid())
+  sender         Users         @relation("NotificationSender", fields: [senderId], references: [id])
+  senderId       String
+  recipient      Users         @relation("NotificationRecipient", fields: [recipientId], references: [id])
+  recipientId    String
+  conversation   Conversations @relation(fields: [conversationId], references: [id])
+  conversationId String
+  messages       Int           @default(1)
 }
 
 model BugReports {

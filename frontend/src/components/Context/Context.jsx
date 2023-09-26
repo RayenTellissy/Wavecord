@@ -1,5 +1,4 @@
-import React from "react";
-import { createContext, useEffect, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 import axios from "axios";
 import io from "socket.io-client"
 import Cookies from "js-cookie"
@@ -35,15 +34,20 @@ export const ContextProvider = ({ children }) => {
   const [servers,setServers] = useState([])
   const [token,setToken] = useState("")
   const [serversLoading,setServersLoading] = useState(true)
+  const [notifications,setNotifications] = useState(null)
 
   useEffect(() => {
     authenticateSession()
     handleSocket()
+    fetchNotifications()
     return () => window.removeEventListener("beforeunload", handleDisconnect)
   },[])
 
   useEffect(() => {
     if(socket){
+      socket.on("receive_notification", () => {
+        fetchNotifications()
+      })
       handleConnect()
       window.addEventListener("beforeunload", handleDisconnect)
     }
@@ -128,6 +132,10 @@ export const ContextProvider = ({ children }) => {
           })
         }
       }
+      // session for notifications
+      socket.emit("start_session", {
+        id: user.id
+      })
     }
   }
 
@@ -152,6 +160,16 @@ export const ContextProvider = ({ children }) => {
       setServers(servers.data)
       Cookies.set("cachedServers", JSON.stringify(servers.data))
       setServersLoading(false)
+    }
+    catch(error){
+      console.log(error)
+    }
+  }
+
+  const fetchNotifications = async () => {
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/notifications/fetchAllNotifications/${user.id}`)
+      setNotifications(response.data)
     }
     catch(error){
       console.log(error)
@@ -194,7 +212,9 @@ export const ContextProvider = ({ children }) => {
       serversLoading,
       setServersLoading,
       fetchServers,
-      handleConnect
+      handleConnect,
+      notifications,
+      setNotifications
     }}>
       {children}
     </Context.Provider>

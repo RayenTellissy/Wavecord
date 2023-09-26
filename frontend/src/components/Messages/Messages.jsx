@@ -19,35 +19,50 @@ import "./Messages.css"
 
 // helper functions
 import sortConversations from '../../utils/Helper/sortConversations';
+import { conversationHasNotification } from '../../utils/Helper/notificationHelpers';
 
 // caching state
 var currentMessage = ""
 
 const Messages = () => {
-  const { user, socket, conversations, conversationChosen, setConversationChosen } = useContext(Context)
+  const {
+    user,
+    socket,
+    conversations,
+    conversationChosen,
+    setConversationChosen,
+    notifications,
+    setNotifications
+  } = useContext(Context)
   const { id } = useParams()
-  const [messages,setMessages] = useState([])
-  const [message,setMessage] = useState("")
-  const [isLoading,setIsLoading] = useState(false)
+  const [messages, setMessages] = useState([])
+  const [message, setMessage] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
   const messagesContainerRef = useRef(null)
   const navigate = useNavigate()
 
   useEffect(() => {
-    if(!conversationChosen){
+    if (!conversationChosen) {
       setConversationChosen(JSON.parse(Cookies.get("conversationChosen")))
     }
-  },[])
-  
+  }, [])
+
   // handling conversation switching
   useEffect(() => {
+    window.addEventListener("beforeunload", handleUnload)
+    joinConversation()
     handleCachedMessage()
     fetchMessages()
     socket.emit("join_room", id) // emitting a join room event to the socket server
     scrollToBottom()
     Cookies.set("conversationChosen", JSON.stringify(conversationChosen))
-    return () => handleContactSwitch()
-  },[id])
-  
+    return () => {
+      handleContactSwitch()
+      leaveConversation()
+      window.removeEventListener("beforeunload", handleUnload)
+    }
+  }, [id])
+
   // socket watching to update messages upon receiving socket
   useEffect(() => {
     socket.on("receive_message", data => {
@@ -61,33 +76,35 @@ const Messages = () => {
       socket.off("receive_message")
       socket.off("receive_delete_message")
     }
-  },[socket])
+  }, [socket])
 
   useEffect(() => {
     scrollToBottom()
-  },[messages])
+  }, [messages])
 
   useEffect(() => {
     currentMessage = message
-  },[message])
+  }, [message])
 
   // function to fetch messages from current conversation
   const fetchMessages = async () => {
     try {
       setIsLoading(true)
-      const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/conversations/messages`,{
+      const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/conversations/messages`, {
         conversationId: id,
         userId: user.id
       })
 
       // if user tries to enter a conversation he's not a part of it will redirect without fetching messages
-      if(response.data.authorized === false){
+      if (response.data.authorized === false) {
         navigate("/")
       }
-      setMessages(response.data.DirectMessages)
-      setIsLoading(false)
+      else {
+        setMessages(response.data.DirectMessages)
+        setIsLoading(false)
+      }
     }
-    catch(error){
+    catch (error) {
       console.log(error)
     }
   }
@@ -101,9 +118,10 @@ const Messages = () => {
   }
 
   const handleContactSwitch = () => {
+    socket.emit("leave_room", id) // leaving socket room when changing conversations
     setMessages([]) // resetting messages state
     const cachedMessages = Cookies.get("cachedDirectMessages")
-    if(cachedMessages){
+    if (cachedMessages) {
       var parsed = JSON.parse(cachedMessages)
       parsed[id] = currentMessage
       Cookies.set('cachedDirectMessages', JSON.stringify(parsed))
@@ -118,40 +136,86 @@ const Messages = () => {
 
   const handleCachedMessage = () => {
     const cachedMessages = Cookies.get("cachedDirectMessages")
-    if(cachedMessages){
+    if (cachedMessages) {
       const parsed = JSON.parse(cachedMessages)
-      if(parsed[id])
-      setMessage(parsed[id])
+      if (parsed[id])
+        setMessage(parsed[id])
     }
+  }
+
+  const joinConversation = async () => {
+    try {
+      await axios.put(`${import.meta.env.VITE_SERVER_URL}/conversations/joinConversation`, {
+        conversationId: id,
+        userId: user.id
+      })
+      if (notifications && conversationHasNotification(notifications.DirectMessageNotifications, id)) {
+        // removing notification after entering the conversation
+        delete notifications.DirectMessageNotifications[id]
+        await axios.post(`${import.meta.env.VITE_SERVER_URL}/notifications/removeDirectMessageNotification`, {
+          conversationId: id,
+          recipientId: user.id
+        })
+      }
+    }
+    catch (error) {
+      console.log(error)
+    }
+  }
+
+  const leaveConversation = async () => {
+    try {
+      await axios.put(`${import.meta.env.VITE_SERVER_URL}/conversations/leaveConversation`, {
+        conversationId: id,
+        userId: user.id
+      })
+    }
+    catch (error) {
+      console.log(error)
+    }
+  }
+
+  const handleUnload = () => {
+    fetch(`${import.meta.env.VITE_SERVER_URL}/conversations/leaveConversation`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        conversationId: id,
+        userId: user.id
+      }),
+      keepalive: true
+    })
   }
 
   return (
     <div id='messages-container'>
-      <Sidebar/>
-      <ContactsBar highlighted={id}/>
+      <Sidebar />
+      <ContactsBar highlighted={id} />
 
       <div id='dm-conversation-container'>
 
         <div id='messages-top-bar'>
-          <OtherUsers 
+          <OtherUsers
             image={conversationChosen.image}
             username={conversationChosen.username}
-            status={conversationChosen.status} 
+            status={conversationChosen.status}
           />
         </div>
 
         <div id='dm-messages-container' className='default-scrollbar' ref={messagesContainerRef}>
-          {isLoading && <LoadingMessages/>}
-          {!isLoading && <ConversationStart username={conversationChosen.username} image={conversationChosen.image}/>}
+          {isLoading && <LoadingMessages />}
+          {!isLoading && <ConversationStart username={conversationChosen.username} image={conversationChosen.image} />}
           <Twemoji options={{ className: 'twemoji' }}>
-            {messages.length !== 0 && messages.map((e,i) => {
+            {messages.length !== 0 && messages.map((e, i) => {
               return <Message
                 key={i}
                 id={e.id}
                 isSender={user.id === e.sender.id}
                 senderId={e.sender.id}
-                username={e.sender.username} 
-                image={e.sender.image} 
+                username={e.sender.username}
+                image={e.sender.image}
                 message={e.message}
                 type={e.type}
                 created_at={e.created_at}
@@ -174,7 +238,7 @@ const Messages = () => {
             user={user}
           />
         </div>
-        
+
       </div>
 
     </div>

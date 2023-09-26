@@ -53,13 +53,13 @@ module.exports = {
   // function to fetch all contacts of a user
   fetchAllFriends: async (req,res) => {
     try {
-      const { id, query } = req.body // user's id
+      const { id } = req.body // user's id
   
       const result = await prisma.friends.findMany({
         where: {
           users: {
             some: {
-              id: id
+              id
             }
           }
         },
@@ -71,11 +71,6 @@ module.exports = {
                   id: {
                     not: id
                   }  
-                },
-                {
-                  username: {
-                    contains: query
-                  }
                 }
               ]
             }
@@ -311,6 +306,27 @@ module.exports = {
           id: requestId.id
         }
       })
+
+      const existingConversation = await prisma.conversations.findFirst({
+        where: {
+          AND: [
+            {
+              users: {
+                some: {
+                  id: sender
+                }
+              }
+            },
+            {
+              users: {
+                some: {
+                  id: requested
+                }
+              }
+            }
+          ]
+        }
+      })
       
       const result = await prisma.friends.create({
         data: {
@@ -319,7 +335,8 @@ module.exports = {
               { id: sender },
               { id: requested }
             ]
-          }
+          },
+          conversationId: existingConversation ? existingConversation.id : null
         }
       })
       

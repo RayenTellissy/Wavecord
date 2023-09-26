@@ -39,12 +39,16 @@ io.on("connection", socket => {
     }
   })
 
-  socket.on("userConnected", data => {
+  socket.on("start_session", data => {
     socket.join(data.id)
   })
 
   socket.on("join_room", data => {
     socket.join(data)
+  })
+
+  socket.on("leave_room", data => {
+    socket.leave(data)
   })
   
   socket.on("send_message", data => {
@@ -79,15 +83,8 @@ io.on("connection", socket => {
     socket.to(data.serverId).emit("receive_leave_voice", data)
   })
 
-  socket.on("voice_disconnect", async (data) => {
-    try {
-      await axios.post(`${process.env.MAIN_API}/servers/leaveVoiceRoom`,{
-        id: data.user
-      })
-    }
-    catch(error){
-      console.log(error)
-    }
+  socket.on("send_notification", data => {
+    socket.to(data.userId).emit("receive_notification", data)
   })
 
   io.on("disconnect", socket => {

@@ -21,7 +21,7 @@ const HomeButton = () => {
     fontFamily="GibsonMedium"
   >
     <button id='home-button' onClick={() => navigate("/")}>
-      <Logo style={{ height: "85%", margin: "auto" }} />
+      <Logo  style={{ height: "85%", margin: "auto" }} />
     </button>
   </Tooltip>
 };

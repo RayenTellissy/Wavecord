@@ -33,6 +33,7 @@ const AllFriends = ({ query, setShowSearch }) => {
       })
       setUsers(response.data)
       setConstantUsers(response.data)
+      console.log(response.data)
       
       if(response.data.length !== 0){ 
         setShowSearch(true)

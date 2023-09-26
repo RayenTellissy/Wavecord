@@ -33,7 +33,7 @@
 #server-bar-main {
   display: flex;
   flex-direction: column;
-  width: 95%;
+  width: 100%;
 }
 
 .server-category-modal-body-type {
@@ -238,6 +238,8 @@
   flex-direction: column;
   justify-content: space-between;
   overflow-y: auto;
+  align-self: center;
+  width: 95%;
 }
 
 #server-category-main-container::-webkit-scrollbar {

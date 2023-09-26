@@ -70,12 +70,15 @@ const Server = () => {
   const [role,setRole] = useState({})
 
   useEffect(() => {
-    window.addEventListener("beforeunload", handleUnload)
+    window.addEventListener("beforeunload", (e) => handleUnload(e))
     socket.emit("open_server", id)
     fetchServers()
     applyMemorization(id, setCurrentTextChannelId, setCurrentTextChannel) // text channel memo
     fetchData()
-    return () => window.removeEventListener("beforeunload", handleUnload)
+    return () => {
+      setDisplayRoom(false)
+      window.removeEventListener("beforeunload", handleUnload)
+    }
   },[id])
 
   useEffect(() => {
@@ -166,8 +169,6 @@ const Server = () => {
 
   // leaves voice room before unloading app
   const handleUnload = () => {
-    setHoveredTextChannelId("")
-    setCurrentChannelType("")
     const cachedVoiceChannel = Cookies.get("cachedVoiceChannel")
     if(cachedVoiceChannel){
       socket.emit("leave_voice", {
@@ -175,8 +176,15 @@ const Server = () => {
         channelId: cachedVoiceChannel,
         userId: user.id
       })
-      socket.emit("voice_disconnect", {
-        user: user.id
+      fetch(`${import.meta.env.VITE_SERVER_URL}/servers/leaveVoiceRoom`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          id: user.id
+        }),
+        keepalive: true
       })
     }
   }

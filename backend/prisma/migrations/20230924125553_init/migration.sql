@@ -17,10 +17,10 @@ CREATE TABLE "Users" (
     "email" STRING NOT NULL,
     "image" STRING,
     "status" "Status" NOT NULL DEFAULT 'ONLINE',
+    "voice_channelId" STRING,
     "muted" BOOL NOT NULL DEFAULT false,
     "deafened" BOOL NOT NULL DEFAULT false,
     "role" "Role" NOT NULL DEFAULT 'BASIC',
-    "voice_channelId" STRING,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Users_pkey" PRIMARY KEY ("id")
@@ -53,8 +53,8 @@ CREATE TABLE "roles" (
 -- CreateTable
 CREATE TABLE "Bans" (
     "id" STRING NOT NULL,
-    "usersId" STRING NOT NULL,
-    "serversId" STRING NOT NULL,
+    "userId" STRING NOT NULL,
+    "serverId" STRING NOT NULL,
 
     CONSTRAINT "Bans_pkey" PRIMARY KEY ("id")
 );
@@ -113,6 +113,7 @@ CREATE TABLE "Voice_channels" (
 -- CreateTable
 CREATE TABLE "Friends" (
     "id" STRING NOT NULL,
+    "conversationId" STRING,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Friends_pkey" PRIMARY KEY ("id")
@@ -131,6 +132,7 @@ CREATE TABLE "FriendRequest" (
 CREATE TABLE "Conversations" (
     "id" STRING NOT NULL,
     "type" "ConversationType" NOT NULL,
+    "updated_at" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "Conversations_pkey" PRIMARY KEY ("id")
 );
@@ -138,8 +140,8 @@ CREATE TABLE "Conversations" (
 -- CreateTable
 CREATE TABLE "DirectMessages" (
     "id" STRING NOT NULL,
-    "sender" STRING NOT NULL,
-    "conversationsId" STRING NOT NULL,
+    "senderId" STRING NOT NULL,
+    "conversationId" STRING NOT NULL,
     "message" STRING NOT NULL,
     "type" "MessageType" NOT NULL DEFAULT 'TEXT',
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -160,6 +162,36 @@ CREATE TABLE "ServerMessages" (
 );
 
 -- CreateTable
+CREATE TABLE "Notifications" (
+    "id" STRING NOT NULL,
+    "userId" STRING NOT NULL,
+    "FriendRequests" BOOL NOT NULL DEFAULT false,
+
+    CONSTRAINT "Notifications_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "DirectMessageNotifications" (
+    "id" STRING NOT NULL,
+    "notificationId" STRING NOT NULL,
+    "senderId" STRING NOT NULL,
+    "recipientId" STRING NOT NULL,
+    "messages" INT4 NOT NULL DEFAULT 1,
+
+    CONSTRAINT "DirectMessageNotifications_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "BugReports" (
+    "id" STRING NOT NULL,
+    "senderId" STRING NOT NULL,
+    "message" STRING NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "BugReports_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "_FriendsToUsers" (
     "A" STRING NOT NULL,
     "B" STRING NOT NULL
@@ -171,11 +203,20 @@ CREATE TABLE "_ConversationsToUsers" (
     "B" STRING NOT NULL
 );
 
+-- CreateTable
+CREATE TABLE "_NotificationsToServers" (
+    "A" STRING NOT NULL,
+    "B" STRING NOT NULL
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "Users_username_key" ON "Users"("username");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Servers_server_link_key" ON "Servers"("server_link");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Friends_conversationId_key" ON "Friends"("conversationId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_FriendsToUsers_AB_unique" ON "_FriendsToUsers"("A", "B");
@@ -189,6 +230,12 @@ CREATE UNIQUE INDEX "_ConversationsToUsers_AB_unique" ON "_ConversationsToUsers"
 -- CreateIndex
 CREATE INDEX "_ConversationsToUsers_B_index" ON "_ConversationsToUsers"("B");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "_NotificationsToServers_AB_unique" ON "_NotificationsToServers"("A", "B");
+
+-- CreateIndex
+CREATE INDEX "_NotificationsToServers_B_index" ON "_NotificationsToServers"("B");
+
 -- AddForeignKey
 ALTER TABLE "Users" ADD CONSTRAINT "Users_voice_channelId_fkey" FOREIGN KEY ("voice_channelId") REFERENCES "Voice_channels"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
@@ -199,10 +246,10 @@ ALTER TABLE "Servers" ADD CONSTRAINT "Servers_ownerId_fkey" FOREIGN KEY ("ownerI
 ALTER TABLE "roles" ADD CONSTRAINT "roles_serverId_fkey" FOREIGN KEY ("serverId") REFERENCES "Servers"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Bans" ADD CONSTRAINT "Bans_usersId_fkey" FOREIGN KEY ("usersId") REFERENCES "Users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Bans" ADD CONSTRAINT "Bans_userId_fkey" FOREIGN KEY ("userId") REFERENCES "Users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Bans" ADD CONSTRAINT "Bans_serversId_fkey" FOREIGN KEY ("serversId") REFERENCES "Servers"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Bans" ADD CONSTRAINT "Bans_serverId_fkey" FOREIGN KEY ("serverId") REFERENCES "Servers"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "BlockedUsers" ADD CONSTRAINT "BlockedUsers_blockerId_fkey" FOREIGN KEY ("blockerId") REFERENCES "Users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -235,22 +282,40 @@ ALTER TABLE "Voice_channels" ADD CONSTRAINT "Voice_channels_categoryId_fkey" FOR
 ALTER TABLE "Voice_channels" ADD CONSTRAINT "Voice_channels_serverId_fkey" FOREIGN KEY ("serverId") REFERENCES "Servers"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "Friends" ADD CONSTRAINT "Friends_conversationId_fkey" FOREIGN KEY ("conversationId") REFERENCES "Conversations"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "FriendRequest" ADD CONSTRAINT "FriendRequest_senderId_fkey" FOREIGN KEY ("senderId") REFERENCES "Users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "FriendRequest" ADD CONSTRAINT "FriendRequest_recipientId_fkey" FOREIGN KEY ("recipientId") REFERENCES "Users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "DirectMessages" ADD CONSTRAINT "DirectMessages_sender_fkey" FOREIGN KEY ("sender") REFERENCES "Users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "DirectMessages" ADD CONSTRAINT "DirectMessages_senderId_fkey" FOREIGN KEY ("senderId") REFERENCES "Users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "DirectMessages" ADD CONSTRAINT "DirectMessages_conversationsId_fkey" FOREIGN KEY ("conversationsId") REFERENCES "Conversations"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "DirectMessages" ADD CONSTRAINT "DirectMessages_conversationId_fkey" FOREIGN KEY ("conversationId") REFERENCES "Conversations"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "ServerMessages" ADD CONSTRAINT "ServerMessages_senderId_fkey" FOREIGN KEY ("senderId") REFERENCES "Users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "ServerMessages" ADD CONSTRAINT "ServerMessages_channelId_fkey" FOREIGN KEY ("channelId") REFERENCES "Text_channels"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Notifications" ADD CONSTRAINT "Notifications_userId_fkey" FOREIGN KEY ("userId") REFERENCES "Users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "DirectMessageNotifications" ADD CONSTRAINT "DirectMessageNotifications_notificationId_fkey" FOREIGN KEY ("notificationId") REFERENCES "Notifications"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "DirectMessageNotifications" ADD CONSTRAINT "DirectMessageNotifications_senderId_fkey" FOREIGN KEY ("senderId") REFERENCES "Users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "DirectMessageNotifications" ADD CONSTRAINT "DirectMessageNotifications_recipientId_fkey" FOREIGN KEY ("recipientId") REFERENCES "Users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "BugReports" ADD CONSTRAINT "BugReports_senderId_fkey" FOREIGN KEY ("senderId") REFERENCES "Users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_FriendsToUsers" ADD CONSTRAINT "_FriendsToUsers_A_fkey" FOREIGN KEY ("A") REFERENCES "Friends"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -263,3 +328,9 @@ ALTER TABLE "_ConversationsToUsers" ADD CONSTRAINT "_ConversationsToUsers_A_fkey
 
 -- AddForeignKey
 ALTER TABLE "_ConversationsToUsers" ADD CONSTRAINT "_ConversationsToUsers_B_fkey" FOREIGN KEY ("B") REFERENCES "Users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_NotificationsToServers" ADD CONSTRAINT "_NotificationsToServers_A_fkey" FOREIGN KEY ("A") REFERENCES "Notifications"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_NotificationsToServers" ADD CONSTRAINT "_NotificationsToServers_B_fkey" FOREIGN KEY ("B") REFERENCES "Servers"("id") ON DELETE CASCADE ON UPDATE CASCADE;

@@ -8,12 +8,13 @@ import { Context } from '../../../Context/Context';
 // styles
 import "./Conversation.css"
 
-const Conversation = ({ id, username, image, status, highlighted }) => {
+const Conversation = ({ id, userId, username, image, status, highlighted }) => {
   const navigate = useNavigate()
   const { setConversationChosen } = useContext(Context)
 
   const handleClick = () => {
     setConversationChosen({
+      id: userId,
       username,
       image,
       status

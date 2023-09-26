@@ -58,6 +58,7 @@ const FriendButton = ({ id, username, image, status, setIsUpdating, fetchUsers, 
 
   const handleNavigation = async () => {
     setConversationChosen({
+      id,
       username,
       image,
       status

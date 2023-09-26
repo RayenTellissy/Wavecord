@@ -84,6 +84,7 @@ const ChannelMessages = ({
   }
 
   const handleChannelSwitch = () => {
+    socket.emit("leave_room", currentTextChannelId)
     setMessages([]) // resetting state
     const cachedMessages = Cookies.get("cachedServerMessages")
     if(cachedMessages){

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { FaBolt, FaUserGroup } from 'react-icons/fa6';
 
 // styles
@@ -7,11 +7,14 @@ import "./HomeNavigator.css"
 
 const HomeNavigator = ({ selected, setSelected, text, style }) => {
   const navigate = useNavigate()
+  const location = useLocation().pathname
 
   const handleClick = () => {
-    navigate("/", {
-      state: text
-    })
+    if(location !== "/"){
+      return navigate("/", {
+        state: text
+      })
+    }
     setSelected(text)
   }
 

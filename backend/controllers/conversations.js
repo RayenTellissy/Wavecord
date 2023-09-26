@@ -96,8 +96,8 @@ module.exports = {
           id,
           senderId,
           conversationId,
-          message: message,
-          type: type
+          message,
+          type
         }
       })
 
@@ -188,6 +188,49 @@ module.exports = {
         where: {
           id: messageId,
           senderId
+        }
+      })
+
+      res.send(result)
+    }
+    catch(error){
+      res.send(error)
+    }
+  },
+
+  // function to add the user to the active users in room
+  joinConversation: async (req,res) => {
+    try {
+      const { userId, conversationId } = req.body
+
+      const result = await prisma.users.update({
+        where: {
+          id: userId
+        },
+        data: {
+          activeConversationId: conversationId
+        }
+      })
+
+      res.send(result)
+    }
+    catch(error){
+      res.send(error)
+    }
+  },
+
+  leaveConversation: async (req,res) => {
+    try {
+      const { userId, conversationId } = req.body
+
+      const result = await prisma.conversations.update({
+        where: {
+          id: conversationId
+        },
+        data: {
+          usersInRoom: {
+            disconnect: { id: userId }
+          }
         }
       })
 

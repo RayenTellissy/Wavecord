@@ -1,14 +1,21 @@
-.home-server-button{
+.home-server-button {
   margin-top: 1rem
 }
 
-.home-server-image{
+.home-server-image {
   width: 4.5rem;
   height: 4.5rem;
   border-radius: 50%;
+  transition: .2s ease;
 }
 
-.home-server-image-active{
+.home-server-image:hover {
+  width: 4.5rem;
+  height: 4.5rem;
+  border-radius: 35%;
+}
+
+.home-server-image-active {
   width: 4.5rem;
   height: 4.5rem;
   border-radius: 35%;

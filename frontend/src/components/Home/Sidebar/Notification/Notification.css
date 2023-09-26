@@ -1,0 +1,27 @@
+#notification-dm-button {
+  margin: 1rem auto;
+  position: relative;
+}
+
+#notification-dm-image {
+  border-radius: 50%;
+  margin: auto;
+  height: 70px;
+  width: 70px;
+  transition: .2s ease;
+}
+
+#notification-dm-image:hover {
+  border-radius: 35%;
+}
+
+#notification-dm-messages {
+  background-color: #da373c;
+  border-radius: 50%;
+  height: 25px;
+  width: 25px;
+  position: absolute;
+  right: -5px;
+  top: 5px;
+  font-family: GibsonMedium;
+}

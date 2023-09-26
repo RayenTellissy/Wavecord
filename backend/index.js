@@ -11,6 +11,7 @@ const serversRouter = require("./routes/servers")
 const conversationsRouter = require("./routes/conversations")
 const friendsRouter = require("./routes/friends")
 const bugReportsRouter = require("./routes/bugReports")
+const notificationsRouter = require("./routes/notifications")
 
 const app = express()
 const PORT = 3000 // server port
@@ -33,5 +34,6 @@ app.use("/servers", serversRouter)
 app.use("/conversations", conversationsRouter)
 app.use("/friends", friendsRouter)
 app.use("/bugReports", bugReportsRouter)
+app.use("/notifications", notificationsRouter)
 
 app.listen(PORT, () => console.log(`> Server ready on port ${PORT}`))

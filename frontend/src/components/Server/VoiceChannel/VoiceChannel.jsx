@@ -64,11 +64,12 @@ const VoiceChannel = ({
   }
 
   const handleClick = async () => {
-    // checking if user is already connected to the room
+    // if user clicks on the room he's connected to, display video conference
     if(currentVoiceChannelId === id){
       return setDisplayRoom(!displayRoom)
     }
-    if(currentVoiceChannelId !== id){
+    // if user is not connected to any other rooms connect him.
+    if(!currentVoiceChannelId){
       play()
       const userDetails = {
         id: user.id,

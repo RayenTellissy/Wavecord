@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router-dom';
 import "./Server.css"
 
 const Server = ({ id, name, image, highlighted }) => {
-
   const navigate = useNavigate()
 
   return <Tooltip label={name}
