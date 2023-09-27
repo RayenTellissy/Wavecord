@@ -22,7 +22,7 @@ const Sidebar = ({ highlighted }) => {
     socket.on("receive_direct_message_notification", () => {
       fetchDirectMessageNotifications()
     })
-    socket.off("receive_direct_message_notification")
+    return () => socket.off("receive_direct_message_notification")
   },[socket])
 
   const fetchDirectMessageNotifications = async () => {

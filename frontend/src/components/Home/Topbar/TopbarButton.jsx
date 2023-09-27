@@ -7,7 +7,7 @@ const TopbarButton = ({ text, selectedScreen, setSelectedScreen, notifications }
       onClick={() => setSelectedScreen(text)}
     >
     {text}
-    {notifications && <div id='home-right-topbar-pending-number'>
+    {notifications && notifications !== 0 && <div id='home-right-topbar-pending-number'>
       { notifications }
     </div>}
   </button>

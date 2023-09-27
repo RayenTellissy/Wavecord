@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react';
-import { FaUserGroup } from 'react-icons/fa6';
 import axios from 'axios';
+import { FaUserGroup } from 'react-icons/fa6';
 
 // components
 import TopbarButton from './TopbarButton';
@@ -13,17 +13,20 @@ const Topbar = ({ selected, selectedScreen, setSelectedScreen }) => {
   const { user, socket, friendRequestNotifications, setFriendRequestNotifications } = useContext(Context)
 
   useEffect(() => {
+    fetchFriendRequestNotifications()
+  },[])
+
+  useEffect(() => {
     socket.on("receive_friend_request_notification", () => {
       fetchFriendRequestNotifications()
     })
-
     return () => socket.off("receive_friend_request_notification")
   },[socket])
 
   const fetchFriendRequestNotifications = async () => {
     try {
       const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/notifications/fetchFriendRequestNotifications/${user.id}`)
-      setFriendRequestNotifications(response.data)
+      setFriendRequestNotifications(response.data.requests)
     }
     catch(error){
       console.log(error)

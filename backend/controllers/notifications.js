@@ -179,10 +179,7 @@ module.exports = {
           recipientId: id
         }
       })
-
-      if(friendRequestNotifications === 0) res.send(null)
-
-      res.send(String(friendRequestNotifications))
+      res.send({ requests: friendRequestNotifications ? friendRequestNotifications : null })
     }
     catch(error){
       res.send(error)
