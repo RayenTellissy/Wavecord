@@ -12,7 +12,9 @@ const HomeNavigator = ({ selected, setSelected, text, style }) => {
   const handleClick = () => {
     if(location !== "/"){
       return navigate("/", {
-        state: text
+        state: {
+          navigator: text
+        }
       })
     }
     setSelected(text)

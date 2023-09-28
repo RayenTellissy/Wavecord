@@ -10,28 +10,11 @@ import { Context } from '../../Context/Context';
 import "./Topbar.css"
 
 const Topbar = ({ selected, selectedScreen, setSelectedScreen }) => {
-  const { user, socket, friendRequestNotifications, setFriendRequestNotifications } = useContext(Context)
+  const { friendRequestNotifications, fetchFriendRequestNotifications } = useContext(Context)
 
   useEffect(() => {
     fetchFriendRequestNotifications()
   },[])
-
-  useEffect(() => {
-    socket.on("receive_friend_request_notification", () => {
-      fetchFriendRequestNotifications()
-    })
-    return () => socket.off("receive_friend_request_notification")
-  },[socket])
-
-  const fetchFriendRequestNotifications = async () => {
-    try {
-      const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/notifications/fetchFriendRequestNotifications/${user.id}`)
-      setFriendRequestNotifications(response.data.requests)
-    }
-    catch(error){
-      console.log(error)
-    }
-  }
 
   return (
     <div id='home-right-topbar'>

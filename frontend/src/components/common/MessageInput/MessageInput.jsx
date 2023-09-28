@@ -89,8 +89,10 @@ const MessageInput = ({
         socket.emit("send_direct_message_notification", {
           conversationId: id,
           userId: conversationChosen.id,
+          id: user.id,
           username: user.username,
           image: user.image,
+          status: user.status,
           message: storedMessage
         })
       }

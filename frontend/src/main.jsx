@@ -14,7 +14,6 @@ if(process.env.NODE_ENV === "production"){
 }
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
     <ContextProvider>
       <BrowserRouter>
         <ChakraProvider theme={theme}>
@@ -23,5 +22,4 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         </ChakraProvider>
       </BrowserRouter>
     </ContextProvider>
-  </React.StrictMode>
 )

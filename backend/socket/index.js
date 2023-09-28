@@ -89,7 +89,7 @@ io.on("connection", socket => {
 
   socket.on("send_friend_request_notification", data => {
     console.log(data)
-    socket.to(data.userId).emit("receive_friend_request_notification")
+    socket.to(data.userId).emit("receive_friend_request_notification", data)
   })
   
   io.on("disconnect", socket => {

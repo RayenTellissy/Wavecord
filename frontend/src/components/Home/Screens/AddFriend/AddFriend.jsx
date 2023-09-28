@@ -39,7 +39,9 @@ const AddFriend = ({ setShowSearch }) => {
           recipientId: response.data.id
         })
         socket.emit("send_friend_request_notification", {
-          userId: response.data.id
+          userId: response.data.id,
+          username: user.username,
+          image: user.image
         })
       }
 

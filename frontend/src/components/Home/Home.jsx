@@ -14,8 +14,8 @@ import "./Home.css"
 const Home = () => {
   const location = useLocation()
   const selectedLocation = location.state
-  const [selected,setSelected] = useState(selectedLocation ? selectedLocation : "Friends")
-  const [selectedScreen,setSelectedScreen] = useState("Online")
+  const [selected,setSelected] = useState(selectedLocation?.navigator ? selectedLocation.navigator : "Friends")
+  const [selectedScreen,setSelectedScreen] = useState(location.state?.selected ? location.state?.selected : "Online")
 
   return (
     <div>

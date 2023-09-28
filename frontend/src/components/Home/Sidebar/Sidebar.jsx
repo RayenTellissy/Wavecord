@@ -22,13 +22,11 @@ const Sidebar = ({ highlighted }) => {
     socket.on("receive_direct_message_notification", () => {
       fetchDirectMessageNotifications()
     })
-    return () => socket.off("receive_direct_message_notification")
   },[socket])
 
   const fetchDirectMessageNotifications = async () => {
     try {
       const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/notifications/fetchDirectMessageNotifications/${user.id}`)
-      console.log(response.data)
       setDirectMessageNotifications(response.data)
     }
     catch(error){

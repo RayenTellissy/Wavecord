@@ -175,6 +175,26 @@ export const ContextProvider = ({ children }) => {
     }
   }
 
+  const fetchFriendRequestNotifications = async () => {
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/notifications/fetchFriendRequestNotifications/${user.id}`)
+      setFriendRequestNotifications(response.data.requests)
+    }
+    catch(error){
+      console.log(error)
+    }
+  }
+
+  const fetchDirectMessageNotifications = async () => {
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/notifications/fetchDirectMessageNotifications/${user.id}`)
+      setDirectMessageNotifications(response.data)
+    }
+    catch(error){
+      console.log(error)
+    }
+  }
+
   return (
     <Context.Provider value={{
       user,
@@ -215,7 +235,9 @@ export const ContextProvider = ({ children }) => {
       directMessageNotifications,
       setDirectMessageNotifications,
       friendRequestNotifications,
-      setFriendRequestNotifications
+      setFriendRequestNotifications,
+      fetchFriendRequestNotifications,
+      fetchDirectMessageNotifications
     }}>
       {children}
     </Context.Provider>
