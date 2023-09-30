@@ -35,6 +35,9 @@ export const ContextProvider = ({ children }) => {
   const [serversLoading,setServersLoading] = useState(true)
   const [directMessageNotifications,setDirectMessageNotifications] = useState(null)
   const [friendRequestNotifications,setFriendRequestNotifications] = useState(null)
+  const [currentConversationId,setCurrentConversationId] = useState("")
+  const [currentServerId,setCurrentServerId] = useState("")
+  const [display,setDisplay] = useState("")
 
   useEffect(() => {
     authenticateSession()
@@ -255,7 +258,13 @@ export const ContextProvider = ({ children }) => {
       friendRequestNotifications,
       setFriendRequestNotifications,
       fetchFriendRequestNotifications,
-      fetchDirectMessageNotifications
+      fetchDirectMessageNotifications,
+      currentConversationId,
+      setCurrentConversationId,
+      currentServerId,
+      setCurrentServerId,
+      display,
+      setDisplay
     }}>
       {children}
     </Context.Provider>

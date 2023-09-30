@@ -2,7 +2,7 @@ import React from 'react';
 
 import Conversation from "./Conversation"
 
-const Conversations = ({ conversations, highlighted }) => {
+const Conversations = ({ conversations, highlighted, setSelected }) => {
 
   return (
     <>
@@ -15,6 +15,7 @@ const Conversations = ({ conversations, highlighted }) => {
           image={e.users[0].image}
           status={e.users[0].status}
           highlighted={e.id === highlighted}
+          setSelected={setSelected}
         />
       })}
     </>

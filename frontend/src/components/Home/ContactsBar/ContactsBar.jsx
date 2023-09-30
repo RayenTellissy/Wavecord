@@ -15,7 +15,7 @@ import "./ContactsBar.css"
 const ContactsBar = ({ highlighted, selected, setSelected }) => {
   const { user, conversations, setConversations } = useContext(Context)
   const [constantConversations,setConstantConversations] = useState([])
-  const [query,setQuery] = useState("")
+  const [query,setQuery] = useState(null)
 
   useEffect(() => {
     fetchConversations()
@@ -41,7 +41,9 @@ const ContactsBar = ({ highlighted, selected, setSelected }) => {
   }
 
   const filterConversations = () => {
-    setConversations(constantConversations.filter(e => e.users[0].username.toUpperCase().includes(query.toUpperCase())))
+    if(query !== null){
+      setConversations(constantConversations.filter(e => e.users[0].username.toUpperCase().includes(query.toUpperCase())))
+    }
   }
 
   return (
@@ -57,7 +59,9 @@ const ContactsBar = ({ highlighted, selected, setSelected }) => {
       <DirectMessagesText id={user.id} fetchConversations={fetchConversations}/>
       <Conversations
         conversations={conversations}
-        highlighted={highlighted}/>
+        highlighted={highlighted}
+        setSelected={setSelected}
+      />
       <UserBar/>
 
     </div>

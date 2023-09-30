@@ -1,5 +1,5 @@
-import React, { useContext, useEffect } from "react"
-import { useNavigate } from "react-router-dom"
+import React, { useContext, useEffect, useState } from "react"
+import { useDisclosure } from "@chakra-ui/react"
 
 // common components
 import BugReport from "./utils/BugReport/BugReport"
@@ -13,10 +13,21 @@ import { createFriendRequestNotification, createDirectMessageNotification } from
 
 // default styling
 import "./App.css"
+import BanModal from "./utils/BanModal/BanModal"
 
 const App = () => {
-  const { socket, fetchFriendRequestNotifications, setConversationChosen } = useContext(Context)
-  const navigate = useNavigate()
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const {
+    socket,
+    fetchFriendRequestNotifications,
+    setConversationChosen,
+    setCurrentConversationId,
+    setDisplay,
+    currentServerId,
+    setCurrentServerId,
+    fetchServers
+  } = useContext(Context)
+  const [bannedFrom,setBannedFrom] = useState(null)
 
   // useEffect for app notifications
   useEffect(() => {
@@ -25,14 +36,14 @@ const App = () => {
         fetchFriendRequestNotifications()
         createFriendRequestNotification({
           username: data.username,
-          image: data.image,
-          callback: notificationCallback
+          image: data.image
         })
       })
       socket.on("receive_direct_message_notification", data => {
         const navigateToConversation = () => {
           setConversationChosen({ id: data.id, username: data.username, image: data.image, status: data.status })
-          navigate(`/dm/${data.conversationId}`)
+          setCurrentConversationId(data.conversationId)
+          setDisplay("directMessages")
         }
         createDirectMessageNotification({
           username: data.username,
@@ -41,16 +52,27 @@ const App = () => {
           callback: navigateToConversation
         })
       })
+      socket.on("receive_server_ban", data => {
+        setBannedFrom(data.serverName)
+        onOpen() // opening the banned modal
+      })
       return () => {
         socket.off("receive_friend_request_notification")
         socket.off("receive_direct_message_notification")
+        socket.off("receive_server_ban")
       }
     }
   },[socket])
 
+  const closeBanModal = () => {
+    setDisplay("")
+    setCurrentServerId("")
+    fetchServers()
+  }
 
   return (
     <>
+      <BanModal bannedFrom={bannedFrom} isOpen={isOpen} onClose={closeBanModal}/>
       <BugReport/>
       <Routing/>
     </>

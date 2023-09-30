@@ -16,7 +16,6 @@ import JoinRoom from "../../../assets/sounds/JoinRoom.mp3"
 const VoiceChannel = ({
   id,
   name,
-  setCurrentChannelType,
   hoveredVoiceChannelId,
   setHoveredVoiceChannelId
 }) => {
@@ -83,7 +82,6 @@ const VoiceChannel = ({
         setUsers(prevUsers => [...prevUsers, userDetails])
       }
       setCurrentVoiceChannelId(id)
-      setCurrentChannelType("voice")
     }
   }
 

@@ -1,11 +1,14 @@
 import React from 'react';
 import { Tooltip } from '@chakra-ui/react';
-import { useNavigate } from 'react-router-dom';
 
 import "./Server.css"
 
-const Server = ({ id, name, image, highlighted }) => {
-  const navigate = useNavigate()
+const Server = ({ id, name, image, highlighted, setCurrentServerId, setDisplay }) => {
+
+  const handleClick = () => {
+    setCurrentServerId(id)
+    setDisplay("server")
+  }
 
   return <Tooltip label={name}
     placement='right'
@@ -17,7 +20,7 @@ const Server = ({ id, name, image, highlighted }) => {
     margin={5}
     fontFamily="GibsonMedium"
   >
-    <button className='home-server-button' onClick={() => navigate(`/server/${id}`)}>
+    <button className='home-server-button' onClick={handleClick}>
       <img
         className={highlighted ? (id === highlighted ? 'home-server-image-active' : 'home-server-image') : 'home-server-image'}
         src={image}

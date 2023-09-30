@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import Cookies from "js-cookie"
 import {
@@ -24,7 +23,6 @@ import { MdClose } from "react-icons/md"
 import BeatLoader from 'react-spinners/BeatLoader';
 
 // components
-import Sidebar from '../Home/Sidebar/Sidebar';
 import Category from './Category/Category';
 import Switch from '../common/Switch/Switch';
 import ChannelMessages from './ChannelMessages/ChannelMessages';
@@ -48,17 +46,16 @@ const Server = () => {
     setDisplayRoom,
     fetchServers,
     currentVoiceChannelId,
+    currentServerId
   } = useContext(Context)
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { isOpen: isOpenDropdown, onOpen: onOpenDropdown, onClose: onCloseDropdown } = useDisclosure()
   const { isOpen: isOpenServerLink, onOpen: onOpenServerLink, onClose: onCloseServerLink } = useDisclosure()
-  const { id } = useParams()
   const [server,setServer] = useState({})
   const [currentTextChannel,setCurrentTextChannel] = useState("")
   const [currentTextChannelId,setCurrentTextChannelId] = useState("")
   const [hoveredTextChannelId,setHoveredTextChannelId] = useState("")
   const [hoveredVoiceChannelId,setHoveredVoiceChannelId] = useState("")
-  const [currentChannelType,setCurrentChannelType] = useState("")
   const [categoryChosen,setCategoryChosen] = useState("")
   const [categoryIdChosen,setCategoryIdChosen] = useState("")
   const [modalChannelType,setModalChannelType] = useState("text")
@@ -71,15 +68,15 @@ const Server = () => {
 
   useEffect(() => {
     window.addEventListener("beforeunload", (e) => handleUnload(e))
-    socket.emit("open_server", id)
+    socket.emit("open_server", currentServerId)
     fetchServers()
-    applyMemorization(id, setCurrentTextChannelId, setCurrentTextChannel) // text channel memo
+    applyMemorization(currentServerId, setCurrentTextChannelId, setCurrentTextChannel) // text channel memo
     fetchData()
     return () => {
       setDisplayRoom(false)
       window.removeEventListener("beforeunload", handleUnload)
     }
-  },[id])
+  },[currentServerId])
 
   useEffect(() => {
     handleDefaultChannel()
@@ -95,13 +92,13 @@ const Server = () => {
   },[currentVoiceChannelId])
 
   useEffect(() => {
-    memorizeTextChannel(id,currentTextChannelId,currentTextChannel)
+    memorizeTextChannel(currentServerId,currentTextChannelId,currentTextChannel)
   },[currentTextChannelId])
   
   const fetchData = async () => {
     try {
       const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/fetch`,{
-        serverId: id,
+        serverId: currentServerId,
         userId: user.id
       }, {
         withCredentials: true
@@ -130,7 +127,7 @@ const Server = () => {
         await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/createTextChannel`,{
           name: modalChannelName,
           categoryId: categoryIdChosen,
-          serverId: id
+          serverId: currentServerId
         }, {
           withCredentials: true
         })
@@ -139,7 +136,7 @@ const Server = () => {
         await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/createVoiceChannel`,{
           name: modalChannelName,
           categoryId: categoryIdChosen,
-          serverId: id
+          serverId: currentServerId
         }, {
           withCredentials: true
         })
@@ -178,7 +175,7 @@ const Server = () => {
     const cachedVoiceChannel = Cookies.get("cachedVoiceChannel")
     if(cachedVoiceChannel){
       socket.emit("leave_voice", {
-        serverId: id,
+        serverId: currentServerId,
         channelId: cachedVoiceChannel,
         userId: user.id
       })
@@ -206,7 +203,6 @@ const Server = () => {
 
   return (
     <div id='server-container'>
-      <Sidebar highlighted={server.id}/>
       <div id='server-bar-container'>
         <div id='server-bar-main'>
           <Popover
@@ -252,7 +248,7 @@ const Server = () => {
                 text={e.Text_channels}
                 voice={e.Voice_channels}
                 onOpen={onOpen}
-                serverId={id}
+                serverId={currentServerId}
                 setCategoryChosen={setCategoryChosen}
                 setCategoryIdChosen={setCategoryIdChosen}
                 setCurrentTextChannel={setCurrentTextChannel}
@@ -260,7 +256,6 @@ const Server = () => {
                 setCurrentTextChannelId={setCurrentTextChannelId}
                 hoveredTextChannelId={hoveredTextChannelId}
                 setHoveredTextChannelId={setHoveredTextChannelId}
-                setCurrentChannelType={setCurrentChannelType}
                 hoveredVoiceChannelId={hoveredVoiceChannelId}
                 setHoveredVoiceChannelId={setHoveredVoiceChannelId}
               />
@@ -271,7 +266,7 @@ const Server = () => {
       </div>
       <div id='server-right-display-content'>
         {!displayRoom && <ChannelMessages
-          serverId={id}
+          serverId={currentServerId}
           currentTextChannel={currentTextChannel}
           setCurrentTextChannel={setCurrentTextChannel}
           currentTextChannelId={currentTextChannelId}
@@ -282,7 +277,6 @@ const Server = () => {
         {currentVoiceChannelId && <VoiceRoom
           serverId={server.id}
           channelId={currentVoiceChannelId}
-          setCurrentChannelType={setCurrentChannelType}
         />}
       </div>
       <Modal isOpen={isOpen} onClose={closeModal} isCentered size="lg">

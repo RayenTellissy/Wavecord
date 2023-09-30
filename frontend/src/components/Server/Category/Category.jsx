@@ -25,7 +25,6 @@ const Category = ({
   setCurrentTextChannelId,
   hoveredTextChannelId,
   setHoveredTextChannelId,
-  setCurrentChannelType,
   hoveredVoiceChannelId,
   setHoveredVoiceChannelId
 }) => {
@@ -72,7 +71,6 @@ const Category = ({
           id={e.id}
           name={e.name}
           serverId={serverId}
-          setCurrentChannelType={setCurrentChannelType}
           hoveredVoiceChannelId={hoveredVoiceChannelId}
           setHoveredVoiceChannelId={setHoveredVoiceChannelId}
         />

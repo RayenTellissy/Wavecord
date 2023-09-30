@@ -1,5 +1,4 @@
 const createFriendRequestNotification = ({ username, image }) => {
-  // console.log(username, image, callback)
   const notify = () => {
     const notification = new Notification(username, {
       body: "Sent a friend request.",

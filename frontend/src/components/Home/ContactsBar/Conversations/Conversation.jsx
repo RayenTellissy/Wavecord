@@ -1,5 +1,4 @@
 import React, { useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 // components
 import Avatar from "../../../common/Avatar/Avatar"
@@ -8,18 +7,20 @@ import { Context } from '../../../Context/Context';
 // styles
 import "./Conversation.css"
 
-const Conversation = ({ id, userId, username, image, status, highlighted }) => {
-  const navigate = useNavigate()
-  const { setConversationChosen } = useContext(Context)
+const Conversation = ({ id, userId, username, image, status, highlighted, setSelected }) => {
+  const { setConversationChosen, setCurrentConversationId, setDisplay } = useContext(Context)
 
   const handleClick = () => {
     setConversationChosen({
       id: userId,
       username,
       image,
-      status
+      status,
+      conversationId: id
     })
-    navigate(`/dm/${id}`)
+    setSelected("")
+    setCurrentConversationId(id)
+    setDisplay("directMessages")
   }
 
   return (

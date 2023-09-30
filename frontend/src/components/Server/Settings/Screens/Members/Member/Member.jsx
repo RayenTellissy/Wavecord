@@ -13,7 +13,21 @@ import Loader from "../../../../../common/Loader/Loader"
 // styles
 import "./Member.css"
 
-const Member = ({ id, username, image, role, roles, setRoles, constantRoles, serverId, fetchMembers, user, isOwner }) => {
+const Member = ({
+  id,
+  username,
+  image,
+  role,
+  roles,
+  setRoles,
+  constantRoles,
+  serverId,
+  serverName,
+  fetchMembers,
+  user,
+  isOwner,
+  socket
+}) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [query, setQuery] = useState("")
   const [isLoading,setIsLoading] = useState(false)
@@ -49,6 +63,11 @@ const Member = ({ id, username, image, role, roles, setRoles, constantRoles, ser
   const banUser = async () => {
     try {
       setIsBanning(true)
+      socket.emit("server_ban_user", {
+        userId: id,
+        serverId,
+        serverName
+      })
       await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/banUser`, {
         banner: user.id,
         banned: id,
@@ -56,6 +75,7 @@ const Member = ({ id, username, image, role, roles, setRoles, constantRoles, ser
       }, {
         withCredentials: true
       })
+      
       await fetchMembers()
       setIsBanning(false)
     }

@@ -58,8 +58,8 @@ io.on("connection", socket => {
     socket.to(data.serverId).emit("receive_member_role_updated", data)
   })
 
-  socket.on("receive_member_status", data => {
-    console.log(data)
+  socket.on("server_ban_user", data => {
+    socket.to(data.userId).emit("receive_server_ban", data)
   })
 
   socket.on("voice_updated", data => {

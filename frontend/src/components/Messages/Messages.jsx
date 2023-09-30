@@ -1,12 +1,10 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { useNavigate, useParams } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import axios from 'axios';
 import Twemoji from "react-twemoji"
 import Cookies from 'js-cookie';
 
 // components
-import Sidebar from '../Home/Sidebar/Sidebar'
-import ContactsBar from "../Home/ContactsBar/ContactsBar"
 import { Context } from '../Context/Context';
 import OtherUsers from './OtherUsers/OtherUsers';
 import Message from "./Message"
@@ -31,9 +29,9 @@ const Messages = () => {
     conversations,
     conversationChosen,
     setConversationChosen,
-    directMessageNotifications
+    directMessageNotifications,
+    currentConversationId
   } = useContext(Context)
-  const { id } = useParams()
   const [messages,setMessages] = useState([])
   const [message,setMessage] = useState("")
   const [isLoading,setIsLoading] = useState(false)
@@ -55,7 +53,7 @@ const Messages = () => {
     joinConversation()
     handleCachedMessage()
     fetchMessages()
-    socket.emit("join_room", id) // emitting a join room event to the socket server
+    socket.emit("join_room", currentConversationId) // emitting a join room event to the socket server
     scrollToBottom()
     Cookies.set("conversationChosen", JSON.stringify(conversationChosen))
     return () => {
@@ -63,7 +61,7 @@ const Messages = () => {
       leaveConversation()
       window.removeEventListener("beforeunload", handleUnload)
     }
-  }, [id])
+  }, [currentConversationId])
 
   // socket watching to update messages upon receiving socket
   useEffect(() => {
@@ -93,7 +91,7 @@ const Messages = () => {
     try {
       setIsLoading(true)
       const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/conversations/messages`, {
-        conversationId: id,
+        conversationId: currentConversationId,
         userId: user.id
       }, {
         withCredentials: true
@@ -101,7 +99,7 @@ const Messages = () => {
 
       // if user tries to enter a conversation he's not a part of it will redirect without fetching messages
       if (response.data.authorized === false) {
-        navigate("/")
+        navigate("/404")
       }
       else {
         setMessages(response.data.DirectMessages)
@@ -122,17 +120,17 @@ const Messages = () => {
   }
 
   const handleContactSwitch = () => {
-    socket.emit("leave_room", id) // leaving socket room when changing conversations
+    socket.emit("leave_room", currentConversationId) // leaving socket room when changing conversations
     setMessages([]) // resetting messages state
     const cachedMessages = Cookies.get("cachedDirectMessages")
     if (cachedMessages) {
       var parsed = JSON.parse(cachedMessages)
-      parsed[id] = currentMessage
+      parsed[currentConversationId] = currentMessage
       Cookies.set('cachedDirectMessages', JSON.stringify(parsed))
     }
     else {
       Cookies.set("cachedDirectMessages", JSON.stringify({
-        [id]: currentMessage
+        [currentConversationId]: currentMessage
       }))
     }
     setMessage("")
@@ -142,24 +140,24 @@ const Messages = () => {
     const cachedMessages = Cookies.get("cachedDirectMessages")
     if (cachedMessages) {
       const parsed = JSON.parse(cachedMessages)
-      if (parsed[id])
-        setMessage(parsed[id])
+      if (parsed[currentConversationId])
+        setMessage(parsed[currentConversationId])
     }
   }
 
   const joinConversation = async () => {
     try {
       await axios.put(`${import.meta.env.VITE_SERVER_URL}/conversations/joinConversation`, {
-        conversationId: id,
+        conversationId: currentConversationId,
         userId: user.id
       }, {
         withCredentials: true
       })
-      if (directMessageNotifications && conversationHasNotification(directMessageNotifications, id)) {
+      if (directMessageNotifications && conversationHasNotification(directMessageNotifications, currentConversationId)) {
         // removing notification after entering the conversation
-        delete directMessageNotifications[id]
+        delete directMessageNotifications[currentConversationId]
         await axios.post(`${import.meta.env.VITE_SERVER_URL}/notifications/removeDirectMessageNotification`, {
-          conversationId: id,
+          conversationId: currentConversationId,
           recipientId: user.id
         }, {
           withCredentials: true
@@ -174,7 +172,7 @@ const Messages = () => {
   const leaveConversation = async () => {
     try {
       await axios.put(`${import.meta.env.VITE_SERVER_URL}/conversations/leaveConversation`, {
-        conversationId: id,
+        conversationId: currentConversationId,
         userId: user.id
       }, {
         withCredentials: true
@@ -192,7 +190,7 @@ const Messages = () => {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        conversationId: id,
+        conversationId: currentConversationId,
         userId: user.id
       }),
       keepalive: true,
@@ -202,9 +200,6 @@ const Messages = () => {
 
   return (
     <div id='messages-container'>
-      <Sidebar />
-      <ContactsBar highlighted={id} />
-
       <div id='dm-conversation-container'>
 
         <div id='messages-top-bar'>
@@ -232,7 +227,7 @@ const Messages = () => {
                 created_at={e.created_at}
                 conversationType="dm"
                 removeMessageLocally={removeMessageLocally}
-                conversation={id}
+                conversation={currentConversationId}
               />
             })}
           </Twemoji>

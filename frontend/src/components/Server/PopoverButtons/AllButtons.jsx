@@ -17,7 +17,7 @@ import { Context } from '../../Context/Context';
 import "./AllButtons.css"
 
 const AllButtons = ({ user, ownerId, onOpen, server, fetchData, isAdmin }) => {
-  const { fetchServers } = useContext(Context)
+  const { fetchServers, setCurrentServerId, setDisplay } = useContext(Context)
   const { isOpen, onOpen: onOpenConfirmation, onClose } = useDisclosure()
   const { isOpen: isOpenCategory, onOpen: onOpenCategory, onClose: onCloseCategory } = useDisclosure()
   const [hovered,setHovered] = useState("")
@@ -55,7 +55,8 @@ const AllButtons = ({ user, ownerId, onOpen, server, fetchData, isAdmin }) => {
       }, {
         withCredentials: true
       })
-      navigate("/")
+      setCurrentServerId("")
+      setDisplay("")
       fetchServers()
       setIsLoading(false)
     }
@@ -76,7 +77,8 @@ const AllButtons = ({ user, ownerId, onOpen, server, fetchData, isAdmin }) => {
       }, {
         withCredentials: true
       })
-      navigate("/")
+      setCurrentServerId("")
+      setDisplay("")
       fetchServers()
       setIsLoading(false)
     }

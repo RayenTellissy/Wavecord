@@ -11,7 +11,7 @@ import Notification from './Notification/Notification';
 // styles
 import "./Sidebar.css"
 
-const Sidebar = ({ highlighted }) => {
+const Sidebar = ({ highlighted, setSelected }) => {
   const { user, socket, servers, fetchServers, directMessageNotifications, setDirectMessageNotifications } = useContext(Context)
 
   useEffect(() => {
@@ -50,7 +50,7 @@ const Sidebar = ({ highlighted }) => {
           status={e.sender.status}
           messages={e.messages}
         />
-      }) : <HomeButton/>}
+      }) : <HomeButton setSelected={setSelected}/>}
       <span id='home-line-seperator'/>
       <Servers servers={servers} highlighted={highlighted} />
       <CreateServer/>

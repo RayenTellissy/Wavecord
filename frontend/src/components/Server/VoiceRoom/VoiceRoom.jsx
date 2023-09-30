@@ -10,7 +10,6 @@ import ContextTransfer from './ContextTransfer';
 const VoiceRoom = ({
   serverId,
   channelId,
-  setCurrentChannelType,
 }) => {
   const { user, socket, micEnabled, setCurrentVoiceChannelId } = useContext(Context)
   const { token, setToken } = useContext(Context)
@@ -70,7 +69,6 @@ const VoiceRoom = ({
   const handleDisconnect = async () => {
     if(!channelId) return
     setCurrentVoiceChannelId("")
-    setCurrentChannelType("")
     socket.emit("leave_voice", {
       serverId,
       channelId,

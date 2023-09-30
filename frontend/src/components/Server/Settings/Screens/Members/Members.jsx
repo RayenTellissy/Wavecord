@@ -11,7 +11,7 @@ import { Context } from "../../../../Context/Context"
 import "./Members.css"
 
 const Members = ({ server }) => {
-  const { user } = useContext(Context)
+  const { user, socket } = useContext(Context)
   const [users, setUsers] = useState([])
   const [constantUsers, setConstantUsers] = useState([])
   const [roles,setRoles] = useState([])
@@ -92,9 +92,11 @@ const Members = ({ server }) => {
             setRoles={setRoles}
             constantRoles={constantRoles}
             serverId={server.id}
+            serverName={server.name}
             fetchMembers={fetchMembers}
             user={user}
             isOwner={e.user.servers_created.length !== 0}
+            socket={socket}
           />
         })}
         {isLoading && <BeatLoader size={8} color='white'/>}

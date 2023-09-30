@@ -1,6 +1,9 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { FaBolt, FaUserGroup } from 'react-icons/fa6';
+
+// components
+import { Context } from '../../../Context/Context';
 
 // styles
 import "./HomeNavigator.css"
@@ -8,6 +11,7 @@ import "./HomeNavigator.css"
 const HomeNavigator = ({ selected, setSelected, text, style }) => {
   const navigate = useNavigate()
   const location = useLocation().pathname
+  const { setCurrentConversationId, setDisplay } = useContext(Context)
 
   const handleClick = () => {
     if(location !== "/"){
@@ -18,6 +22,8 @@ const HomeNavigator = ({ selected, setSelected, text, style }) => {
       })
     }
     setSelected(text)
+    setCurrentConversationId("")
+    setDisplay("") // exiting messages component
   }
 
   return (

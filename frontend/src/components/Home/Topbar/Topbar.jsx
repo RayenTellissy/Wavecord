@@ -1,5 +1,4 @@
 import React, { useContext, useEffect } from 'react';
-import axios from 'axios';
 import { FaUserGroup } from 'react-icons/fa6';
 
 // components

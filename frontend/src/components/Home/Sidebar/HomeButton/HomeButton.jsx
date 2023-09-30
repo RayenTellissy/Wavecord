@@ -1,14 +1,22 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Tooltip } from '@chakra-ui/react';
-import { useNavigate } from "react-router-dom"
 
+// components
 import Logo from "../../../common/Logo/Logo"
+import { Context } from '../../../Context/Context';
 
 // styles
 import "./HomeButton.css"
 
-const HomeButton = () => {
-  const navigate = useNavigate()
+const HomeButton = ({ setSelected }) => {
+  const { setDisplay, setCurrentConversationId, setCurrentServerId } = useContext(Context)
+
+  const handleClick = () => {
+    setDisplay("")
+    setCurrentConversationId("")
+    setCurrentServerId("")
+    setSelected("Friends")
+  }
 
   return <Tooltip label="Home"
     placement='right'
@@ -20,7 +28,7 @@ const HomeButton = () => {
     margin={5}
     fontFamily="GibsonMedium"
   >
-    <button id='home-button' onClick={() => navigate("/")}>
+    <button id='home-button' onClick={handleClick}>
       <Logo  style={{ height: "85%", margin: "auto" }} />
     </button>
   </Tooltip>
