@@ -40,7 +40,9 @@ const DirectMessagesText = ({ id, fetchConversations }) => {
   const fetchFriends = async () => {
     try {
       setIsLoading(true)
-      const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/friends/fetchFriendsWithNoConversations/${id}`)
+      const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/friends/fetchFriendsWithNoConversations/${id}`, {
+        withCredentials: true
+      })
       setFriends(response.data)
       setConstantFriends(response.data)
       setIsLoading(false)
@@ -59,6 +61,8 @@ const DirectMessagesText = ({ id, fetchConversations }) => {
       const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/conversations/createDM`,{
         currentUser: id,
         otherUser: checked.id
+      }, {
+        withCredentials: true
       })
       setIsCreating(false)
       onClose() // closing popover

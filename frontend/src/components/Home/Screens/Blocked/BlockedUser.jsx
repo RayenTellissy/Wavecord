@@ -19,6 +19,8 @@ const BlockedUser = ({ id, username, image, status, setIsUnblocking, fetchBlocks
       await axios.post(`${import.meta.env.VITE_SERVER_URL}/friends/unblockUser`, {
         blocker: user.id,
         blocked: id
+      }, {
+        withCredentials: true
       })
       fetchBlocks()
       setIsUnblocking(false)

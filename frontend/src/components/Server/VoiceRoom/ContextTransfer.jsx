@@ -58,6 +58,8 @@ const ContextTransfer = ({ serverId, channelId }) => {
         })
         await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/leaveVoiceRoom`, {
           id: user.id
+        }, {
+          withCredentials: true
         })
       }
       catch(error){

@@ -19,6 +19,8 @@ const BannedUser = ({ id, username, image, user, serverId, fetchUsers }) => {
         remover: user.id,
         removed: id,
         serverId
+      }, {
+        withCredentials: true
       })
     await fetchUsers()
       setIsLoading(false)

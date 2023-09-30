@@ -66,6 +66,8 @@ const ChannelMessages = ({
       const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/fetchTextChannelMessages`,{
         channelId: currentTextChannelId,
         serverId
+      }, {
+        withCredentials: true
       })
       setMessages(response.data)
       setIsLoading(false)

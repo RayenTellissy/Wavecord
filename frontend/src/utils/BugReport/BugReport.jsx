@@ -26,6 +26,8 @@ const BugReport = () => {
       await axios.post(`${import.meta.env.VITE_SERVER_URL}/bugReports/createTicket`,{
         senderId: user.id,
         message
+      }, {
+        withCredentials: true
       })
       onClose()
       setMessage("")

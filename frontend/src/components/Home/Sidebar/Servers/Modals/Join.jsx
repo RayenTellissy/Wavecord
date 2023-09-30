@@ -39,6 +39,8 @@ const Join = ({ onClose, setScreen }) => {
     const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/join`, {
       userId: user.id,
       invite
+    }, {
+      withCredentials: true
     })
 
     if (response.data.status === "BANNED") {

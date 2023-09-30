@@ -5,7 +5,6 @@ const cors = require("cors")
 const morgan = require("morgan")
 const helmet = require("helmet")
 const { Server } = require("socket.io")
-const axios = require("axios")
 
 const app = express()
 const PORT = 5000
@@ -26,18 +25,6 @@ const io = new Server(server, {
 
 io.on("connection", socket => {
   console.log("user connected", socket.id)
-
-  socket.on("statusChanged", async (data) => {
-    try {
-      await axios.put(`${process.env.MAIN_API}/users/setStatus`, {
-        id: data.id,
-        status: data.status
-      })
-    }
-    catch(error){
-      console.log(error)
-    }
-  })
 
   socket.on("start_session", data => {
     socket.join(data.id)
@@ -88,7 +75,6 @@ io.on("connection", socket => {
   })
 
   socket.on("send_friend_request_notification", data => {
-    console.log(data)
     socket.to(data.userId).emit("receive_friend_request_notification", data)
   })
   

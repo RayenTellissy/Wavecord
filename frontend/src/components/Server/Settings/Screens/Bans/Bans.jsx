@@ -25,7 +25,9 @@ const Bans = ({ server }) => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/servers/fetchBannedUsers/${server.id}`)
+      const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/servers/fetchBannedUsers/${server.id}`, {
+        withCredentials: true
+      })
       setUsers(response.data)
       setConstantUsers(response.data)
     }

@@ -15,7 +15,9 @@ const Role = ({ id, name, color, members, fetchRoles }) => {
   const removeRole = async () => {
     try {
       setIsDeleting(true)
-      await axios.delete(`${import.meta.env.VITE_SERVER_URL}/servers/removeRole/${id}`)
+      await axios.delete(`${import.meta.env.VITE_SERVER_URL}/servers/removeRole/${id}`, {
+        withCredentials: true
+      })
       await fetchRoles()
       setIsDeleting(false)
     }

@@ -12,6 +12,7 @@
 }
 
 #friend-button-container:hover {
+  border-top: 1px solid transparent;
   background-color: #393b41;
   border-radius: 11px;
 }

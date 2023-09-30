@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { BiBlock } from "react-icons/bi"
 import { Tooltip } from '@chakra-ui/react';
-import axios from 'axios';
 import { FaUserMinus } from "react-icons/fa"
 
 // components
@@ -22,6 +22,8 @@ const FriendButton = ({ id, username, image, status, setIsUpdating, fetchUsers, 
       await axios.post(`${import.meta.env.VITE_SERVER_URL}/friends/removeFriend`, {
         remover: user.id,
         removed: id
+      }, {
+        withCredentials: true
       })
       await fetchUsers()
       setIsUpdating(false)
@@ -42,6 +44,8 @@ const FriendButton = ({ id, username, image, status, setIsUpdating, fetchUsers, 
       await axios.post(`${import.meta.env.VITE_SERVER_URL}/friends/blockUser`, {
         blocker: user.id,
         blocked: id
+      }, {
+        withCredentials: true
       })
       await fetchUsers()
       setIsUpdating(false)
@@ -67,6 +71,8 @@ const FriendButton = ({ id, username, image, status, setIsUpdating, fetchUsers, 
       const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/conversations/createDM`, {
         currentUser: user.id,
         otherUser: id
+      }, {
+        withCredentials: true
       })
       return navigate(`/dm/${response.data.id}`)
     }
@@ -86,7 +92,6 @@ const FriendButton = ({ id, username, image, status, setIsUpdating, fetchUsers, 
           </div>
         </div>
         <div>
-
           <Tooltip
             label="Unfriend"
             placement="top"

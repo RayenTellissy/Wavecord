@@ -21,6 +21,8 @@ const Role = ({ id, name, color, userId, onClose, serverId, fetchMembers, setIsL
         userId,
         roleId: id,
         serverId
+      }, {
+        withCredentials: true
       })
       await fetchMembers()
       onClose()

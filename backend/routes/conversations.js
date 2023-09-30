@@ -11,13 +11,13 @@ const {
 const { sendMessageLimit } = require("../middleware/conversationLimiter")
 const authentication = require("../middleware/authentication")
 
-router.post("/fetch", fetchConversations)
-router.post("/messages", fetchMessages)
-router.post("/sendMessage", sendMessage)
-router.post("/deleteMessage", deleteMessage)
-router.post("/createDM", createDM)
+router.post("/fetch", authentication, fetchConversations)
+router.post("/messages", authentication, fetchMessages)
+router.post("/sendMessage", authentication, sendMessage)
+router.post("/deleteMessage", authentication, deleteMessage)
+router.post("/createDM", authentication, createDM)
 
-router.put("/joinConversation", joinConversation)
-router.put("/leaveConversation", leaveConversation)
+router.put("/joinConversation", authentication, joinConversation)
+router.put("/leaveConversation", authentication, leaveConversation)
 
 module.exports = router

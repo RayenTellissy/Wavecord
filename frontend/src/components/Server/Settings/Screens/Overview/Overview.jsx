@@ -108,6 +108,8 @@ const Overview = ({ server, fetchData }) => {
       await axios.put(`${import.meta.env.VITE_SERVER_URL}/servers/changeServerName`,{
         serverId: server.id,
         name: serverName
+      }, {
+        withCredentials: true
       })
       await fetchData()
     }

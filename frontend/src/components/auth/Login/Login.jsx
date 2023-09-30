@@ -62,6 +62,8 @@ const Login = () => {
       const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/users/login`,{
         username: username,
         password: password
+      }, {
+        withCredentials: true
       })
 
       setIsLoading(false)
@@ -70,8 +72,6 @@ const Login = () => {
 
       // if user has been authenticated redirect him
       if(result.success){
-        localStorage.setItem("wavecord-token", result.token)
-        localStorage.setItem("wavecord-refreshToken", result.refreshToken)
         localStorage.setItem("wavecord-id", result.id)
         setUser(response.data)
         handleConnect() // status update

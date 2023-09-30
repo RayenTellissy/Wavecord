@@ -38,12 +38,16 @@ const Message = ({
         await axios.post(`${import.meta.env.VITE_SERVER_URL}/conversations/deleteMessage`, {
           senderId,
           messageId: id
+        }, {
+          withCredentials: true
         })
         return removeMessageLocally(id)
       }
       await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/deleteMessage`, {
         senderId,
         messageId: id
+      }, {
+        withCredentials: true
       })
       removeMessageLocally(id)
     }

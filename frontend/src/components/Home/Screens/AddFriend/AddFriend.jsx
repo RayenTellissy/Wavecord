@@ -30,6 +30,8 @@ const AddFriend = ({ setShowSearch }) => {
         senderUsername: user.username,
         sender: user.id,
         recipient: query
+      }, {
+        withCredentials: true
       })
 
       // friend request successfully created
@@ -37,6 +39,8 @@ const AddFriend = ({ setShowSearch }) => {
         await axios.post(`${import.meta.env.VITE_SERVER_URL}/notifications/createFriendRequestNotification`, {
           senderId: user.id,
           recipientId: response.data.id
+        }, {
+          withCredentials: true
         })
         socket.emit("send_friend_request_notification", {
           userId: response.data.id,

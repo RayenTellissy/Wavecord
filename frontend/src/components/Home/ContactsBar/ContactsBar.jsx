@@ -29,6 +29,8 @@ const ContactsBar = ({ highlighted, selected, setSelected }) => {
     try {
       const conversations = await axios.post(`${import.meta.env.VITE_SERVER_URL}/conversations/fetch`,{
         id: user.id
+      }, {
+        withCredentials: true
       })
       setConversations(conversations.data)
       setConstantConversations(conversations.data)

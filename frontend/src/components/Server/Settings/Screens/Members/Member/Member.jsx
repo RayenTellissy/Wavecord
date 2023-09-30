@@ -35,6 +35,8 @@ const Member = ({ id, username, image, role, roles, setRoles, constantRoles, ser
         kicker: user.id,
         kicked: id,
         serverId
+      }, {
+        withCredentials: true
       })
       await fetchMembers()
       setIsKicking(false)
@@ -51,6 +53,8 @@ const Member = ({ id, username, image, role, roles, setRoles, constantRoles, ser
         banner: user.id,
         banned: id,
         serverId
+      }, {
+        withCredentials: true
       })
       await fetchMembers()
       setIsBanning(false)

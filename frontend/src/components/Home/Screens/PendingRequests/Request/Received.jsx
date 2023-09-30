@@ -23,6 +23,8 @@ const Received = ({ requestId, id, username, image, status, fetchRequests, setIs
       await axios.post(`${import.meta.env.VITE_SERVER_URL}/friends/acceptFriendRequest`, {
         sender: id,
         requested: user.id
+      }, {
+        withCredentials: true
       })
       fetchRequests()
       setIsAccepting(false)
@@ -35,7 +37,9 @@ const Received = ({ requestId, id, username, image, status, fetchRequests, setIs
   const rejectFriendRequest = async () => {
     setIsAccepting(true)
     try {
-      await axios.get(`${import.meta.env.VITE_SERVER_URL}/friends/removeRequest/${requestId}`)
+      await axios.get(`${import.meta.env.VITE_SERVER_URL}/friends/removeRequest/${requestId}`, {
+        withCredentials: true
+      })
       fetchRequests()
       setIsAccepting(false)
     }

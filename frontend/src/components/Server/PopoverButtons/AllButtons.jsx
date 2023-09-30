@@ -34,6 +34,8 @@ const AllButtons = ({ user, ownerId, onOpen, server, fetchData, isAdmin }) => {
       await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/createCategory`, {
         name: categoryQuery,
         serverId: server.id
+      }, {
+        withCredentials: true
       })
       await fetchData()
       closeCategoryModal()
@@ -50,6 +52,8 @@ const AllButtons = ({ user, ownerId, onOpen, server, fetchData, isAdmin }) => {
       await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/leaveServer`,{
         userId: user.id,
         serverId: server.id
+      }, {
+        withCredentials: true
       })
       navigate("/")
       fetchServers()
@@ -69,6 +73,8 @@ const AllButtons = ({ user, ownerId, onOpen, server, fetchData, isAdmin }) => {
       await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/deleteServer`, {
         ownerId: user.id,
         serverId: server.id
+      }, {
+        withCredentials: true
       })
       navigate("/")
       fetchServers()

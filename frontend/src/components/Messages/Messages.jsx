@@ -95,6 +95,8 @@ const Messages = () => {
       const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/conversations/messages`, {
         conversationId: id,
         userId: user.id
+      }, {
+        withCredentials: true
       })
 
       // if user tries to enter a conversation he's not a part of it will redirect without fetching messages
@@ -150,6 +152,8 @@ const Messages = () => {
       await axios.put(`${import.meta.env.VITE_SERVER_URL}/conversations/joinConversation`, {
         conversationId: id,
         userId: user.id
+      }, {
+        withCredentials: true
       })
       if (directMessageNotifications && conversationHasNotification(directMessageNotifications, id)) {
         // removing notification after entering the conversation
@@ -157,6 +161,8 @@ const Messages = () => {
         await axios.post(`${import.meta.env.VITE_SERVER_URL}/notifications/removeDirectMessageNotification`, {
           conversationId: id,
           recipientId: user.id
+        }, {
+          withCredentials: true
         })
       }
     }
@@ -170,6 +176,8 @@ const Messages = () => {
       await axios.put(`${import.meta.env.VITE_SERVER_URL}/conversations/leaveConversation`, {
         conversationId: id,
         userId: user.id
+      }, {
+        withCredentials: true
       })
     }
     catch (error) {
@@ -187,7 +195,8 @@ const Messages = () => {
         conversationId: id,
         userId: user.id
       }),
-      keepalive: true
+      keepalive: true,
+      credentials: "include"
     })
   }
 

@@ -23,6 +23,8 @@ const HasRole = ({ userId, serverId, name, color, fetchMembers }) => {
       await axios.put(`${import.meta.env.VITE_SERVER_URL}/servers/removeRoleFromUser`,{
         userId,
         serverId
+      }, {
+        withCredentials: true
       })
       await fetchMembers()
       setIsLoading(false)

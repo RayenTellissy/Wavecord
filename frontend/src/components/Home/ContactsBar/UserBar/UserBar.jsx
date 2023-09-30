@@ -46,7 +46,7 @@ const UserBar = () => {
       localStorage.removeItem("customStatus")
     }
     if(chosenStatus !== "ONLINE"){
-      localStorage.setItem("customStatus", status)
+      localStorage.setItem("customStatus", chosenStatus)
     }
     setStatus(chosenStatus)
     onClose()

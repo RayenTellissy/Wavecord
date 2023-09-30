@@ -57,6 +57,8 @@ const VoiceRoom = ({
       await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/joinVoiceRoom`,{
         userId: user.id,
         channelId
+      }, {
+        withCredentials: true
       })
     }
     catch(error){

@@ -42,7 +42,9 @@ const PendingRequests = ({ query, setShowSearch }) => {
 
   const fetchRequests = async () => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/friends/fetchPending/${user.id}`)
+      const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/friends/fetchPending/${user.id}`, {
+        withCredentials: true
+      })
       setUsers(response.data)
       setConstantUsers(response.data)
       if(response.data.length !== 0){
@@ -64,6 +66,8 @@ const PendingRequests = ({ query, setShowSearch }) => {
         setFriendRequestNotifications(null)
         await axios.post(`${import.meta.env.VITE_SERVER_URL}/notifications/removeFriendRequestNotification`, {
           recipientId: user.id
+        }, {
+          withCredentials: true
         })
       }
       catch(error){

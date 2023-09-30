@@ -103,6 +103,8 @@ const Server = () => {
       const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/fetch`,{
         serverId: id,
         userId: user.id
+      }, {
+        withCredentials: true
       })
       setServer(response.data.server)
       setRole(response.data.role)
@@ -129,6 +131,8 @@ const Server = () => {
           name: modalChannelName,
           categoryId: categoryIdChosen,
           serverId: id
+        }, {
+          withCredentials: true
         })
       }
       else if(modalChannelType === "voice"){
@@ -136,6 +140,8 @@ const Server = () => {
           name: modalChannelName,
           categoryId: categoryIdChosen,
           serverId: id
+        }, {
+          withCredentials: true
         })
       }
       await fetchData() // refreshing data
@@ -184,7 +190,8 @@ const Server = () => {
         body: JSON.stringify({
           id: user.id
         }),
-        keepalive: true
+        keepalive: true,
+        credentials: "include"
       })
     }
   }

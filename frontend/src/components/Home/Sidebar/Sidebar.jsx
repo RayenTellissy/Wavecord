@@ -26,7 +26,9 @@ const Sidebar = ({ highlighted }) => {
 
   const fetchDirectMessageNotifications = async () => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/notifications/fetchDirectMessageNotifications/${user.id}`)
+      const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/notifications/fetchDirectMessageNotifications/${user.id}`, {
+        withCredentials: true
+      })
       setDirectMessageNotifications(response.data)
     }
     catch(error){

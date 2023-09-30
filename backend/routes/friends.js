@@ -12,18 +12,19 @@ const {
   removeFriend,
   fetchFriendsWithNoConversation
 } = require("../controllers/friends")
+const authentication = require("../middleware/authentication")
 
-router.get("/fetchPending/:id", fetchPending)
-router.get("/removeRequest/:id", removeRequest)
-router.get("/fetchBlocks/:id", fetchBlocks)
-router.get("/fetchFriendsWithNoConversations/:id", fetchFriendsWithNoConversation)
+router.get("/fetchPending/:id", authentication, fetchPending)
+router.get("/removeRequest/:id", authentication, removeRequest)
+router.get("/fetchBlocks/:id", authentication, fetchBlocks)
+router.get("/fetchFriendsWithNoConversations/:id", authentication, fetchFriendsWithNoConversation)
 
-router.post("/fetchOnlineFriends", fetchOnlineFriends)
-router.post("/fetchAllFriends", fetchAllFriends)
-router.post("/addFriend", addFriend)
-router.post("/removeFriend", removeFriend)
-router.post("/acceptFriendRequest", acceptFriendRequest)
-router.post("/blockUser", blockUser)
-router.post("/unblockUser", unblockUser)
+router.post("/fetchOnlineFriends", authentication, fetchOnlineFriends)
+router.post("/fetchAllFriends", authentication, fetchAllFriends)
+router.post("/addFriend", authentication, addFriend)
+router.post("/removeFriend", authentication, removeFriend)
+router.post("/acceptFriendRequest", authentication, acceptFriendRequest)
+router.post("/blockUser", authentication, blockUser)
+router.post("/unblockUser", authentication, unblockUser)
 
 module.exports = router

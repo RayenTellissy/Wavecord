@@ -26,6 +26,8 @@ const CreateRole = ({ isOpen, onClose, serverId, fetchRoles, setQuery }) => {
         roleColor: roleColor,
         isAdmin: checked,
         serverId: serverId
+      }, {
+        withCredentials: true
       })
       onClose()
       setQuery("")

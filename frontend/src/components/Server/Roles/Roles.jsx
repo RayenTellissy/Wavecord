@@ -34,7 +34,9 @@ const Roles = ({ serverId }) => {
 
   const fetchRoles = async () => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/servers/fetchUsersByRoles/${serverId}`)
+      const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/servers/fetchUsersByRoles/${serverId}`, {
+        withCredentials: true
+      })
       setRoles(response.data.withRole)
       setNoRoles(response.data.noRole)
       setOffline(response.data.offline)

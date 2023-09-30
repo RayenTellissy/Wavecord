@@ -3,6 +3,7 @@ const express = require("express")
 const cors = require("cors")
 const helmet = require("helmet")
 const morgan = require("morgan")
+const cookieParser = require("cookie-parser")
 const { connect } = require("./prisma/connection")
 
 // routers
@@ -19,13 +20,14 @@ const PORT = 3000 // server port
 app.get("/", (req,res) => res.send("")) // heartbeat route
 
 app.use(express.json())
+app.use(cookieParser())
 app.use(express.urlencoded({ extended: true }))
 app.use(cors({
   credentials: true,
   origin: process.env.CLIENT_URL,
 }))
 app.use(helmet()) // securing http requests to the server
-app.use(morgan("dev"))
+// app.use(morgan("dev"))
 connect() // connecting database
 
 // routers

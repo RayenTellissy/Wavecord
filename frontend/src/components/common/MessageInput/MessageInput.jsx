@@ -78,11 +78,15 @@ const MessageInput = ({
         conversationId: id,
         senderId: user.id,
         message: storedMessage
+      }, {
+        withCredentials: true
       })
       const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/notifications/createDirectMessageNotification`, {
         senderId: user.id,
         recipientId: conversationChosen.id,
         conversationId: id
+      }, {
+        withCredentials: true
       })
       // if notification was created (recipient is not in the room). emit socket event
       if(response.data.success){
@@ -125,6 +129,8 @@ const MessageInput = ({
         channelId: channelId,
         senderId: user.id,
         message: message
+      }, {
+        withCredentials: true
       })
     }
   }
@@ -188,10 +194,14 @@ const MessageInput = ({
           senderId: user.id,
           message: url,
           type: "LINK"
+        }, {
+          withCredentials: true
         })
         const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/notifications/createDirectMessageNotification`, {
           senderId: user.id,
           recipientId: conversationChosen.id
+        }, {
+          withCredentials: true
         })
         // if notification was created (recipient is not in the room). emit socket event
         if(response.data.success){
@@ -235,6 +245,8 @@ const MessageInput = ({
           senderId: user.id,
           message: url,
           type: "LINK"
+        }, {
+          withCredentials: true
         })
       }
       catch(error){

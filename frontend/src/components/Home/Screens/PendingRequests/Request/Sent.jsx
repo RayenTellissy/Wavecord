@@ -11,7 +11,9 @@ const Sent = ({ requestId, username, image, status, setIsAccepting, fetchRequest
   const removeRequest = async () => {
     try {
       setIsAccepting(true)
-      await axios.get(`${import.meta.env.VITE_SERVER_URL}/friends/removeRequest/${requestId}`)
+      await axios.get(`${import.meta.env.VITE_SERVER_URL}/friends/removeRequest/${requestId}`, {
+        withCredentials: true
+      })
       fetchRequests()
       setIsAccepting(false)
     }

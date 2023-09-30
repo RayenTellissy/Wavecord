@@ -1,16 +1,31 @@
+require("dotenv").config()
 const jwt = require("jsonwebtoken")
+const { generateAccessToken } = require("../utils/generateTokens")
 
-const authentication = ( req, res, next ) => {
-  const token = req.headers.authorization
+// middleware to check for a valid access token before sending the request
+const authentication = async (req, res, next) => {
+  const { accessToken, refreshToken } = req.cookies
 
-  if(!token) return res.send({ error: "Unauthorized" })
-  
   try {
-    jwt.verify(token, process.env.JWT_SECRET)
+    // verifiying the access token
+    jwt.verify(accessToken, process.env.JWT_SECRET)
     next()
   }
   catch(error){
-    res.send({ error: "Invalid Token" })
+    // if the access token is expired verify the refresh token
+    jwt.verify(refreshToken, process.env.REFRESH_TOKEN, (error, decoded) => {
+      if(error){
+        return res.send({ error: "Invalid Refresh Token" })
+      }
+
+      // generating a new access token
+      const newAccessToken = generateAccessToken({ id: decoded.id })
+
+      // creating an httpOnly cookie to store the new access token
+      res.cookie("accessToken", newAccessToken, { httpOnly: true, secure: true, sameSite: "strict" })
+        
+      next()
+    })
   }
 }
 

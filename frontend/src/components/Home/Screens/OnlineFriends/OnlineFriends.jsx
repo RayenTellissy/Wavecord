@@ -30,6 +30,8 @@ const OnlineFriends = ({ query, setShowSearch }) => {
     try {
       const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/friends/fetchOnlineFriends`,{
         id: user.id
+      }, {
+        withCredentials: true
       })
       setUsers(response.data)
       setConstantUsers(response.data)

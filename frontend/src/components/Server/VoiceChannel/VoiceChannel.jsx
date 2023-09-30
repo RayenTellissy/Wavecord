@@ -55,7 +55,9 @@ const VoiceChannel = ({
 
   const fetchUsersInRoom = async () => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/servers/fetchUsersInRoom/${id}`)
+      const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/servers/fetchUsersInRoom/${id}`, {
+        withCredentials: true
+      })
       setUsers(response.data)
     }
     catch(error){

@@ -34,7 +34,9 @@ const Members = ({ server }) => {
 
   const fetchMembers = async () => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/servers/fetchMembers/${server.id}`)
+      const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/servers/fetchMembers/${server.id}`, {
+        withCredentials: true
+      })
       setUsers(response.data)
       setConstantUsers(response.data)
       setIsLoading(false)
@@ -46,7 +48,9 @@ const Members = ({ server }) => {
 
   const fetchRoles = async () => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/servers/fetchOnlyRoles/${server.id}`)
+      const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/servers/fetchOnlyRoles/${server.id}`, {
+        withCredentials: true
+      })
       setRoles(response.data)
       setConstantRoles(response.data)
     }
