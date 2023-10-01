@@ -22,7 +22,7 @@ const authentication = async (req, res, next) => {
       const newAccessToken = generateAccessToken({ id: decoded.id })
 
       // creating an httpOnly cookie to store the new access token
-      res.cookie("accessToken", newAccessToken, { httpOnly: true, secure: true, sameSite: "lax" })
+      res.cookie("accessToken", newAccessToken, { httpOnly: true, secure: true, sameSite: "strict" })
         
       next()
     })
