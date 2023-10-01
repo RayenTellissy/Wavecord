@@ -52,13 +52,13 @@ module.exports = {
       })
 
       // creating a secure httpOnly Cookie for accessToken
-      res.cookie("accessToken", accessToken, { httpOnly: true, secure: true, sameSite: "none" })
+      res.cookie("accessToken", accessToken, { httpOnly: true, secure: true, sameSite: "lax" })
 
       // creating a secure httpOnly cookie to store the refresh token and persist it
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
         secure: true,
-        sameSite: "none",
+        sameSite: "lax",
         maxAge: 1000 * 60 * 60 * 24 * 5
       })
 
@@ -131,13 +131,13 @@ module.exports = {
       })
 
       // creating a secure httpOnly Cookie for accessToken
-      res.cookie("accessToken", accessToken, { httpOnly: true, secure: true, sameSite: "none" })
+      res.cookie("accessToken", accessToken, { httpOnly: true, secure: true, sameSite: "lax" })
 
       // creating a secure httpOnly cookie to store the refresh token and persist it
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
         secure: true,
-        sameSite: "none",
+        sameSite: "lax",
         maxAge: 1000 * 60 * 60 * 24 * 5
       })
 
