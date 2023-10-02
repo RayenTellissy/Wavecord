@@ -9,14 +9,25 @@ import { Context } from '../../../Context/Context';
 import "./Notification.css"
 
 const Notification = ({ conversationId, id, username, image, status, messages }) => {
-  const { setConversationChosen, setCurrentConversationId, setDisplay, setCurrentServerId } = useContext(Context)
+  const { 
+    setConversationChosen,
+    setCurrentConversationId,
+    setDisplay,
+    setCurrentServerId,
+    directMessageNotifications,
+    setDirectMessageNotifications
+  } = useContext(Context)
 
   const handleClick = () => {
     setConversationChosen({ id, username, image, status })
-    Cookies.set("conversationChosen", { id, username, image, status })
+    Cookies.set("conversationChosen", JSON.stringify({ id, username, image, status }))
     setCurrentConversationId(conversationId)
     setCurrentServerId("")
     setDisplay("directMessages")
+    // deleting the notification we clicked on
+    const notificationsCopy = directMessageNotifications
+    delete notificationsCopy[conversationId]
+    setDirectMessageNotifications(notificationsCopy)
   }
 
   return (

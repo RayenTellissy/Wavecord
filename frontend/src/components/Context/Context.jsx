@@ -46,12 +46,12 @@ export const ContextProvider = ({ children }) => {
   useEffect(() => {
     if(socket){
       // if status has not been set, invoke connection handler function
-      if(!status){
+      if(user.id){
         handleConnect()
       }
       window.addEventListener("beforeunload", handleDisconnect)
     }
-  },[socket])
+  },[socket, user])
 
   // function to retrieve all the current user's information
   const authenticateSession = async () => {

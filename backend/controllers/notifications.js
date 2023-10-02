@@ -5,7 +5,7 @@ module.exports = {
   createDirectMessageNotification: async (req,res) => {
     try {
       const { senderId, recipientId, conversationId } = req.body
-
+      
       const recipientInRoom = await prisma.conversations.findFirst({
         where: {
           id: conversationId,
@@ -16,17 +16,17 @@ module.exports = {
           }
         }
       })
-
+      
       // if the recipient of the notification is already in the room, the notification won't be created.
       if(recipientInRoom) return res.send("recipient in room.")
-
+      
       const notificationExists = await prisma.directMessageNotifications.findFirst({
         where: {
           senderId,
           recipientId
         }
       })
-
+      
       if(notificationExists){
         await prisma.directMessageNotifications.updateMany({
           where: {
@@ -39,7 +39,7 @@ module.exports = {
             }
           }
         })
-
+        
         return res.send({ success: true, message: "Incremented Notifications" })
       }
 
