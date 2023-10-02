@@ -59,7 +59,7 @@ export const ContextProvider = ({ children }) => {
   // function to retrieve all the current user's information
   const authenticateSession = async () => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/users/login`, {
+      const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/users/login/${user.id}`, {
         withCredentials: true
       })
       setUser(response.data)
@@ -118,7 +118,7 @@ export const ContextProvider = ({ children }) => {
         // else if user has no custom status, set his status to online
         setStatus("ONLINE")
         await axios.put(`${import.meta.env.VITE_SERVER_URL}/users/setStatus`, {
-          id: user.id,
+          id: localStorage.getItem("wavecord-id"),
           status: "ONLINE"
         }, {
           withCredentials: true
@@ -144,7 +144,7 @@ export const ContextProvider = ({ children }) => {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        id: user.id,
+        id: localStorage.getItem("wavecord-id"),
         status: "OFFLINE"
       }),
       keepalive: true,

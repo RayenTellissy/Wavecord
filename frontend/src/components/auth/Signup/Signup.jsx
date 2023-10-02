@@ -78,6 +78,7 @@ const Signup = () => {
       const result = response.data
   
       if (result.success) {
+        localStorage.setItem("wavecord-id", result.id)
         setUser(response.data)
         handleConnect() // status update
       }

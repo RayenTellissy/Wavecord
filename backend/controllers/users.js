@@ -280,7 +280,14 @@ module.exports = {
 
   authenticateSession: async (req, res) => {
     try {
-      const { id } = req.cookies
+      const { id } = req.params
+      const secureId = req.cookies.id
+
+      // this is a security measure, if a user has gotten hold of another user's id and he sets it in localStorage as his own,
+      // it will check for the httpOnly id that is made on login, if the id is changed. then the user gets logged out.
+      if(id !== secureId){
+        return res.send({ loggedIn: false })
+      }
 
       const user = await prisma.users.findFirst({
         where: {
@@ -310,6 +317,10 @@ module.exports = {
   setStatus: async (req, res) => {
     try {
       const { id, status } = req.body
+      const secureId = req.cookies.id
+
+      // user has changed his id from localstorage
+      if(id !== secureId) return
 
       const result = await prisma.users.update({
         where: {
