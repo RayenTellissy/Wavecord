@@ -13,10 +13,7 @@ import useConversation from "../../hooks/useConversation"
 import returnServerIds from "../../utils/Helper/returnServerId";
 
 export const ContextProvider = ({ children }) => {
-  const [user,setUser] = useState({
-    loggedIn: null,
-    id: localStorage.getItem("wavecord-id")
-  })
+  const [user,setUser] = useState({ loggedIn: null })
   const [socket,setSocket] = useState(null)
   const [conversations,setConversations] = useState([])
   const [conversationChosen,setConversationChosen] = useConversation()
@@ -59,7 +56,7 @@ export const ContextProvider = ({ children }) => {
   // function to retrieve all the current user's information
   const authenticateSession = async () => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/users/login/${user.id}`, {
+      const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/users/login`, {
         withCredentials: true
       })
       setUser(response.data)
@@ -118,7 +115,7 @@ export const ContextProvider = ({ children }) => {
         // else if user has no custom status, set his status to online
         setStatus("ONLINE")
         await axios.put(`${import.meta.env.VITE_SERVER_URL}/users/setStatus`, {
-          id: localStorage.getItem("wavecord-id"),
+          id: user.id,
           status: "ONLINE"
         }, {
           withCredentials: true
@@ -144,7 +141,6 @@ export const ContextProvider = ({ children }) => {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        id: localStorage.getItem("wavecord-id"),
         status: "OFFLINE"
       }),
       keepalive: true,

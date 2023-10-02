@@ -4,11 +4,16 @@ const { generateAccessToken } = require("../utils/generateTokens")
 
 // middleware to check for a valid access token before sending the request
 const authentication = async (req, res, next) => {
-  const { accessToken, refreshToken } = req.cookies
+  const { accessToken, refreshToken, id } = req.cookies
 
   try {
     // verifiying the access token
-    jwt.verify(accessToken, process.env.JWT_SECRET)
+    jwt.verify(accessToken, process.env.JWT_SECRET, (error, decoded) => {
+      // if the id in the token is not the same as the id of the current user. log him out. (stolen id or token)
+      if(decoded.id !== id){
+        return res.send({ loggedIn: false })
+      }
+    })
     next()
   }
   catch(error){

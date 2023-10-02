@@ -1,10 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useRoomContext, useParticipants } from '@livekit/components-react';
 import axios from 'axios';
-import useSound from "use-sound"
-
-// sounds
-import JoinRoom from "../../../assets/sounds/JoinRoom.mp3"
 
 // components
 import { Context } from '../../Context/Context';
@@ -37,7 +33,6 @@ const ContextTransfer = ({ serverId, channelId }) => {
   const participants = useParticipants()
   const room = useRoomContext()
   const [connected,setConnected] = useState(false)
-  const [playJoin] = useSound(JoinRoom, { volume: 0.2 })
 
   // watching if user left the room
   useEffect(() => {

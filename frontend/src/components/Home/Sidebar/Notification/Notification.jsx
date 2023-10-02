@@ -1,5 +1,4 @@
 import React, { useContext } from 'react';
-import { useNavigate } from "react-router-dom"
 import { Tooltip } from "@chakra-ui/react"
 import Cookies from "js-cookie"
 
@@ -10,13 +9,14 @@ import { Context } from '../../../Context/Context';
 import "./Notification.css"
 
 const Notification = ({ conversationId, id, username, image, status, messages }) => {
-  const { setConversationChosen } = useContext(Context)
-  const navigate = useNavigate()
+  const { setConversationChosen, setCurrentConversationId, setDisplay, setCurrentServerId } = useContext(Context)
 
   const handleClick = () => {
     setConversationChosen({ id, username, image, status })
     Cookies.set("conversationChosen", { id, username, image, status })
-    navigate(`/dm/${conversationId}`)
+    setCurrentConversationId(conversationId)
+    setCurrentServerId("")
+    setDisplay("directMessages")
   }
 
   return (

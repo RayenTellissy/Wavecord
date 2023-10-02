@@ -1,5 +1,4 @@
 import React, { useContext, useState } from 'react';
-import { useNavigate } from "react-router-dom"
 import {
   ModalHeader,
   ModalBody,
@@ -18,7 +17,6 @@ const Join = ({ onClose, setScreen }) => {
   const [invite,setInvite] = useState("")
   const [isLoading,setIsLoading] = useState(false)
   const toast = useToast()
-  const navigate = useNavigate()
 
   const handleSubmit = async () => {
     if (invite === "") {

@@ -103,7 +103,7 @@ module.exports = {
           type
         }
       })
-
+      
       // updating conversation updated_at field for accurate conversations sorting on the frontend
       await prisma.conversations.update({
         where: {
@@ -113,7 +113,7 @@ module.exports = {
           updated_at: new Date()
         }
       })
-
+      
       res.send(result)
     }
     catch(error){

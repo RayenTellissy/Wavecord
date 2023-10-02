@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import useSound from 'use-sound'
 import { HiSpeakerWave } from "react-icons/hi2"
-import Cookies from 'js-cookie';
 
 // components
 import { Context } from '../../Context/Context';

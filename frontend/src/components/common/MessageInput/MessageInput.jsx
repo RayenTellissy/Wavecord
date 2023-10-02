@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { BsEmojiSmileFill, BsLink45Deg } from "react-icons/bs"
 import imageCompression from 'browser-image-compression';
@@ -39,7 +38,6 @@ const MessageInput = ({
   roleColor
 }) => {
   const { socket, conversations, conversationChosen } = useContext(Context)
-  const { id } = useParams()
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [showEmoji,setShowEmoji] = useState(false)
   const [image,setImage] = useState(null)
@@ -48,7 +46,7 @@ const MessageInput = ({
 
   useEffect(() => {
     inputRef.current.focus()
-  },[channelId,id])
+  },[channelId])
 
   // function to send a message 
   const sendMessage = async () => {
@@ -59,7 +57,7 @@ const MessageInput = ({
     if(conversationType === "dm"){
       const messageId = createId()
       const messageDetails = {
-        conversation: id,
+        conversation: channelId,
         id: messageId,
         sender: {
           id: user.id,
@@ -70,12 +68,12 @@ const MessageInput = ({
         type: "TEXT",
         created_at: new Date(Date.now())
       }
-      sortConversations(id,conversations)
+      sortConversations(channelId,conversations)
       setMessages(prevMessages => [...prevMessages, messageDetails])
       socket.emit("send_message", messageDetails)
       await axios.post(`${import.meta.env.VITE_SERVER_URL}/conversations/sendMessage`, {
         id: messageId,
-        conversationId: id,
+        conversationId: channelId,
         senderId: user.id,
         message: storedMessage
       }, {
@@ -84,14 +82,14 @@ const MessageInput = ({
       const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/notifications/createDirectMessageNotification`, {
         senderId: user.id,
         recipientId: conversationChosen.id,
-        conversationId: id
+        conversationId: channelId
       }, {
         withCredentials: true
       })
       // if notification was created (recipient is not in the room). emit socket event
       if(response.data.success){
         socket.emit("send_direct_message_notification", {
-          conversationId: id,
+          conversationId: channelId,
           userId: conversationChosen.id,
           id: user.id,
           username: user.username,
@@ -174,7 +172,7 @@ const MessageInput = ({
     if(conversationType === "dm"){
       const messageId = createId()
       const messageDetails = {
-        conversation: id,
+        conversation: channelId,
         id: messageId,
         sender: {
           id: user.id,
@@ -190,7 +188,7 @@ const MessageInput = ({
         socket.emit("send_message", messageDetails)
         await axios.post(`${import.meta.env.VITE_SERVER_URL}/conversations/sendMessage`,{
           id: messageId,
-          conversationId: id,
+          conversationId: channelId,
           senderId: user.id,
           message: url,
           type: "LINK"

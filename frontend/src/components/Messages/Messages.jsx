@@ -215,7 +215,7 @@ const Messages = () => {
 
         <div id='dm-messages-container' className='default-scrollbar'>
           {isLoading && <LoadingMessages />}
-          {!isLoading && <ConversationStart username={conversationChosen.username} image={conversationChosen.image} />}
+          {showStart && <ConversationStart username={conversationChosen.username} image={conversationChosen.image} />}
           <Twemoji options={{ className: 'twemoji' }}>
             {messages.length !== 0 && messages.map((e, i) => {
               return <Message
@@ -239,6 +239,7 @@ const Messages = () => {
 
         <div id='dm-conversation-input-container'>
           <MessageInput
+            channelId={currentConversationId}
             message={message}
             setMessage={setMessage}
             conversationName={conversationChosen.username}
