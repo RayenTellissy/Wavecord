@@ -59,7 +59,7 @@ export const ContextProvider = ({ children }) => {
   // function to retrieve all the current user's information
   const authenticateSession = async () => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/users/login/${user.id}`, {
+      const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/users/login`, {
         withCredentials: true
       })
       setUser(response.data)
@@ -144,7 +144,7 @@ export const ContextProvider = ({ children }) => {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        id: localStorage.getItem("wavecord-id"),
+        id: user.id,
         status: "OFFLINE"
       }),
       keepalive: true,

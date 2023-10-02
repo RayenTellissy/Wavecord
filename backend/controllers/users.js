@@ -7,7 +7,6 @@ const {
 
 const { prisma } = require("../prisma/connection")
 const { auth } = require("../Firebase/FirebaseApp")
-const jwt = require("jsonwebtoken")
 const { generateAccessToken, generateRefreshToken } = require("../utils/generateTokens")
 
 module.exports = {
@@ -42,15 +41,6 @@ module.exports = {
       const accessToken = generateAccessToken({ id })
       const refreshToken = generateRefreshToken({ id })
 
-      await prisma.users.update({
-        where: {
-          id
-        },
-        data: {
-          refreshToken
-        }
-      })
-
       // creating a secure httpOnly Cookie for accessToken
       res.cookie("accessToken", accessToken, { httpOnly: true, secure: true, sameSite: "strict" })
 
@@ -61,6 +51,9 @@ module.exports = {
         sameSite: "strict",
         maxAge: 1000 * 60 * 60 * 24 * 5
       })
+
+      // creating a httpOnly cookie for user's id
+      res.cookie("id", user.id, { httpOnly: true, secure: true, sameSite: "strict", maxAge: 1000 * 60 * 60 * 24 * 5 })
 
       res.send({
         loggedIn: true,
@@ -121,15 +114,6 @@ module.exports = {
       const accessToken = generateAccessToken({ id: response.user.uid })
       const refreshToken = generateRefreshToken({ id: response.user.uid })
 
-      await prisma.users.update({
-        where: {
-          id: user.id
-        },
-        data: {
-          refreshToken
-        }
-      })
-
       // creating a secure httpOnly Cookie for accessToken
       res.cookie("accessToken", accessToken, { httpOnly: true, secure: true, sameSite: "strict" })
 
@@ -140,6 +124,9 @@ module.exports = {
         sameSite: "strict",
         maxAge: 1000 * 60 * 60 * 24 * 5
       })
+
+      // creating a httpOnly cookie for user's id
+      res.cookie("id", user.id, { httpOnly: true, secure: true, sameSite: "strict", maxAge: 1000 * 60 * 60 * 24 * 5 })
 
       res.send({
         loggedIn: true,
@@ -293,7 +280,8 @@ module.exports = {
 
   authenticateSession: async (req, res) => {
     try {
-      const { id } = req.params
+      const { id } = req.cookies
+
       const user = await prisma.users.findFirst({
         where: {
           id

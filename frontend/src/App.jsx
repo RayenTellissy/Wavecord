@@ -4,6 +4,7 @@ import { useDisclosure } from "@chakra-ui/react"
 // common components
 import BugReport from "./utils/BugReport/BugReport"
 import { Context } from "./components/Context/Context"
+import BanModal from "./utils/BanModal/BanModal"
 
 // Application Router
 import Routing from "./utils/Routing"
@@ -13,7 +14,6 @@ import { createFriendRequestNotification, createDirectMessageNotification } from
 
 // default styling
 import "./App.css"
-import BanModal from "./utils/BanModal/BanModal"
 
 const App = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
