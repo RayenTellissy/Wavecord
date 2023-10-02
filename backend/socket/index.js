@@ -62,6 +62,10 @@ io.on("connection", socket => {
     socket.to(data.userId).emit("receive_server_ban", data)
   })
 
+  socket.on("server_kick_user", data => {
+    socket.to(data.userId).emit("receive_server_kick", data)
+  })
+
   socket.on("voice_updated", data => {
     socket.to(data.serverId).emit("receive_voice_update", data)
   })

@@ -37,7 +37,7 @@ const ContextTransfer = ({ serverId, channelId }) => {
   const participants = useParticipants()
   const room = useRoomContext()
   const [connected,setConnected] = useState(false)
-  const [play] = useSound(JoinRoom, { volume: 0.2 })
+  const [playJoin] = useSound(JoinRoom, { volume: 0.2 })
 
   // watching if user left the room
   useEffect(() => {
@@ -72,7 +72,15 @@ const ContextTransfer = ({ serverId, channelId }) => {
       setConnectionQuality(room.localParticipant.connectionQuality)
     })
 
-    room.on("participantConnected", () => play())
+    room.on("participantConnected", () => {
+      // using a sound activator, because the browser only allows sounds to be played on user action
+      document.getElementById("voice-channel-join-sound-activator").click()
+    })
+
+    room.on("participantDisconnected", () => {
+      // using a sound activator, because the browser only allows sounds to be played on user action
+      document.getElementById("voice-channel-leave-sound-activator").click()
+    })
   },[room])
 
   useEffect(() => {

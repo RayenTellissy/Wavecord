@@ -11,7 +11,7 @@ const VoiceRoom = ({
   serverId,
   channelId,
 }) => {
-  const { user, socket, micEnabled, setCurrentVoiceChannelId } = useContext(Context)
+  const { user, socket, micEnabled, setCurrentVoiceChannelId, displayRoom } = useContext(Context)
   const { token, setToken } = useContext(Context)
 
   useEffect(() => {
@@ -91,7 +91,7 @@ const VoiceRoom = ({
           serverId={serverId}
           channelId={channelId}
         />
-        <VideoConference/>
+        {displayRoom && <VideoConference/>}
       </LiveKitRoom>
     </div>
   );

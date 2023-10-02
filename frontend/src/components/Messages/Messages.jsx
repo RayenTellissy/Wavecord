@@ -35,7 +35,8 @@ const Messages = () => {
   const [messages,setMessages] = useState([])
   const [message,setMessage] = useState("")
   const [isLoading,setIsLoading] = useState(false)
-  const messagesContainerRef = useRef(null)
+  const [showStart,setShowStart] = useState(false)
+  const messagesEndRef = useRef(null)
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -103,6 +104,7 @@ const Messages = () => {
       }
       else {
         setMessages(response.data.DirectMessages)
+        setShowStart(true)
         setIsLoading(false)
       }
     }
@@ -112,7 +114,7 @@ const Messages = () => {
   }
 
   const scrollToBottom = () => {
-    messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight
+    messagesEndRef.current.scrollIntoView()
   }
 
   const removeMessageLocally = (messageId) => {
@@ -121,6 +123,7 @@ const Messages = () => {
 
   const handleContactSwitch = () => {
     socket.emit("leave_room", currentConversationId) // leaving socket room when changing conversations
+    setShowStart(false)
     setMessages([]) // resetting messages state
     const cachedMessages = Cookies.get("cachedDirectMessages")
     if (cachedMessages) {
@@ -210,7 +213,7 @@ const Messages = () => {
           />
         </div>
 
-        <div id='dm-messages-container' className='default-scrollbar' ref={messagesContainerRef}>
+        <div id='dm-messages-container' className='default-scrollbar'>
           {isLoading && <LoadingMessages />}
           {!isLoading && <ConversationStart username={conversationChosen.username} image={conversationChosen.image} />}
           <Twemoji options={{ className: 'twemoji' }}>
@@ -230,6 +233,7 @@ const Messages = () => {
                 conversation={currentConversationId}
               />
             })}
+            <div ref={messagesEndRef}/>
           </Twemoji>
         </div>
 

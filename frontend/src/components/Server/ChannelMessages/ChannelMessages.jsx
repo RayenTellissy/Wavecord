@@ -28,7 +28,8 @@ const ChannelMessages = ({
   const [messages,setMessages] = useState([])
   const [message,setMessage] = useState("")
   const [isLoading,setIsLoading] = useState(false)
-  const messagesContainerRef = useRef(null)
+  const [showStart,setShowStart] = useState(false)
+  const messagesEndRef = useRef(null)
 
   useEffect(() => {
     handleCachedMessage()
@@ -70,6 +71,7 @@ const ChannelMessages = ({
         withCredentials: true
       })
       setMessages(response.data)
+      setShowStart(true)
       setIsLoading(false)
     }
     catch(error){
@@ -78,7 +80,7 @@ const ChannelMessages = ({
   }
 
   const scrollToBottom = () => {
-    messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight
+    messagesEndRef.current.scrollIntoView()
   }
 
   const removeMessageLocally = (messageId) => {
@@ -87,6 +89,7 @@ const ChannelMessages = ({
 
   const handleChannelSwitch = () => {
     socket.emit("leave_room", currentTextChannelId)
+    setShowStart(false)
     setMessages([]) // resetting state
     const cachedMessages = Cookies.get("cachedServerMessages")
     if(cachedMessages){
@@ -118,9 +121,9 @@ const ChannelMessages = ({
         <div id='server-content-container'>
           <div id='server-content-main'>
             <Topbar currentTextChannel={currentTextChannel}/>
-            <div id='server-messages-channel-messages' className='default-scrollbar' ref={messagesContainerRef}>
+            <div id='server-messages-channel-messages' className='default-scrollbar'>
               {isLoading && <LoadingMessages/>}
-              {!isLoading && <EmptyChannel channelName={currentTextChannel}/>}
+              {showStart && <EmptyChannel channelName={currentTextChannel}/>}
               <Twemoji options={{ className: 'twemoji' }}>
                 {messages.length !== 0 && messages.map((e,i) => {
                   return <Message
@@ -139,6 +142,7 @@ const ChannelMessages = ({
                     conversation={currentTextChannelId}
                   />
                 })}
+                <div ref={messagesEndRef}/>
               </Twemoji>
             </div>
             <div id='server-message-input-container'>

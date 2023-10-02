@@ -1,0 +1,26 @@
+#ban-modal-header-text {
+  font-family: GibsonMedium;
+  font-size: 24px;
+}
+
+#ban-modal-body-text {
+  font-family: GibsonRegular;
+  font-size: 17px;
+  margin-bottom: 10px;
+}
+
+#ban-modal-footer-button {
+  font-family: GibsonRegular;
+  border-radius: 4px;
+  padding: 10px 20px;
+  background-color: #5865f1;
+  transition: .2s ease;
+}
+
+#ban-modal-footer-button:hover {
+  background-color: #4752c4;
+}
+
+#ban-modal-footer-button:active {
+  background-color: #414891;
+}

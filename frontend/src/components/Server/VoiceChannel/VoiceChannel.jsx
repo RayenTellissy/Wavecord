@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import useSound from 'use-sound'
 import { HiSpeakerWave } from "react-icons/hi2"
+import Cookies from 'js-cookie';
 
 // components
 import { Context } from '../../Context/Context';
@@ -21,7 +22,8 @@ const VoiceChannel = ({
 }) => {
   const { user, socket, currentVoiceChannelId, setCurrentVoiceChannelId, displayRoom, setDisplayRoom } = useContext(Context)
   const [users,setUsers] = useState([])
-  const [play] = useSound(JoinRoom, { volume: 0.2 })
+  const [playJoin] = useSound(JoinRoom, { volume: 0.2 })
+  
 
   useEffect(() => {
     fetchUsersInRoom()
@@ -71,7 +73,7 @@ const VoiceChannel = ({
     }
     // if user is not connected to any other rooms connect him.
     if(!currentVoiceChannelId){
-      play()
+      playJoin()
       const userDetails = {
         id: user.id,
         username: user.username,

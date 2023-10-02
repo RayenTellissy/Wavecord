@@ -52,6 +52,11 @@ const Member = ({
       }, {
         withCredentials: true
       })
+      socket.emit("server_kick_user", {
+        userId: id,
+        serverId,
+        serverName
+      })
       await fetchMembers()
       setIsKicking(false)
     }
@@ -63,11 +68,6 @@ const Member = ({
   const banUser = async () => {
     try {
       setIsBanning(true)
-      socket.emit("server_ban_user", {
-        userId: id,
-        serverId,
-        serverName
-      })
       await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/banUser`, {
         banner: user.id,
         banned: id,
@@ -75,7 +75,11 @@ const Member = ({
       }, {
         withCredentials: true
       })
-      
+      socket.emit("server_ban_user", {
+        userId: id,
+        serverId,
+        serverName
+      })
       await fetchMembers()
       setIsBanning(false)
     }

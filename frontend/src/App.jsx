@@ -23,7 +23,6 @@ const App = () => {
     setConversationChosen,
     setCurrentConversationId,
     setDisplay,
-    currentServerId,
     setCurrentServerId,
     fetchServers
   } = useContext(Context)
@@ -53,13 +52,28 @@ const App = () => {
         })
       })
       socket.on("receive_server_ban", data => {
-        setBannedFrom(data.serverName)
+        fetchServers()
+        setBannedFrom({
+          name: data.serverName,
+          reason: data.reason,
+          type: "ban"
+        })
         onOpen() // opening the banned modal
+      })
+      socket.on("receive_server_kick", data => {
+        fetchServers()
+        setBannedFrom({
+          name: data.serverName,
+          reason: data.reason,
+          type: "kick"
+        })
+        onOpen()
       })
       return () => {
         socket.off("receive_friend_request_notification")
         socket.off("receive_direct_message_notification")
         socket.off("receive_server_ban")
+        socket.off("receive_server_kick")
       }
     }
   },[socket])
@@ -67,7 +81,8 @@ const App = () => {
   const closeBanModal = () => {
     setDisplay("")
     setCurrentServerId("")
-    fetchServers()
+    onClose()
+    setBannedFrom(null)
   }
 
   return (

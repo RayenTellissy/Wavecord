@@ -21,6 +21,7 @@ import { HiSpeakerWave } from "react-icons/hi2"
 import { IoMdLock, IoIosArrowDown } from "react-icons/io"
 import { MdClose } from "react-icons/md"
 import BeatLoader from 'react-spinners/BeatLoader';
+import useSound from 'use-sound';
 
 // components
 import Category from './Category/Category';
@@ -37,6 +38,10 @@ import "./Server.css"
 
 // helper functions
 import { applyMemorization, memorizeTextChannel } from "../../utils/Helper/memorizeTextChannel"
+
+// sounds
+import JoinRoom from "../../assets/sounds/JoinRoom.mp3"
+import LeaveRoom from "../../assets/sounds/LeaveRoom.mp3"
 
 const Server = () => {
   const { 
@@ -65,6 +70,8 @@ const Server = () => {
   const [showDropdown,setShowDropdown] = useState(false)
   const [isLoading,setisLoading] = useState(false)
   const [role,setRole] = useState({})
+  const [playJoin] = useSound(JoinRoom, { volume: 0.2 })
+  const [playLeave] = useSound(LeaveRoom, { volume: 0.1 })
 
   useEffect(() => {
     window.addEventListener("beforeunload", (e) => handleUnload(e))
@@ -94,6 +101,10 @@ const Server = () => {
   useEffect(() => {
     memorizeTextChannel(currentServerId,currentTextChannelId,currentTextChannel)
   },[currentTextChannelId])
+
+  useEffect(() => {
+    console.log(displayRoom)
+  },[displayRoom])
   
   const fetchData = async () => {
     try {
@@ -203,6 +214,8 @@ const Server = () => {
 
   return (
     <div id='server-container'>
+      <button id='voice-channel-join-sound-activator' onClick={() => playJoin()}/>
+      <button id='voice-channel-leave-sound-activator' onClick={() => playLeave()}/>
       <div id='server-bar-container'>
         <div id='server-bar-main'>
           <Popover

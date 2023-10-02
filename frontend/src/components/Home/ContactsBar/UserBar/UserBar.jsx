@@ -6,6 +6,7 @@ import { IoIosSettings } from "react-icons/io"
 import { Popover, PopoverTrigger, PopoverContent, PopoverBody, useDisclosure, Tooltip } from '@chakra-ui/react';
 import { MdOutlineSignalCellularAlt, MdOutlineSignalCellularAlt2Bar, MdOutlineSignalCellularAlt1Bar } from "react-icons/md"
 import { HiPhoneMissedCall } from "react-icons/hi"
+import useSound from 'use-sound';
 
 // components
 import Avatar from "../../../common/Avatar/Avatar"
@@ -14,6 +15,9 @@ import ToolButton from './ToolButton/ToolButton';
 
 // styles
 import "./UserBar.css"
+
+// sounds
+import LeaveRoom from "../../../../assets/sounds/LeaveRoom.mp3"
 
 const UserBar = () => {
   const {
@@ -35,8 +39,10 @@ const UserBar = () => {
   const navigate = useNavigate()
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [statusHovered,setStatusHovered] = useState("")
+  const [playLeave] = useSound(LeaveRoom, { volume: 0.2 })
 
   const disconnect = () => {
+    playLeave()
     setCurrentVoiceChannelId("")
   }
 

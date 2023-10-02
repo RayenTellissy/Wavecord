@@ -19,7 +19,6 @@ model Users {
   deafened                           Boolean                      @default(false)
   role                               Role                         @default(BASIC)
   created_at                         DateTime                     @default(now())
-  refreshToken                       String?
   UsersInServers                     UsersInServers[]
   Friends                            Friends[]
   Conversations                      Conversations[]              @relation("Users")
