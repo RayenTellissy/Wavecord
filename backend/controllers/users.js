@@ -234,16 +234,14 @@ module.exports = {
 
   // logout function
   logout: (req, res) => {
-    try {
-      // removing httpOnly Cookies used for auth
-      res.clearCookie("id")
-      res.clearCookie("accessToken")
-      res.clearCookie("refreshToken")
-      res.send({ loggedIn: false })
-    }
-    catch(error){
-      res.send(error)
-    }
+    res.clearCookie("accessToken", { httpOnly: true, secure: true, sameSite: "none" })
+    res.clearCookie("refreshToken", { httpOnly: true, secure: true, sameSite: "none" })
+    res.clearCookie("id", { httpOnly: true, secure: true, sameSite: "none" })
+  
+    res.send({
+      success: true,
+      message: "Logged out successfully."
+    })
   },
 
   // function to reset password
