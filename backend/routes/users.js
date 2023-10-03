@@ -14,7 +14,7 @@ const { loginLimit, signupLimit, resetLimit } = require("../middleware/authLimit
 const authentication = require("../middleware/authentication")
 
 router.get("/login", authentication, authenticateSession)
-router.get("/logout", logout)
+router.get("/logout", authentication, logout)
 
 router.post("/signup", signup)
 router.post("/login", login)

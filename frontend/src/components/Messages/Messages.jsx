@@ -38,6 +38,7 @@ const Messages = () => {
   const [isLoading,setIsLoading] = useState(false)
   const [showStart,setShowStart] = useState(false)
   const messagesEndRef = useRef(null)
+  const messagesContainerRef = useRef(null)
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -52,16 +53,19 @@ const Messages = () => {
   // handling conversation switching
   useEffect(() => {
     window.addEventListener("beforeunload", handleUnload)
+    messagesContainerRef.current.addEventListener("scroll", handleScroll)
     joinConversation()
     handleCachedMessage()
     fetchMessages()
     socket.emit("join_room", currentConversationId) // emitting a join room event to the socket server
-    scrollToBottom()
     Cookies.set("conversationChosen", JSON.stringify(conversationChosen))
     return () => {
       handleContactSwitch()
       leaveConversation()
       window.removeEventListener("beforeunload", handleUnload)
+      if(messagesContainerRef.current){
+        messagesContainerRef.current.removeEventListener("scroll", handleScroll)
+      }
     }
   }, [currentConversationId])
 
@@ -115,7 +119,38 @@ const Messages = () => {
   }
 
   const scrollToBottom = () => {
-    messagesEndRef.current.scrollIntoView()
+    const cookie = Cookies.get("conversationsCachedScroll")
+    if(cookie && JSON.parse(cookie)[currentConversationId]){
+      applyCachedScroll()
+    }
+    else {
+      // scroll to bottom
+      messagesEndRef.current.scrollIntoView()
+    }
+  }
+
+  const applyCachedScroll = () => {
+    const cookie = Cookies.get("conversationsCachedScroll")
+    // if the user has a saved scroll value it will scroll him to the saved value
+    if(cookie){
+      const parsed = JSON.parse(cookie)
+      if(parsed[currentConversationId]){
+        messagesContainerRef.current.scrollTop = parsed[currentConversationId]
+      }
+    }
+  }
+
+  // function to cache where the user has scrolled in a conversation
+  const handleScroll = () => {
+    const cookie = Cookies.get("conversationsCachedScroll")
+    if(!cookie){
+      return Cookies.set("conversationsCachedScroll", JSON.stringify({
+        [currentConversationId]: messagesContainerRef.current.scrollTop
+      }), { expires: 7 })
+    }
+    var parsed = JSON.parse(cookie)
+    parsed[currentConversationId] = messagesContainerRef.current.scrollTop
+    Cookies.set("conversationsCachedScroll", JSON.stringify(parsed), { expires: 7 })
   }
 
   const removeMessageLocally = (messageId) => {
@@ -219,7 +254,7 @@ const Messages = () => {
           />
         </div>
 
-        <div id='dm-messages-container' className='default-scrollbar'>
+        <div id='dm-messages-container' className='default-scrollbar' ref={messagesContainerRef}>
           {isLoading && <LoadingMessages />}
           {showStart && <ConversationStart username={conversationChosen.username} image={conversationChosen.image} />}
           <Twemoji options={{ className: 'twemoji' }}>

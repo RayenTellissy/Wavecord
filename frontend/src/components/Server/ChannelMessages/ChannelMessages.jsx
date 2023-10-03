@@ -30,13 +30,20 @@ const ChannelMessages = ({
   const [isLoading,setIsLoading] = useState(false)
   const [showStart,setShowStart] = useState(false)
   const messagesEndRef = useRef(null)
+  const messagesContainerRef = useRef(null)
 
   useEffect(() => {
+    messagesContainerRef.current.addEventListener("scroll", handleScroll)
     handleCachedMessage()
     fetchMessages()
     socket.emit("join_room", currentTextChannelId)
     scrollToBottom()
-    return () => handleChannelSwitch()
+    return () => {
+      handleChannelSwitch()
+      if(messagesContainerRef.current){
+        messagesContainerRef.current.removeEventListener("scroll", handleScroll)
+      }
+    }
   },[currentTextChannelId])
 
   useEffect(() => {
@@ -81,6 +88,23 @@ const ChannelMessages = ({
 
   const scrollToBottom = () => {
     messagesEndRef.current.scrollIntoView()
+  }
+
+  const handleScroll = () => {
+    const cookie = Cookies.get("textChannelsCachedScroll")
+    if(!cookie){
+      return Cookies.set("textChannelsCachedScroll", JSON.stringify({
+        [serverId]: {
+          [currentTextChannelId]: messagesContainerRef.current.scrollTop
+        }
+      }), { expires: 7 })
+    }
+    var parsed = JSON.parse(cookie)
+    if(!parsed[serverId]){
+      parsed[serverId] = {}
+    }
+    parsed[serverId][currentTextChannelId] = messagesContainerRef.current.scrollTop
+    Cookies.set("textChannelsCachedScroll", JSON.stringify(parsed), { expired: 7 })
   }
 
   const removeMessageLocally = (messageId) => {

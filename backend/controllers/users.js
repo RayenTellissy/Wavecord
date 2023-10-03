@@ -235,21 +235,19 @@ module.exports = {
   // logout function
   logout: (req, res) => {
     try {
-      req.session.destroy(err => {
-        if (err) {
-          return res.send(err)
-        }
-      })
-      res.send("logged out.")
+      // removing httpOnly Cookies used for auth
+      res.clearCookie("id")
+      res.clearCookie("accessToken")
+      res.clearCookie("refreshToken")
+      res.send({ loggedIn: false })
     }
-    catch (error) {
+    catch(error){
       res.send(error)
     }
   },
 
   // function to reset password
   reset: async (req, res) => {
-
     try {
       const { email } = req.body
 
