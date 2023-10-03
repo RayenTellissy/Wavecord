@@ -236,9 +236,9 @@ module.exports = {
   logout: (req, res) => {
     try {
       // removing httpOnly Cookies used for auth
-      res.clearCookie("id", { httpOnly: true, secure: true, sameSite: "strict", maxAge: 1000 * 60 * 60 * 24 * 5 })
+      res.clearCookie("id", { httpOnly: true, secure: true, sameSite: "strict" })
       res.clearCookie("accessToken", { httpOnly: true, secure: true, sameSite: "strict" })
-      res.clearCookie("refreshToken",{ httpOnly: true, secure: true, sameSite: "strict", maxAge: 1000 * 60 * 60 * 24 * 5 })
+      res.clearCookie("refreshToken",{ httpOnly: true, secure: true, sameSite: "strict" })
       res.send({ loggedIn: false })
     }
     catch(error){
