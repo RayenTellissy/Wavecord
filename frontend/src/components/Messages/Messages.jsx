@@ -30,6 +30,7 @@ const Messages = () => {
     conversationChosen,
     setConversationChosen,
     directMessageNotifications,
+    setDirectMessageNotifications,
     currentConversationId
   } = useContext(Context)
   const [messages,setMessages] = useState([])
@@ -156,9 +157,14 @@ const Messages = () => {
       }, {
         withCredentials: true
       })
+      // if conversation has notifications, they will be removed
       if (directMessageNotifications && conversationHasNotification(directMessageNotifications, currentConversationId)) {
-        // removing notification after entering the conversation
-        delete directMessageNotifications[currentConversationId]
+        // removing notifications locally from state
+        setDirectMessageNotifications((prevNotifications) => {
+          const { [currentConversationId]: removedNotification, ...restNotifications } = prevNotifications
+          return restNotifications
+        })
+        // removing notifications in the database
         await axios.post(`${import.meta.env.VITE_SERVER_URL}/notifications/removeDirectMessageNotification`, {
           conversationId: currentConversationId,
           recipientId: user.id

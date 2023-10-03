@@ -72,7 +72,6 @@ const Login = () => {
 
       // if user has been authenticated redirect him
       if(result.success){
-        localStorage.setItem("wavecord-id", result.id)
         setUser(response.data)
         handleConnect() // status update
       }

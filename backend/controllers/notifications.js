@@ -174,7 +174,9 @@ module.exports = {
     try {
       const { id } = req.params
 
-      const friendRequestNotifications = await prisma.friendRequestNotifications.count({
+      console.log(id)
+
+        const friendRequestNotifications = await prisma.friendRequestNotifications.count({
         where: {
           recipientId: id
         }

@@ -13,9 +13,7 @@ const Notification = ({ conversationId, id, username, image, status, messages })
     setConversationChosen,
     setCurrentConversationId,
     setDisplay,
-    setCurrentServerId,
-    directMessageNotifications,
-    setDirectMessageNotifications
+    setCurrentServerId
   } = useContext(Context)
 
   const handleClick = () => {
@@ -24,10 +22,6 @@ const Notification = ({ conversationId, id, username, image, status, messages })
     setCurrentConversationId(conversationId)
     setCurrentServerId("")
     setDisplay("directMessages")
-    // deleting the notification we clicked on
-    const notificationsCopy = directMessageNotifications
-    delete notificationsCopy[conversationId]
-    setDirectMessageNotifications(notificationsCopy)
   }
 
   return (

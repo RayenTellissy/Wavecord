@@ -20,7 +20,6 @@ const Sidebar = ({ highlighted, setSelected }) => {
 
   useEffect(() => {
     socket.on("receive_direct_message_notification", () => {
-      console.log(1)
       fetchDirectMessageNotifications()
     })
   },[socket])

@@ -11,6 +11,7 @@ import useConversation from "../../hooks/useConversation"
 
 // helper functions
 import returnServerIds from "../../utils/Helper/returnServerId";
+import { createFriendRequestNotification, createDirectMessageNotification } from "../../utils/Helper/createNotification"
 
 export const ContextProvider = ({ children }) => {
   const [user,setUser] = useState({ loggedIn: null })
@@ -39,7 +40,6 @@ export const ContextProvider = ({ children }) => {
   useEffect(() => {
     authenticateSession()
     handleSocket()
-    fetchNotifications()
     return () => window.removeEventListener("beforeunload", handleDisconnect)
   },[])
 
@@ -48,7 +48,32 @@ export const ContextProvider = ({ children }) => {
       // if status has not been set, invoke connection handler function
       if(user.id){
         handleConnect()
-      }
+        fetchNotifications()
+        socket.on("receive_friend_request_notification", data => {
+          fetchFriendRequestNotifications()
+          // activate notification sound
+          document.getElementById("wavecord-default-notification-sound").click()
+          createFriendRequestNotification({
+            username: data.username,
+            image: data.image
+          })
+        })
+        socket.on("receive_direct_message_notification", data => {
+         const navigateToConversation = () => {
+            setConversationChosen({ id: data.id, username: data.username, image: data.image, status: data.status })
+            setCurrentConversationId(data.conversationId)
+            setDisplay("directMessages")
+          }
+          // activate notification sound
+          document.getElementById("wavecord-default-notification-sound").click()
+          createDirectMessageNotification({
+            username: data.username,
+            image: data.image,
+            message: data.message,
+            callback: navigateToConversation
+          })
+        })
+      } 
       window.addEventListener("beforeunload", handleDisconnect)
     }
   },[socket, user])
