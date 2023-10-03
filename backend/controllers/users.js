@@ -236,9 +236,9 @@ module.exports = {
   logout: (req, res) => {
     try {
       // removing httpOnly Cookies used for auth
-      res.clearCookie("id", { httpOnly: true, secure: true, sameSite: "strict" })
-      res.clearCookie("accessToken", { httpOnly: true, secure: true, sameSite: "strict" })
-      res.clearCookie("refreshToken",{ httpOnly: true, secure: true, sameSite: "strict" })
+      res.clearCookie("id")
+      res.clearCookie("accessToken")
+      res.clearCookie("refreshToken")
       res.send({ loggedIn: false })
     }
     catch(error){
@@ -279,6 +279,7 @@ module.exports = {
   authenticateSession: async (req, res) => {
     try {
       const { id } = req.cookies
+      console.log(req.cookies)
 
       const user = await prisma.users.findFirst({
         where: {

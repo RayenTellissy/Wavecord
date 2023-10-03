@@ -101,10 +101,6 @@ const Server = () => {
   useEffect(() => {
     memorizeTextChannel(currentServerId,currentTextChannelId,currentTextChannel)
   },[currentTextChannelId])
-
-  useEffect(() => {
-    console.log(displayRoom)
-  },[displayRoom])
   
   const fetchData = async () => {
     try {
