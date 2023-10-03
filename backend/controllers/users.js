@@ -42,18 +42,18 @@ module.exports = {
       const refreshToken = generateRefreshToken({ id })
 
       // creating a secure httpOnly Cookie for accessToken
-      res.cookie("accessToken", accessToken, { httpOnly: true, secure: true, sameSite: "strict" })
+      res.cookie("accessToken", accessToken, { httpOnly: true, secure: true, sameSite: "none" })
 
       // creating a secure httpOnly cookie to store the refresh token and persist it
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
         secure: true,
-        sameSite: "strict",
+        sameSite: "none",
         maxAge: 1000 * 60 * 60 * 24 * 5
       })
 
       // creating a httpOnly cookie for user's id
-      res.cookie("id", user.id, { httpOnly: true, secure: true, sameSite: "strict", maxAge: 1000 * 60 * 60 * 24 * 5 })
+      res.cookie("id", user.id, { httpOnly: true, secure: true, sameSite: "none", maxAge: 1000 * 60 * 60 * 24 * 5 })
 
       res.send({
         loggedIn: true,
@@ -115,18 +115,18 @@ module.exports = {
       const refreshToken = generateRefreshToken({ id: response.user.uid })
 
       // creating a secure httpOnly Cookie for accessToken
-      res.cookie("accessToken", accessToken, { httpOnly: true, secure: true, sameSite: "strict" })
+      res.cookie("accessToken", accessToken, { httpOnly: true, secure: true, sameSite: "none" })
 
       // creating a secure httpOnly cookie to store the refresh token and persist it
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
         secure: true,
-        sameSite: "strict",
+        sameSite: "none",
         maxAge: 1000 * 60 * 60 * 24 * 5
       })
 
       // creating a httpOnly cookie for user's id
-      res.cookie("id", user.id, { httpOnly: true, secure: true, sameSite: "strict", maxAge: 1000 * 60 * 60 * 24 * 5 })
+      res.cookie("id", user.id, { httpOnly: true, secure: true, sameSite: "none", maxAge: 1000 * 60 * 60 * 24 * 5 })
 
       res.send({
         loggedIn: true,
