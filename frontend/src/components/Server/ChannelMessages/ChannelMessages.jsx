@@ -31,17 +31,17 @@ const ChannelMessages = ({
   const [showStart,setShowStart] = useState(false)
   const messagesEndRef = useRef(null)
   const messagesContainerRef = useRef(null)
+  var isScrolling = false // used for debounce
 
   useEffect(() => {
-    messagesContainerRef.current.addEventListener("scroll", handleScroll)
+    messagesContainerRef.current.addEventListener("scroll", debounceScroll)
     handleCachedMessage()
     fetchMessages()
     socket.emit("join_room", currentTextChannelId)
-    scrollToBottom()
     return () => {
       handleChannelSwitch()
       if(messagesContainerRef.current){
-        messagesContainerRef.current.removeEventListener("scroll", handleScroll)
+        messagesContainerRef.current.removeEventListener("scroll", debounceScroll)
       }
     }
   },[currentTextChannelId])
@@ -65,7 +65,9 @@ const ChannelMessages = ({
   },[socket])
 
   useEffect(() => {
-    scrollToBottom()
+    if(messages.length){
+      scrollToBottom()
+    }
   },[messages])
 
   const fetchMessages = async () => {
@@ -87,15 +89,42 @@ const ChannelMessages = ({
   }
 
   const scrollToBottom = () => {
-    messagesEndRef.current.scrollIntoView()
+    console.log("handling scroll")
+    const cookie = Cookies.get("textChannelsCachedScroll")
+    // if the ref height is not the same (the user has new messages) scroll to bottom
+    if(cookie
+        && JSON.parse(cookie)[serverId]
+        && JSON.parse(cookie)[serverId][currentTextChannelId]
+        && JSON.parse(cookie)[serverId][currentTextChannelId].lastHeight === messagesContainerRef.current.scrollHeight
+      ){
+      applyCachedScroll()
+    }
+    else {
+      messagesEndRef.current.scrollIntoView()
+    }
+  }
+
+  const applyCachedScroll = () => {
+    const cookie = Cookies.get("textChannelsCachedScroll")
+    // if the user has a saved scroll value it will scroll him to the saved value
+    if(cookie){
+      const parsed = JSON.parse(cookie)
+      if(parsed[serverId] && parsed[serverId][currentTextChannelId]){
+        messagesContainerRef.current.scrollTop = parsed[serverId][currentTextChannelId].savedScroll
+      }
+    }
   }
 
   const handleScroll = () => {
+    if(!messages.length || isLoading) return
     const cookie = Cookies.get("textChannelsCachedScroll")
     if(!cookie){
       return Cookies.set("textChannelsCachedScroll", JSON.stringify({
         [serverId]: {
-          [currentTextChannelId]: messagesContainerRef.current.scrollTop
+          [currentTextChannelId]: {
+            lastHeight: messagesContainerRef.current.scrollHeight,
+            savedScroll: messagesContainerRef.current.scrollTop
+          }
         }
       }), { expires: 7 })
     }
@@ -103,8 +132,22 @@ const ChannelMessages = ({
     if(!parsed[serverId]){
       parsed[serverId] = {}
     }
-    parsed[serverId][currentTextChannelId] = messagesContainerRef.current.scrollTop
-    Cookies.set("textChannelsCachedScroll", JSON.stringify(parsed), { expired: 7 })
+    parsed[serverId][currentTextChannelId] = {
+      lastHeight: messagesContainerRef.current.scrollHeight,
+      savedScroll: messagesContainerRef.current.scrollTop
+    }
+    Cookies.set("textChannelsCachedScroll", JSON.stringify(parsed), { expires: 7 })
+  }
+
+  // using debounce for scroll performance
+  const debounceScroll = () => {
+    if(!isScrolling){
+      isScrolling = true
+      setTimeout(() => {
+        handleScroll()
+        isScrolling = false
+      }, 1500)
+    } 
   }
 
   const removeMessageLocally = (messageId) => {
@@ -145,8 +188,8 @@ const ChannelMessages = ({
         <div id='server-content-container'>
           <div id='server-content-main'>
             <Topbar currentTextChannel={currentTextChannel}/>
-            <div id='server-messages-channel-messages' className='default-scrollbar'>
-              {isLoading && <LoadingMessages/>}
+            <div id='server-messages-channel-messages' className='default-scrollbar' ref={messagesContainerRef}>
+              {isLoading && <LoadingMessages />}
               {showStart && <EmptyChannel channelName={currentTextChannel}/>}
               <Twemoji options={{ className: 'twemoji' }}>
                 {messages.length !== 0 && messages.map((e,i) => {

@@ -9,6 +9,9 @@ export const Context = createContext()
 import useMic from "../../hooks/useMic";
 import useConversation from "../../hooks/useConversation"
 
+// components
+import NullRouting from "../../utils/NullRouting/NullRouting"
+
 // helper functions
 import returnServerIds from "../../utils/Helper/returnServerId";
 import { createFriendRequestNotification, createDirectMessageNotification } from "../../utils/Helper/createNotification"
@@ -17,6 +20,8 @@ export const ContextProvider = ({ children }) => {
   const [user,setUser] = useState({ loggedIn: null })
   const [socket,setSocket] = useState(null)
   const [conversations,setConversations] = useState([])
+  const [constantConversations,setConstantConversations] = useState([])
+  const [conversationsLoading,setConversationsLoading] = useState(true)
   const [conversationChosen,setConversationChosen] = useConversation()
   const [micEnabled,setMicEnabled] = useMic()
   const [cameraEnabled,setCameraEnabled] = useState(false)
@@ -36,6 +41,7 @@ export const ContextProvider = ({ children }) => {
   const [currentConversationId,setCurrentConversationId] = useState("")
   const [currentServerId,setCurrentServerId] = useState("")
   const [display,setDisplay] = useState("")
+  const [selected,setSelected] = useState("Friends")
 
   useEffect(() => {
     authenticateSession()
@@ -48,6 +54,8 @@ export const ContextProvider = ({ children }) => {
       // if status has not been set, invoke connection handler function
       if(user.id){
         handleConnect()
+        fetchServers()
+        fetchConversations()
         fetchNotifications()
         socket.on("receive_friend_request_notification", data => {
           fetchFriendRequestNotifications()
@@ -237,6 +245,22 @@ export const ContextProvider = ({ children }) => {
     }
   }
 
+  const fetchConversations = async () => {
+    try {
+      const conversations = await axios.post(`${import.meta.env.VITE_SERVER_URL}/conversations/fetch`,{
+        id: user.id
+      }, {
+        withCredentials: true
+      })
+      setConversations(conversations.data)
+      setConstantConversations(conversations.data)
+      setConversationsLoading(false)
+    }
+    catch(error){
+      console.log(error)
+    }
+  }
+
   return (
     <Context.Provider value={{
       user,
@@ -244,6 +268,8 @@ export const ContextProvider = ({ children }) => {
       socket,
       conversations,
       setConversations,
+      constantConversations,
+      setConstantConversations,
       conversationChosen,
       setConversationChosen,
       micEnabled,
@@ -285,7 +311,12 @@ export const ContextProvider = ({ children }) => {
       currentServerId,
       setCurrentServerId,
       display,
-      setDisplay
+      setDisplay,
+      selected,
+      setSelected,
+      conversationsLoading,
+      setConversationsLoading,
+      fetchConversations
     }}>
       {children}
     </Context.Provider>

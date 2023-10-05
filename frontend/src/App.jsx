@@ -6,6 +6,7 @@ import BugReport from "./utils/BugReport/BugReport"
 import { Context } from "./components/Context/Context"
 import BanModal from "./utils/BanModal/BanModal"
 import NotificationSound from "./utils/NotificationSound"
+import PatchNotes from "./utils/PatchNotes/PatchNotes"
 
 // Application Router
 import Routing from "./utils/Routing"
@@ -15,13 +16,23 @@ import "./App.css"
 
 const App = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
+  const { isOpen: patchIsOpen, onOpen: patchOnOpen, onClose: patchOnClose } = useDisclosure()
   const {
     socket,
     setDisplay,
     setCurrentServerId,
-    fetchServers
+    fetchServers,
+    serversLoading,
+    conversationsLoading
   } = useContext(Context)
   const [bannedFrom,setBannedFrom] = useState(null)
+  const [appLoaded,setAppLoaded] = useState(false)
+
+  useEffect(() => {
+    if(!serversLoading && !conversationsLoading){
+      setAppLoaded(true)
+    }
+  },[serversLoading,conversationsLoading])
 
   // useEffect for app notifications
   useEffect(() => {
@@ -60,10 +71,13 @@ const App = () => {
 
   return (
     <>
-      <BanModal bannedFrom={bannedFrom} isOpen={isOpen} onClose={closeBanModal}/>
-      <BugReport/>
+      {appLoaded && <>
+        <BanModal bannedFrom={bannedFrom} isOpen={isOpen} onClose={closeBanModal}/>
+        <PatchNotes isOpen={patchIsOpen} onOpen={patchOnOpen} onClose={patchOnClose}/>
+        <BugReport/>
+        <NotificationSound/>
+      </>}
       <Routing/>
-      <NotificationSound/>
     </>
   )
 }

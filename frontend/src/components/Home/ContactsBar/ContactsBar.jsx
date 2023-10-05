@@ -13,32 +13,12 @@ import { Context } from '../../Context/Context';
 import "./ContactsBar.css"
 
 const ContactsBar = ({ highlighted, selected, setSelected }) => {
-  const { user, conversations, setConversations } = useContext(Context)
-  const [constantConversations,setConstantConversations] = useState([])
+  const { user, conversations, setConversations, constantConversations, fetchConversations } = useContext(Context)
   const [query,setQuery] = useState(null)
-
-  useEffect(() => {
-    fetchConversations()
-  },[])
 
   useEffect(() => {
     filterConversations()
   },[query])
-
-  const fetchConversations = async () => {
-    try {
-      const conversations = await axios.post(`${import.meta.env.VITE_SERVER_URL}/conversations/fetch`,{
-        id: user.id
-      }, {
-        withCredentials: true
-      })
-      setConversations(conversations.data)
-      setConstantConversations(conversations.data)
-    }
-    catch(error){
-      console.log(error)
-    }
-  }
 
   const filterConversations = () => {
     if(query !== null){

@@ -40,6 +40,7 @@ const Messages = () => {
   const messagesEndRef = useRef(null)
   const messagesContainerRef = useRef(null)
   const navigate = useNavigate()
+  var isScrolling = false
 
   useEffect(() => {
     if(!conversationChosen){
@@ -53,7 +54,7 @@ const Messages = () => {
   // handling conversation switching
   useEffect(() => {
     window.addEventListener("beforeunload", handleUnload)
-    messagesContainerRef.current.addEventListener("scroll", handleScroll)
+    messagesContainerRef.current.addEventListener("scroll", debounceScroll)
     joinConversation()
     handleCachedMessage()
     fetchMessages()
@@ -64,7 +65,7 @@ const Messages = () => {
       leaveConversation()
       window.removeEventListener("beforeunload", handleUnload)
       if(messagesContainerRef.current){
-        messagesContainerRef.current.removeEventListener("scroll", handleScroll)
+        messagesContainerRef.current.removeEventListener("scroll", debounceScroll)
       }
     }
   }, [currentConversationId])
@@ -85,7 +86,9 @@ const Messages = () => {
   }, [socket])
 
   useEffect(() => {
-    scrollToBottom()
+    if(messages.length){
+      scrollToBottom()
+    }
   }, [messages])
 
   useEffect(() => {
@@ -120,7 +123,8 @@ const Messages = () => {
 
   const scrollToBottom = () => {
     const cookie = Cookies.get("conversationsCachedScroll")
-    if(cookie && JSON.parse(cookie)[currentConversationId]){
+    // if the ref height is not the same (the user has new messages) scroll to bottom
+    if(cookie && JSON.parse(cookie)[currentConversationId] && JSON.parse(cookie)[currentConversationId].lastHeight === messagesContainerRef.current.scrollHeight){
       applyCachedScroll()
     }
     else {
@@ -135,22 +139,45 @@ const Messages = () => {
     if(cookie){
       const parsed = JSON.parse(cookie)
       if(parsed[currentConversationId]){
-        messagesContainerRef.current.scrollTop = parsed[currentConversationId]
+        messagesContainerRef.current.scrollTop = parsed[currentConversationId].savedScroll
       }
     }
   }
 
   // function to cache where the user has scrolled in a conversation
   const handleScroll = () => {
+    console.log("handling scroll!")
+    if(!messages.length || isLoading) return
     const cookie = Cookies.get("conversationsCachedScroll")
     if(!cookie){
       return Cookies.set("conversationsCachedScroll", JSON.stringify({
-        [currentConversationId]: messagesContainerRef.current.scrollTop
+        [currentConversationId]: {
+          lastHeight: messagesContainerRef.current.scrollHeight,
+          savedScroll: messagesContainerRef.current.scrollTop
+        }
       }), { expires: 7 })
     }
     var parsed = JSON.parse(cookie)
-    parsed[currentConversationId] = messagesContainerRef.current.scrollTop
+    parsed[currentConversationId] = {
+      lastHeight: messagesContainerRef.current.scrollHeight,
+      savedScroll: messagesContainerRef.current.scrollTop
+    }
     Cookies.set("conversationsCachedScroll", JSON.stringify(parsed), { expires: 7 })
+  }
+
+  // using debounce for scroll performance
+  const debounceScroll = () => {
+    if(!isScrolling){
+      isScrolling = true
+      setTimeout(() => {
+        handleScroll()
+        isScrolling = false
+      }, 1500)
+    } 
+  }
+
+  const forceScrollBottom = () => {
+    messagesEndRef.current.scrollIntoView()
   }
 
   const removeMessageLocally = (messageId) => {
@@ -285,7 +312,7 @@ const Messages = () => {
             setMessage={setMessage}
             conversationName={conversationChosen.username}
             setMessages={setMessages}
-            scrollToBottom={scrollToBottom}
+            forceScrollBottom={forceScrollBottom}
             conversationType="dm"
             user={user}
           />

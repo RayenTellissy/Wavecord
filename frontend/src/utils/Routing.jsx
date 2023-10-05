@@ -16,7 +16,14 @@ import ServerSettings from '../components/Server/Settings/ServerSettings';
 import Settings from '../components/Settings/Settings';
 
 const Routing = () => {
-  const { user } = useContext(Context)
+  const { user, serversLoading, conversationsLoading } = useContext(Context)
+
+  // show a loading screen until the app loads the important data
+  if(user.loggedIn && (serversLoading || conversationsLoading)){
+    return <Routes>
+      <Route path='/' element={<NullRouting />} />
+    </Routes>
+  }
 
   return (
     <Routes>

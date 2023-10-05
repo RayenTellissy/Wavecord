@@ -1,8 +1,8 @@
 import React from 'react';
+import Logo from '../../components/common/Logo/Logo';
 
 // styles
 import "./NullRouting.css"
-import Logo from '../../components/common/Logo/Logo';
 
 const NullRouting = () => {
   return (

@@ -277,7 +277,6 @@ module.exports = {
   authenticateSession: async (req, res) => {
     try {
       const { id } = req.cookies
-      console.log(req.cookies)
 
       const user = await prisma.users.findFirst({
         where: {

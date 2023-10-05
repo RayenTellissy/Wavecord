@@ -12,11 +12,7 @@ import Notification from './Notification/Notification';
 import "./Sidebar.css"
 
 const Sidebar = ({ highlighted, setSelected }) => {
-  const { user, socket, servers, fetchServers, directMessageNotifications, setDirectMessageNotifications } = useContext(Context)
-
-  useEffect(() => {
-    fetchServers()
-  },[])
+  const { user, socket, servers, directMessageNotifications, setDirectMessageNotifications } = useContext(Context)
 
   useEffect(() => {
     socket.on("receive_direct_message_notification", () => {

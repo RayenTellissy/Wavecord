@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 import { BiBlock } from "react-icons/bi"
 import { Tooltip } from '@chakra-ui/react';
 import { FaUserMinus } from "react-icons/fa"
@@ -13,8 +12,7 @@ import Avatar from '../Avatar/Avatar';
 import "./FriendButton.css"
 
 const FriendButton = ({ id, username, image, status, setIsUpdating, fetchUsers, toast, conversationId }) => {
-  const { user, setConversationChosen } = useContext(Context)
-  const navigate = useNavigate()
+  const { user, setConversationChosen, setCurrentConversationId, setDisplay } = useContext(Context)
 
   const removeFriend = async () => {
     setIsUpdating(true)
@@ -74,9 +72,11 @@ const FriendButton = ({ id, username, image, status, setIsUpdating, fetchUsers, 
       }, {
         withCredentials: true
       })
-      return navigate(`/dm/${response.data.id}`)
+      setCurrentConversationId(response.data.id)
+      return setDisplay("directMessages")
     }
-    navigate(`/dm/${conversationId}`)
+    setCurrentConversationId(conversationId)
+    setDisplay("directMessages")
   }
 
   return (

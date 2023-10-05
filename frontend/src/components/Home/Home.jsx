@@ -9,16 +9,14 @@ import Display from './Screens/Display';
 import Turbo from './Turbo/Turbo';
 import Messages from '../Messages/Messages';
 import { Context } from "../Context/Context"
+import Server from '../Server/Server';
 
 // styles
 import "./Home.css"
-import Server from '../Server/Server';
 
 const Home = () => {
   const location = useLocation()
-  const selectedLocation = location.state
-  const { currentConversationId, currentServerId, display } = useContext(Context)
-  const [selected,setSelected] = useState(selectedLocation?.navigator ? selectedLocation.navigator : "Friends")
+  const { currentConversationId, currentServerId, display, selected, setSelected } = useContext(Context)
   const [selectedScreen,setSelectedScreen] = useState(location.state?.selected ? location.state?.selected : "Online")
 
   return (

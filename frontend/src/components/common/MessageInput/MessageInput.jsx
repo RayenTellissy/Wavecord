@@ -35,7 +35,8 @@ const MessageInput = ({
   setMessages,
   conversationType,
   channelId,
-  roleColor
+  roleColor,
+  forceScrollBottom
 }) => {
   const { socket, conversations, conversationChosen } = useContext(Context)
   const { isOpen, onOpen, onClose } = useDisclosure()
