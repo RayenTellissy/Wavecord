@@ -4,7 +4,7 @@ import { Navigate, Route, Routes } from "react-router-dom"
 
 import { Context } from "../components/Context/Context"
 
-// null routing
+// loading component
 import NullRouting from './NullRouting/NullRouting';
 
 // route components
@@ -29,6 +29,7 @@ const Routing = () => {
     <Routes>
       {user.loggedIn === null ? <Route path='/' element={<NullRouting/>}/> : 
         user.loggedIn ? (
+          // routes for authenticated users
           <>
             <Route path='/' element={<Home/>}/>
             <Route path='/login' element={<Navigate to="/"/>}/>
@@ -39,6 +40,7 @@ const Routing = () => {
         )
         :
         (
+          // routes for unauthenticated users
           <>
             <Route path='/login' element={<Login/>}/>
             <Route path='/signup' element={<Signup/>}/>
