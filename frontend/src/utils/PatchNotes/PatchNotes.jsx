@@ -1,6 +1,9 @@
 import React from 'react';
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalFooter } from "@chakra-ui/react"
 
+// styles
+import "./PatchNotes.css"
+
 const PatchNotes = ({ isOpen, onOpen, onClose }) => {
   const appVersion = import.meta.env.VITE_APP_VERSION
   const latestVersion = localStorage.getItem("appVersion")
@@ -15,14 +18,17 @@ const PatchNotes = ({ isOpen, onOpen, onClose }) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay/>
-      <ModalContent>
+      <ModalContent bgColor="#313338">
         <ModalHeader>
-          <p>What's New in {appVersion}</p>
+          <p id='patch-notes-header-text'>What's New in { appVersion }</p>
         </ModalHeader>
         <ModalBody>
-
+          <div id='patch-notes-new-features-container'>
+            <p id='patch-notes-new-features'>NEW FEATURES</p>
+            {/* <div id='patch-notes-new-features-line' /> */}
+          </div>
         </ModalBody>
-        <ModalFooter>
+        <ModalFooter bgColor="#2b2d31">
 
         </ModalFooter>
       </ModalContent>

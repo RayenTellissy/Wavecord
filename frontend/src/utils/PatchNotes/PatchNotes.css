@@ -1,0 +1,20 @@
+#patch-notes-header-text {
+  font-family: GibsonBold;
+  font-size: 30px;
+}
+
+#patch-notes-new-features-container {
+  display: flex;
+  flex-direction: row;
+}
+
+#patch-notes-new-features {
+  font-family: GibsonMedium;
+  color: #05c268;
+}
+
+#patch-notes-new-features-line {
+  width: 100%;
+  height: 2px;
+  color: #05c268;
+}
