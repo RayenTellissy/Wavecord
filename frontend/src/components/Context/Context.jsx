@@ -9,9 +9,6 @@ export const Context = createContext()
 import useMic from "../../hooks/useMic";
 import useConversation from "../../hooks/useConversation"
 
-// components
-import NullRouting from "../../utils/NullRouting/NullRouting"
-
 // helper functions
 import returnServerIds from "../../utils/Helper/returnServerId";
 import { createFriendRequestNotification, createDirectMessageNotification } from "../../utils/Helper/createNotification"
@@ -24,6 +21,7 @@ export const ContextProvider = ({ children }) => {
   const [conversationsLoading,setConversationsLoading] = useState(true)
   const [conversationChosen,setConversationChosen] = useConversation()
   const [micEnabled,setMicEnabled] = useMic()
+  const [deafened,setDeafened] = useState(false)
   const [cameraEnabled,setCameraEnabled] = useState(false)
   const [isSpeaking,setIsSpeaking] = useState(false)
   const [selectScreenShare,setSelectScreenShare] = useState(false)
@@ -274,6 +272,8 @@ export const ContextProvider = ({ children }) => {
       setConversationChosen,
       micEnabled,
       setMicEnabled,
+      deafened,
+      setDeafened,
       cameraEnabled,
       setCameraEnabled,
       isSpeaking,

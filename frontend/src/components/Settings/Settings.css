@@ -1,6 +1,6 @@
 #user-settings-container {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   height: 100vh;
 }
 
@@ -9,6 +9,17 @@
   background-color: #2b2d31;
   display: flex;
   justify-content: end;
+}
+
+#user-settings-info-container { 
+  flex: 70%;
+  background-color: #313338;
+}
+
+#user-settings-info {
+  margin-left: 40px;
+  position: relative;
+  width: 80%;
 }
 
 #user-settings-dropdown {

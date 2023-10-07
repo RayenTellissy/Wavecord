@@ -24,6 +24,8 @@ const UserBar = () => {
     user,
     micEnabled,
     setMicEnabled,
+    deafened,
+    setDeafened,
     cameraEnabled,
     setCameraEnabled,
     selectScreenShare,
@@ -175,8 +177,11 @@ const UserBar = () => {
             padding="7px 13px"
             borderRadius={7}
           >
-            <button onClick={() => setDisplayRoom(!displayRoom)}>
-              <MdHeadset className='home-contacts-userbar-icon'/>
+            <button onClick={() => setDeafened(!deafened)}>
+              {!deafened
+                ? <MdHeadset className='home-contacts-userbar-icon'/>
+                : <MdHeadsetOff className='home-contacts-userbar-icon'/>
+              }
             </button>
           </Tooltip>
           <Tooltip

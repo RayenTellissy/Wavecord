@@ -285,7 +285,7 @@ module.exports = {
         select: {
           username: true,
           image: true,
-          status: true
+          email: true
         }
       })
 
@@ -294,7 +294,7 @@ module.exports = {
         id,
         username: user.username,
         image: user.image,
-        status: user.status
+        email: user.email
       })
     }
     catch (error) {
@@ -320,6 +320,39 @@ module.exports = {
       res.send(result)
     }
     catch (error) {
+      res.send(error)
+    }
+  },
+
+  changeUsername: async (req,res) => {
+    try {
+      const { newUsername, id, password, email } = req.body
+
+      await signInWithEmailAndPassword(auth, email, password)
+
+      const usernameCheck = await prisma.users.findFirst({
+        where: {
+          username: newUsername
+        }
+      })
+
+      if(usernameCheck) return res.send({ error: "Username already exists.", code: "EXISTS" })
+
+      await prisma.users.update({
+        where: {
+          id
+        },
+        data: {
+          username: newUsername
+        }
+      })
+
+      res.send({ success: true })
+    }
+    catch(error){
+      if(error.code === "auth/wrong-password"){
+        return res.send({ error: "Wrong Password", code: "INCPWD" })
+      }
       res.send(error)
     }
   }

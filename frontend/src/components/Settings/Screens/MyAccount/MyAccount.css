@@ -1,0 +1,110 @@
+#user-settings-myaccount-container {
+  display: flex;
+  flex-direction: column;
+  margin-top: 50px;
+}
+
+#user-settings-myaccount-title {
+  font-family: GibsonMedium;
+  font-size: 25px;
+}
+
+#user-settings-myaccount-holder {
+  margin-top: 30px;
+  background-color: #1e1f22;
+  padding: 15px;
+  border-radius: 7px;
+}
+
+#user-settings-myaccount-username-image-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+#user-settings-myaccount-username {
+  font-family: GibsonMedium;
+  font-size: 23px;
+  margin-left: 20px;
+}
+
+#user-settings-myaccount-image-container {
+  position: relative;
+  height: 100px;
+  width: 100px;
+}
+
+#user-settings-myaccount-image {
+  height: 100px;
+  width: 100px;
+  border-radius: 50%;
+}
+
+#user-settings-myaccount-status {
+  height: 30px;
+  width: 30px;
+  border-radius: 50%;
+  position: absolute;
+  right: 0px;
+  bottom: 0px;
+}
+
+#user-settings-myaccount-all-information {
+  background-color: #2a2d30;
+  border-radius: 7px;
+}
+
+#user-settings-myaccount-all-information-editor {
+  margin-top: 10px;
+  border-radius: 7px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.user-settings-myaccount-editor-title {
+  font-family: GibsonMedium;
+  color: #abb4c1;
+}
+
+.user-settings-myaccount-editor-content {
+  font-family: GibsonRegular;
+}
+
+.user-settings-myaccount-editor-edit-button {
+  color: #d5e2e4;
+  background-color: #4e5058;
+  padding: 7px 20px;
+  border-radius: 4px;
+  font-family: GibsonRegular;
+}
+
+.user-settings-myaccount-all-information-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#user-settings-myaccount-editor-email-container {
+  display: flex;
+  flex-direction: row;
+  gap: 10px ;
+}
+
+#user-settings-myaccount-email-reveal {
+  font-family: GibsonRegular;
+  color: #0692dd;
+}
+
+#user-settings-myaccount-email-reveal:hover {
+  text-decoration: underline;
+}
+
+.user-settings-myaccount-seperator {
+  margin: 40px 0px;
+  height: 1px;
+  width: 100%;
+  background-color: #404346;
+}

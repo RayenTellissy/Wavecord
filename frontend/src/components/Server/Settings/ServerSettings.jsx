@@ -5,7 +5,7 @@ import { IoClose } from 'react-icons/io5';
 import { Kbd } from '@chakra-ui/react';
 
 // components
-import DisplayButton from './DisplayButton/DisplayButton';
+import DisplayButton from '../../common/DisplayButton/DisplayButton'
 import Overview from './Screens/Overview/Overview';
 import Roles from './Screens/Roles/Roles';
 import Members from './Screens/Members/Members';

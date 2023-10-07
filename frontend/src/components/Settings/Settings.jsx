@@ -3,6 +3,8 @@ import axios from 'axios';
 
 //components
 import { Context } from '../Context/Context';
+import DisplayButton from '../common/DisplayButton/DisplayButton';
+import MyAccount from './Screens/MyAccount/MyAccount';
 
 // styles
 import "./Settings.css"
@@ -28,14 +30,18 @@ const Settings = () => {
       <div id='user-settings-dropdown-container'>
         <div id='user-settings-dropdown'>
           <p id='user-settings-title'>USER SETTINGS</p>
+          <DisplayButton
+            display="My Account"
+            callback={() => setDisplay("account")}
+            highlighted={display === "account"}
+          />
         </div>
       </div>
       <div id='user-settings-info-container'>
         <div id='user-settings-info'>
-          
+          {display === "account" ? <MyAccount/> : ""}
         </div>
       </div>
-      <button onClick={logout}>log out</button>
     </div>
   );
 };
