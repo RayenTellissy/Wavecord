@@ -71,7 +71,7 @@
 
 #server-settings-roles-display-mapping {
   margin-top: 10px;
-  overflow-y: scroll;
+  overflow-y: auto;
   flex: 1;
 }
 

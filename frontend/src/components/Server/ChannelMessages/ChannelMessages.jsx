@@ -89,7 +89,6 @@ const ChannelMessages = ({
   }
 
   const scrollToBottom = () => {
-    console.log("handling scroll")
     const cookie = Cookies.get("textChannelsCachedScroll")
     // if the ref height is not the same (the user has new messages) scroll to bottom
     if(cookie

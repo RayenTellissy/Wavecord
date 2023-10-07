@@ -5,7 +5,10 @@
 
 #patch-notes-new-features-container {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+  gap: 3px;
+  margin-bottom: 15px;
+  font-family: GibsonRegular;
 }
 
 #patch-notes-new-features {
@@ -16,5 +19,17 @@
 #patch-notes-new-features-line {
   width: 100%;
   height: 2px;
+  color: #05c268;
+}
+
+#patch-notes-bug-fixes-container {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-family: GibsonRegular;
+}
+
+#patch-notes-bug-fixes-header {
+  font-family: GibsonMedium;
   color: #05c268;
 }

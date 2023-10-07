@@ -37,10 +37,15 @@
 }
 
 .home-contacts-userbar-icon {
-  height: 25px;
-  width: 25px;
-  margin-left: 12px;
+  height: 35px;
+  width: 35px;
   color: #b5bac1;
+  padding: 5px;
+  border-radius: 4px;
+}
+
+.home-contacts-userbar-icon:hover {
+  background-color: #3c3e44;;
 }
 
 #home-contacts-userbar-icons-section {
@@ -146,4 +151,8 @@
 
 #userbar-disconnect-button:hover {
   background-color: #3b3d43;
+}
+
+.home-contacts-userbar-icon-button:hover {
+  background-color: #3c3e44;;
 }

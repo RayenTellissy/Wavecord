@@ -147,17 +147,53 @@ const UserBar = () => {
         </Popover>
 
         <div id='home-contacts-userbar-icons-section'>
-          <button onClick={() => setMicEnabled(!micEnabled)}>
-            {micEnabled
-            ? <BiSolidMicrophone className='home-contacts-userbar-icon'/>
-            : <BiSolidMicrophoneOff className='home-contacts-userbar-icon'/>}
-          </button>
-          <button onClick={() => setDisplayRoom(!displayRoom)}>
-            <MdHeadset className='home-contacts-userbar-icon'/>
-          </button>
-          <button onClick={() => navigate("/settings")}>
-            <IoIosSettings className='home-contacts-userbar-icon'/>
-          </button>
+          <Tooltip
+            label={micEnabled ? "Mute" : "Unmute"}
+            placement='top'
+            color="white"
+            backgroundColor="black"
+            fontFamily="GibsonRegular"
+            hasArrow={true}
+            arrowSize={10}
+            padding="7px 13px"
+            borderRadius={7}
+          >
+            <button onClick={() => setMicEnabled(!micEnabled)}>
+              {micEnabled
+              ? <BiSolidMicrophone className='home-contacts-userbar-icon'/>
+              : <BiSolidMicrophoneOff className='home-contacts-userbar-icon'/>}
+            </button>
+          </Tooltip>
+          <Tooltip
+            label={"Deafen"}
+            placement='top'
+            color="white"
+            backgroundColor="black"
+            fontFamily="GibsonRegular"
+            hasArrow={true}
+            arrowSize={10}
+            padding="7px 13px"
+            borderRadius={7}
+          >
+            <button onClick={() => setDisplayRoom(!displayRoom)}>
+              <MdHeadset className='home-contacts-userbar-icon'/>
+            </button>
+          </Tooltip>
+          <Tooltip
+            label="User Settings"
+            placement='top'
+            color="white"
+            backgroundColor="black"
+            fontFamily="GibsonRegular"
+            hasArrow={true}
+            arrowSize={10}
+            padding="7px 13px"
+            borderRadius={7}
+          >
+            <button onClick={() => navigate("/settings")}>
+              <IoIosSettings className='home-contacts-userbar-icon'/>
+            </button>
+          </Tooltip>
         </div>
       </div>
         

@@ -146,7 +146,6 @@ const Messages = () => {
 
   // function to cache where the user has scrolled in a conversation
   const handleScroll = () => {
-    console.log("handling scroll!")
     if(!messages.length || isLoading) return
     const cookie = Cookies.get("conversationsCachedScroll")
     if(!cookie){
