@@ -37,7 +37,7 @@ const ServerSettings = () => {
   }
   const handleKeyPress = (e) => {
     if(e.key === "Escape"){
-      navigate(`/server/${server.id}`)
+      navigate("/")
     }
   }
 

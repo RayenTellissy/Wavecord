@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import axios from 'axios';
 
 //components
@@ -9,6 +9,7 @@ import "./Settings.css"
 
 const Settings = () => {
   const { setUser } = useContext(Context)
+  const [display,setDisplay] = useState("account")
   
   const logout = async () => {
     try {
@@ -23,7 +24,17 @@ const Settings = () => {
   }
 
   return (
-    <div>
+    <div id='user-settings-container'>
+      <div id='user-settings-dropdown-container'>
+        <div id='user-settings-dropdown'>
+          <p id='user-settings-title'>USER SETTINGS</p>
+        </div>
+      </div>
+      <div id='user-settings-info-container'>
+        <div id='user-settings-info'>
+          
+        </div>
+      </div>
       <button onClick={logout}>log out</button>
     </div>
   );

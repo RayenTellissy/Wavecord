@@ -1,0 +1,23 @@
+#user-settings-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+#user-settings-dropdown-container {
+  flex: 30%;
+  background-color: #2b2d31;
+  display: flex;
+  justify-content: end;
+}
+
+#user-settings-dropdown {
+  margin: 20px;
+  width: 200px;
+}
+
+#user-settings-title {
+  font-family: GibsonMedium;
+  color: #86929b;
+  margin-left: 9px;
+}
