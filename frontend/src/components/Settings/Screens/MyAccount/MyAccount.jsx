@@ -8,13 +8,12 @@ import { Context } from '../../../Context/Context';
 import "./MyAccount.css"
 
 const MyAccount = () => {
-  const { user, status } = useContext(Context)
+  const { user, status, setUser } = useContext(Context)
   const [emailHidden,setEmailHidden] = useState(true)
   const [newUsername,setNewUsername] = useState("")
   const [password,setPassword] = useState("")
 
   const hideEmail = (email) => {
-    if(!email) return
     const index = email.indexOf("@")
     
     if(index !== -1){
@@ -40,13 +39,26 @@ const MyAccount = () => {
     }
   }
 
+  const logout = async () => {
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/users/logout`, {
+        withCredentials: true
+      })
+      setUser(response.data)
+    }
+    catch(error){
+      console.log(error)
+    }
+  }
+
   return (
     <div id='user-settings-myaccount-container'>
+      <button onClick={logout}>log out</button>
       <p id='user-settings-myaccount-title'>My Account</p>
       <div id='user-settings-myaccount-holder'>
         <div id='user-settings-myaccount-username-image-container'>
           <div id='user-settings-myaccount-image-container'>
-            <img id='user-settings-myaccount-image' src={"https://fastly.picsum.photos/id/832/200/200.jpg?hmac=V4CRQyK7KVP2wBYsEhpcpP8wSdwyU5c-yTeMm37uOOo"} />
+            <img id='user-settings-myaccount-image' src={user.image} />
             <div id='user-settings-myaccount-status' style={{ backgroundColor: status === "ONLINE" ? "#24A35B" : (status === "BUSY" ? "#E33B42" : "#A0A0A0") }}/>
           </div>
           <p id='user-settings-myaccount-username'>{ user.username }</p>

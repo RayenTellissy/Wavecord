@@ -59,6 +59,7 @@ module.exports = {
         loggedIn: true,
         id,
         username,
+        email,
         image: null,
         status: "ONLINE",
         success: true,
@@ -133,7 +134,7 @@ module.exports = {
         id: response.user.uid,
         username: user.username,
         image: user.image,
-        status: user.status,
+        email: user.email,        
         success: true,
         message: "Logged in."
       })
