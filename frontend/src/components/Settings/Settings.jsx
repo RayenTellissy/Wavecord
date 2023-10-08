@@ -35,6 +35,26 @@ const Settings = () => {
             callback={() => setDisplay("account")}
             highlighted={display === "account"}
           />
+          <DisplayButton
+            display="Nitro"
+            callback={() => setDisplay("nitro")}
+            highlighted={display === "nitro"}
+          />
+          <DisplayButton
+            display="Notifications"
+            callback={() => setDisplay("notifications")}
+            highlighted={display === "notifications"}
+          />
+          <DisplayButton
+            display="What's New"
+            callback={() => setDisplay("news")}
+            highlighted={display === "news"}
+          />
+          <DisplayButton
+            display="Log out"
+            callback={() => setDisplay("logout")}
+            highlighted={display === "logout"}
+          />
         </div>
       </div>
       <div id='user-settings-info-container'>

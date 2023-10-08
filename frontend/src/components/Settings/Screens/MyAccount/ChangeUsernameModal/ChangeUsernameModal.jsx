@@ -38,7 +38,6 @@ const ChangeUsernameModal = ({ user, setUser, isOpen, onClose }) => {
   }
 
   const clearFieldsAndClose = () => {
-    setNewUsername(user.username)
     setPassword("")
     setWrongPassword(false)
     setIsLoading(false)
@@ -46,7 +45,7 @@ const ChangeUsernameModal = ({ user, setUser, isOpen, onClose }) => {
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={clearFieldsAndClose} isCentered>
+    <Modal onCloseComplete={() => setNewUsername(user.username)} isOpen={isOpen} onClose={clearFieldsAndClose} isCentered>
       <ModalOverlay bgColor="blackAlpha.800"/>
       <ModalContent borderRadius={3} bg="#313338" maxW={430}>
         <ModalBody padding="15px">
