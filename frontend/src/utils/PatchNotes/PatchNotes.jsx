@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalFooter } from "@chakra-ui/react"
 
 // styles
@@ -8,14 +8,17 @@ const PatchNotes = ({ isOpen, onOpen, onClose }) => {
   const appVersion = import.meta.env.VITE_APP_VERSION
   const latestVersion = localStorage.getItem("appVersion")
 
-  // if this is the first time the user launches the app, or last time he was using an outdated version.
-  // send a patch notes modal with all the new updates. (latest version is persistent using localstorage)
-  if(!latestVersion || (latestVersion && JSON.parse(latestVersion).version !== appVersion)){
-    localStorage.setItem("appVersion", JSON.stringify({
-      version: appVersion
-    }))
-    onOpen()
-  }
+  useEffect(() => {
+    // if this is the first time the user launches the app, or last time he was using an outdated version.
+    // send a patch notes modal with all the new updates. (latest version is persistent using localstorage)
+    if(!latestVersion || (latestVersion && JSON.parse(latestVersion).version !== appVersion)){
+      localStorage.setItem("appVersion", JSON.stringify({
+        version: appVersion
+      }))
+      onOpen()
+    }
+  },[])
+
   
   return (
     <Modal isOpen={isOpen} onClose={onClose} size={"lg"}>

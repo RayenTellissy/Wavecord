@@ -1,18 +1,18 @@
 import React, { useContext, useState } from 'react';
-import axios from 'axios';
+import { useDisclosure } from '@chakra-ui/react';
 
 // components
 import { Context } from '../../../Context/Context';
+import ChangeUsernameModal from './ChangeUsernameModal/ChangeUsernameModal';
 
 // styles
 import "./MyAccount.css"
 
 const MyAccount = () => {
-  const { user, status, setUser } = useContext(Context)
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const { user, setUser, status } = useContext(Context)
   const [emailHidden,setEmailHidden] = useState(true)
-  const [newUsername,setNewUsername] = useState("")
-  const [password,setPassword] = useState("")
-
+  
   const hideEmail = (email) => {
     const index = email.indexOf("@")
     
@@ -24,36 +24,8 @@ const MyAccount = () => {
     return email
   }
 
-  const changeUsername = async () => {
-    if(!newUsername) return
-    try {
-      const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/users/changeUsername`, {
-        id: user.id,
-        newUsername,
-        email: user.email,
-        password
-      })
-    }
-    catch(error){
-      console.log(error)
-    }
-  }
-
-  const logout = async () => {
-    try {
-      const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/users/logout`, {
-        withCredentials: true
-      })
-      setUser(response.data)
-    }
-    catch(error){
-      console.log(error)
-    }
-  }
-
   return (
     <div id='user-settings-myaccount-container'>
-      <button onClick={logout}>log out</button>
       <p id='user-settings-myaccount-title'>My Account</p>
       <div id='user-settings-myaccount-holder'>
         <div id='user-settings-myaccount-username-image-container'>
@@ -66,11 +38,12 @@ const MyAccount = () => {
         <div id='user-settings-myaccount-all-information'>
           <div id='user-settings-myaccount-all-information-editor'>
             <div className='user-settings-myaccount-all-information-row'>
+              <ChangeUsernameModal user={user} setUser={setUser} isOpen={isOpen} onClose={onClose}/>
               <div>
                 <p className='user-settings-myaccount-editor-title'>USERNAME</p>
                 <p className='user-settings-myaccount-editor-content'>{ user.username }</p>
               </div>
-              <button className='user-settings-myaccount-editor-edit-button'>Edit</button>
+              <button className='user-settings-myaccount-editor-edit-button' onClick={onOpen}>Edit</button>
             </div>
             <div className='user-settings-myaccount-all-information-row'>
               <div>
