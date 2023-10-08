@@ -42,8 +42,8 @@ Using Wavecord is straightforward and user-friendly. Follow these steps to get s
    - If you're a new user, click on the "Sign Up" button to create a new account. Fill in the required information, such as your username, email, and password.
    - If you already have an account, click on the "Log In" button and provide your credentials.
 
-3. **Dashboard** 📊:
-   - Upon successful login, you'll be taken to the dashboard where you can see your friends, servers, and recent messages.
+3. **Home** 📊:
+   - Upon successful login, you'll be taken to the homepage where you can see your friends, servers, and recent messages.
 
 4. **Adding Friends** 👥:
    - To add friends, click on the "Friends" tab in the topbar. You can search for friends by their usernames and send them friend requests.
@@ -58,7 +58,7 @@ Using Wavecord is straightforward and user-friendly. Follow these steps to get s
    - Inside a server, you can access text channels for text communication and voice channels for real-time voice chat.
 
 7. **Customization** 🖌️:
-   - Customize your profile by clicking on your avatar in the user settings section. You can change your avatar and update your personal status message.
+   - Customize your profile by clicking the user settings button. You can change your avatar and update your personal information.
 
 8. **Notifications** 🔔:
    - Keep an eye on notifications. You'll receive notifications for friend requests, messages, and other important events.

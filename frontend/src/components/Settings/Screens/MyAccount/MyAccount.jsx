@@ -14,6 +14,7 @@ const MyAccount = () => {
   const [password,setPassword] = useState("")
 
   const hideEmail = (email) => {
+    if(!email) return
     const index = email.indexOf("@")
     
     if(index !== -1){
