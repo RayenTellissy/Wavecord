@@ -12,7 +12,7 @@ const ChangeUsernameModal = ({ user, setUser, isOpen, onClose }) => {
   const [password,setPassword] = useState("")
   const [wrongPassword,setWrongPassword] = useState(false)
   
-  const changeUsername = async () => {
+  const handleSubmit = async () => {
     if(!newUsername || user.username === newUsername) return
     try {
       setIsLoading(true)
@@ -21,6 +21,8 @@ const ChangeUsernameModal = ({ user, setUser, isOpen, onClose }) => {
         email: user.email,
         newUsername,
         password
+      }, {
+        withCredentials: true
       })
       setIsLoading(false)
       
@@ -77,8 +79,9 @@ const ChangeUsernameModal = ({ user, setUser, isOpen, onClose }) => {
           <div id='change-username-footer'>
             <button id='change-username-cancel-button' onClick={clearFieldsAndClose}>Cancel</button>
             <button
-              id={(newUsername && password) ? 'change-username-done-button': "change-username-done-button-disabled"}
-              onClick={changeUsername}
+              id={(newUsername && password && newUsername !== user.username) ? 'change-username-done-button': "change-username-done-button-disabled"}
+              onClick={handleSubmit}
+              disabled={!newUsername || !password || newUsername === user.username}
             >
               {isLoading ? <BeatLoader color='white' size={8}/> : "Done"}
             </button>

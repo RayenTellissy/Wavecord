@@ -81,6 +81,10 @@ io.on("connection", socket => {
   socket.on("send_friend_request_notification", data => {
     socket.to(data.userId).emit("receive_friend_request_notification", data)
   })
+
+  socket.on("update_friend_status", data => {
+    socket.to(data.friends).emit("receive_update_friend_status", data)
+  })
   
   io.on("disconnect", socket => {
     console.log("user disconnected", socket.id)

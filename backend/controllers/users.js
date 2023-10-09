@@ -8,6 +8,7 @@ const {
 const { prisma } = require("../prisma/connection")
 const { auth } = require("../Firebase/FirebaseApp")
 const { generateAccessToken, generateRefreshToken } = require("../utils/generateTokens")
+const admin = require("../Firebase/admin")
 
 module.exports = {
 
@@ -349,6 +350,26 @@ module.exports = {
       })
 
       res.send({ success: true })
+    }
+    catch(error){
+      if(error.code === "auth/wrong-password"){
+        return res.send({ error: "Wrong Password", code: "INCPWD" })
+      }
+      res.send(error)
+    }
+  },
+
+  changePassword: async (req,res) => {
+    try {
+      const { id, email, password, newPassword } = req.body
+
+      await signInWithEmailAndPassword(auth, email, password)
+
+      const result = await admin.auth().updateUser(id, {
+        password: newPassword
+      })
+
+      res.send(result)
     }
     catch(error){
       if(error.code === "auth/wrong-password"){

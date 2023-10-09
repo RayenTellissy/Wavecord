@@ -7,6 +7,8 @@ import { Popover, PopoverTrigger, PopoverContent, PopoverBody, useDisclosure, To
 import { MdOutlineSignalCellularAlt, MdOutlineSignalCellularAlt2Bar, MdOutlineSignalCellularAlt1Bar } from "react-icons/md"
 import { HiPhoneMissedCall } from "react-icons/hi"
 import useSound from 'use-sound';
+import axios from 'axios';
+import Cookies from "js-cookie"
 
 // components
 import Avatar from "../../../common/Avatar/Avatar"
@@ -22,6 +24,7 @@ import LeaveRoom from "../../../../assets/sounds/LeaveRoom.mp3"
 const UserBar = () => {
   const {
     user,
+    socket,
     micEnabled,
     setMicEnabled,
     deafened,
@@ -31,8 +34,6 @@ const UserBar = () => {
     selectScreenShare,
     setSelectScreenShare,
     connectionQuality,
-    displayRoom,
-    setDisplayRoom,
     status,
     setStatus,
     currentVoiceChannelId,
@@ -48,7 +49,7 @@ const UserBar = () => {
     setCurrentVoiceChannelId("")
   }
 
-  const handleCustomStatus = (chosenStatus) => {
+  const handleCustomStatus = async (chosenStatus) => {
     if(chosenStatus === status) return
     if(chosenStatus === "ONLINE"){
       localStorage.removeItem("customStatus")
@@ -58,6 +59,18 @@ const UserBar = () => {
     }
     setStatus(chosenStatus)
     onClose()
+    await axios.put(`${import.meta.env.VITE_SERVER_URL}/users/setStatus`, {
+      id: user.id,
+      status: chosenStatus
+    }, {
+      withCredentials: true
+    })
+    if(Cookies.get("cachedFriends")){
+      socket.emit("update_friend_status", {
+        friends: JSON.parse(Cookies.get("cachedFriends")),
+        userId: user.id
+      })
+    }
   }
 
   return (

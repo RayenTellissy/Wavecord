@@ -12,6 +12,7 @@ import useConversation from "../../hooks/useConversation"
 // helper functions
 import returnServerIds from "../../utils/Helper/returnServerId";
 import { createFriendRequestNotification, createDirectMessageNotification } from "../../utils/Helper/createNotification"
+import { returnFriendsIds } from "../../utils/Helper/friendsHelpers";
 
 export const ContextProvider = ({ children }) => {
   const [user,setUser] = useState({ loggedIn: null })
@@ -55,6 +56,7 @@ export const ContextProvider = ({ children }) => {
         fetchServers()
         fetchConversations()
         fetchNotifications()
+        cacheFriends()
         socket.on("receive_friend_request_notification", data => {
           fetchFriendRequestNotifications()
           // activate notification sound
@@ -166,6 +168,12 @@ export const ContextProvider = ({ children }) => {
 
   // function to be invoked when the current user closes the app
   const handleDisconnect = () => {
+    if(Cookies.get("cachedFriends")){
+      socket.emit("update_friend_status", {
+        friends: JSON.parse(Cookies.get("cachedFriends")),
+        userId: user.id
+      })
+    }
     fetch(`${import.meta.env.VITE_SERVER_URL}/users/setStatus`, {
       method: "PUT",
       headers: {
@@ -259,6 +267,27 @@ export const ContextProvider = ({ children }) => {
     }
   }
 
+  const cacheFriends = async () => {
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/friends/fetchAllFriends`,{
+        id: user.id
+      }, {
+        withCredentials: true
+      })
+      Cookies.set("cachedFriends", JSON.stringify(returnFriendsIds(response.data)))
+      // send a socket event to all friends to update the status of the current user instantly for them as well
+      if(Cookies.get("cachedFriends")){
+        socket.emit("update_friend_status", {
+          friends: JSON.parse(Cookies.get("cachedFriends")),
+          userId: user.id
+        })
+      }
+    }
+    catch(error){
+      console.log(error)
+    }
+  }
+
   return (
     <Context.Provider value={{
       user,
@@ -300,6 +329,7 @@ export const ContextProvider = ({ children }) => {
       setServersLoading,
       fetchServers,
       handleConnect,
+      handleDisconnect,
       directMessageNotifications,
       setDirectMessageNotifications,
       friendRequestNotifications,

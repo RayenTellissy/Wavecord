@@ -7,9 +7,11 @@ import ChangeUsernameModal from './ChangeUsernameModal/ChangeUsernameModal';
 
 // styles
 import "./MyAccount.css"
+import ChangePasswordModal from './ChangePasswordModal/ChangePasswordModal';
 
 const MyAccount = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
+  const { isOpen: passisOpen, onOpen: passOnOpen, onClose: passOnClose } = useDisclosure()
   const { user, setUser, status } = useContext(Context)
   const [emailHidden,setEmailHidden] = useState(true)
   
@@ -65,8 +67,10 @@ const MyAccount = () => {
 
       <div className='user-settings-myaccount-seperator'/>
 
-      <div>
-        <p>Password and Authentication</p>
+      <div id='user-settings-auth-container'>
+        <ChangePasswordModal user={user} isOpen={passisOpen} onClose={passOnClose}/>
+        <p id='user-settings-auth-title'>Password and Authentication</p>
+        <button id='user-settings-password-change-button' onClick={passOnOpen}>Change Password</button>
       </div>
 
       <div className='user-settings-myaccount-seperator'/>

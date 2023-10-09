@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState } from 'react';
-import axios from 'axios';
 
 // components
 import Search from './SearchBar/Search';
@@ -9,16 +8,28 @@ import Conversations from './Conversations/Conversations';
 import UserBar from './UserBar/UserBar';
 import { Context } from '../../Context/Context';
 
+// helper functions
+import { hasConversationWith } from '../../../utils/Helper/friendsHelpers';
+
 // styles
 import "./ContactsBar.css"
 
 const ContactsBar = ({ highlighted, selected, setSelected }) => {
-  const { user, conversations, setConversations, constantConversations, fetchConversations } = useContext(Context)
+  const { user, socket, conversations, setConversations, constantConversations, fetchConversations } = useContext(Context)
   const [query,setQuery] = useState(null)
 
   useEffect(() => {
     filterConversations()
   },[query])
+
+  useEffect(() => {
+    socket.on("receive_update_friend_status", data => {
+      if(hasConversationWith(conversations, data.userId)){
+        fetchConversations()
+      }
+    })
+    return () => socket.off("receive_update_friend_status")
+  },[socket])
 
   const filterConversations = () => {
     if(query !== null){

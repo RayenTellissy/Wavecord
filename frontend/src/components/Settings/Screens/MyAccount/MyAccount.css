@@ -108,3 +108,32 @@
   width: 100%;
   background-color: #404346;
 }
+
+#user-settings-auth-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+#user-settings-auth-title {
+  font-family: GibsonMedium;
+  font-size: 20px;
+}
+
+#user-settings-password-change-button {
+  font-family: GibsonRegular;
+  font-size: 14px;
+  background-color: #5865f2;
+  border-radius: 3px;
+  padding: 7px;
+  width: 150px;
+  transition: .2s ease;
+}
+
+#user-settings-password-change-button:hover {
+  background-color: #4752c4;
+}
+
+#user-settings-password-change-button:active {
+  background-color: #3c45a5;
+}

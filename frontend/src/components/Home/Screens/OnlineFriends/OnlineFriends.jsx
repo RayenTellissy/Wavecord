@@ -11,7 +11,7 @@ import Loader from '../../../common/Loader/Loader';
 import "./OnlineFriends.css"
 
 const OnlineFriends = ({ query, setShowSearch }) => {
-  const { user } = useContext(Context)
+  const { user, socket } = useContext(Context)
   const [users,setUsers] = useState([])
   const [constantUsers,setConstantUsers] = useState([])
   const [isLoading,setIsLoading] = useState(true)
@@ -25,6 +25,13 @@ const OnlineFriends = ({ query, setShowSearch }) => {
   useEffect(() => {
     filterUsers()
   },[query])
+
+  useEffect(() => {
+    socket.on("receive_update_friend_status", () => {
+      fetchUsers()
+    })
+    return () => socket.off("receive_update_friend_status")
+  },[socket])
 
   const fetchUsers = async () => {
     try {

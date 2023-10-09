@@ -10,11 +10,12 @@ import MyAccount from './Screens/MyAccount/MyAccount';
 import "./Settings.css"
 
 const Settings = () => {
-  const { setUser } = useContext(Context)
+  const { setUser, handleDisconnect } = useContext(Context)
   const [display,setDisplay] = useState("account")
   
   const logout = async () => {
     try {
+      await handleDisconnect()
       const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/users/logout`, {
         withCredentials: true
       })
@@ -52,8 +53,7 @@ const Settings = () => {
           />
           <DisplayButton
             display="Log out"
-            callback={() => setDisplay("logout")}
-            highlighted={display === "logout"}
+            callback={logout}
           />
         </div>
       </div>
