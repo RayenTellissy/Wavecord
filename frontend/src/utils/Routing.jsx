@@ -14,6 +14,7 @@ import ForgotPassword from "../components/auth/ForgotPassword/ForgotPassword"
 import Home from '../components/Home/Home'
 import ServerSettings from '../components/Server/Settings/ServerSettings';
 import Settings from '../components/Settings/Settings';
+import NotFound from './NotFound/NotFound';
 
 const Routing = () => {
   const { user, serversLoading, conversationsLoading } = useContext(Context)
@@ -36,6 +37,7 @@ const Routing = () => {
             <Route path='/signup' element={<Navigate to="/"/>}/>
             <Route path='/settings' element={<Settings/>}/>
             <Route path='/server/settings' element={<ServerSettings/>}/>
+            <Route path='*' element={<NotFound/>}/>
           </>
         )
         :

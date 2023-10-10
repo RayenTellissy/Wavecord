@@ -1,0 +1,17 @@
+#not-found-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+#not-found-404 {
+  font-family: GibsonMedium;
+  font-size: 30px;
+}
+
+#not-found-redirect-text {
+  font-family: GibsonRegular;
+  font-size: 25px;
+}

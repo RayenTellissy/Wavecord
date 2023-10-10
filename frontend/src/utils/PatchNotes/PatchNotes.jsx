@@ -19,7 +19,6 @@ const PatchNotes = ({ isOpen, onOpen, onClose }) => {
     }
   },[])
 
-  
   return (
     <Modal isOpen={isOpen} onClose={onClose} size={"lg"}>
       <ModalOverlay bgColor={"blackAlpha.700"}/>

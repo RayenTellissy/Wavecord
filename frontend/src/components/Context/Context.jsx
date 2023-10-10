@@ -60,34 +60,46 @@ export const ContextProvider = ({ children }) => {
         fetchConversations()
         fetchNotifications()
         cacheFriends()
-        socket.on("receive_friend_request_notification", data => {
-          fetchFriendRequestNotifications()
-          // activate notification sound
-          document.getElementById("wavecord-default-notification-sound").click()
-          createFriendRequestNotification({
-            username: data.username,
-            image: data.image
-          })
-        })
-        socket.on("receive_direct_message_notification", data => {
-         const navigateToConversation = () => {
-            setConversationChosen({ id: data.id, username: data.username, image: data.image, status: data.status })
-            setCurrentConversationId(data.conversationId)
-            setDisplay("directMessages")
-          }
-          // activate notification sound
-          document.getElementById("wavecord-default-notification-sound").click()
-          createDirectMessageNotification({
-            username: data.username,
-            image: data.image,
-            message: data.message,
-            callback: navigateToConversation
-          })
-        })
-      } 
+        
+      }
       window.addEventListener("beforeunload", handleDisconnect)
     }
   },[socket, user])
+
+  useEffect(() => {
+    if(!socket || !user.id || !notificationsEnabled) return
+    socket.off("receive_friend_request_notification")
+    socket.off("receive_direct_message_notification")
+    if(notificationsEnabled.friendRequests && notificationsEnabled.desktop){
+      socket.on("receive_friend_request_notification", data => {
+        fetchFriendRequestNotifications()
+        // activate notification sound
+        document.getElementById("wavecord-default-notification-sound").click()
+        createFriendRequestNotification({
+          username: data.username,
+          image: data.image
+        })
+      })
+    }
+    if(notificationsEnabled.directMessages && notificationsEnabled.desktop){
+      socket.on("receive_direct_message_notification", data => {
+        const navigateToConversation = () => {
+          setConversationChosen({ id: data.id, username: data.username, image: data.image, status: data.status })
+          setCurrentConversationId(data.conversationId)
+          setDisplay("directMessages")
+        }
+        // activate notification sound
+        document.getElementById("wavecord-default-notification-sound").click()
+        // pushes a native desktop notifications
+        createDirectMessageNotification({
+          username: data.username,
+          image: data.image,
+          message: data.message,
+          callback: navigateToConversation
+        })
+      })
+    }
+  },[socket, user, notificationsEnabled])
 
   // function to retrieve all the current user's information
   const authenticateSession = async () => {

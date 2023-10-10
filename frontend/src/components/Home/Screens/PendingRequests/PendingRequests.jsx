@@ -11,7 +11,7 @@ import Loader from "../../../common/Loader/Loader"
 import "./PendingRequests.css"
 
 const PendingRequests = ({ query, setShowSearch }) => {
-  const { socket, user, friendRequestNotifications, setFriendRequestNotifications } = useContext(Context)
+  const { socket, user, friendRequestNotifications, setFriendRequestNotifications, notificationsEnabled } = useContext(Context)
   const [users,setUsers] = useState([])
   const [constantUsers,setConstantUsers] = useState([])
   const [isLoading,setIsLoading] = useState(true)
@@ -27,9 +27,14 @@ const PendingRequests = ({ query, setShowSearch }) => {
   },[])
 
   useEffect(() => {
-    socket.on("receive_friend_request_notification", () => {
-      fetchRequests()
-    })
+    if(!notificationsEnabled.friendRequests){
+      socket.off("receive_friend_request_notification")
+    }
+    if(notificationsEnabled.friendRequests){
+      socket.on("receive_friend_request_notification", () => {
+        fetchRequests()
+      })
+    }
   },[socket])
 
   useEffect(() => {

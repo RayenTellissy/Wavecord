@@ -8,10 +8,10 @@ import { Context } from '../../../Context/Context';
 import "./Notifications.css"
 
 const Notifications = () => {
-  const { setNotificationsEnabled } = useContext(Context)
-  const [desktopEnabled,setDesktopEnabled] = useState(true)
-  const [directEnabled,setDirectEnabled] = useState(true)
-  const [friendEnabled,setFriendEnabled] = useState(true)
+  const { notificationsEnabled, setNotificationsEnabled } = useContext(Context)
+  const [desktopEnabled,setDesktopEnabled] = useState(notificationsEnabled.desktop)
+  const [directEnabled,setDirectEnabled] = useState(notificationsEnabled.directMessages)
+  const [friendEnabled,setFriendEnabled] = useState(notificationsEnabled.friendRequests)
 
   useEffect(() => {
     localStorage.setItem("notificationsEnabled", JSON.stringify({
