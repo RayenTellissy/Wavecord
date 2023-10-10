@@ -4,14 +4,18 @@ import { useDisclosure } from '@chakra-ui/react';
 // components
 import { Context } from '../../../Context/Context';
 import ChangeUsernameModal from './ChangeUsernameModal/ChangeUsernameModal';
+import ChangePasswordModal from './ChangePasswordModal/ChangePasswordModal';
+import DeleteAccountModal from './DeleteAccountModal/DeleteAccountModal';
+import OwnsServerModal from './OwnsServerModal/OwnsServerModal';
 
 // styles
 import "./MyAccount.css"
-import ChangePasswordModal from './ChangePasswordModal/ChangePasswordModal';
 
 const MyAccount = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { isOpen: passisOpen, onOpen: passOnOpen, onClose: passOnClose } = useDisclosure()
+  const { isOpen: deleteIsOpen, onOpen: deleteOnOpen, onClose: deleteOnClose } = useDisclosure()
+  const { isOpen: ownsIsOpen, onOpen: ownsOnOpen, onClose: ownsOnClose } = useDisclosure()
   const { user, setUser, status } = useContext(Context)
   const [emailHidden,setEmailHidden] = useState(true)
   
@@ -75,8 +79,12 @@ const MyAccount = () => {
 
       <div className='user-settings-myaccount-seperator'/>
 
-      <div>
-        <p>ACCOUNT REMOVAL</p>
+      <div id='user-settings-account-removal-container'>
+        <DeleteAccountModal id={user.id} isOpen={deleteIsOpen} onOpen={deleteOnOpen} onClose={deleteOnClose} ownsOnOpen={ownsOnOpen}/>
+        <OwnsServerModal isOpen={ownsIsOpen} onClose={ownsOnClose}/>
+        <p id='user-settings-account-removal-title'>ACCOUNT REMOVAL</p>
+        <p id='user-settings-account-removal-warning'>Deleting your account means you won't be able to recover it at any time after taking this action.</p>
+        <button id='user-settings-account-removal-delete-button' onClick={deleteOnOpen}>Delete Account</button>
       </div>
 
     </div>

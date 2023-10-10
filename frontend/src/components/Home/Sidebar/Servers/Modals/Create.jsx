@@ -18,7 +18,7 @@ import { storage } from '../../../../../Firebase/FirebaseApp';
 import { Context } from "../../../../Context/Context"
 
 const Create = ({ setScreen, onClose }) => {
-  const { user } = useContext(Context)
+  const { user, setCurrentServerId, setDisplay } = useContext(Context)
   const [isLoading, setIsLoading] = useState(false)
   const [image, setImage] = useState(null)
   const [createDisabled, setCreateDisabled] = useState(false)
@@ -118,7 +118,8 @@ const Create = ({ setScreen, onClose }) => {
         })
       }
       onClose() // closing modal
-      navigate(`/server/${response.data.id}`) // navigating to the newly created server
+      setCurrentServerId(response.data.id)
+      setDisplay("server")
     }
     catch (error) {
       console.log(error)

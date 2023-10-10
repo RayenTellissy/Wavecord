@@ -326,6 +326,7 @@ module.exports = {
     }
   },
 
+  // function to change the user's username from settings on the client
   changeUsername: async (req,res) => {
     try {
       const { newUsername, id, password, email } = req.body
@@ -359,6 +360,7 @@ module.exports = {
     }
   },
 
+  // function to change the user's password from settings on the client
   changePassword: async (req,res) => {
     try {
       const { id, email, password, newPassword } = req.body
@@ -374,6 +376,41 @@ module.exports = {
     catch(error){
       if(error.code === "auth/wrong-password"){
         return res.send({ error: "Wrong Password", code: "INCPWD" })
+      }
+      res.send(error)
+    }
+  },
+
+  removeAccount: async (req,res) => {
+    try {
+      const { id, email, password } = req.body
+
+      await signInWithEmailAndPassword(auth, email, password)
+
+      const user = await prisma.users.findFirst({
+        where: {
+          id
+        },
+        include: {
+          servers_created: true
+        }
+      })
+
+      // if user currently owns servers return an error 
+      if(user.servers_created.length !== 0) return res.send({ success: false, code: "OS" })
+
+      await admin.auth().deleteUser(id) // deleting the user from firebase authentication
+      await prisma.users.delete({
+        where: {
+          id
+        }
+      })
+
+      res.send({ success: true })
+    }
+    catch(error){
+      if(error.code === "auth/wrong-password"){
+        return res.send({ success: false, code: "INCPWD" })
       }
       res.send(error)
     }

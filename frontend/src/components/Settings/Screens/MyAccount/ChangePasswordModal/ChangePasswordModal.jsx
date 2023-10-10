@@ -3,9 +3,6 @@ import { Modal, ModalOverlay, ModalContent, ModalBody, ModalFooter } from "@chak
 import BeatLoader from "react-spinners/BeatLoader"
 import axios from 'axios';
 
-// styles
-import "./ChangePasswordModal.css"
-
 const ChangePasswordModal = ({ user, isOpen, onClose }) => {
   const [isLoading,setIsLoading] = useState(false)
   const [currentPassword,setCurrentPassword] = useState("")
@@ -14,7 +11,7 @@ const ChangePasswordModal = ({ user, isOpen, onClose }) => {
   const [wrongPassword,setWrongPassword] = useState(false)
   
   const handleSubmit = async () => {
-    if(!currentPassword || !newPassword || !confirmPassword) return
+    if(!currentPassword || !newPassword || !confirmPassword || newPassword !== confirmPassword) return
     try {
       setIsLoading(true)
       const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/users/changePassword`, {

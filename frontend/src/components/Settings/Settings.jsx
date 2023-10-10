@@ -1,15 +1,18 @@
 import React, { useContext, useState } from 'react';
 import axios from 'axios';
+import { useDisclosure } from "@chakra-ui/react"
 
-//components
+// components
 import { Context } from '../Context/Context';
 import DisplayButton from '../common/DisplayButton/DisplayButton';
 import MyAccount from './Screens/MyAccount/MyAccount';
+import PatchNotes from "../../utils/PatchNotes/PatchNotes"
 
 // styles
 import "./Settings.css"
 
 const Settings = () => {
+  const { isOpen, onOpen, onClose } = useDisclosure()
   const { setUser, handleDisconnect } = useContext(Context)
   const [display,setDisplay] = useState("account")
   
@@ -28,6 +31,7 @@ const Settings = () => {
 
   return (
     <div id='user-settings-container'>
+      <PatchNotes isOpen={isOpen} onOpen={onOpen} onClose={onClose}/>
       <div id='user-settings-dropdown-container'>
         <div id='user-settings-dropdown'>
           <p id='user-settings-title'>USER SETTINGS</p>
@@ -48,8 +52,7 @@ const Settings = () => {
           />
           <DisplayButton
             display="What's New"
-            callback={() => setDisplay("news")}
-            highlighted={display === "news"}
+            callback={onOpen}
           />
           <DisplayButton
             display="Log out"

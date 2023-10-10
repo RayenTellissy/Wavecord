@@ -9,7 +9,8 @@ const {
   googleSignup,
   setStatus,
   changeUsername,
-  changePassword
+  changePassword,
+  removeAccount
 } = require("../controllers/users")
 const { loginLimit, signupLimit, resetLimit } = require("../middleware/authLimiter")
 const authentication = require("../middleware/authentication")
@@ -24,6 +25,7 @@ router.post("/googleSignup", googleSignup)
 router.post("/reset", reset)
 router.post("/changeUsername", authentication, changeUsername)
 router.post("/changePassword", authentication, changePassword)
+router.post("/removeAccount", authentication, removeAccount)
 
 router.put("/setStatus", authentication, setStatus)
 

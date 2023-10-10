@@ -2,6 +2,7 @@
   display: flex;
   flex-direction: column;
   margin-top: 50px;
+  height: 100%;
 }
 
 #user-settings-myaccount-title {
@@ -136,4 +137,35 @@
 
 #user-settings-password-change-button:active {
   background-color: #3c45a5;
+}
+
+#user-settings-account-removal-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+#user-settings-account-removal-title {
+  font-family: GibsonMedium;
+  color: #a0b0c0;
+  font-size: 14px;
+}
+
+#user-settings-account-removal-warning {
+  font-family: GibsonLight;
+  color: #899894;
+}
+
+#user-settings-account-removal-delete-button {
+  border: 1px solid #da363d;
+  width: 135px;
+  height: 35px;
+  border-radius: 4px;
+  font-family: GibsonRegular;
+  font-size: 14px;
+  transition: .2s ease;
+}
+
+#user-settings-account-removal-delete-button:hover {
+  background-color: #da363d;
 }

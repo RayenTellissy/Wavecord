@@ -1,0 +1,25 @@
+#owns-servers-done-button {
+  width: 90px;
+  border-radius: 3px;
+  background-color: #5865f2;
+  font-family: GibsonRegular;
+  font-size: 14px;
+  transition: .2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 35px;
+}
+
+#owns-servers-done-button:hover {
+  background-color: #4752c4;
+}
+
+#owns-servers-done-button:active {
+  background-color: #3c45a5;
+}
+
+#owns-servers-body-text {
+  font-family: GibsonRegular;
+  margin-bottom: 10px;
+}

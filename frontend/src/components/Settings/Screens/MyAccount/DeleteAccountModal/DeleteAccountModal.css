@@ -1,0 +1,60 @@
+#delete-account-header {
+  font-family: GibsonMedium;
+}
+
+#delete-account-body-container {
+  background-color: #f0b132;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  font-family: GibsonRegular;
+}
+
+#delete-account-cancel-button {
+  font-family: GibsonRegular;
+  font-size: 14px;
+}
+
+#delete-account-cancel-button:hover {
+  text-decoration: underline;
+}
+
+#delete-account-submit-button {
+  background-color: #da373c;
+  padding: 9px;
+  width: 130px;
+  border-radius: 3px;
+  font-family: GibsonRegular;
+  transition: .2s ease;
+  margin-left: 20px;
+}
+
+#delete-account-submit-button:hover {
+  background-color: #a12828;
+}
+
+#delete-account-submit-button:active {
+  background-color: #8f2022;
+}
+
+#delete-account-password-title {
+  color: #aeb2ba;
+  font-family: GibsonMedium;
+  font-size: 14px;
+}
+
+#delete-account-password-input {
+  background-color: #1f1f23;
+  width: 100%;
+  border-radius: 3px;
+  padding: 7px;
+  font-family: GibsonRegular;
+  margin-bottom: 10px;
+}
+
+#delete-account-wrong-password {
+  color: #da373c;
+  font-family: GibsonRegular;
+  font-size: 13px;
+  margin-top: 5px;
+}
