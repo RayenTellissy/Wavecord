@@ -56,7 +56,7 @@ const AllButtons = ({ user, ownerId, onOpen, server, fetchData, isAdmin }) => {
         withCredentials: true
       })
       setCurrentServerId("")
-      setDisplay("")
+      setDisplay("home")
       fetchServers()
       setIsLoading(false)
     }
@@ -78,7 +78,7 @@ const AllButtons = ({ user, ownerId, onOpen, server, fetchData, isAdmin }) => {
         withCredentials: true
       })
       setCurrentServerId("")
-      setDisplay("")
+      setDisplay("home")
       fetchServers()
       setIsLoading(false)
     }

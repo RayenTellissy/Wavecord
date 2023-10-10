@@ -19,7 +19,7 @@ const ServerSettings = () => {
   const [display,setDisplay] = useState("Overview")
   const [server,setServer] = useState(location.state)
   const navigate = useNavigate()
-
+  
   useEffect(() => {
     document.addEventListener("keydown", handleKeyPress)
     
@@ -40,7 +40,14 @@ const ServerSettings = () => {
       navigate("/")
     }
   }
-
+  
+  const displays = {
+    Overview: <Overview server={server} fetchData={fetchData}/>,
+    Roles: <Roles server={server}/>,
+    Members: <Members server={server}/>,
+    Bans: <Bans server={server}/>
+  }
+  
   return (
     <div id='server-settings-container'>
       <div id='server-settings-dropdown-container'>
@@ -70,11 +77,7 @@ const ServerSettings = () => {
       </div>
       <div id='server-settings-info-container'>
         <div id='server-settings-info'>
-          {display === "Overview"
-          ? <Overview server={server} fetchData={fetchData}/> 
-          : (display === "Roles"
-          ? <Roles server={server}/>
-          : (display === "Members" ? <Members server={server}/> : <Bans server={server}/> ))}
+          {displays[display]}
         <button id='server-settings-leave-button' onClick={() => navigate("/")}>
           <div id='server-settings-leave-div'>
             <IoClose size={40} color='#a4a8af'/>

@@ -12,7 +12,7 @@ const HomeButton = ({ setSelected }) => {
   const { setDisplay, setCurrentConversationId, setCurrentServerId } = useContext(Context)
 
   const handleClick = () => {
-    setDisplay("")
+    setDisplay("home")
     setCurrentConversationId("")
     setCurrentServerId("")
     setSelected("Friends")

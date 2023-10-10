@@ -39,7 +39,7 @@ export const ContextProvider = ({ children }) => {
   const [friendRequestNotifications,setFriendRequestNotifications] = useState(null)
   const [currentConversationId,setCurrentConversationId] = useState("")
   const [currentServerId,setCurrentServerId] = useState("")
-  const [display,setDisplay] = useState("")
+  const [display,setDisplay] = useState("home")
   const [selected,setSelected] = useState("Friends")
   const [notificationsEnabled,setNotificationsEnabled] = useState({})
 
@@ -49,7 +49,6 @@ export const ContextProvider = ({ children }) => {
     handleNotificationSettings()
     return () => window.removeEventListener("beforeunload", handleDisconnect)
   },[])
-
 
   useEffect(() => {
     if(socket){

@@ -18,6 +18,14 @@ const Home = () => {
   const location = useLocation()
   const { currentConversationId, currentServerId, display, selected, setSelected } = useContext(Context)
   const [selectedScreen,setSelectedScreen] = useState(location.state?.selected ? location.state?.selected : "Online")
+  const displays = {
+    directMessages: <Messages />,
+    server: <Server />,
+    home: <>
+      <Topbar selected={selected} selectedScreen={selectedScreen} setSelectedScreen={setSelectedScreen}/>
+      {selected === "Turbo" ? <Turbo/> : <Display selectedScreen={selectedScreen}/>}
+    </>
+  }
 
   return (
     <div>
@@ -32,12 +40,7 @@ const Home = () => {
         />}
 
         <div id='home-right-container'>
-          {display === "directMessages"
-          ? <Messages/>
-          : (display === "server" ? <Server/> : <>
-            <Topbar selected={selected} selectedScreen={selectedScreen} setSelectedScreen={setSelectedScreen}/>
-            {selected === "Turbo" ? <Turbo/> : <Display selectedScreen={selectedScreen}/>}
-          </>)}
+          {displays[display]}
         </div>
 
       </div>

@@ -63,7 +63,7 @@ const App = () => {
   },[socket])
 
   const closeBanModal = () => {
-    setDisplay("")
+    setDisplay("home")
     setCurrentServerId("")
     onClose()
     setBannedFrom(null)

@@ -13,7 +13,7 @@ const HomeNavigator = ({ selected, setSelected, text, style }) => {
   const handleClick = () => {
     setSelected(text)
     setCurrentConversationId("")
-    setDisplay("") // exiting messages component
+    setDisplay("home") // exiting messages component
   }
 
   return (
