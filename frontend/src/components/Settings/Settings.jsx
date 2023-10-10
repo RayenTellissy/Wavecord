@@ -7,6 +7,8 @@ import { Context } from '../Context/Context';
 import DisplayButton from '../common/DisplayButton/DisplayButton';
 import MyAccount from './Screens/MyAccount/MyAccount';
 import PatchNotes from "../../utils/PatchNotes/PatchNotes"
+import Nitro from "./Screens/Nitro/Nitro"
+import Notifications from './Screens/Notifications/Notifications';
 
 // styles
 import "./Settings.css"
@@ -15,6 +17,11 @@ const Settings = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { setUser, handleDisconnect } = useContext(Context)
   const [display,setDisplay] = useState("account")
+  const displays = {
+    account: <MyAccount />,
+    nitro: <Nitro />,
+    notifications: <Notifications />
+  }
   
   const logout = async () => {
     try {
@@ -62,7 +69,7 @@ const Settings = () => {
       </div>
       <div id='user-settings-info-container'>
         <div id='user-settings-info'>
-          {display === "account" ? <MyAccount/> : ""}
+          {displays[display]}
         </div>
       </div>
     </div>

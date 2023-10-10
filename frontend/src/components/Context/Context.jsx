@@ -41,12 +41,15 @@ export const ContextProvider = ({ children }) => {
   const [currentServerId,setCurrentServerId] = useState("")
   const [display,setDisplay] = useState("")
   const [selected,setSelected] = useState("Friends")
+  const [notificationsEnabled,setNotificationsEnabled] = useState({})
 
   useEffect(() => {
     authenticateSession()
     handleSocket()
+    handleNotificationSettings()
     return () => window.removeEventListener("beforeunload", handleDisconnect)
   },[])
+
 
   useEffect(() => {
     if(socket){
@@ -288,6 +291,20 @@ export const ContextProvider = ({ children }) => {
     }
   }
 
+  const handleNotificationSettings = () => {
+    const notifications = localStorage.getItem("notificationsEnabled")
+    if(!notifications){
+      localStorage.setItem("notificationsEnabled", JSON.stringify({
+        desktop: true,
+        directMessages: true,
+        friendRequests: true
+      }))
+    }
+    else {
+      setNotificationsEnabled(JSON.parse(notifications))
+    }
+  }
+
   return (
     <Context.Provider value={{
       user,
@@ -346,7 +363,9 @@ export const ContextProvider = ({ children }) => {
       setSelected,
       conversationsLoading,
       setConversationsLoading,
-      fetchConversations
+      fetchConversations,
+      notificationsEnabled,
+      setNotificationsEnabled
     }}>
       {children}
     </Context.Provider>

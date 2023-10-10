@@ -1,0 +1,36 @@
+#user-settings-notifications-container {
+  display: flex;
+  flex-direction: column;
+  margin-top: 50px;
+  height: 100%;
+}
+
+#user-settings-notifications-holder {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+}
+
+#user-settings-notifications-title {
+  font-family: GibsonMedium;
+  font-size: 25px;
+}
+
+.user-settings-notifications-row-title {
+  font-family: GibsonMedium;
+  font-size: 17px;
+}
+
+.user-settings-notifications-row-text {
+  font-family: GibsonRegular;
+  font-size: 14px;
+  color: #787a83;
+  margin-top: 5px;
+}
+
+.user-settings-notifications-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
