@@ -40,7 +40,7 @@ module.exports = {
 
   fetchMessages: async (req,res) => {
     try {
-      const { userId, conversationId } = req.body
+      const { userId, conversationId, amount } = req.body
 
       // checking if the user has access to this conversation
       const checkUser = await prisma.conversations.findFirst({
@@ -58,7 +58,13 @@ module.exports = {
           authorized: false
         })
       }
-
+      
+      const count = await prisma.directMessages.count({
+        where: {
+          conversationId
+        }
+      })
+      console.log(amount)
       const result = await prisma.conversations.findFirst({
         where: {
           id: conversationId
@@ -75,6 +81,8 @@ module.exports = {
                 }
               }
             },
+            skip: amount >= count ? 0 : count - amount,
+            take: amount,
             orderBy: {
               created_at: "asc"
             }
@@ -82,7 +90,7 @@ module.exports = {
         }
       })
 
-      res.send(result)
+      res.send({ DirectMessages: result.DirectMessages, hasMore: count > amount })
     }
     catch(error){
       res.send(error)

@@ -8,9 +8,9 @@ import Cookies from 'js-cookie';
 import { Context } from '../Context/Context';
 import OtherUsers from './OtherUsers/OtherUsers';
 import Message from "./Message"
-import LoadingMessages from "./LoadingMessages/LoadingMessages"
 import MessageInput from '../common/MessageInput/MessageInput';
 import ConversationStart from './ConversationStart/ConversationStart';
+import MessagesLoader from '../common/MessagesLoader/MessagesLoader';
 
 // styles
 import "./Messages.css"
@@ -33,10 +33,13 @@ const Messages = () => {
     setDirectMessageNotifications,
     currentConversationId
   } = useContext(Context)
-  const [messages,setMessages] = useState([])
+  const [messages,setMessages] = useState(null)
   const [message,setMessage] = useState("")
   const [isLoading,setIsLoading] = useState(false)
-  const [showStart,setShowStart] = useState(false)
+  const [amount,setAmount] = useState(15)
+  const [hasMore,setHasMore] = useState(null)
+  const [loadedMore,setLoadedMore] = useState(false)
+  const [appliedScroll,setAppliedScroll] = useState(false)
   const messagesEndRef = useRef(null)
   const messagesContainerRef = useRef(null)
   const navigate = useNavigate()
@@ -50,6 +53,12 @@ const Messages = () => {
       Cookies.remove("conversationChosen")
     }
   }, [])
+
+  useEffect(() => {
+    if(!isLoading){
+      fetchMessages()
+    }
+  }, [amount])
   
   // handling conversation switching
   useEffect(() => {
@@ -57,7 +66,6 @@ const Messages = () => {
     messagesContainerRef.current.addEventListener("scroll", debounceScroll)
     joinConversation()
     handleCachedMessage()
-    fetchMessages()
     socket.emit("join_room", currentConversationId) // emitting a join room event to the socket server
     Cookies.set("conversationChosen", JSON.stringify(conversationChosen))
     return () => {
@@ -86,7 +94,7 @@ const Messages = () => {
   }, [socket])
 
   useEffect(() => {
-    if(messages.length){
+    if(messages && messages.length){
       scrollToBottom()
     }
   }, [messages])
@@ -101,18 +109,19 @@ const Messages = () => {
       setIsLoading(true)
       const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/conversations/messages`, {
         conversationId: currentConversationId,
-        userId: user.id
+        userId: user.id,
+        amount
       }, {
         withCredentials: true
       })
-
+      
       // if user tries to enter a conversation he's not a part of it will redirect without fetching messages
       if (response.data.authorized === false) {
         navigate("/404")
       }
       else {
         setMessages(response.data.DirectMessages)
-        setShowStart(true)
+        setHasMore(response.data.hasMore)
         setIsLoading(false)
       }
     }
@@ -122,15 +131,21 @@ const Messages = () => {
   }
 
   const scrollToBottom = () => {
+    if(loadedMore) return
     const cookie = Cookies.get("conversationsCachedScroll")
     // if the ref height is not the same (the user has new messages) scroll to bottom
-    if(cookie && JSON.parse(cookie)[currentConversationId] && JSON.parse(cookie)[currentConversationId].lastHeight === messagesContainerRef.current.scrollHeight){
+    if(
+        cookie
+        && JSON.parse(cookie)[currentConversationId]
+        && JSON.parse(cookie)[currentConversationId].lastHeight === messagesContainerRef.current.scrollHeight)
+      {
       applyCachedScroll()
     }
     else {
       // scroll to bottom
       messagesEndRef.current.scrollIntoView()
     }
+    setAppliedScroll(true)
   }
 
   const applyCachedScroll = () => {
@@ -146,7 +161,7 @@ const Messages = () => {
 
   // function to cache where the user has scrolled in a conversation
   const handleScroll = () => {
-    if(!messages.length || isLoading) return
+    if(isLoading) return
     const cookie = Cookies.get("conversationsCachedScroll")
     if(!cookie){
       return Cookies.set("conversationsCachedScroll", JSON.stringify({
@@ -166,12 +181,17 @@ const Messages = () => {
 
   // using debounce for scroll performance
   const debounceScroll = () => {
+    // if(hasMore) {
+    //   if(messagesContainerRef.current.scrollTop < 100){
+    //     loadMore()
+    //   }
+    // }
     if(!isScrolling){
       isScrolling = true
       setTimeout(() => {
         handleScroll()
         isScrolling = false
-      }, 1500)
+      }, 1000)
     } 
   }
 
@@ -185,8 +205,8 @@ const Messages = () => {
 
   const handleContactSwitch = () => {
     socket.emit("leave_room", currentConversationId) // leaving socket room when changing conversations
-    setShowStart(false)
-    setMessages([]) // resetting messages state
+    setMessages(null) // resetting messages state
+    setHasMore(null)
     const cachedMessages = Cookies.get("cachedDirectMessages")
     if (cachedMessages) {
       var parsed = JSON.parse(cachedMessages)
@@ -268,6 +288,12 @@ const Messages = () => {
     })
   }
 
+  // function used for lazy loading messages
+  const loadMore = async () => {
+    setLoadedMore(true)
+    setAmount(prevAmount => prevAmount + 5)
+  }
+
   return (
     <div id='messages-container'>
       <div id='dm-conversation-container'>
@@ -280,11 +306,12 @@ const Messages = () => {
           />
         </div>
 
-        <div id='dm-messages-container' className='default-scrollbar' ref={messagesContainerRef}>
-          {isLoading && <LoadingMessages />}
-          {showStart && <ConversationStart username={conversationChosen.username} image={conversationChosen.image} />}
+        <div style={{ opacity: appliedScroll ? "100%" : "0%" }} id='dm-messages-container' className='default-scrollbar' ref={messagesContainerRef}>
+          {/* {isLoading && <LoadingMessages />} */}
+          {(messages && !hasMore) && <ConversationStart username={conversationChosen.username} image={conversationChosen.image} />}
+          {(messages && hasMore) && <MessagesLoader loadMore={loadMore} isFetching={isLoading} />}
           <Twemoji options={{ className: 'twemoji' }}>
-            {messages.length !== 0 && messages.map((e, i) => {
+            {messages && messages.length !== 0 && messages.map((e, i) => {
               return <Message
                 key={i}
                 id={e.id}

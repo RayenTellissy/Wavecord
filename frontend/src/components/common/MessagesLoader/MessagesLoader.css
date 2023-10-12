@@ -1,0 +1,23 @@
+#messages-loader-container {
+  height: 70px;
+  display: flex;
+  justify-content: center;
+}
+
+#messages-loader-button {
+  font-family: GibsonRegular;
+  color: #adadad;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+#messages-loader-spinner {
+  animation: spin 1s linear infinite;
+}

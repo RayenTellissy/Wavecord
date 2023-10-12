@@ -33,7 +33,7 @@ export const ContextProvider = ({ children }) => {
   const [status,setStatus] = useState("")
   const [currentVoiceChannelId,setCurrentVoiceChannelId] = useState("")
   const [servers,setServers] = useState([])
-  const [token,setToken] = useState("")
+  const [token,setToken] = useState("") // voicechat token
   const [serversLoading,setServersLoading] = useState(true)
   const [directMessageNotifications,setDirectMessageNotifications] = useState(null)
   const [friendRequestNotifications,setFriendRequestNotifications] = useState(null)
