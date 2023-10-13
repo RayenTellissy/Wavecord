@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useEffect, useState, useRef } from "react";
 import axios from "axios";
 import io from "socket.io-client"
 import Cookies from "js-cookie"
@@ -13,6 +13,7 @@ import useConversation from "../../hooks/useConversation"
 import returnServerIds from "../../utils/Helper/returnServerId";
 import { createFriendRequestNotification, createDirectMessageNotification } from "../../utils/Helper/createNotification"
 import { returnFriendsIds } from "../../utils/Helper/friendsHelpers";
+import sortConversations from "../../utils/Helper/sortConversations";
 
 export const ContextProvider = ({ children }) => {
   const [user,setUser] = useState({ loggedIn: null })
@@ -42,6 +43,7 @@ export const ContextProvider = ({ children }) => {
   const [display,setDisplay] = useState("home")
   const [selected,setSelected] = useState("Friends")
   const [notificationsEnabled,setNotificationsEnabled] = useState({})
+  const conversationsRef = useRef(conversations)
 
   useEffect(() => {
     authenticateSession()
@@ -49,6 +51,10 @@ export const ContextProvider = ({ children }) => {
     handleNotificationSettings()
     return () => window.removeEventListener("beforeunload", handleDisconnect)
   },[])
+
+  useEffect(() => {
+    conversationsRef.current = conversations
+  }, [conversations])
 
   useEffect(() => {
     if(socket){
@@ -59,7 +65,6 @@ export const ContextProvider = ({ children }) => {
         fetchConversations()
         fetchNotifications()
         cacheFriends()
-        
       }
       window.addEventListener("beforeunload", handleDisconnect)
     }
@@ -96,6 +101,8 @@ export const ContextProvider = ({ children }) => {
           message: data.message,
           callback: navigateToConversation
         })
+        // placing the conversation at the top
+        setConversations(sortConversations(data.conversationId, conversationsRef.current))
       })
     }
   },[socket, user, notificationsEnabled])

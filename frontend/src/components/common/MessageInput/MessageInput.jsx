@@ -35,10 +35,9 @@ const MessageInput = ({
   setMessages,
   conversationType,
   channelId,
-  roleColor,
-  forceScrollBottom
+  roleColor
 }) => {
-  const { socket, conversations, conversationChosen } = useContext(Context)
+  const { socket, conversations, setConversations, conversationChosen } = useContext(Context)
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [showEmoji,setShowEmoji] = useState(false)
   const [image,setImage] = useState(null)
@@ -69,7 +68,7 @@ const MessageInput = ({
         type: "TEXT",
         created_at: new Date(Date.now())
       }
-      sortConversations(channelId,conversations)
+      setConversations(sortConversations(channelId, conversations)) // placing the current conversation at the top
       setMessages(prevMessages => [...prevMessages, messageDetails])
       socket.emit("send_message", messageDetails)
       await axios.post(`${import.meta.env.VITE_SERVER_URL}/conversations/sendMessage`, {

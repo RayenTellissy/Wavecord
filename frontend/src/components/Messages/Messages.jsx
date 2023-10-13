@@ -181,11 +181,7 @@ const Messages = () => {
       }, 1000)
     } 
   }
-
-  const forceScrollBottom = () => {
-    messagesEndRef.current.scrollIntoView()
-  }
-
+  
   // function used to remove the messages visually instantly for the user when he removes a message
   const removeMessageLocally = (messageId) => {
     setMessages(messages.filter(e => e.id !== messageId))
@@ -331,7 +327,6 @@ const Messages = () => {
             setMessage={setMessage}
             conversationName={conversationChosen.username}
             setMessages={setMessages}
-            forceScrollBottom={forceScrollBottom}
             conversationType="dm"
             user={user}
           />

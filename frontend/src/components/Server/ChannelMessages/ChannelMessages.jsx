@@ -56,10 +56,6 @@ const ChannelMessages = ({
   }, [amount])
 
   useEffect(() => {
-    console.log(hasMore, messages)
-  }, [hasMore, messages])
-
-  useEffect(() => {
     // storing state to cache in cookies
     currentMessage = message
   }, [message])

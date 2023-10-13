@@ -29,7 +29,6 @@ const PatchNotes = ({ isOpen, onOpen, onClose }) => {
         <ModalBody padding={5}>
           <div id='patch-notes-new-features-container'>
             <p id='patch-notes-new-features'>NEW FEATURES</p>
-            {/* <div id='patch-notes-new-features-line' /> */}
             <p>- Secured Authentication Tokens in httpOnly cookies, for advanced user security.</p>
             <p>- Added log out feature in settings.</p>
             <p>- Added scroll location saving in direct messages and text channels, for enhanced user experience.</p>

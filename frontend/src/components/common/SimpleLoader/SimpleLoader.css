@@ -1,0 +1,7 @@
+#simple-loader {
+  animation: spin 1s linear infinite;
+  color: #adadad;
+  height: 30px;
+  width: 30px;
+  align-self: center;
+}

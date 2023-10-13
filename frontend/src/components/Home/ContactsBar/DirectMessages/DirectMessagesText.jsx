@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { useNavigate } from "react-router-dom"
 import { AddIcon } from "@chakra-ui/icons"
 import axios from 'axios';
 import {
@@ -22,7 +21,7 @@ import { Context } from "../../../Context/Context"
 import "./DirectMessagesText.css"
 
 const DirectMessagesText = ({ id, fetchConversations }) => {
-  const { setConversationChosen } = useContext(Context)
+  const { setConversationChosen, setCurrentConversationId, setDisplay } = useContext(Context)
   const { onOpen, onClose, isOpen } = useDisclosure()
   const [friends,setFriends] = useState([])
   const [query,setQuery] = useState("")
@@ -31,7 +30,6 @@ const DirectMessagesText = ({ id, fetchConversations }) => {
   const [submitDisabled,setSubmitDisabled] = useState(false)
   const [isLoading,setIsLoading] = useState(false)
   const [isCreating,setIsCreating] = useState(false)
-  const navigate = useNavigate()
 
   useEffect(() => {
     filterFriends()
@@ -69,7 +67,8 @@ const DirectMessagesText = ({ id, fetchConversations }) => {
       setChecked("") // resetting chosen user
       fetchConversations()
       setConversationChosen(checked)
-      navigate(`/dm/${response.data.id}`)
+      setCurrentConversationId(response.data.id)
+      setDisplay("directMessages")
       setSubmitDisabled(false)
     }
     catch(error){

@@ -32,6 +32,7 @@ import AllButtons from './PopoverButtons/AllButtons';
 import ServerLink from './ServerLinkModal/ServerLink';
 import { Context } from '../Context/Context';
 import VoiceRoom from './VoiceRoom/VoiceRoom';
+import SimpleLoader from "../common/SimpleLoader/SimpleLoader"
 
 // styles
 import "./Server.css"
@@ -246,6 +247,7 @@ const Server = () => {
             </PopoverContent>
           </Popover>
           <div id='server-category-main-container'>
+            {!server.categories && <SimpleLoader />}
             {server.categories && server.categories.map((e,i) => {
               return <Category
                 key={i}
