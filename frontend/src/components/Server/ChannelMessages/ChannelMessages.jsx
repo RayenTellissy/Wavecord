@@ -10,7 +10,8 @@ import Message from '../../Messages/Message';
 import Roles from '../Roles/Roles';
 import Topbar from "../Topbar/Topbar"
 import EmptyChannel from './EmptyChannel/EmptyChannel';
-import LoadingMessages from '../../Messages/LoadingMessages/LoadingMessages';
+import MessagesLoader from '../../common/MessagesLoader/MessagesLoader';
+import MessagesSpinner from '../../common/MessagesSpinner/MessagesSpinner';
 
 // styles
 import "./ChannelMessages.css"
@@ -25,10 +26,12 @@ const ChannelMessages = ({
   roleColor
 }) => {
   const { user, socket } = useContext(Context)
-  const [messages,setMessages] = useState([])
+  const [messages,setMessages] = useState(null)
   const [message,setMessage] = useState("")
   const [isLoading,setIsLoading] = useState(false)
-  const [showStart,setShowStart] = useState(false)
+  const [amount,setAmount] = useState(15)
+  const [hasMore,setHasMore] = useState(null)
+  const [loadedMore,setLoadedMore] = useState(false)
   const messagesEndRef = useRef(null)
   const messagesContainerRef = useRef(null)
   var isScrolling = false // used for debounce
@@ -47,9 +50,19 @@ const ChannelMessages = ({
   },[currentTextChannelId])
 
   useEffect(() => {
+    if(!isLoading){
+      fetchMessages()
+    }
+  }, [amount])
+
+  useEffect(() => {
+    console.log(hasMore, messages)
+  }, [hasMore, messages])
+
+  useEffect(() => {
     // storing state to cache in cookies
     currentMessage = message
-  },[message])
+  }, [message])
 
   useEffect(() => {
     socket.on("receive_message", data => {
@@ -62,25 +75,26 @@ const ChannelMessages = ({
       socket.off("receive_message")
       socket.off("receive_delete_message")
     }
-  },[socket])
+  }, [socket])
 
   useEffect(() => {
-    if(messages.length){
+    if(messages && messages.length){
       scrollToBottom()
     }
-  },[messages])
+  }, [messages])
 
   const fetchMessages = async () => {
     try {
       setIsLoading(true)
       const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/fetchTextChannelMessages`,{
         channelId: currentTextChannelId,
-        serverId
+        serverId,
+        amount
       }, {
         withCredentials: true
       })
-      setMessages(response.data)
-      setShowStart(true)
+      setMessages(response.data.messages)
+      setHasMore(response.data.hasMore)
       setIsLoading(false)
     }
     catch(error){
@@ -89,6 +103,7 @@ const ChannelMessages = ({
   }
 
   const scrollToBottom = () => {
+    if(loadedMore) return
     const cookie = Cookies.get("textChannelsCachedScroll")
     // if the ref height is not the same (the user has new messages) scroll to bottom
     if(cookie
@@ -115,7 +130,7 @@ const ChannelMessages = ({
   }
 
   const handleScroll = () => {
-    if(!messages.length || isLoading) return
+    if(isLoading) return
     const cookie = Cookies.get("textChannelsCachedScroll")
     if(!cookie){
       return Cookies.set("textChannelsCachedScroll", JSON.stringify({
@@ -145,18 +160,19 @@ const ChannelMessages = ({
       setTimeout(() => {
         handleScroll()
         isScrolling = false
-      }, 1500)
+      }, 1000)
     } 
   }
 
+  // function used to remove the messages visually instantly for the user when he removes a message
   const removeMessageLocally = (messageId) => {
     setMessages(messages.filter(e => e.id !== messageId))
   }
 
+  // function that resets certain states and features when the user switches the channel
   const handleChannelSwitch = () => {
     socket.emit("leave_room", currentTextChannelId)
-    setShowStart(false)
-    setMessages([]) // resetting state
+    setMessages(null) // resetting state
     const cachedMessages = Cookies.get("cachedServerMessages")
     if(cachedMessages){
       var parsed = JSON.parse(cachedMessages)
@@ -171,6 +187,8 @@ const ChannelMessages = ({
     setMessage("")
   }
 
+  // function to store draft messages the the user has written, so if he leaves the conversation and comes back he doesn't
+  // need to rewrite the messages
   const handleCachedMessage = () => {
     const cachedMessages = Cookies.get("cachedServerMessages")
     if(cachedMessages){
@@ -181,17 +199,27 @@ const ChannelMessages = ({
     }
   }
 
+  const loadMore = async () => {
+    setLoadedMore(true)
+    setAmount(prevAmount => prevAmount + 10)
+  }
+
   return (
     <>
       <div id='server-messages-container'>
         <div id='server-content-container'>
           <div id='server-content-main'>
             <Topbar currentTextChannel={currentTextChannel}/>
-            <div id='server-messages-channel-messages' className='default-scrollbar' ref={messagesContainerRef}>
-              {isLoading && <LoadingMessages />}
-              {showStart && <EmptyChannel channelName={currentTextChannel}/>}
+            <div
+              id='server-messages-channel-messages'
+              className='default-scrollbar'
+              ref={messagesContainerRef}
+            >
+              {!messages && <MessagesSpinner />}
+              {(messages && !hasMore) && <EmptyChannel channelName={currentTextChannel} />}
+              {(messages && hasMore) && <MessagesLoader loadMore={loadMore} isFetching={isLoading} />}
               <Twemoji options={{ className: 'twemoji' }}>
-                {messages.length !== 0 && messages.map((e,i) => {
+                {messages && messages.length !== 0 && messages.map((e,i) => {
                   return <Message
                     key={i}
                     id={e.id}

@@ -372,11 +372,17 @@ module.exports = {
 
   fetchTextChannelMessages: async (req,res) => {
     try {
-      const { channelId, serverId } = req.body
+      const { channelId, serverId, amount } = req.body
+
+      const count = await prisma.serverMessages.count({
+        where: {
+          channelId
+        }
+      })
 
       const result = await prisma.serverMessages.findMany({
         where: {
-          channelId : channelId
+          channelId
         },
         include: {
           sender: {
@@ -396,12 +402,14 @@ module.exports = {
             }
           }
         },
+        skip: amount >= count ? 0 : count - amount,
+        take: amount,
         orderBy: {
           created_at: "asc"
         }
       })
 
-      res.send(result)
+      res.send({ messages: result, hasMore: count > amount })
     }
     catch(error){
       res.send(error)

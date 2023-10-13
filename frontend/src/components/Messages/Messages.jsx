@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { useNavigate } from "react-router-dom"
 import axios from 'axios';
 import Twemoji from "react-twemoji"
 import Cookies from 'js-cookie';
@@ -11,6 +10,7 @@ import Message from "./Message"
 import MessageInput from '../common/MessageInput/MessageInput';
 import ConversationStart from './ConversationStart/ConversationStart';
 import MessagesLoader from '../common/MessagesLoader/MessagesLoader';
+import MessagesSpinner from '../common/MessagesSpinner/MessagesSpinner';
 
 // styles
 import "./Messages.css"
@@ -39,10 +39,8 @@ const Messages = () => {
   const [amount,setAmount] = useState(15)
   const [hasMore,setHasMore] = useState(null)
   const [loadedMore,setLoadedMore] = useState(false)
-  const [appliedScroll,setAppliedScroll] = useState(false)
   const messagesEndRef = useRef(null)
   const messagesContainerRef = useRef(null)
-  const navigate = useNavigate()
   var isScrolling = false
 
   useEffect(() => {
@@ -55,7 +53,7 @@ const Messages = () => {
   }, [])
 
   useEffect(() => {
-    if(!isLoading){
+    if(messages){
       fetchMessages()
     }
   }, [amount])
@@ -65,6 +63,7 @@ const Messages = () => {
     window.addEventListener("beforeunload", handleUnload)
     messagesContainerRef.current.addEventListener("scroll", debounceScroll)
     joinConversation()
+    fetchMessages()
     handleCachedMessage()
     socket.emit("join_room", currentConversationId) // emitting a join room event to the socket server
     Cookies.set("conversationChosen", JSON.stringify(conversationChosen))
@@ -114,16 +113,10 @@ const Messages = () => {
       }, {
         withCredentials: true
       })
-      
-      // if user tries to enter a conversation he's not a part of it will redirect without fetching messages
-      if (response.data.authorized === false) {
-        navigate("/404")
-      }
-      else {
-        setMessages(response.data.DirectMessages)
-        setHasMore(response.data.hasMore)
-        setIsLoading(false)
-      }
+
+      setMessages(response.data.DirectMessages)
+      setHasMore(response.data.hasMore)
+      setIsLoading(false)
     }
     catch (error) {
       console.log(error)
@@ -145,7 +138,6 @@ const Messages = () => {
       // scroll to bottom
       messagesEndRef.current.scrollIntoView()
     }
-    setAppliedScroll(true)
   }
 
   const applyCachedScroll = () => {
@@ -181,11 +173,6 @@ const Messages = () => {
 
   // using debounce for scroll performance
   const debounceScroll = () => {
-    // if(hasMore) {
-    //   if(messagesContainerRef.current.scrollTop < 100){
-    //     loadMore()
-    //   }
-    // }
     if(!isScrolling){
       isScrolling = true
       setTimeout(() => {
@@ -199,14 +186,18 @@ const Messages = () => {
     messagesEndRef.current.scrollIntoView()
   }
 
+  // function used to remove the messages visually instantly for the user when he removes a message
   const removeMessageLocally = (messageId) => {
     setMessages(messages.filter(e => e.id !== messageId))
   }
 
+  // function that resets certain states and features when the user switches the conversation
   const handleContactSwitch = () => {
     socket.emit("leave_room", currentConversationId) // leaving socket room when changing conversations
     setMessages(null) // resetting messages state
     setHasMore(null)
+    setAmount(15)
+    setLoadedMore(false)
     const cachedMessages = Cookies.get("cachedDirectMessages")
     if (cachedMessages) {
       var parsed = JSON.parse(cachedMessages)
@@ -221,6 +212,8 @@ const Messages = () => {
     setMessage("")
   }
 
+  // function to store draft messages the the user has written, so if he leaves the conversation and comes back he doesn't
+  // need to rewrite the messages
   const handleCachedMessage = () => {
     const cachedMessages = Cookies.get("cachedDirectMessages")
     if (cachedMessages) {
@@ -289,9 +282,9 @@ const Messages = () => {
   }
 
   // function used for lazy loading messages
-  const loadMore = async () => {
+  const loadMore = () => {
     setLoadedMore(true)
-    setAmount(prevAmount => prevAmount + 5)
+    setAmount(prevAmount => prevAmount + 10)
   }
 
   return (
@@ -306,8 +299,8 @@ const Messages = () => {
           />
         </div>
 
-        <div style={{ opacity: appliedScroll ? "100%" : "0%" }} id='dm-messages-container' className='default-scrollbar' ref={messagesContainerRef}>
-          {/* {isLoading && <LoadingMessages />} */}
+        <div id='dm-messages-container' className='default-scrollbar' ref={messagesContainerRef}>
+          {!messages && <MessagesSpinner />}
           {(messages && !hasMore) && <ConversationStart username={conversationChosen.username} image={conversationChosen.image} />}
           {(messages && hasMore) && <MessagesLoader loadMore={loadMore} isFetching={isLoading} />}
           <Twemoji options={{ className: 'twemoji' }}>
