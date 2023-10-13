@@ -33,6 +33,7 @@ const Home = () => {
       <div id='home-container'>
         
         <Sidebar highlighted={currentServerId ? currentServerId : null} setSelected={setSelected}/>
+        
         {display !== "server" &&  <ContactsBar
           highlighted={currentConversationId ? currentConversationId : null}
           selected={selected}

@@ -50,7 +50,7 @@ const MessageInput = ({
 
   // function to send a message 
   const sendMessage = async () => {
-    if(message === "" || message.length > 255) return // if the no message was written, or too long nothing will happen
+    if(message === "" || message.length > 500) return // if the no message was written, or too long nothing will happen
     const storedMessage = message
     setMessage("")
     

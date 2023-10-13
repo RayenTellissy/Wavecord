@@ -112,6 +112,27 @@ module.exports = {
     }
   },
 
+  // function to edit an existing message
+  editMessage: async (req,res) => {
+    try {
+      const { messageId, newMessage } = req.body
+
+      await prisma.directMessages.update({
+        where: {
+          id: messageId
+        },
+        data: {
+          message: newMessage
+        }
+      })
+
+      res.send({ success: true })
+    }
+    catch(error){
+      res.send(error)
+    }
+  },
+
   // function to create a new conversation for 2 users
   createDM: async (req,res) => {
     try {

@@ -18,14 +18,15 @@
 #dm-conversation-container {
   display: flex;
   flex-direction: column;
-  flex: 1;
   background-color: #313338;
+  width: 100%;
 }
 
 #message-container {
   display: flex;
   flex-direction: row;
   padding: 15px;
+  position: relative;
 }
 
 #dm-username-message-container {
@@ -78,10 +79,6 @@
   height: 83%;
   overflow-y: auto;
   position: relative;
-}
-
-#dm-message-remove-button {
-  cursor: pointer;
 }
 
 .twemoji {

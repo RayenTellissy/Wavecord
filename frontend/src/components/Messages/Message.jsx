@@ -2,11 +2,12 @@ import React, { useContext, useState } from 'react';
 import axios from "axios"
 import moment from "moment/moment"
 import { Tooltip } from "@chakra-ui/react"
-import { BiSolidTrash } from "react-icons/bi"
 
 // components
 import Avatar from '../common/Avatar/Avatar';
 import { Context } from '../Context/Context';
+import MessageUtils from './MessageUtils/MessageUtils';
+import MessageEditor from '../common/MessageEditor/MessageEditor';
 
 import "./Messages.css"
 
@@ -24,7 +25,9 @@ const Message = ({
   usernameColor,
   conversation
 }) => {
-  const [isDeleting, setIsDeleting] = useState(false)
+  const [hovered,setHovered] = useState(false)
+  const [isDeleting,setIsDeleting] = useState(false)
+  const [isEditing,setIsEditing] = useState(false)
   const { socket } = useContext(Context)
 
   const deleteMessage = async () => {
@@ -56,8 +59,23 @@ const Message = ({
     }
   }
 
+  const editMessage = async (editedMessage) => {
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/conversations/editMessage`, {
+        newMessage: editedMessage,
+        messageId: id
+      }, {
+        withCredentials: true
+      })
+      console.log(response.data)
+    }
+    catch(error){
+      console.log(error)
+    }
+  }
+  
   return (
-    <div id='message-container'>
+    <div id='message-container' onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>
       <div>
         <Avatar image={image} />
       </div>
@@ -86,7 +104,13 @@ const Message = ({
         </div>
         {type === "TEXT"
           ?
-          <p id={isDeleting ? 'dm-message-message-deleting' : 'dm-message-message'} className='selectable'>{message}</p>
+          (isEditing ? <MessageEditor
+              messageId={id}
+              message={message}
+              callback={editMessage}
+            /> : <p id={isDeleting ? 'dm-message-message-deleting' : 'dm-message-message'} className='selectable'>
+            { message }
+          </p>)
           :
           <a className='dm-message-link' href={message} target="_blank" rel="noopener noreferrer">
             {message}
@@ -100,22 +124,11 @@ const Message = ({
           </a>
         }
       </div>
-      {isSender && <Tooltip
-        label="Delete Message"
-        placement='top'
-        color="white"
-        backgroundColor="black"
-        hasArrow={true}
-        arrowSize={3}
-        padding={3}
-        borderRadius={7}
-        openDelay={500}
-        fontFamily="GibsonMedium"
-      >
-        <div id='dm-message-remove-button' onClick={deleteMessage}>
-          <BiSolidTrash color='#da373c' size={25} />
-        </div>
-      </Tooltip>}
+      {isSender && <MessageUtils
+        hovered={hovered}
+        deleteMessage={deleteMessage}
+        editMessage={setIsEditing}
+      />}
     </div>
   );
 };

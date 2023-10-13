@@ -3,6 +3,7 @@ const {
   fetchConversations,
   fetchMessages,
   sendMessage,
+  editMessage,
   createDM,
   deleteMessage,
   joinConversation,
@@ -14,6 +15,7 @@ const authentication = require("../middleware/authentication")
 router.post("/fetch", authentication, fetchConversations)
 router.post("/messages", authentication, fetchMessages)
 router.post("/sendMessage", authentication, sendMessage)
+router.post("/editMessage", authentication, editMessage)
 router.post("/deleteMessage", authentication, deleteMessage)
 router.post("/createDM", authentication, createDM)
 
