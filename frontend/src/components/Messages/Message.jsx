@@ -46,7 +46,7 @@ const Message = ({
         }, {
           withCredentials: true
         })
-        return removeMessageLocally(id)
+        removeMessageLocally(id)
       }
       await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/deleteMessage`, {
         senderId,
@@ -64,13 +64,25 @@ const Message = ({
   const editMessage = async (editedMessage) => {
     try {
       editMessageLocally(id, editedMessage)
-      const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/conversations/editMessage`, {
-        newMessage: editedMessage,
-        messageId: id
+      socket.emit("edit_message", {
+        conversation,
+        messageId: id,
+        editedMessage
+      })
+      if(conversationType === "dm"){
+        return await axios.post(`${import.meta.env.VITE_SERVER_URL}/conversations/editMessage`, {
+          newMessage: editedMessage,
+          messageId: id
+        }, {
+          withCredentials: true
+        })
+      }
+      await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/editMessage`, {
+        messageId: id,
+        newMessage: editedMessage
       }, {
         withCredentials: true
       })
-      console.log(response.data)
     }
     catch(error){
       console.log(error)
@@ -131,7 +143,7 @@ const Message = ({
           </a>
         }
       </div>
-      {isSender && <MessageUtils
+      {isSender && type !== "LINK" && <MessageUtils
         hovered={hovered}
         deleteMessage={deleteMessage}
         editMessage={setIsEditing}

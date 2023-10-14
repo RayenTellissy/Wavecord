@@ -10,14 +10,14 @@ import { Context } from '../../Context/Context';
 import "./Roles.css"
 
 const Roles = ({ serverId }) => {
-  const { socket } = useContext(Context)
+  const { socket, status } = useContext(Context)
   const [roles,setRoles] = useState([])
   const [noRoles,setNoRoles] = useState([])
   const [offline,setOffline] = useState([])
 
   useEffect(() => {
     fetchRoles()
-  },[serverId])
+  }, [serverId, status])
 
   useEffect(() => {
     socket.on("receive_member_status", () => {
@@ -30,7 +30,7 @@ const Roles = ({ serverId }) => {
       socket.off("receive_member_status")
       socket.off("server_member_role_updated")
     }
-  },[socket])
+  }, [socket])
 
   const fetchRoles = async () => {
     try {

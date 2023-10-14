@@ -226,9 +226,11 @@ const Server = () => {
                 <div id='server-popover-name-icon'>
                   <p id='server-name'>{server.name}</p>
                   <div id='server-banner-icon-container'>
-                    {showDropdown
-                    ? <MdClose size={25}/>
-                    : <IoIosArrowDown size={25}/>}
+                    {!server.id ? <SimpleLoader /> : (
+                      showDropdown
+                      ? <MdClose size={25}/>
+                      : <IoIosArrowDown size={25}/>
+                    )}
                   </div>
                 </div>
               </button>

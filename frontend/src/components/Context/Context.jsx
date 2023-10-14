@@ -16,33 +16,33 @@ import { returnFriendsIds } from "../../utils/Helper/friendsHelpers";
 import sortConversations from "../../utils/Helper/sortConversations";
 
 export const ContextProvider = ({ children }) => {
-  const [user,setUser] = useState({ loggedIn: null })
-  const [socket,setSocket] = useState(null)
-  const [conversations,setConversations] = useState([])
-  const [constantConversations,setConstantConversations] = useState([])
-  const [conversationsLoading,setConversationsLoading] = useState(true)
-  const [conversationChosen,setConversationChosen] = useConversation()
-  const [micEnabled,setMicEnabled] = useMic()
-  const [deafened,setDeafened] = useState(false)
-  const [cameraEnabled,setCameraEnabled] = useState(false)
-  const [isSpeaking,setIsSpeaking] = useState(false)
-  const [selectScreenShare,setSelectScreenShare] = useState(false)
-  const [screenShareEnabled,setScreenShareEnabled] = useState(false)
-  const [connectionQuality,setConnectionQuality] = useState(null)
-  const [connectionState,setConnectionState] = useState("")
-  const [displayRoom,setDisplayRoom] = useState(false)
-  const [status,setStatus] = useState("")
-  const [currentVoiceChannelId,setCurrentVoiceChannelId] = useState("")
-  const [servers,setServers] = useState([])
-  const [token,setToken] = useState("") // voicechat token
-  const [serversLoading,setServersLoading] = useState(true)
-  const [directMessageNotifications,setDirectMessageNotifications] = useState(null)
-  const [friendRequestNotifications,setFriendRequestNotifications] = useState(null)
-  const [currentConversationId,setCurrentConversationId] = useState("")
-  const [currentServerId,setCurrentServerId] = useState("")
-  const [display,setDisplay] = useState("home")
-  const [selected,setSelected] = useState("Friends")
-  const [notificationsEnabled,setNotificationsEnabled] = useState({})
+  const [user, setUser] = useState({ loggedIn: null })
+  const [socket, setSocket] = useState(null)
+  const [conversations, setConversations] = useState([])
+  const [constantConversations, setConstantConversations] = useState([])
+  const [conversationsLoading, setConversationsLoading] = useState(true)
+  const [conversationChosen, setConversationChosen] = useConversation()
+  const [micEnabled, setMicEnabled] = useMic()
+  const [deafened, setDeafened] = useState(false)
+  const [cameraEnabled, setCameraEnabled] = useState(false)
+  const [isSpeaking, setIsSpeaking] = useState(false)
+  const [selectScreenShare, setSelectScreenShare] = useState(false)
+  const [screenShareEnabled, setScreenShareEnabled] = useState(false)
+  const [connectionQuality, setConnectionQuality] = useState(null)
+  const [connectionState, setConnectionState] = useState("")
+  const [displayRoom, setDisplayRoom] = useState(false)
+  const [status, setStatus] = useState("")
+  const [currentVoiceChannelId, setCurrentVoiceChannelId] = useState("")
+  const [servers, setServers] = useState([])
+  const [token, setToken] = useState("") // voicechat token
+  const [serversLoading, setServersLoading] = useState(true)
+  const [directMessageNotifications, setDirectMessageNotifications] = useState(null)
+  const [friendRequestNotifications, setFriendRequestNotifications] = useState(null)
+  const [currentConversationId, setCurrentConversationId] = useState("")
+  const [currentServerId, setCurrentServerId] = useState("")
+  const [display, setDisplay] = useState("home")
+  const [selected, setSelected] = useState("Friends")
+  const [notificationsEnabled, setNotificationsEnabled] = useState({})
   const conversationsRef = useRef(conversations)
 
   useEffect(() => {
@@ -50,16 +50,16 @@ export const ContextProvider = ({ children }) => {
     handleSocket()
     handleNotificationSettings()
     return () => window.removeEventListener("beforeunload", handleDisconnect)
-  },[])
+  }, [])
 
   useEffect(() => {
     conversationsRef.current = conversations
   }, [conversations])
 
   useEffect(() => {
-    if(socket){
+    if (socket) {
       // if status has not been set, invoke connection handler function
-      if(user.id){
+      if (user.id) {
         handleConnect()
         fetchServers()
         fetchConversations()
@@ -68,13 +68,13 @@ export const ContextProvider = ({ children }) => {
       }
       window.addEventListener("beforeunload", handleDisconnect)
     }
-  },[socket, user])
+  }, [socket, user])
 
   useEffect(() => {
-    if(!socket || !user.id || !notificationsEnabled) return
+    if (!socket || !user.id || !notificationsEnabled) return
     socket.off("receive_friend_request_notification")
     socket.off("receive_direct_message_notification")
-    if(notificationsEnabled.friendRequests && notificationsEnabled.desktop){
+    if (notificationsEnabled.friendRequests && notificationsEnabled.desktop) {
       socket.on("receive_friend_request_notification", data => {
         fetchFriendRequestNotifications()
         // activate notification sound
@@ -85,7 +85,7 @@ export const ContextProvider = ({ children }) => {
         })
       })
     }
-    if(notificationsEnabled.directMessages && notificationsEnabled.desktop){
+    if (notificationsEnabled.directMessages && notificationsEnabled.desktop) {
       socket.on("receive_direct_message_notification", data => {
         const navigateToConversation = () => {
           setConversationChosen({ id: data.id, username: data.username, image: data.image, status: data.status })
@@ -105,7 +105,7 @@ export const ContextProvider = ({ children }) => {
         setConversations(sortConversations(data.conversationId, conversationsRef.current))
       })
     }
-  },[socket, user, notificationsEnabled])
+  }, [socket, user, notificationsEnabled])
 
   // function to retrieve all the current user's information
   const authenticateSession = async () => {
@@ -115,7 +115,7 @@ export const ContextProvider = ({ children }) => {
       })
       setUser(response.data)
     }
-    catch(error){
+    catch (error) {
       console.log(error)
     }
   }
@@ -125,19 +125,19 @@ export const ContextProvider = ({ children }) => {
     const socket = await io.connect(import.meta.env.VITE_SOCKET_URL)
     setSocket(socket)
   }
-  
+
   // function to be invoked when user runs the app. (status handler)
   const handleConnect = async () => {
-    if(socket){
+    if (socket) {
       // session for notifications
       socket.emit("start_session", {
         id: user.id
       })
       // custom status is memorized to keep the status that the user chose persistent
       const customStatus = localStorage.getItem("customStatus")
-      if(customStatus){
+      if (customStatus) {
         // if custom status is set to offline don't inform other friends and mutual server members that the user is online
-        if(customStatus === "OFFLINE"){
+        if (customStatus === "OFFLINE") {
           setStatus("OFFLINE")
           await axios.put(`${import.meta.env.VITE_SERVER_URL}/users/setStatus`, {
             id: user.id,
@@ -146,7 +146,7 @@ export const ContextProvider = ({ children }) => {
             withCredentials: true
           })
         }
-        else if(customStatus !== "OFFLINE"){
+        else if (customStatus !== "OFFLINE") {
           setStatus(customStatus)
           await axios.put(`${import.meta.env.VITE_SERVER_URL}/users/setStatus`, {
             id: user.id,
@@ -154,8 +154,9 @@ export const ContextProvider = ({ children }) => {
           }, {
             withCredentials: true
           })
+          // we use a cookie here, because 
           const cachedServers = Cookies.get("cachedServers")
-          if(cachedServers){
+          if (cachedServers) {
             const serverRooms = returnServerIds(JSON.parse(cachedServers))
             // emitting a status change event to all servers that the user is in
             socket.emit("server_member_status_changed", {
@@ -175,7 +176,7 @@ export const ContextProvider = ({ children }) => {
           withCredentials: true
         })
         const cachedServers = Cookies.get("cachedServers")
-        if(cachedServers){
+        if (cachedServers) {
           const serverRooms = returnServerIds(JSON.parse(cachedServers))
           // emitting a status change event to all servers that the user is in
           socket.emit("server_member_status_changed", {
@@ -189,7 +190,7 @@ export const ContextProvider = ({ children }) => {
 
   // function to be invoked when the current user closes the app
   const handleDisconnect = () => {
-    if(Cookies.get("cachedFriends")){
+    if (Cookies.get("cachedFriends")) {
       socket.emit("update_friend_status", {
         friends: JSON.parse(Cookies.get("cachedFriends")),
         userId: user.id
@@ -206,8 +207,9 @@ export const ContextProvider = ({ children }) => {
       keepalive: true,
       credentials: "include"
     })
+    // we use a cookie here, because this function runs on "beforeunload", so 'servers' state cannot be used
     const cachedServers = Cookies.get("cachedServers")
-    if(cachedServers){
+    if (cachedServers) {
       const serverRooms = returnServerIds(JSON.parse(cachedServers))
       socket.emit("server_member_status_changed", {
         userId: user.id,
@@ -218,7 +220,7 @@ export const ContextProvider = ({ children }) => {
 
   // function that fetches all the servers the current user has joined
   const fetchServers = async () => {
-    try{
+    try {
       const servers = await axios.get(`${import.meta.env.VITE_SERVER_URL}/servers/fetchByUser/${user.id}`, {
         withCredentials: true
       })
@@ -226,14 +228,14 @@ export const ContextProvider = ({ children }) => {
       Cookies.set("cachedServers", JSON.stringify(servers.data))
       setServersLoading(false)
     }
-    catch(error){
+    catch (error) {
       console.log(error)
     }
   }
 
   // function that fetches all types of notifications that the user has
   const fetchNotifications = async () => {
-    if(!user.id) return
+    if (!user.id) return
     try {
       const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/notifications/fetchAllNotifications/${user.id}`, {
         withCredentials: true
@@ -241,7 +243,7 @@ export const ContextProvider = ({ children }) => {
       setDirectMessageNotifications(response.data.DirectMessageNotifications)
       setFriendRequestNotifications(response.data.FriendRequestNotifications)
     }
-    catch(error){
+    catch (error) {
       console.log(error)
     }
   }
@@ -254,7 +256,7 @@ export const ContextProvider = ({ children }) => {
       })
       setFriendRequestNotifications(response.data.requests)
     }
-    catch(error){
+    catch (error) {
       console.log(error)
     }
   }
@@ -267,14 +269,14 @@ export const ContextProvider = ({ children }) => {
       })
       setDirectMessageNotifications(response.data)
     }
-    catch(error){
+    catch (error) {
       console.log(error)
     }
   }
 
   const fetchConversations = async () => {
     try {
-      const conversations = await axios.post(`${import.meta.env.VITE_SERVER_URL}/conversations/fetch`,{
+      const conversations = await axios.post(`${import.meta.env.VITE_SERVER_URL}/conversations/fetch`, {
         id: user.id
       }, {
         withCredentials: true
@@ -283,35 +285,35 @@ export const ContextProvider = ({ children }) => {
       setConstantConversations(conversations.data)
       setConversationsLoading(false)
     }
-    catch(error){
+    catch (error) {
       console.log(error)
     }
   }
 
   const cacheFriends = async () => {
     try {
-      const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/friends/fetchAllFriends`,{
+      const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/friends/fetchAllFriends`, {
         id: user.id
       }, {
         withCredentials: true
       })
       Cookies.set("cachedFriends", JSON.stringify(returnFriendsIds(response.data)))
       // send a socket event to all friends to update the status of the current user instantly for them as well
-      if(Cookies.get("cachedFriends")){
+      if (Cookies.get("cachedFriends")) {
         socket.emit("update_friend_status", {
           friends: JSON.parse(Cookies.get("cachedFriends")),
           userId: user.id
         })
       }
     }
-    catch(error){
+    catch (error) {
       console.log(error)
     }
   }
 
   const handleNotificationSettings = () => {
     const notifications = localStorage.getItem("notificationsEnabled")
-    if(!notifications){
+    if (!notifications) {
       localStorage.setItem("notificationsEnabled", JSON.stringify({
         desktop: true,
         directMessages: true,

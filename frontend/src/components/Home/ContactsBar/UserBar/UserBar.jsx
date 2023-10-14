@@ -21,6 +21,9 @@ import "./UserBar.css"
 // sounds
 import LeaveRoom from "../../../../assets/sounds/LeaveRoom.mp3"
 
+// helper functions
+import returnServerIds from '../../../../utils/Helper/returnServerId';
+
 const UserBar = () => {
   const {
     user,
@@ -37,7 +40,8 @@ const UserBar = () => {
     status,
     setStatus,
     currentVoiceChannelId,
-    setCurrentVoiceChannelId
+    setCurrentVoiceChannelId,
+    servers
   } = useContext(Context)
   const navigate = useNavigate()
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -71,6 +75,9 @@ const UserBar = () => {
         userId: user.id
       })
     }
+    socket.emit("server_member_status_changed", {
+      serverRooms: returnServerIds(servers)
+    })
   }
 
   return (

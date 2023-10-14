@@ -67,9 +67,13 @@ const ChannelMessages = ({
     socket.on("receive_delete_message", data => {
       setMessages(prevMessages => prevMessages.filter(message => message.id !== data.messageId))
     })
+    socket.on("receive_edit_message", data => {
+      editMessageLocally(data.messageId, data.editedMessage)
+    })
     return () => {
       socket.off("receive_message")
       socket.off("receive_delete_message")
+      socket.off("receive_edit_message")
     }
   }, [socket])
 
@@ -200,6 +204,16 @@ const ChannelMessages = ({
     setAmount(prevAmount => prevAmount + 10)
   }
 
+  const editMessageLocally = (messageId, newMessage) => {
+    var messagesCopy = [...messages]
+    const index = messagesCopy.findIndex(e => e.id === messageId)
+    if(index !== -1){
+      messagesCopy[index].message = newMessage
+      messagesCopy[index].edited = true
+      setMessages(messagesCopy)
+    }
+  }
+
   return (
     <>
       <div id='server-messages-container'>
@@ -228,6 +242,7 @@ const ChannelMessages = ({
                     created_at={e.created_at}
                     conversationType="server"
                     removeMessageLocally={removeMessageLocally}
+                    editMessageLocally={editMessageLocally}
                     usernameColor={e.sender.UsersInServers[0]?.role?.color}
                     conversation={currentTextChannelId}
                   />

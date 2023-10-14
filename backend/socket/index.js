@@ -45,6 +45,10 @@ io.on("connection", socket => {
   socket.on("delete_message", data => {
     socket.to(data.conversation).emit("receive_delete_message", data)
   })
+
+  socket.on("edit_message", data => {
+    socket.to(data.conversation).emit("receive_edit_message", data)
+  })
   
   socket.on("open_server", data => {
     socket.join(data)

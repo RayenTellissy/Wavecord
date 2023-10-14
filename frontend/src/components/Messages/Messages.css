@@ -88,6 +88,8 @@
 .dm-message-link {
   color: #6da7ff;
   text-decoration: underline;
+  text-decoration-thickness: 1px;
+  font-family: GibsonLight;
 }
 
 #dm-message-wrapper {

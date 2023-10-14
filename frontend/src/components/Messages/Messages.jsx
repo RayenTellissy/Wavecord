@@ -39,6 +39,7 @@ const Messages = () => {
   const [amount,setAmount] = useState(15)
   const [hasMore,setHasMore] = useState(null)
   const [loadedMore,setLoadedMore] = useState(false)
+  const messagesRef = useRef(messages)
   const messagesEndRef = useRef(null)
   const messagesContainerRef = useRef(null)
   var isScrolling = false
@@ -86,13 +87,18 @@ const Messages = () => {
     socket.on("receive_delete_message", data => {
       setMessages(prevMessages => prevMessages.filter(message => message.id !== data.messageId))
     })
+    socket.on("receive_edit_message", data => {
+      editMessageLocally(data.messageId, data.editedMessage)
+    })
     return () => {
       socket.off("receive_message")
       socket.off("receive_delete_message")
+      socket.off("receive_edit_message")
     }
   }, [socket])
 
   useEffect(() => {
+    messagesRef.current = messages
     if(messages && messages.length){
       scrollToBottom()
     }
@@ -284,7 +290,7 @@ const Messages = () => {
   }
 
   const editMessageLocally = (messageId, newMessage) => {
-    var messagesCopy = [...messages]
+    var messagesCopy = [...messagesRef.current]
     const index = messagesCopy.findIndex(e => e.id === messageId)
     if(index !== -1){
       messagesCopy[index].message = newMessage

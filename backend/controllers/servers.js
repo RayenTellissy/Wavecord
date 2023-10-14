@@ -436,6 +436,27 @@ module.exports = {
     }
   },
 
+  editMessage: async (req,res) => {
+    try {
+      const { messageId, newMessage } = req.body
+
+      await prisma.serverMessages.update({
+        where: {
+          id: messageId
+        },
+        data: {
+          message: newMessage,
+          edited: true
+        }
+      })
+
+      res.send({ success: true })
+    }
+    catch(error){
+      res.send(error)
+    }
+  },
+
   fetchUsersByRoles: async (req,res) => {
     try {
       const { serverId } = req.params

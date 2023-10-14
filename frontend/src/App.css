@@ -21,6 +21,10 @@ textarea {
   resize: none !important;
 }
 
+img {
+  -webkit-user-drag: none;
+}
+
 @font-face {
   font-family: GibsonRegular;
   src: url("./assets/fonts/Gibson/Gibson-Regular.ttf");
@@ -55,7 +59,7 @@ textarea {
   border-radius: 10px;
 }
 
-p,
+p:not(.selectable),
 h1:not(.selectable) {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
