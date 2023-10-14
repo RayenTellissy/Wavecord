@@ -18,10 +18,12 @@ const Message = ({
   username,
   image,
   message,
+  edited,
   type,
   created_at,
   conversationType,
   removeMessageLocally,
+  editMessageLocally,
   usernameColor,
   conversation
 }) => {
@@ -61,6 +63,7 @@ const Message = ({
 
   const editMessage = async (editedMessage) => {
     try {
+      editMessageLocally(id, editedMessage)
       const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/conversations/editMessage`, {
         newMessage: editedMessage,
         messageId: id
@@ -108,9 +111,13 @@ const Message = ({
               messageId={id}
               message={message}
               callback={editMessage}
-            /> : <p id={isDeleting ? 'dm-message-message-deleting' : 'dm-message-message'} className='selectable'>
-            { message }
-          </p>)
+              endEditing={() => setIsEditing(false)}
+            /> : <div id='dm-message-wrapper'>
+              <p id={isDeleting ? 'dm-message-message-deleting' : 'dm-message-message'} className='selectable'>
+                { message }
+              </p>
+              {edited && <p id='dm-message-edited'>(edited)</p>}
+            </div>)
           :
           <a className='dm-message-link' href={message} target="_blank" rel="noopener noreferrer">
             {message}

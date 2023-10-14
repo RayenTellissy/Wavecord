@@ -1,0 +1,27 @@
+#message-editor-container {
+
+}
+
+#message-editor-input {
+  background-color: #383b41;
+  width: 100%;
+  height: 40px;
+  border-radius: 7px;
+  padding: 10px;
+  font-family: GibsonRegular;
+}
+
+.message-editor-action {
+  cursor: pointer;
+  color: #1b87d8;
+}
+
+.message-editor-action:hover {
+  text-decoration: underline;
+}
+
+#message-editor-buttons {
+  margin-top: 10px;
+  color: #a9b4bf;
+  font-family: GibsonRegular;
+}

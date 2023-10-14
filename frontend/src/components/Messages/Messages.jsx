@@ -283,6 +283,16 @@ const Messages = () => {
     setAmount(prevAmount => prevAmount + 10)
   }
 
+  const editMessageLocally = (messageId, newMessage) => {
+    var messagesCopy = [...messages]
+    const index = messagesCopy.findIndex(e => e.id === messageId)
+    if(index !== -1){
+      messagesCopy[index].message = newMessage
+      messagesCopy[index].edited = true
+      setMessages(messagesCopy)
+    }
+  }
+
   return (
     <div id='messages-container'>
       <div id='dm-conversation-container'>
@@ -309,10 +319,12 @@ const Messages = () => {
                 username={e.sender.username}
                 image={e.sender.image}
                 message={e.message}
+                edited={e.edited}
                 type={e.type}
                 created_at={e.created_at}
                 conversationType="dm"
                 removeMessageLocally={removeMessageLocally}
+                editMessageLocally={editMessageLocally}
                 conversation={currentConversationId}
               />
             })}

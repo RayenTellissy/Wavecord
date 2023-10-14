@@ -122,7 +122,8 @@ module.exports = {
           id: messageId
         },
         data: {
-          message: newMessage
+          message: newMessage,
+          edited: true
         }
       })
 

@@ -89,3 +89,16 @@
   color: #6da7ff;
   text-decoration: underline;
 }
+
+#dm-message-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 5px;
+}
+
+#dm-message-edited {
+  font-family: GibsonRegular;
+  font-size: 11px;
+  color: #828181;
+}

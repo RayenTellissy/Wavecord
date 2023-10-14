@@ -158,6 +158,7 @@ model DirectMessages {
   conversation   Conversations @relation(fields: [conversationId], references: [id])
   conversationId String
   message        String
+  edited         Boolean       @default(false)
   type           MessageType   @default(TEXT)
   created_at     DateTime      @default(now())
 }
@@ -169,6 +170,7 @@ model ServerMessages {
   channel    Text_channels @relation(fields: [channelId], references: [id])
   channelId  String
   message    String
+  edited     Boolean       @default(false)
   type       MessageType   @default(TEXT)
   created_at DateTime      @default(now())
 }
