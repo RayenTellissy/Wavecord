@@ -1,5 +1,4 @@
 import React, { useContext, useState } from 'react';
-import { useNavigate } from "react-router-dom"
 import { FaCamera } from 'react-icons/fa';
 import BeatLoader from "react-spinners/BeatLoader"
 import {
@@ -18,13 +17,12 @@ import { storage } from '../../../../../Firebase/FirebaseApp';
 import { Context } from "../../../../Context/Context"
 
 const Create = ({ setScreen, onClose }) => {
-  const { user, setCurrentServerId, setDisplay } = useContext(Context)
-  const [isLoading, setIsLoading] = useState(false)
-  const [image, setImage] = useState(null)
-  const [createDisabled, setCreateDisabled] = useState(false)
-  const [serverName, setServerName] = useState(`${user.username}'s Server`)
+  const { user,setCurrentServerId, setDisplay } = useContext(Context)
+  const [isLoading,setIsLoading] = useState(false)
+  const [image,setImage] = useState(null)
+  const [createDisabled,setCreateDisabled] = useState(false)
+  const [serverName,setServerName] = useState(`${user.username}'s Server`)
   const toast = useToast()
-  const navigate = useNavigate()
 
   const importImage = (e) => {
     const file = e.target.files[0]

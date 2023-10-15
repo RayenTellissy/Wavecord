@@ -16,33 +16,33 @@ import { returnFriendsIds } from "../../utils/Helper/friendsHelpers";
 import sortConversations from "../../utils/Helper/sortConversations";
 
 export const ContextProvider = ({ children }) => {
-  const [user, setUser] = useState({ loggedIn: null })
-  const [socket, setSocket] = useState(null)
-  const [conversations, setConversations] = useState([])
-  const [constantConversations, setConstantConversations] = useState([])
-  const [conversationsLoading, setConversationsLoading] = useState(true)
-  const [conversationChosen, setConversationChosen] = useConversation()
-  const [micEnabled, setMicEnabled] = useMic()
-  const [deafened, setDeafened] = useState(false)
-  const [cameraEnabled, setCameraEnabled] = useState(false)
-  const [isSpeaking, setIsSpeaking] = useState(false)
-  const [selectScreenShare, setSelectScreenShare] = useState(false)
-  const [screenShareEnabled, setScreenShareEnabled] = useState(false)
-  const [connectionQuality, setConnectionQuality] = useState(null)
-  const [connectionState, setConnectionState] = useState("")
-  const [displayRoom, setDisplayRoom] = useState(false)
-  const [status, setStatus] = useState("")
-  const [currentVoiceChannelId, setCurrentVoiceChannelId] = useState("")
-  const [servers, setServers] = useState([])
-  const [token, setToken] = useState("") // voicechat token
-  const [serversLoading, setServersLoading] = useState(true)
-  const [directMessageNotifications, setDirectMessageNotifications] = useState(null)
-  const [friendRequestNotifications, setFriendRequestNotifications] = useState(null)
-  const [currentConversationId, setCurrentConversationId] = useState("")
-  const [currentServerId, setCurrentServerId] = useState("")
-  const [display, setDisplay] = useState("home")
-  const [selected, setSelected] = useState("Friends")
-  const [notificationsEnabled, setNotificationsEnabled] = useState({})
+  const [user,setUser] = useState({ loggedIn: null })
+  const [socket,setSocket] = useState(null)
+  const [conversations,setConversations] = useState([])
+  const [constantConversations,setConstantConversations] = useState([])
+  const [conversationsLoading,setConversationsLoading] = useState(true)
+  const [conversationChosen,setConversationChosen] = useConversation()
+  const [micEnabled,setMicEnabled] = useMic()
+  const [deafened,setDeafened] = useState(false)
+  const [cameraEnabled,setCameraEnabled] = useState(false)
+  const [isSpeaking,setIsSpeaking] = useState(false)
+  const [selectScreenShare,setSelectScreenShare] = useState(false)
+  const [screenShareEnabled,setScreenShareEnabled] = useState(false)
+  const [connectionQuality,setConnectionQuality] = useState(null)
+  const [connectionState,setConnectionState] = useState("")
+  const [displayRoom,setDisplayRoom] = useState(false)
+  const [status,setStatus] = useState("")
+  const [currentVoiceChannelId,setCurrentVoiceChannelId] = useState("")
+  const [servers,setServers] = useState([])
+  const [token,setToken] = useState("") // voicechat token
+  const [serversLoading,setServersLoading] = useState(true)
+  const [directMessageNotifications,setDirectMessageNotifications] = useState(null)
+  const [friendRequestNotifications,setFriendRequestNotifications] = useState(null)
+  const [currentConversationId,setCurrentConversationId] = useState("")
+  const [currentServerId,setCurrentServerId] = useState("")
+  const [display,setDisplay] = useState("home")
+  const [selected,setSelected] = useState("Friends")
+  const [notificationsEnabled,setNotificationsEnabled] = useState({})
   const conversationsRef = useRef(conversations)
 
   useEffect(() => {
@@ -128,9 +128,7 @@ export const ContextProvider = ({ children }) => {
 
   // function to be invoked when user runs the app. (status handler)
   const handleConnect = async () => {
-    console.log(1)
     if (socket) {
-      console.log(2)
       // session for notifications
       socket.emit("start_session", {
         id: user.id
@@ -180,7 +178,6 @@ export const ContextProvider = ({ children }) => {
         const cachedServers = Cookies.get("cachedServers")
         if (cachedServers) {
           const serverRooms = returnServerIds(JSON.parse(cachedServers))
-          console.log(serverRooms)
           // emitting a status change event to all servers that the user is in
           socket.emit("server_member_status_changed", {
             userId: user.id,

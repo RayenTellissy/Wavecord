@@ -19,6 +19,12 @@
 
 #user-settings-myaccount-username-image-container {
   display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#user-settings-myaccount-top-row {
+  display: flex;
   flex-direction: row;
   align-items: center;
 }
@@ -27,6 +33,23 @@
   font-family: GibsonMedium;
   font-size: 23px;
   margin-left: 20px;
+}
+
+#user-settings-myaccount-change-image {
+  background-color: #5865f2;
+  height: 40px;
+  padding: 0px 17px;
+  border-radius: 4px;
+  font-family: GibsonRegular;
+  transition: .2s ease;
+}
+
+#user-settings-myaccount-change-image:hover {
+  background-color: #4752c4;
+}
+
+#user-settings-myaccount-change-image:active {
+  background-color: #3c45a5;
 }
 
 #user-settings-myaccount-image-container {

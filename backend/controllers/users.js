@@ -381,6 +381,26 @@ module.exports = {
     }
   },
 
+  changeAvatar: async (req,res) => {
+    try {
+      const { id, imageUrl } = req.body
+
+      await prisma.users.update({
+        where: {
+          id
+        },
+        data: {
+          image: imageUrl
+        }
+      })
+
+      res.send({ success: true })
+    }
+    catch(error){
+      res.send(error)
+    }
+  },
+
   removeAccount: async (req,res) => {
     try {
       const { id, email, password } = req.body

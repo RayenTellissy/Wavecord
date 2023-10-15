@@ -1,0 +1,80 @@
+#change-image-header {
+  display: flex;
+  justify-content: center;
+  font-family: GibsonMedium;
+  font-size: 25px;
+}
+
+#change-image-body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+#change-image-upload-text {
+  font-family: GibsonRegular;
+  font-size: 15px;
+}
+
+#change-image-button {
+  padding: 50px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#change-image-input {
+  display: none;
+}
+
+#change-image-footer {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
+
+#change-image-preview {
+  height: 250px;
+  width: 250px;
+  border-radius: 7px;
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.7);
+}
+
+#change-image-cancel-button {
+  font-family: GibsonRegular;
+}
+
+#change-image-cancel-button:hover {
+  text-decoration: underline;
+}
+
+#change-image-upload-button {
+  font-family: GibsonRegular;
+  background-color: #5865f2;
+  transition: .2s ease;
+  height: 40px;
+  width: 100px;
+  border-radius: 4px;
+}
+
+#change-image-upload-button:hover {
+  background-color: #4752c4;
+}
+
+#change-image-upload-button:active {
+  background-color: #3c45a5;
+}
+
+#change-image-upload-button-disabled {
+  font-family: GibsonRegular;
+  background-color: #414891;
+  color: #949396;
+  transition: .2s ease;
+  height: 40px;
+  width: 100px;
+  border-radius: 4px;
+  cursor: not-allowed;
+}

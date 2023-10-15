@@ -7,6 +7,7 @@ import ChangeUsernameModal from './ChangeUsernameModal/ChangeUsernameModal';
 import ChangePasswordModal from './ChangePasswordModal/ChangePasswordModal';
 import DeleteAccountModal from './DeleteAccountModal/DeleteAccountModal';
 import OwnsServerModal from './OwnsServerModal/OwnsServerModal';
+import ChangeImageModal from './ChangeImageModal/ChangeImageModal';
 
 // styles
 import "./MyAccount.css"
@@ -16,6 +17,7 @@ const MyAccount = () => {
   const { isOpen: passisOpen, onOpen: passOnOpen, onClose: passOnClose } = useDisclosure()
   const { isOpen: deleteIsOpen, onOpen: deleteOnOpen, onClose: deleteOnClose } = useDisclosure()
   const { isOpen: ownsIsOpen, onOpen: ownsOnOpen, onClose: ownsOnClose } = useDisclosure()
+  const { isOpen: uploadIsOpen, onOpen: uploadOnOpen, onClose: uploadOnClose } = useDisclosure()
   const { user, setUser, status } = useContext(Context)
   const [emailHidden,setEmailHidden] = useState(true)
   
@@ -35,11 +37,15 @@ const MyAccount = () => {
       <p id='user-settings-myaccount-title'>My Account</p>
       <div id='user-settings-myaccount-holder'>
         <div id='user-settings-myaccount-username-image-container'>
-          <div id='user-settings-myaccount-image-container'>
-            <img id='user-settings-myaccount-image' src={user.image} />
-            <div id='user-settings-myaccount-status' style={{ backgroundColor: status === "ONLINE" ? "#24A35B" : (status === "BUSY" ? "#E33B42" : "#A0A0A0") }}/>
+          <div id='user-settings-myaccount-top-row'>
+            <div id='user-settings-myaccount-image-container'>
+              <img id='user-settings-myaccount-image' src={user.image} />
+              <div id='user-settings-myaccount-status' style={{ backgroundColor: status === "ONLINE" ? "#24A35B" : (status === "BUSY" ? "#E33B42" : "#A0A0A0") }}/>
+            </div>
+            <p id='user-settings-myaccount-username'>{ user.username }</p>
           </div>
-          <p id='user-settings-myaccount-username'>{ user.username }</p>
+          <button id='user-settings-myaccount-change-image' onClick={uploadOnOpen}>Edit User Image</button>
+          <ChangeImageModal isOpen={uploadIsOpen} onClose={uploadOnClose}/>
         </div>
         <div id='user-settings-myaccount-all-information'>
           <div id='user-settings-myaccount-all-information-editor'>

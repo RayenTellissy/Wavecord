@@ -511,6 +511,11 @@ module.exports = {
         select: {
           user: true,
           role: true
+        },
+        orderBy: {
+          user: {
+            username: "asc"
+          }
         }
       })
 
