@@ -1,0 +1,46 @@
+#friend-confirmation-modal-header {
+  font-family: GibsonMedium;
+}
+
+#friend-confirmation-modal-body {
+  font-family: GibsonRegular;
+  margin-bottom: 20px;
+  color: #cacfd1;
+}
+
+.friend-confirmation-username {
+  font-weight: bolder;
+  font-family: GibsonRegular;
+  color: #d8dcde;
+}
+
+#friend-confirmation-modal-footer {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
+
+#friend-confirmation-modal-cancel {
+  font-family: GibsonRegular;
+}
+
+#friend-confirmation-modal-cancel:hover {
+  text-decoration: underline;
+}
+
+#friend-confirmation-modal-submit {
+  background-color: #da363d;
+  transition: .2s ease;
+  height: 40px;
+  width: 150px;
+  border-radius: 4px;
+  font-family: GibsonRegular;
+}
+
+#friend-confirmation-modal-submit:hover {
+  background-color: #a12828;
+}
+
+#friend-confirmation-modal-submit:active {
+  background-color: #8f2022;
+}

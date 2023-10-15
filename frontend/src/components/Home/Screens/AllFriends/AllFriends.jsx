@@ -65,13 +65,13 @@ const AllFriends = ({ query, setShowSearch }) => {
             username={e.users[0].username}
             image={e.users[0].image}
             status={e.users[0].status}
+            isUpdating={isUpdating}
             setIsUpdating={setIsUpdating}
             fetchUsers={fetchUsers}
             toast={toast}
             conversationId={e.conversation ? e.conversation.id : null}
           />
         })}
-        {isUpdating && <Loader/>}
       </div>
     </div>
   );

@@ -35,7 +35,8 @@ const MessageInput = ({
   setMessages,
   conversationType,
   channelId,
-  roleColor
+  roleColor,
+  blockedConversation
 }) => {
   const { socket, conversations, setConversations, conversationChosen } = useContext(Context)
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -47,6 +48,10 @@ const MessageInput = ({
   useEffect(() => {
     inputRef.current.focus()
   },[channelId])
+
+  // useEffect(() => {
+  //   console.log(blockedConversation)
+  // }, [blockedConversation])
 
   // function to send a message 
   const sendMessage = async () => {
@@ -261,19 +266,24 @@ const MessageInput = ({
       <div id='emoji-picker-container'>
         {showEmoji && <Emoji onEmojiClick={emoji => setMessage(prevMessage => `${prevMessage}${emoji.emoji}`)}/>}
       </div>
-      <button id='message-input-emoji-picker' onClick={() => setShowEmoji(!showEmoji)}>
-        <BsEmojiSmileFill size={35}/>
-      </button>
+      {!blockedConversation && <>
+        <button id='message-input-emoji-picker' onClick={() => setShowEmoji(!showEmoji)}>
+          <BsEmojiSmileFill size={35}/>
+        </button>
 
-      <label id='message-input-link-label' htmlFor='message-input-link-input'>
-        <BsLink45Deg size={40}/>
-      </label>
-      <input id="message-input-link-input" type='file' onChange={importImage} />
+        <label id='message-input-link-label' htmlFor='message-input-link-input'>
+          <BsLink45Deg size={40}/>
+        </label>
+        <input id="message-input-link-input" type='file' onChange={importImage} />
+      </>}
 
       <input id='dm-conversation-input'
         type='text'
         spellCheck={false}
-        placeholder={`Message ${conversationType === "dm" ? "@" : "#"}${conversationName}`}
+        placeholder={blockedConversation === null ? "" : (blockedConversation
+          ? 'You cannot send messages to this user'
+          :`Message ${conversationType === "dm" ? "@" : "#"}${conversationName}`
+        )}
         onChange={e => setMessage(e.target.value)}
         value={message}
         onKeyDown={e => {
@@ -281,6 +291,7 @@ const MessageInput = ({
         }}
         autoComplete='off'
         ref={inputRef}
+        disabled={blockedConversation === null || blockedConversation}
       />
 
       <Modal isOpen={isOpen} onClose={onClose}>

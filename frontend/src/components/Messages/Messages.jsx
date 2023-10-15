@@ -39,6 +39,7 @@ const Messages = () => {
   const [amount,setAmount] = useState(15)
   const [hasMore,setHasMore] = useState(null)
   const [loadedMore,setLoadedMore] = useState(false)
+  const [blockedConversation,setBlockedConversation] = useState(null)
   const messagesRef = useRef(messages)
   const messagesEndRef = useRef(null)
   const messagesContainerRef = useRef(null)
@@ -58,6 +59,10 @@ const Messages = () => {
       fetchMessages()
     }
   }, [amount])
+
+  useEffect(() => {
+    console.log(blockedConversation)
+  }, [blockedConversation])
   
   // handling conversation switching
   useEffect(() => {
@@ -119,9 +124,9 @@ const Messages = () => {
       }, {
         withCredentials: true
       })
-
       setMessages(response.data.DirectMessages)
       setHasMore(response.data.hasMore)
+      setBlockedConversation(response.data.blockedConversation)
       setIsLoading(false)
     }
     catch (error) {
@@ -347,6 +352,7 @@ const Messages = () => {
             setMessages={setMessages}
             conversationType="dm"
             user={user}
+            blockedConversation={blockedConversation}
           />
         </div>
 

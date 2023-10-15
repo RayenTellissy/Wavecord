@@ -371,7 +371,7 @@ module.exports = {
     try {
       const { blocker, blocked } = req.body
 
-      const rowId = await prisma.friends.findFirst({
+      const row = await prisma.friends.findFirst({
         where: {
           AND: [
             {
@@ -389,17 +389,23 @@ module.exports = {
               }
             }
           ]
-        },
-        select: {
-          id: true
         }
       })
       
-      if(rowId){
+      if(row.id){
         // removing the 2 users from friends
         await prisma.friends.delete({
           where: {
-            id: rowId.id
+            id: row.id
+          }
+        })
+        console.log(row)
+        await prisma.conversations.update({
+          where: {
+            id: row.conversationId
+          },
+          data: {
+            blockedConversation: true
           }
         })
       }
@@ -422,23 +428,54 @@ module.exports = {
     try {
       const { blocker, blocked } = req.body
 
-      const rowId = await prisma.blockedUsers.findFirst({
+      const row = await prisma.blockedUsers.findFirst({
         where: {
           blockedId: blocker,
           blockedId: blocked
         },
-        select: {
-          id: true
-        }
+        
       })
-
-      const result = await prisma.blockedUsers.delete({
+      
+      await prisma.blockedUsers.delete({
         where: {
-          id: rowId.id
+          id: row.id
         }
       })
 
-      res.send(result)
+      const hasConversation = await prisma.conversations.findFirst({
+        where: {
+          AND: [
+            {
+              users: {
+                some: {
+                  id: blocker
+                }
+              }
+            },
+            {
+              users: {
+                some: {
+                  id: blocked
+                }
+              }
+            }
+          ]
+        }
+      })
+
+      // setting blockedConversation to false
+      if(hasConversation){
+        await prisma.conversations.update({
+          where: {
+            id: hasConversation.id
+          },
+          data: {
+            blockedConversation: false
+          }
+        })
+      }
+
+      res.send({ success: true })
     }
     catch(error){
       res.send(error)

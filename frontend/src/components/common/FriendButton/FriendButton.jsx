@@ -1,18 +1,33 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import axios from 'axios';
 import { BiBlock } from "react-icons/bi"
-import { Tooltip } from '@chakra-ui/react';
+import { Tooltip, useDisclosure } from '@chakra-ui/react';
 import { FaUserMinus } from "react-icons/fa"
 
 // components
 import { Context } from '../../Context/Context';
 import Avatar from '../Avatar/Avatar';
+import ConfirmationModal from './ConfirmationModal/ConfirmationModal';
 
 // styles
 import "./FriendButton.css"
 
-const FriendButton = ({ id, username, image, status, setIsUpdating, fetchUsers, toast, conversationId }) => {
-  const { user, setConversationChosen, setCurrentConversationId, setDisplay } = useContext(Context)
+const FriendButton = ({ id, username, image, status, isUpdating, setIsUpdating, fetchUsers, toast, conversationId }) => {
+  const { user, setConversationChosen, setCurrentConversationId, setDisplay, setSelected } = useContext(Context)
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const [action,setAction] = useState(null)
+
+  const openUnfriend = (e) => {
+    e.stopPropagation() // using stopPropagation so the container div doesnt open (navigates to conversation)
+    setAction("unfriend")
+    onOpen()
+  }
+  
+  const openBlock = (e) => {
+    e.stopPropagation() // using stopPropagation so the container div doesnt open (navigates to conversation)
+    setAction("block")
+    onOpen()
+  }
 
   const removeFriend = async () => {
     setIsUpdating(true)
@@ -28,7 +43,7 @@ const FriendButton = ({ id, username, image, status, setIsUpdating, fetchUsers, 
       toast({
         description: "Friend removed.",
         status: "success",
-        duration: 2000
+        duration: 1500
       })
     }
     catch (error) {
@@ -50,7 +65,7 @@ const FriendButton = ({ id, username, image, status, setIsUpdating, fetchUsers, 
       toast({
         description: "Friend blocked.",
         status: "success",
-        duration: 2000
+        duration: 1500
       })
     }
     catch (error) {
@@ -59,6 +74,7 @@ const FriendButton = ({ id, username, image, status, setIsUpdating, fetchUsers, 
   }
 
   const handleNavigation = async () => {
+    setSelected("")
     setConversationChosen({
       id,
       username,
@@ -81,6 +97,15 @@ const FriendButton = ({ id, username, image, status, setIsUpdating, fetchUsers, 
 
   return (
     <div id='friend-button-main-div'>
+      <ConfirmationModal
+        action={action}
+        isOpen={isOpen}
+        onClose={onClose}
+        username={username}
+        removeFriend={removeFriend}
+        blockUser={blockUser}
+        isUpdating={isUpdating}
+      />
       <div id='friend-button-container' onClick={handleNavigation}>
         <div id='friend-button-details-container'>
           <Avatar image={image} status={status} />
@@ -103,9 +128,8 @@ const FriendButton = ({ id, username, image, status, setIsUpdating, fetchUsers, 
             padding={3}
             borderRadius={7}
             openDelay={500}
-            onClick={removeFriend}
           >
-            <button className='friend-button-remove-friend' onClick={removeFriend}>
+            <button className='friend-button-remove-friend' onClick={openUnfriend}>
               <FaUserMinus size={35} />
             </button>
           </Tooltip>
@@ -122,7 +146,7 @@ const FriendButton = ({ id, username, image, status, setIsUpdating, fetchUsers, 
             borderRadius={7}
             openDelay={500}
           >
-            <button className='friend-button-remove-friend' onClick={blockUser}>
+            <button className='friend-button-remove-friend' onClick={openBlock}>
               <BiBlock size={35} />
             </button>
           </Tooltip>

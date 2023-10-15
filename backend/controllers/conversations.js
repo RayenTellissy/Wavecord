@@ -73,7 +73,11 @@ module.exports = {
         }
       })
 
-      res.send({ DirectMessages: result.DirectMessages, hasMore: count > amount })
+      res.send({
+        DirectMessages: result.DirectMessages,
+        hasMore: count > amount,
+        blockedConversation: result.blockedConversation
+      })
     }
     catch(error){
       res.send(error)

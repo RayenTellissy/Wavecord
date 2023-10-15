@@ -147,6 +147,7 @@ model Conversations {
   type                       ConversationType
   DirectMessages             DirectMessages[]
   Friends                    Friends?
+  blockedConversation        Boolean                      @default(false)
   updated_at                 DateTime                     @updatedAt
   DirectMessageNotifications DirectMessageNotifications[]
 }
