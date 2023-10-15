@@ -23,7 +23,8 @@ const ChannelMessages = ({
   serverId,
   currentTextChannel,
   currentTextChannelId,
-  roleColor
+  roleColor,
+  fetchServerData
 }) => {
   const { user, socket } = useContext(Context)
   const [messages,setMessages] = useState(null)
@@ -263,7 +264,7 @@ const ChannelMessages = ({
               />
             </div>
           </div>
-          <Roles serverId={serverId}/>
+          <Roles serverId={serverId} fetchServerData={fetchServerData}/>
         </div>
       </div>
     </>

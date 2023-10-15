@@ -5,6 +5,7 @@ import axios from 'axios';
 import Role from './Role';
 import Avatar from '../../common/Avatar/Avatar';
 import { Context } from '../../Context/Context';
+import SimpleLoader from '../../common/SimpleLoader/SimpleLoader';
 
 // helper functions
 import updateUserStatusInServer from '../../../utils/Helper/updateUserStatusInServer';
@@ -12,11 +13,12 @@ import updateUserStatusInServer from '../../../utils/Helper/updateUserStatusInSe
 // styles
 import "./Roles.css"
 
-const Roles = ({ serverId }) => {
+const Roles = ({ serverId, fetchServerData }) => {
   const { user, socket, status } = useContext(Context)
   const [roles,setRoles] = useState([])
   const [noRoles,setNoRoles] = useState([])
   const [offline,setOffline] = useState([])
+  const [isLoading,setIsLoading] = useState(null)
 
   useEffect(() => {
     fetchRoles()
@@ -30,8 +32,11 @@ const Roles = ({ serverId }) => {
     socket.on("receive_member_status", () => {
       fetchRoles()
     })
-    socket.on("receive_member_role_updated", () => {
+    socket.on("receive_member_role_updated", data => {
       fetchRoles()
+      if(data.id === user.id){
+        fetchServerData()
+      }
     })
     return () => {
       socket.off("receive_member_status")
@@ -41,12 +46,14 @@ const Roles = ({ serverId }) => {
 
   const fetchRoles = async () => {
     try {
+      setIsLoading(true)
       const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/servers/fetchUsersByRoles/${serverId}`, {
         withCredentials: true
       })
       setRoles(response.data.withRole)
       setNoRoles(response.data.noRole)
       setOffline(response.data.offline)
+      setIsLoading(false)
     }
     catch(error) {
       console.log(error)
@@ -56,6 +63,7 @@ const Roles = ({ serverId }) => {
   return (
     <div id='server-roles-bar-container' className='default-scrollbar'>
       <div id='server-roles-bar-main-container'>
+      {isLoading ? <SimpleLoader /> : <>
         {roles.map((e, i) => {
           return <Role key={i} roleName={e.name} roleColor={e.color} users={e.UsersInServers} />
         })}
@@ -75,6 +83,7 @@ const Roles = ({ serverId }) => {
             </button>
           })}
         </div>
+      </>}
       </div>
     </div>
   );

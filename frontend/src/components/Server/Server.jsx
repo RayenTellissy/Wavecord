@@ -70,6 +70,7 @@ const Server = () => {
   const [createDisabled,setCreateDisabled] = useState(true)
   const [showDropdown,setShowDropdown] = useState(false)
   const [isLoading,setisLoading] = useState(false)
+  const [isFetching,setIsFetching] = useState(null)
   const [role,setRole] = useState({})
   const [playJoin] = useSound(JoinRoom, { volume: 0.2 })
   const [playLeave] = useSound(LeaveRoom, { volume: 0.1 })
@@ -105,6 +106,7 @@ const Server = () => {
   
   const fetchData = async () => {
     try {
+      setIsFetching(true)
       const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/fetch`,{
         serverId: currentServerId,
         userId: user.id
@@ -113,6 +115,7 @@ const Server = () => {
       })
       setServer(response.data.server)
       setRole(response.data.role)
+      setIsFetching(false)
     }
     catch(error){
       console.log(error)
@@ -135,7 +138,8 @@ const Server = () => {
         await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/createTextChannel`,{
           name: modalChannelName,
           categoryId: categoryIdChosen,
-          serverId: currentServerId
+          serverId: currentServerId,
+          isPrivate: privateChecked
         }, {
           withCredentials: true
         })
@@ -144,7 +148,8 @@ const Server = () => {
         await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/createVoiceChannel`,{
           name: modalChannelName,
           categoryId: categoryIdChosen,
-          serverId: currentServerId
+          serverId: currentServerId,
+          isPrivate: privateChecked
         }, {
           withCredentials: true
         })
@@ -201,6 +206,7 @@ const Server = () => {
     }
   }
 
+  // this functions sets the current channel to the last channel visited by the user (saved in storage)
   const handleDefaultChannel = () => {
     if(!currentTextChannelId && server.categories && server.categories[0].Text_channels){
       const channel = server.categories[0].Text_channels[0]
@@ -224,55 +230,58 @@ const Server = () => {
             <PopoverTrigger>
               <button id='server-name-container'>
                 <div id='server-popover-name-icon'>
-                  <p id='server-name'>{server.name}</p>
-                  <div id='server-banner-icon-container'>
-                    {!server.id ? <SimpleLoader /> : (
-                      showDropdown
-                      ? <MdClose size={25}/>
-                      : <IoIosArrowDown size={25}/>
-                    )}
-                  </div>
+                  {isFetching ? <SimpleLoader /> : <>
+                    <p id='server-name'>{server.name}</p>
+                    <div id='server-banner-icon-container'>
+                      {showDropdown
+                        ? <MdClose size={25}/>
+                        : <IoIosArrowDown size={25}/>}
+                    </div>
+                  </>}
                 </div>
               </button>
             </PopoverTrigger>
             <PopoverContent bgColor="#111214" width={280}>
               <PopoverBody>
-                <AllButtons
+                {isFetching ? <SimpleLoader /> : <AllButtons
                   ownerId={server.ownerId}
                   onOpen={onOpenServerLink}
                   user={user}
                   server={server}
                   fetchData={fetchData}
                   isAdmin={role ? role.isAdmin : false}
-                />
+                />}
               </PopoverBody>
             </PopoverContent>
           </Popover>
           <div id='server-category-main-container'>
-            {!server.categories && <SimpleLoader />}
-            {server.categories && server.categories.map((e,i) => {
-              return <Category
-                key={i}
-                isAdmin={role ? role.isAdmin : false}
-                ownerId={server.ownerId}
-                user={user}
-                id={e.id}
-                name={e.name}
-                text={e.Text_channels}
-                voice={e.Voice_channels}
-                onOpen={onOpen}
-                serverId={currentServerId}
-                setCategoryChosen={setCategoryChosen}
-                setCategoryIdChosen={setCategoryIdChosen}
-                setCurrentTextChannel={setCurrentTextChannel}
-                currentTextChannelId={currentTextChannelId}
-                setCurrentTextChannelId={setCurrentTextChannelId}
-                hoveredTextChannelId={hoveredTextChannelId}
-                setHoveredTextChannelId={setHoveredTextChannelId}
-                hoveredVoiceChannelId={hoveredVoiceChannelId}
-                setHoveredVoiceChannelId={setHoveredVoiceChannelId}
-              />
-            })}
+            {isFetching ? <div id='server-categories-loader'><SimpleLoader /></div> : (
+              <>
+                {server.categories && server.categories.map((e,i) => {
+                  return <Category
+                    key={i}
+                    isAdmin={role ? role.isAdmin : false}
+                    ownerId={server.ownerId}
+                    user={user}
+                    id={e.id}
+                    name={e.name}
+                    text={e.Text_channels}
+                    voice={e.Voice_channels}
+                    onOpen={onOpen}
+                    serverId={currentServerId}
+                    setCategoryChosen={setCategoryChosen}
+                    setCategoryIdChosen={setCategoryIdChosen}
+                    setCurrentTextChannel={setCurrentTextChannel}
+                    currentTextChannelId={currentTextChannelId}
+                    setCurrentTextChannelId={setCurrentTextChannelId}
+                    hoveredTextChannelId={hoveredTextChannelId}
+                    setHoveredTextChannelId={setHoveredTextChannelId}
+                    hoveredVoiceChannelId={hoveredVoiceChannelId}
+                    setHoveredVoiceChannelId={setHoveredVoiceChannelId}
+                  />
+                })}
+              </>
+            )}
           </div>
           <Userbar/>
         </div>
@@ -286,6 +295,7 @@ const Server = () => {
           setCurrentTextChannelId={setCurrentTextChannelId}
           roleColor={role ? role.color : "white"}
           server={server}
+          fetchServerData={fetchData}
         />}
         {currentVoiceChannelId && <VoiceRoom
           serverId={server.id}

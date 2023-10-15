@@ -54,26 +54,30 @@ const Category = ({
         </button>}
       </div>
       {text.map((e,i) => {
-        return <TextChannel 
-          key={i}
-          id={e.id} 
-          name={e.name}
-          setCurrentTextChannel={setCurrentTextChannel}
-          currentTextChannelId={currentTextChannelId}
-          setCurrentTextChannelId={setCurrentTextChannelId}
-          hoveredTextChannelId={hoveredTextChannelId}
-          setHoveredTextChannelId={setHoveredTextChannelId}
-        />
+        if(!e.isPrivate || isAdmin){
+          return <TextChannel
+            key={i}
+            id={e.id} 
+            name={e.name}
+            setCurrentTextChannel={setCurrentTextChannel}
+            currentTextChannelId={currentTextChannelId}
+            setCurrentTextChannelId={setCurrentTextChannelId}
+            hoveredTextChannelId={hoveredTextChannelId}
+            setHoveredTextChannelId={setHoveredTextChannelId}
+          />
+        }
       })}
       {voice.map((e,i) => {
-        return <VoiceChannel
-          key={i}
-          id={e.id}
-          name={e.name}
-          serverId={serverId}
-          hoveredVoiceChannelId={hoveredVoiceChannelId}
-          setHoveredVoiceChannelId={setHoveredVoiceChannelId}
-        />
+        if(!e.isPrivate || isAdmin){
+          return <VoiceChannel
+            key={i}
+            id={e.id}
+            name={e.name}
+            serverId={serverId}
+            hoveredVoiceChannelId={hoveredVoiceChannelId}
+            setHoveredVoiceChannelId={setHoveredVoiceChannelId}
+          />
+        }
       })}
     </div>
   );

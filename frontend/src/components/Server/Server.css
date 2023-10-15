@@ -257,3 +257,8 @@
   background-color: inherit;
   border-radius: 10px;
 }
+
+#server-categories-loader {
+  align-self: center;
+  margin: 50px;
+}

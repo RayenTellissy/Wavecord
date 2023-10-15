@@ -334,13 +334,14 @@ module.exports = {
 
   createTextChannel: async (req,res) => {
     try {
-      const { name, categoryId, serverId } = req.body
+      const { name, categoryId, serverId, isPrivate } = req.body
 
       const result = await prisma.text_channels.create({
         data: {
           name: name,
           categoryId: categoryId,
-          serverId: serverId
+          serverId: serverId,
+          isPrivate
         }
       })
 
@@ -353,13 +354,14 @@ module.exports = {
 
   createVoiceChannel: async (req,res) => {
     try {
-      const { name , categoryId, serverId } = req.body
+      const { name , categoryId, serverId, isPrivate } = req.body
 
       const result = await prisma.voice_channels.create({
         data: {
           name: name,
           categoryId: categoryId,
-          serverId: serverId
+          serverId: serverId,
+          isPrivate
         }
       })
 
