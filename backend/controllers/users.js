@@ -41,7 +41,7 @@ module.exports = {
 
       const accessToken = generateAccessToken({ id })
       const refreshToken = generateRefreshToken({ id })
-
+      
       // creating a secure httpOnly Cookie for accessToken
       res.cookie("accessToken", accessToken, { httpOnly: true, secure: true, sameSite: "none" })
 
@@ -54,8 +54,8 @@ module.exports = {
       })
 
       // creating a httpOnly cookie for user's id
-      res.cookie("id", user.id, { httpOnly: true, secure: true, sameSite: "none", maxAge: 1000 * 60 * 60 * 24 * 5 })
-
+      res.cookie("id", id, { httpOnly: true, secure: true, sameSite: "none", maxAge: 1000 * 60 * 60 * 24 * 5 })
+      
       res.send({
         loggedIn: true,
         id,

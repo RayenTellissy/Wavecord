@@ -53,3 +53,9 @@
   width: 11rem;
   height: 55;
 }
+
+.signup-wrong-input {
+  color: #da373c;
+  font-family: GibsonLight;
+  font-size: 15px;
+}

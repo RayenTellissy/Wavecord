@@ -118,6 +118,7 @@ const Login = () => {
           onChange={e => handleUsernameChange(e)}
           onKeyDown={e => handleKeyPress(e)}
           autoComplete='off'
+          autoFocus
         />
         <input 
           className='login-input' 

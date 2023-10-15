@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from "axios"
 import { useToast, Button } from "@chakra-ui/react"
@@ -14,45 +14,64 @@ import { Context } from "../../Context/Context"
 import "./Signup.css"
 
 const Signup = () => {
-
   const { setUser, handleConnect } = useContext(Context)
   const [username,setUsername] = useState("")
   const [email,setEmail] = useState("")
   const [password,setPassword] = useState("")
+  const [wrongUsername,setWrongUsername] = useState(null)
+  const [wrongEmail,setWrongEmail] = useState(null)
+  const [wrongPassword,setWrongPassword] = useState(null)
   const [isLoading,setIsLoading] = useState(false)
-  const [isDisabled,setIsDisabled] = useState(true)
   const navigate = useNavigate()
   const toast = useToast()
+  const debounce = useRef(null)
 
   // regular expressions
-  const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g
   const usernameRegex = /^[a-zA-Z0-9]{3,20}$/
+  const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/
   const passwordRegex = /^.{7,}$/
 
   // handle text input functions
   const handleUsernameChange = (e) => {
     setUsername(e.target.value)
-    checkInput(e.target.value, email, password)
+    clearTimeout(debounce.current)
+    setWrongUsername(null) // removing the alert message when the user starts typing again
+    debounce.current = setTimeout(() => {
+      if(!usernameRegex.test(e.target.value)){
+        setWrongUsername(true)
+      }
+      else {
+        setWrongUsername(false)
+      }
+    }, 600)
   }
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value)
-    checkInput(username, e.target.value, password)
+    clearTimeout(debounce.current)
+    setWrongEmail(null) // removing the alert message when the user starts typing again
+    debounce.current = setTimeout(() => {
+      if(!emailRegex.test(e.target.value)){
+        setWrongEmail(true)
+      }
+      else {
+        setWrongEmail(false)
+      }
+    }, 600)
   }
 
   const handlePasswordChange = (e) => {
     setPassword(e.target.value)
-    checkInput(username, email, e.target.value)
-  }
-
-  // function to validate user inputs
-  const checkInput = (username, email, password) => {
-    if (usernameRegex.test(username) && passwordRegex.test(password) && emailRegex.test(email)) {
-      setIsDisabled(false)
-    }
-    else {
-      setIsDisabled(true)
-    }
+    clearTimeout(debounce.current)
+    setWrongPassword(null) // removing the alert message when the user starts typing again
+    debounce.current = setTimeout(() => {
+      if(!passwordRegex.test(e.target.value)){
+        setWrongPassword(true)
+      }
+      else {
+        setWrongPassword(false)
+      }
+    }, 600)
   }
 
   const handleKeyPress = (e) => {
@@ -61,10 +80,15 @@ const Signup = () => {
     }
   }
 
+  const inputsCorrect = () => {
+    if(usernameRegex.test(username) && emailRegex.test(email) && passwordRegex.test(password)) return true
+    return false
+  }
+
   const handleSubmit = async () => {
     try{
       setIsLoading(true)
-  
+      
       const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/users/signup`, {
         username,
         email,
@@ -72,7 +96,7 @@ const Signup = () => {
       }, {
         withCredentials: true
       })
-  
+
       setIsLoading(false)
   
       const result = response.data
@@ -101,7 +125,6 @@ const Signup = () => {
         })
       }
     }
-
   }
 
   return (
@@ -123,8 +146,10 @@ const Signup = () => {
             onChange={e => handleUsernameChange(e)}
             onKeyDown={e => handleKeyPress(e)}
             autoComplete='off'
+            autoFocus
           />
-          <input 
+          {(wrongUsername && username) && <p className='signup-wrong-input'>Invalid username format</p>}
+          <input
             className='signup-input' 
             type='text' 
             placeholder='Enter email' 
@@ -132,6 +157,7 @@ const Signup = () => {
             onKeyDown={e => handleKeyPress(e)}
             autoComplete='off'
           />
+          {(wrongEmail && email) && <p className='signup-wrong-input'>Invalid email format</p>}
           <input 
             className='signup-input' 
             type='password' 
@@ -140,6 +166,7 @@ const Signup = () => {
             onKeyDown={e => handleKeyPress(e)}
             autoComplete='off'
           />
+          {(wrongPassword && password) && <p className='signup-wrong-input'>Password is too short</p>}
         </div>
 
         <div id='signup-button-container'>
@@ -148,9 +175,10 @@ const Signup = () => {
             id="signup-create"
             className='signup-auth'
             colorScheme='teal'
-            isDisabled={isDisabled}
             isLoading={isLoading}
-            onClick={handleSubmit}>
+            isDisabled={!inputsCorrect()}
+            onClick={handleSubmit}
+          >
             Create Account
           </Button>
 
@@ -158,7 +186,8 @@ const Signup = () => {
             className='signup-auth'
             colorScheme='gray'
             leftIcon={<ArrowBackIcon />}
-            onClick={() => navigate("/login")}>
+            onClick={() => navigate("/login")}
+          >
             Back
           </Button>
 
