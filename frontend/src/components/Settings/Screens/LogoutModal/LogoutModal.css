@@ -1,0 +1,39 @@
+#logout-modal-header {
+  font-family: GibsonMedium;
+  font-size: 25px;
+}
+
+#logout-modal-body {
+  font-family: GibsonRegular;
+  margin-bottom: 20px;
+}
+
+#logout-modal-footer {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
+
+#logout-modal-cancel-button {
+  font-family: GibsonRegular;
+}
+
+#logout-modal-cancel-button:hover {
+  text-decoration: underline;
+}
+
+#logout-modal-logout-button {
+  background-color: #da363d;
+  padding: 10px 30px;
+  border-radius: 4px;
+  font-family: GibsonRegular;
+  transition: .2s ease;
+}
+
+#logout-modal-logout-button:hover {
+  background-color: #a12828;
+}
+
+#logout-modal-logout-button:active {
+  background-color: #8f2022;
+}

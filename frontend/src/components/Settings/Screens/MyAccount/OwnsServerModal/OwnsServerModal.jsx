@@ -15,7 +15,7 @@ const OwnsServerModal = ({ isOpen, onClose }) => {
           </div>
         </ModalHeader>
         <ModalBody>
-          <p id='owns-servers-body-text'>In order to delete or disabled your account you must first transfer ownership of all servers that you own.</p>
+          <p id='owns-servers-body-text'>In order to delete or disable your account you must first transfer ownership of all servers that you own.</p>
         </ModalBody>
         <ModalFooter borderBottomRadius={3} h={16} bgColor={"#2a2c31"}>
           <button id='owns-servers-done-button' onClick={onClose}>Okay</button>

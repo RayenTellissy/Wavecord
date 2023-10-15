@@ -1,6 +1,8 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
-import { useDisclosure } from "@chakra-ui/react"
+import { Kbd, useDisclosure } from "@chakra-ui/react"
+import { useNavigate } from "react-router-dom"
+import { IoClose } from 'react-icons/io5';
 
 // components
 import { Context } from '../Context/Context';
@@ -9,19 +11,27 @@ import MyAccount from './Screens/MyAccount/MyAccount';
 import PatchNotes from "../../utils/PatchNotes/PatchNotes"
 import Nitro from "./Screens/Nitro/Nitro"
 import Notifications from './Screens/Notifications/Notifications';
+import LogoutModal from './Screens/LogoutModal/LogoutModal';
 
 // styles
 import "./Settings.css"
 
 const Settings = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
+  const { isOpen: logoutIsOpen, onOpen: logoutOnOpen, onClose: logoutOnClose } = useDisclosure()
   const { setUser, handleDisconnect } = useContext(Context)
   const [display,setDisplay] = useState("account")
+  const navigate = useNavigate()
   const displays = {
     account: <MyAccount />,
     nitro: <Nitro />,
     notifications: <Notifications />
   }
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeyPress)
+    return () => window.removeEventListener("keydown", handleKeyPress)
+  }, [])
   
   const logout = async () => {
     try {
@@ -36,9 +46,22 @@ const Settings = () => {
     }
   }
 
+  const handleKeyPress = (e) => {
+    if(e.key === "Escape"){
+      navigate("/")
+    }
+  }
+
   return (
     <div id='user-settings-container'>
+      <button id='user-settings-leave-button' onClick={() => navigate("/")}>
+        <div id='user-settings-leave-div'>
+          <IoClose size={40} color='#a4a8af' />
+        </div>
+        <Kbd fontFamily="GibsonLight" padding={2}>ESC</Kbd>
+      </button>
       <PatchNotes isOpen={isOpen} onOpen={onOpen} onClose={onClose}/>
+      <LogoutModal isOpen={logoutIsOpen} onClose={logoutOnClose} callback={logout} />
       <div id='user-settings-dropdown-container'>
         <div id='user-settings-dropdown'>
           <p id='user-settings-title'>USER SETTINGS</p>
@@ -63,7 +86,7 @@ const Settings = () => {
           />
           <DisplayButton
             display="Log out"
-            callback={logout}
+            callback={logoutOnOpen}
           />
         </div>
       </div>

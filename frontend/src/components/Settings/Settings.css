@@ -43,3 +43,16 @@
   margin-left: 9px;
   margin-bottom: 10px;
 }
+
+#user-settings-leave-button {
+  position: absolute;
+  right: 50px;
+  top: 50px;
+}
+
+#user-settings-leave-div {
+  border-radius: 50%;
+  border: 2px solid #a4a8af;
+  padding: 5px;
+  margin-bottom: 10px;
+}
