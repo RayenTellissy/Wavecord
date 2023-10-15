@@ -103,7 +103,6 @@ const Signup = () => {
   
       if (result.success) {
         setUser(response.data)
-        handleConnect() // status update
       }
   
       toast({

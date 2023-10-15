@@ -6,18 +6,25 @@ import Role from './Role';
 import Avatar from '../../common/Avatar/Avatar';
 import { Context } from '../../Context/Context';
 
+// helper functions
+import updateUserStatusInServer from '../../../utils/Helper/updateUserStatusInServer';
+
 // styles
 import "./Roles.css"
 
 const Roles = ({ serverId }) => {
-  const { socket, status } = useContext(Context)
+  const { user, socket, status } = useContext(Context)
   const [roles,setRoles] = useState([])
   const [noRoles,setNoRoles] = useState([])
   const [offline,setOffline] = useState([])
 
   useEffect(() => {
     fetchRoles()
-  }, [serverId, status])
+  }, [serverId])
+
+  useEffect(() => {
+    updateUserStatusInServer(user.id, status, roles, noRoles, setRoles, setNoRoles)
+  }, [status])
 
   useEffect(() => {
     socket.on("receive_member_status", () => {

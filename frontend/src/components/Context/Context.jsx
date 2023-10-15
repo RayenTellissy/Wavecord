@@ -128,7 +128,9 @@ export const ContextProvider = ({ children }) => {
 
   // function to be invoked when user runs the app. (status handler)
   const handleConnect = async () => {
+    console.log(1)
     if (socket) {
+      console.log(2)
       // session for notifications
       socket.emit("start_session", {
         id: user.id
@@ -178,6 +180,7 @@ export const ContextProvider = ({ children }) => {
         const cachedServers = Cookies.get("cachedServers")
         if (cachedServers) {
           const serverRooms = returnServerIds(JSON.parse(cachedServers))
+          console.log(serverRooms)
           // emitting a status change event to all servers that the user is in
           socket.emit("server_member_status_changed", {
             userId: user.id,

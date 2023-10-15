@@ -73,7 +73,6 @@ const Login = () => {
       // if user has been authenticated redirect him
       if(result.success){
         setUser(response.data)
-        handleConnect() // status update
       }
 
       // response alert
