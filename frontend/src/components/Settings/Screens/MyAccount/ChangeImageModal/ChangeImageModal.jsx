@@ -5,6 +5,7 @@ import axios from 'axios';
 import imageCompression from "browser-image-compression"
 import { v4 } from "uuid"
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import BeatLoader from 'react-spinners/BeatLoader';
 
 // components
 import { Context } from '../../../../Context/Context';
@@ -12,7 +13,6 @@ import { storage } from "../../../../../Firebase/FirebaseApp"
 
 // styles
 import "./ChangeImageModal.css"
-import BeatLoader from 'react-spinners/BeatLoader';
 
 const ChangeImageModal = ({ isOpen, onClose }) => {
   const { user, setUser } = useContext(Context)

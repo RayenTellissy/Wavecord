@@ -15,7 +15,6 @@ import {
 import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import axios from "axios";
 import BeatLoader from "react-spinners/BeatLoader"
-import { useNavigate } from "react-router-dom"
 
 import { auth } from "../../../Firebase/FirebaseApp"
 import { Context } from "../../Context/Context";
@@ -27,11 +26,10 @@ const Google = ({ size, color, margin }) => {
   const { setUser } = useContext(Context)
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [id, setId] = useState("")
-  const [email, setEmail] = useState("")
-  const [username, setUsername] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
+  const [email,setEmail] = useState("")
+  const [username,setUsername] = useState("")
+  const [isLoading,setIsLoading] = useState(false)
   const toast = useToast()
-  const navigate = useNavigate()
 
   // function to login an existing user
   const signIn = async () => {
@@ -49,6 +47,7 @@ const Google = ({ size, color, margin }) => {
       if (!response.data.success) {
         return onOpen() // if login wasn't successful open a sign up modal
       }
+      setUser(response.data)
       toast({
         title: "Success",
         description: "Logged in.",
@@ -56,9 +55,6 @@ const Google = ({ size, color, margin }) => {
         duration: 2000,
         isClosable: true
       })
-
-      setUser({ id: response.data.cookie.user.id, loggedIn: true })
-      navigate("/")
     }
     catch (error) {
       console.log(error)
@@ -81,15 +77,14 @@ const Google = ({ size, color, margin }) => {
 
     try {
       const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/users/googleSignup`, {
-        id: id,
-        username: username,
-        email: email
+        id,
+        username,
+        email
+      }, {
+        withCredentials: true
       })
 
-      const cookie = response.data.cookie
-
-      setUser({ id: cookie.user.id, loggedIn: true })
-
+      setUser(response.data)
       toast({
         title: "Success",
         description: "Logged in.",
@@ -97,8 +92,6 @@ const Google = ({ size, color, margin }) => {
         duration: 2000,
         isClosable: true
       })
-      navigate("/")
-
     }
     catch (error) {
       console.log(error)
@@ -114,8 +107,8 @@ const Google = ({ size, color, margin }) => {
         onClick={signIn}
       />
       <Modal isOpen={isOpen} onClose={onClose} isCentered>
-        <ModalOverlay />
-        <ModalContent>
+        <ModalOverlay bgColor="blackAlpha.800" />
+        <ModalContent bgColor="#313338">
           <ModalHeader fontFamily="GibsonMedium" alignSelf="center">Choose a username</ModalHeader>
           <ModalBody>
             <div className="google-auth-button-modal">
@@ -130,7 +123,7 @@ const Google = ({ size, color, margin }) => {
           </ModalBody>
           <ModalFooter>
             <div className="google-auth-button-modal">
-              <Button colorScheme='blue' mr={3} onClick={handleSubmit}>
+              <Button bgColor="#5865f2" onClick={handleSubmit}>
                 {isLoading ? <BeatLoader size={8} color="white" /> : "Create"}
               </Button>
             </div>

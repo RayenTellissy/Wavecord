@@ -8,4 +8,6 @@
 #google-auth-modal-username {
   padding: 10px;
   font-family: GibsonRegular;
+  background-color: #1f1f23;
+  border-radius: 4px;
 }

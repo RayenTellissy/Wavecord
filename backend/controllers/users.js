@@ -174,29 +174,41 @@ module.exports = {
     try {
       const { id } = req.params
 
-      const result = await prisma.users.findFirst({
+      const user = await prisma.users.findFirst({
         where: {
-          id: id
-        },
-        select: {
-          id: true,
-          username: true,
+          id
         }
       })
 
-      if (!result) {
+      if (!user) {
         return res.send({
           success: false,
         })
       }
 
-      req.session.user = {
-        id: result.id,
-        username: result.username
-      }
+      const accessToken = generateAccessToken({ id })
+      const refreshToken = generateRefreshToken({ id })
+
+      // creating a secure httpOnly Cookie for accessToken
+      res.cookie("accessToken", accessToken, { httpOnly: true, secure: true, sameSite: "none" })
+
+      // creating a secure httpOnly cookie to store the refresh token and persist it
+      res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+        maxAge: 1000 * 60 * 60 * 24 * 5
+      })
+
+      // creating a httpOnly cookie for user's id
+      res.cookie("id", id, { httpOnly: true, secure: true, sameSite: "none", maxAge: 1000 * 60 * 60 * 24 * 5 })
 
       res.send({
-        cookie: req.session,
+        loggedIn: true,
+        id: user.id,
+        username: user.username,
+        image: user.image,
+        email: user.email,
         success: true,
         message: "Logged in."
       })
@@ -210,7 +222,7 @@ module.exports = {
     try {
       const { id, username, email } = req.body
 
-      await prisma.users.create({
+      const user = await prisma.users.create({
         data: {
           id,
           username,
@@ -218,13 +230,29 @@ module.exports = {
         }
       })
 
-      req.session.user = {
-        id: id,
-        username: username
-      }
+      const accessToken = generateAccessToken({ id })
+      const refreshToken = generateRefreshToken({ id })
+
+      // creating a secure httpOnly Cookie for accessToken
+      res.cookie("accessToken", accessToken, { httpOnly: true, secure: true, sameSite: "none" })
+
+      // creating a secure httpOnly cookie to store the refresh token and persist it
+      res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+        maxAge: 1000 * 60 * 60 * 24 * 5
+      })
+
+      // creating a httpOnly cookie for user's id
+      res.cookie("id", id, { httpOnly: true, secure: true, sameSite: "none", maxAge: 1000 * 60 * 60 * 24 * 5 })
 
       res.send({
-        cookie: req.session,
+        loggedIn: true,
+        id: user.id,
+        username: user.username,
+        image: user.image,
+        email: user.email,
         success: true,
         message: "Logged in."
       })
