@@ -12,6 +12,7 @@ import PatchNotes from "../../utils/PatchNotes/PatchNotes"
 import Nitro from "./Screens/Nitro/Nitro"
 import Notifications from './Screens/Notifications/Notifications';
 import LogoutModal from './Screens/LogoutModal/LogoutModal';
+import BugReport from "../../utils/BugReport/BugReport"
 
 // styles
 import "./Settings.css"
@@ -19,6 +20,7 @@ import "./Settings.css"
 const Settings = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { isOpen: logoutIsOpen, onOpen: logoutOnOpen, onClose: logoutOnClose } = useDisclosure()
+  const { isOpen: bugIsOpen, onOpen: bugOnOpen, onClose: bugOnClose } = useDisclosure()
   const { setUser, handleDisconnect } = useContext(Context)
   const [display,setDisplay] = useState("account")
   const navigate = useNavigate()
@@ -61,6 +63,7 @@ const Settings = () => {
         <Kbd fontFamily="GibsonLight" padding={2}>ESC</Kbd>
       </button>
       <PatchNotes isOpen={isOpen} onOpen={onOpen} onClose={onClose}/>
+      <BugReport isOpen={bugIsOpen} onClose={bugOnClose} />
       <LogoutModal isOpen={logoutIsOpen} onClose={logoutOnClose} callback={logout} />
       <div id='user-settings-dropdown-container'>
         <div id='user-settings-dropdown'>
@@ -83,6 +86,10 @@ const Settings = () => {
           <DisplayButton
             display="What's New"
             callback={onOpen}
+          />
+          <DisplayButton
+            display="Bug Report"
+            callback={bugOnOpen}
           />
           <DisplayButton
             display="Log out"

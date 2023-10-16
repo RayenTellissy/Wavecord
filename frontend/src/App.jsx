@@ -86,7 +86,6 @@ const App = () => {
       {appLoaded && <>
         <BanModal bannedFrom={bannedFrom} isOpen={isOpen} onClose={closeBanModal}/>
         <PatchNotes isOpen={patchIsOpen} onOpen={patchOnOpen} onClose={patchOnClose}/>
-        <BugReport/>
         <NotificationSound/>
       </>}
       <Routing/>

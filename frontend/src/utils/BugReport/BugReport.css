@@ -1,12 +1,3 @@
-#bug-report-button {
-  padding: 15px;
-  background-color: #252525;
-  border-radius: 11px;
-  position: absolute;
-  bottom: 30px;
-  right: 50px;
-}
-
 #bug-report-header-container {
   display: flex;
   justify-content: center;
@@ -18,6 +9,8 @@
   width: 100%;
   font-family: GibsonRegular;
   padding: 10px;
+  background-color: #1f1e22;
+  border-radius: 4px;
 }
 
 #bug-report-send-ticket {
