@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom"
 import { useDisclosure } from "@chakra-ui/react"
 
 // common components
@@ -10,6 +11,9 @@ import PatchNotes from "./utils/PatchNotes/PatchNotes"
 
 // Application Router
 import Routing from "./utils/Routing"
+
+// helper functions
+import { handleInternetStatus, removeListeners } from "./utils/Helper/handleInternetStatus"
 
 // default styling
 import "./App.css"
@@ -27,6 +31,12 @@ const App = () => {
   } = useContext(Context)
   const [bannedFrom,setBannedFrom] = useState(null)
   const [appLoaded,setAppLoaded] = useState(false)
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    handleInternetStatus(navigate)
+    return () => removeListeners()
+  }, [])
 
   useEffect(() => {
     if(!serversLoading && !conversationsLoading){

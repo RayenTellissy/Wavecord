@@ -40,7 +40,7 @@
 
 .login-auth {
   font-family: GibsonMedium;
-  border-radius: 11px;
+  border-radius: 6px;
   padding: 10px;
   margin: 4px;
 }
@@ -48,12 +48,6 @@
 #login-login {
   color: #00262D;
   width: 5rem;
-}
-
-#login-create {
-  color: #DDDEE9;
-  width: 11rem;
-  height: 55;
 }
 
 #login-forgot-password {

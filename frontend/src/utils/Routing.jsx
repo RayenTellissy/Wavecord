@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { useContext } from 'react';
 import { Navigate, Route, Routes } from "react-router-dom"
 
@@ -8,13 +8,14 @@ import { Context } from "../components/Context/Context"
 import NullRouting from './NullRouting/NullRouting';
 
 // route components
-import Login from '../components/auth/Login/Login'
-import Signup from "../components/auth/Signup/Signup"
-import ForgotPassword from "../components/auth/ForgotPassword/ForgotPassword"
-import Home from '../components/Home/Home'
-import ServerSettings from '../components/Server/Settings/ServerSettings';
-import Settings from '../components/Settings/Settings';
-import NotFound from './NotFound/NotFound';
+import ServerSettings from "../components/Server/Settings/ServerSettings"
+import Settings from "../components/Settings/Settings"
+const Login = lazy(() => import('../components/auth/Login/Login'))
+const Signup = lazy(() => import("../components/auth/Signup/Signup"))
+const ForgotPassword = lazy(() => import("../components/auth/ForgotPassword/ForgotPassword"))
+const Home = lazy(() => import('../components/Home/Home'))
+const NotFound = lazy(() => import('./NotFound/NotFound'))
+const InternetIssue = lazy(() => import('./InternetIssue/InternetIssue'))
 
 const Routing = () => {
   const { user, serversLoading, conversationsLoading } = useContext(Context)
@@ -28,30 +29,30 @@ const Routing = () => {
 
   return (
     <Routes>
+      <Route path='/offline' element={<Suspense><InternetIssue/></Suspense>}/>
       {user.loggedIn === null ? <Route path='/' element={<NullRouting/>}/> : 
         user.loggedIn ? (
           // routes for authenticated users
           <>
-            <Route path='/' element={<Home/>}/>
+            <Route path='/' element={<Suspense fallback={<NullRouting />}><Home/></Suspense>}/>
             <Route path='/login' element={<Navigate to="/"/>}/>
             <Route path='/signup' element={<Navigate to="/"/>}/>
             <Route path='/settings' element={<Settings/>}/>
-            <Route path='/server/settings' element={<ServerSettings/>}/>
-            <Route path='*' element={<NotFound/>}/>
+            <Route path='/server/settings' element={<Suspense><ServerSettings/></Suspense>}/>
+            <Route path='*' element={<Suspense><NotFound/></Suspense>}/>
           </>
         )
         :
         (
           // routes for unauthenticated users
           <>
-            <Route path='/login' element={<Login/>}/>
-            <Route path='/signup' element={<Signup/>}/>
-            <Route path='/forgotpassword' element={<ForgotPassword/>}/>
+            <Route path='/login' element={<Suspense><Login/></Suspense>}/>
+            <Route path='/signup' element={<Suspense><Signup/></Suspense>}/>
+            <Route path='/forgotpassword' element={<Suspense><ForgotPassword/></Suspense>}/>
             <Route path='*' element={<Navigate to="/login"/>}/>
           </>
         )
       }
-      
     </Routes>
   )
 };

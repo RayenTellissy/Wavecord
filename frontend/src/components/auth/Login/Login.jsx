@@ -142,7 +142,6 @@ const Login = () => {
         </Button>
 
         <Button 
-          id="login-create"
           className='login-auth'
           colorScheme='gray'
           rightIcon={<ArrowForwardIcon/>}

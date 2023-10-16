@@ -171,7 +171,6 @@ const Signup = () => {
         <div id='signup-button-container'>
 
           <Button
-            id="signup-create"
             className='signup-auth'
             colorScheme='teal'
             isLoading={isLoading}
