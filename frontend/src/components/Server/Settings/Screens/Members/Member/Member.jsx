@@ -9,6 +9,7 @@ import Avatar from "../../../../../common/Avatar/Avatar"
 import Role from './Role/Role';
 import HasRole from './HasRole/HasRole';
 import Loader from "../../../../../common/Loader/Loader"
+import ConfirmBanModal from './ConfirmBanModal/ConfirmBanModal';
 
 // styles
 import "./Member.css"
@@ -26,13 +27,17 @@ const Member = ({
   fetchMembers,
   user,
   isOwner,
-  socket
+  socket,
+  modalIsOpen,
+  modalOnOpen,
+  modalOnClose,
+  action,
+  setAction
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [query, setQuery] = useState("")
   const [isLoading,setIsLoading] = useState(false)
-  const [isBanning,setIsBanning] = useState(false)
-  const [isKicking,setIsKicking] = useState(false)
+  const [isProcessing,setIsProcessing] = useState(false)
 
   useEffect(() => {
     filterRoles()
@@ -44,7 +49,7 @@ const Member = ({
 
   const kickUser = async () => {
     try {
-      setIsKicking(true)
+      setIsProcessing(true)
       await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/kickUser`, {
         kicker: user.id,
         kicked: id,
@@ -58,38 +63,62 @@ const Member = ({
         serverName
       })
       await fetchMembers()
-      setIsKicking(false)
+      setIsProcessing(false)
+      modalOnClose()
     }
     catch (error) {
       console.log(error)
     }
   }
 
-  const banUser = async () => {
+  const banUser = async (reason) => {
     try {
-      setIsBanning(true)
+      setIsProcessing(true)
       await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/banUser`, {
         banner: user.id,
         banned: id,
-        serverId
+        serverId,
+        reason
       }, {
         withCredentials: true
       })
       socket.emit("server_ban_user", {
         userId: id,
         serverId,
-        serverName
+        serverName,
+        reason
       })
       await fetchMembers()
-      setIsBanning(false)
+      setIsProcessing(false)
+      modalOnClose()
     }
     catch (error) {
       console.log(error)
     }
   }
 
+  const openBanModal = () => {
+    setAction("ban")
+    modalOnOpen()
+  }
+
+  const openKickModal = () => {
+    setAction("kick")
+    modalOnOpen()
+  }
+
   return (
     <div id='server-settings-members-member-container'>
+      <ConfirmBanModal
+        action={action}
+        setAction={setAction}
+        isOpen={modalIsOpen}
+        onClose={modalOnClose}
+        username={username}
+        isProcessing={isProcessing}
+        banUser={banUser}
+        kickUser={kickUser}
+      />
       <div id='server-settings-members-member-avatar'>
         <Avatar image={image} />
         <p
@@ -155,21 +184,11 @@ const Member = ({
           <PopoverContent bg="#111214" w={220}>
             <PopoverBody>
               {!role?.isAdmin && !isOwner && <>
-                <button className={
-                  isKicking
-                    ? 'server-settings-members-member-dots-red-button-active'
-                    : 'server-settings-members-member-dots-red-button'}
-                  onClick={kickUser}
-                >
-                  {isKicking
-                    ? <BeatLoader size={13} color='#ce373a' cssOverride={{ alignSelf: "center" }} />
-                    : `Kick ${username}`}
+                <button className='server-settings-members-member-dots-red-button' onClick={openKickModal}>
+                  Kick {username}
                 </button>
-                <button className={
-                  isBanning
-                    ? 'server-settings-members-member-dots-red-button-active'
-                    : 'server-settings-members-member-dots-red-button'} onClick={banUser}>
-                  {isBanning ? <BeatLoader color='#ce373a' /> : `Ban ${username}`}
+                <button className='server-settings-members-member-dots-red-button' onClick={openBanModal}>
+                  Ban {username}
                 </button>
               </>}
             </PopoverBody>

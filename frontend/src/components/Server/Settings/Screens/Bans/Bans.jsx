@@ -59,6 +59,7 @@ const Bans = ({ server }) => {
             id={e.user.id}
             username={e.user.username}
             image={e.user.image}
+            reason={e.reason}
             user={user}
             serverId={server.id}
             fetchUsers={fetchUsers}

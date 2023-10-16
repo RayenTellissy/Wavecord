@@ -1,0 +1,56 @@
+#ban-confirmation-header {
+  font-family: GibsonMedium;
+}
+
+#ban-confirmation-input-label {
+  font-family: GibsonRegular;
+  color: #a3a9af;
+  font-weight: bold;
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+#ban-confirmation-input {
+  width: 100%;
+  font-family: GibsonRegular;
+  padding: 10px;
+  border-radius: 4px;
+  background-color: #1f1e22;
+}
+
+#ban-confirmation-footer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+}
+
+#ban-confirmation-gif {
+  margin-bottom: 20px;
+}
+
+#ban-confirmation-back-button {
+  font-family: GibsonRegular;
+}
+
+#ban-confirmation-back-button:hover {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+}
+
+#ban-confirmation-submit-button {
+  font-family: GibsonRegular;
+  background-color: #da373c;
+  transition: .2s ease;
+  height: 35px;
+  width: 100px;
+  border-radius: 4px;
+}
+
+#ban-confirmation-submit-button:hover {
+  background-color: #a12828;
+}
+
+#ban-confirmation-submit-button:active {
+  background-color: #8f2022;
+}

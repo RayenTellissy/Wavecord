@@ -5,10 +5,12 @@
 
 #server-category-name-unhovered {
   color: #DDDEE9;
+  margin: 5px 0px;
 }
 
 #server-category-name-hovered {
   color: #FFFFFF;
+  margin: 5px 0px;
 }
 
 #server-category-row-container {

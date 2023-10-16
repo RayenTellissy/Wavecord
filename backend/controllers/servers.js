@@ -861,7 +861,8 @@ module.exports = {
           serverId
         },
         select: {
-          user: true
+          user: true,
+          reason: true
         }
       })
 
@@ -874,7 +875,7 @@ module.exports = {
 
   banUser: async (req,res) => {
     try {
-      const { banner, banned, serverId } = req.body
+      const { banner, banned, serverId, reason } = req.body
 
       // checking if the banner is an admin
       const adminCheck = await prisma.usersInServers.findFirst({
@@ -918,7 +919,8 @@ module.exports = {
       await prisma.bans.create({
         data: {
           userId: banned,
-          serverId
+          serverId,
+          reason
         }
       })
 

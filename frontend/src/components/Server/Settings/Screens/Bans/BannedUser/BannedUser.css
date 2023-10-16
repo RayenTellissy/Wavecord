@@ -68,3 +68,10 @@
 #unban-modal-revoke-button:hover {
   text-decoration: underline;
 }
+
+#unban-modal-body {
+  font-family: GibsonRegular;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}

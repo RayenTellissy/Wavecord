@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import axios from "axios"
 import { BiSearch } from "react-icons/bi"
 import BeatLoader from 'react-spinners/BeatLoader';
+import { useDisclosure } from '@chakra-ui/react';
 
 // components
 import Member from './Member/Member';
@@ -11,6 +12,7 @@ import { Context } from "../../../../Context/Context"
 import "./Members.css"
 
 const Members = ({ server }) => {
+  const { isOpen, onOpen, onClose } = useDisclosure()
   const { user, socket } = useContext(Context)
   const [users, setUsers] = useState([])
   const [constantUsers, setConstantUsers] = useState([])
@@ -18,6 +20,7 @@ const Members = ({ server }) => {
   const [constantRoles,setConstantRoles] = useState([])
   const [query,setQuery] = useState("")
   const [isLoading,setIsLoading] = useState(true)
+  const [action,setAction] = useState(null)
 
   useEffect(() => {
     fetchData()
@@ -97,6 +100,11 @@ const Members = ({ server }) => {
             user={user}
             isOwner={e.user.servers_created.length !== 0}
             socket={socket}
+            modalIsOpen={isOpen}
+            modalOnOpen={onOpen}
+            modalOnClose={onClose}
+            action={action}
+            setAction={setAction}
           />
         })}
         {isLoading && <BeatLoader size={8} color='white'/>}

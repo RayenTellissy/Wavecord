@@ -72,6 +72,7 @@ model Bans {
   userId   String
   server   Servers @relation(fields: [serverId], references: [id])
   serverId String
+  reason   String?
 }
 
 model BlockedUsers {

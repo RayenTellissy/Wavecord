@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, useDisclosure } from "@chakra-ui/react"
+import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, useDisclosure, ModalBody } from "@chakra-ui/react"
 
 // components
 import Avatar from "../../../../../common/Avatar/Avatar"
@@ -8,7 +8,7 @@ import Avatar from "../../../../../common/Avatar/Avatar"
 // styles
 import "./BannedUser.css"
 
-const BannedUser = ({ id, username, image, user, serverId, fetchUsers }) => {
+const BannedUser = ({ id, username, image, reason, user, serverId, fetchUsers }) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [isLoading,setIsLoading] = useState(false)
 
@@ -45,6 +45,11 @@ const BannedUser = ({ id, username, image, user, serverId, fetchUsers }) => {
               { username }
             </div>
           </ModalHeader>
+          <ModalBody>
+            <div id='unban-modal-body'>
+              Reason: { reason ? reason : "No reason specified." }
+            </div>
+          </ModalBody>
           <ModalFooter padding={4} bgColor="#2b2d31" borderBottomRadius={3} height={70}>
             <div id='unban-modal-buttons-container'>
               <button id='unban-modal-done-button' onClick={onClose}>Done</button>

@@ -23,11 +23,13 @@
 
 #home-contacts-userbar-username {
   font-family: GibsonMedium;
+  font-size: 15px;
 }
 
 #home-contacts-userbar-status {
   font-family: GibsonRegular;
   color: #b5bab7;
+  font-size: 14px;
 }
 
 #home-contacts-userbar-avatar-name-status {
@@ -37,8 +39,8 @@
 }
 
 .home-contacts-userbar-icon {
-  height: 35px;
-  width: 35px;
+  height: 32px;
+  width: 32px;
   color: #b5bac1;
   padding: 5px;
   border-radius: 4px;
@@ -57,6 +59,7 @@
 .home-contacts-userbar-popover-button {
   display: flex;
   flex-direction: row;
+  align-items: center;
   width: 100%;
   padding: 4px;
   border-radius: 7px;
@@ -154,5 +157,5 @@
 }
 
 .home-contacts-userbar-icon-button:hover {
-  background-color: #3c3e44;;
+  background-color: #3c3e44;
 }

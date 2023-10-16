@@ -39,6 +39,8 @@ const App = () => {
     if(socket){
       socket.on("receive_server_ban", data => {
         fetchServers()
+        setDisplay("")
+        setCurrentServerId("")
         setBannedFrom({
           name: data.serverName,
           reason: data.reason,
@@ -48,6 +50,8 @@ const App = () => {
       })
       socket.on("receive_server_kick", data => {
         fetchServers()
+        setDisplay("")
+        setCurrentServerId("")
         setBannedFrom({
           name: data.serverName,
           reason: data.reason,
@@ -63,8 +67,6 @@ const App = () => {
   },[socket])
 
   const closeBanModal = () => {
-    setDisplay("home")
-    setCurrentServerId("")
     onClose()
     setBannedFrom(null)
   }

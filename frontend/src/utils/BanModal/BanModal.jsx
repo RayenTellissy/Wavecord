@@ -14,9 +14,9 @@ const BanModal = ({ bannedFrom, onClose, isOpen }) => {
             {bannedFrom?.type === "ban" ? 'You have been banned from' : 'You have been kicked from'} { bannedFrom?.name }
           </p>
         </ModalHeader>
-        <ModalBody display="flex" justifyContent="center">
-          <p id='ban-modal-body-text'>{bannedFrom?.reason ? bannedFrom.reason : "No Reason Provided."}</p>
-        </ModalBody>
+        {bannedFrom?.type === "ban" && <ModalBody display="flex" justifyContent="center">
+          <p id='ban-modal-body-text'>Reason: {bannedFrom?.reason ? bannedFrom.reason : "No Reason Provided."}</p>
+        </ModalBody>}
         <ModalFooter height={70} display="flex" justifyContent="center" bgColor="#2b2d31" borderBottomRadius={10}>
           <button id='ban-modal-footer-button' onClick={onClose}>I Understand</button>
         </ModalFooter>
