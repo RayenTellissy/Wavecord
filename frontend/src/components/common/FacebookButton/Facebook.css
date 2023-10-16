@@ -1,0 +1,13 @@
+.facebook-auth-button-modal {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  justify-content: center;
+}
+
+#facebook-auth-modal-username {
+  padding: 10px;
+  font-family: GibsonRegular;
+  background-color: #1f1f23;
+  border-radius: 4px;
+}

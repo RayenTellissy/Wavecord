@@ -25,7 +25,7 @@ import "./Google.css"
 const Google = ({ size, color, margin }) => {
   const { setUser } = useContext(Context)
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const [id, setId] = useState("")
+  const [id,setId] = useState("")
   const [email,setEmail] = useState("")
   const [username,setUsername] = useState("")
   const [isLoading,setIsLoading] = useState(false)
@@ -40,7 +40,7 @@ const Google = ({ size, color, margin }) => {
     setEmail(login.user.email)
 
     try {
-      const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/users/googleLogin/${login.user.uid}`, {}, {
+      const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/users/providerLogin/${login.user.uid}`, {}, {
         withCredentials: true
       })
 
@@ -76,7 +76,7 @@ const Google = ({ size, color, margin }) => {
     setIsLoading(true)
 
     try {
-      const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/users/googleSignup`, {
+      const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/users/providerSignup`, {
         id,
         username,
         email

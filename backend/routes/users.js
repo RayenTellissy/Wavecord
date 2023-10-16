@@ -5,8 +5,8 @@ const {
   reset, 
   authenticateSession, 
   logout, 
-  googleLogin, 
-  googleSignup,
+  providerLogin, 
+  providerSignup,
   setStatus,
   changeUsername,
   changePassword,
@@ -21,8 +21,8 @@ router.get("/logout", authentication, logout)
 
 router.post("/signup", signup)
 router.post("/login", login)
-router.post("/googleLogin/:id", googleLogin)
-router.post("/googleSignup", googleSignup)
+router.post("/providerLogin/:id", providerLogin)
+router.post("/providerSignup", providerSignup)
 router.post("/reset", reset)
 router.post("/changeUsername", authentication, changeUsername)
 router.post("/changePassword", authentication, changePassword)

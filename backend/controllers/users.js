@@ -170,7 +170,7 @@ module.exports = {
     }
   },
 
-  googleLogin: async (req, res) => {
+  providerLogin: async (req, res) => {
     try {
       const { id } = req.params
 
@@ -218,7 +218,7 @@ module.exports = {
     }
   },
 
-  googleSignup: async (req, res) => {
+  providerSignup: async (req, res) => {
     try {
       const { id, username, email } = req.body
 
@@ -261,6 +261,7 @@ module.exports = {
       res.send(error)
     }
   },
+
 
   // logout function
   logout: (req, res) => {
