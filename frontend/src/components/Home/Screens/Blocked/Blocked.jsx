@@ -4,7 +4,7 @@ import axios from 'axios';
 // components
 import { Context } from "../../../Context/Context"
 import BlockedUser from './BlockedUser';
-import Loader from "../../../common/Loader/Loader"
+import UsersLoader from '../../../common/UsersLoader/UsersLoader';
 
 // styles
 import "./Blocked.css"
@@ -14,7 +14,6 @@ const Blocked = ({ query, setShowSearch }) => {
   const [users,setUsers] = useState([])
   const [constantUsers,setConstantUsers] = useState([])
   const [isLoading,setIsLoading] = useState(true)
-  const [isUnblocking,setIsUnblocking] = useState(false)
 
   useEffect(() => {
     fetchBlocks()
@@ -49,11 +48,14 @@ const Blocked = ({ query, setShowSearch }) => {
     }
   }
 
+  if(isLoading){
+    return <UsersLoader text="Loading blocks" />
+  }
+
   return (
     <div id='home-right-display-blocked-container'>
       <div id='home-right-display-blocked-users'>
-        {!isLoading && <p id='home-right-display-blocked-count'>BLOCKED - { users.length }</p>}
-        {isLoading && <Loader/>}
+        <p id='home-right-display-blocked-count'>BLOCKED - { users.length }</p>
         <div id='home-right-display-blocked-users-container' className='default-scrollbar'>
           {users.map((e,i) => {
             return <BlockedUser
@@ -62,11 +64,9 @@ const Blocked = ({ query, setShowSearch }) => {
               username={e.blocked.username} 
               image={e.blocked.image} 
               status={e.blocked.status}
-              setIsUnblocking={setIsUnblocking}
               fetchBlocks={fetchBlocks}
             />
           })}
-          {isUnblocking && <Loader/>}
         </div>
         </div>
     </div>

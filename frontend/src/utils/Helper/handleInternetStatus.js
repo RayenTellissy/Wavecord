@@ -6,8 +6,8 @@ const handleInternetStatus = (navigate) => {
 }
 
 const removeListeners = () => {
-  window.removeEventListener("online")
-  window.removeEventListener("offline")
+  window.removeEventListener("online", () => navigate("/"))
+  window.removeEventListener("offline", () => navigate("/offline"))
 }
 
 export { handleInternetStatus, removeListeners }

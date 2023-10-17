@@ -5,7 +5,7 @@ import { useToast } from '@chakra-ui/react';
 // components
 import { Context } from '../../../Context/Context';
 import FriendButton from '../../../common/FriendButton/FriendButton';
-import Loader from '../../../common/Loader/Loader';
+import UsersLoader from "../../../common/UsersLoader/UsersLoader"
 
 // styles
 import "./AllFriends.css"
@@ -20,6 +20,7 @@ const AllFriends = ({ query, setShowSearch }) => {
 
   useEffect(() => {
     fetchUsers()
+    return () => setShowSearch(false)
   },[])
 
   useEffect(() => {
@@ -53,10 +54,13 @@ const AllFriends = ({ query, setShowSearch }) => {
     setUsers(constantUsers.filter(e => e.users[0].username.toUpperCase().includes(query.toUpperCase())))
   }
 
+  if(isLoading){
+    return <UsersLoader text="Loading users" />
+  }
+
   return (
     <div id='home-right-display-all-container'>
-      {isLoading && <Loader/>}
-      {!isLoading && <p id='home-right-display-all-count'>ALL FRIENDS - {users.length}</p>}
+      <p id='home-right-display-all-count'>ALL FRIENDS - {users.length}</p>
       <div id='home-right-display-all-users-container' className='default-scrollbar'>
         {users.map((e,i) => {
           return <FriendButton

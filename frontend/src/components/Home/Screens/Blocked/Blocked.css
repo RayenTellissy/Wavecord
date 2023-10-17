@@ -44,6 +44,11 @@
   flex-direction: row;
 }
 
+#blockeduser-button-buttons-container {
+  display: flex;
+  align-items: center;
+}
+
 #blockeduser-button-unblock {
   margin: 0px 20px;
 }

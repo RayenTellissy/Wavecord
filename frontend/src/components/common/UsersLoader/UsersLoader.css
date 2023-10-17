@@ -1,0 +1,12 @@
+#home-right-display-users-loader {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+#home-right-display-users-loading-text {
+  font-family: GibsonRegular;
+  color: #adadad;
+}

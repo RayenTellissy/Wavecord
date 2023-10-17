@@ -3,6 +3,7 @@ import { IoMdCheckmark } from "react-icons/io"
 import { IoClose } from "react-icons/io5"
 import { Tooltip } from '@chakra-ui/react';
 import axios from 'axios';
+import BeatLoader from "react-spinners/BeatLoader"
 
 // components
 import Avatar from '../../../../common/Avatar/Avatar';
@@ -11,22 +12,28 @@ import { Context } from '../../../../Context/Context';
 // styles
 import "../PendingRequests.css"
 
-const Received = ({ requestId, id, username, image, status, fetchRequests, setIsAccepting }) => {
-  const { user } = useContext(Context)
-  const [acceptDisabled, setAcceptDisabled] = useState(false)
+const Received = ({ requestId, id, username, image, status, updateRequestsLocally }) => {
+  const { user, socket } = useContext(Context)
+  const [isAccepting,setIsAccepting] = useState(false)
+  const [isRemoving,setIsRemoving] = useState(false)
 
   const acceptFriendRequest = async () => {
-    if (acceptDisabled) return
-    setAcceptDisabled(true)
-    setIsAccepting(true)
     try {
+      setIsAccepting(true)
       await axios.post(`${import.meta.env.VITE_SERVER_URL}/friends/acceptFriendRequest`, {
         sender: id,
         requested: user.id
       }, {
         withCredentials: true
       })
-      fetchRequests()
+      socket.emit("send_friend_request_accepted", {
+        userId: id,
+        user: {
+          username: user.username,
+          image: user.image
+        }
+      })
+      updateRequestsLocally(requestId)
       setIsAccepting(false)
     }
     catch (error) {
@@ -37,11 +44,12 @@ const Received = ({ requestId, id, username, image, status, fetchRequests, setIs
   const rejectFriendRequest = async () => {
     setIsAccepting(true)
     try {
+      setIsRemoving(true)
       await axios.get(`${import.meta.env.VITE_SERVER_URL}/friends/removeRequest/${requestId}`, {
         withCredentials: true
       })
-      fetchRequests()
-      setIsAccepting(false)
+      updateRequestsLocally(requestId)
+      setIsRemoving(false)
     }
     catch (error) {
       console.log(error)
@@ -78,7 +86,7 @@ const Received = ({ requestId, id, username, image, status, fetchRequests, setIs
               className='home-right-display-pending-action-button'
               onClick={acceptFriendRequest}
             >
-              <IoMdCheckmark size={40} color='#FFFFFF' />
+              {isAccepting ? <BeatLoader size={8} color='white' /> : <IoMdCheckmark size={40} color='#FFFFFF' />}
             </button>
           </Tooltip>
 
@@ -95,7 +103,7 @@ const Received = ({ requestId, id, username, image, status, fetchRequests, setIs
             openDelay={500}
           >
             <button className='home-right-display-pending-action-button' onClick={rejectFriendRequest}>
-              <IoClose color='#FFFFFF' size={40} />
+              {isRemoving ? <BeatLoader size={8} color='white' /> : <IoClose color='#FFFFFF' size={40} />}
             </button>
           </Tooltip>
         </div>

@@ -1,7 +1,7 @@
-const createFriendRequestNotification = ({ username, image }) => {
+const createFriendRequestNotification = ({ username, image, body }) => {
   const notify = () => {
     const notification = new Notification(username, {
-      body: "Sent a friend request.",
+      body,
       icon: image,
       silent: true
     })

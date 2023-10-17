@@ -1,21 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { IoClose } from "react-icons/io5"
 import { Tooltip } from '@chakra-ui/react';
+import BeatLoader from 'react-spinners/BeatLoader';
 
 // components
 import Avatar from '../../../../common/Avatar/Avatar';
 
-const Sent = ({ requestId, username, image, status, setIsAccepting, fetchRequests }) => {
+const Sent = ({ requestId, username, image, status, updateRequestsLocally }) => {
+  const [isRemoving,setIsRemoving] = useState(false)
 
   const removeRequest = async () => {
     try {
-      setIsAccepting(true)
+      setIsRemoving(true)
       await axios.get(`${import.meta.env.VITE_SERVER_URL}/friends/removeRequest/${requestId}`, {
         withCredentials: true
       })
-      fetchRequests()
-      setIsAccepting(false)
+      updateRequestsLocally(requestId)
+      setIsRemoving(false)
     }
     catch (error) {
       console.log(error)
@@ -52,7 +54,7 @@ const Sent = ({ requestId, username, image, status, setIsAccepting, fetchRequest
               className='home-right-display-pending-action-button'
               onClick={removeRequest}
             >
-              <IoClose color='#FFFFFF' size={40} />
+              {isRemoving ? <BeatLoader size={8} color="white" /> : <IoClose color='#FFFFFF' size={40} />}
             </button>
           </Tooltip>
         </div>

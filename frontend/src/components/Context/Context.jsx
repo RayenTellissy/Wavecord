@@ -73,6 +73,7 @@ export const ContextProvider = ({ children }) => {
   useEffect(() => {
     if (!socket || !user.id || !notificationsEnabled) return
     socket.off("receive_friend_request_notification")
+    socket.off("receive_friend_request_accepted")
     socket.off("receive_direct_message_notification")
     if (notificationsEnabled.friendRequests && notificationsEnabled.desktop) {
       socket.on("receive_friend_request_notification", data => {
@@ -80,8 +81,18 @@ export const ContextProvider = ({ children }) => {
         // activate notification sound
         document.getElementById("wavecord-default-notification-sound").click()
         createFriendRequestNotification({
+          body: "Sent a friend request.",
           username: data.username,
           image: data.image
+        })
+      })
+      socket.on("receive_friend_request_accepted", data => {
+        // activate notification sound
+        document.getElementById("wavecord-default-notification-sound").click()
+        createFriendRequestNotification({
+          body: "Accepted your friend request.",
+          username: data.user.username,
+          image: data.user.image
         })
       })
     }

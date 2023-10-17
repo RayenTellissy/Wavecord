@@ -13,3 +13,16 @@
   overflow-y: auto;
   max-height: 78vh;
 }
+
+#home-right-display-online-loader {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+#home-right-display-online-loading-text {
+  font-family: GibsonRegular;
+  color: #adadad;
+}

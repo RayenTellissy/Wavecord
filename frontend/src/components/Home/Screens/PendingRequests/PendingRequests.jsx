@@ -5,7 +5,7 @@ import axios from 'axios';
 import { Context } from "../../../Context/Context"
 import Received from './Request/Received';
 import Sent from './Request/Sent';
-import Loader from "../../../common/Loader/Loader"
+import UsersLoader from '../../../common/UsersLoader/UsersLoader';
 
 // styles
 import "./PendingRequests.css"
@@ -15,7 +15,6 @@ const PendingRequests = ({ query, setShowSearch }) => {
   const [users,setUsers] = useState([])
   const [constantUsers,setConstantUsers] = useState([])
   const [isLoading,setIsLoading] = useState(true)
-  const [isAccepting,setIsAccepting] = useState(false)
 
   useEffect(() => {
     fetchRequests()
@@ -81,11 +80,21 @@ const PendingRequests = ({ query, setShowSearch }) => {
     }
   }
 
+  // this function removes a friend request (used when the user accepts or declines a friend request)
+  const updateRequestsLocally = (requestId) => {
+    const filteredArray = constantUsers.filter(e => e.id !== requestId)
+    setUsers(filteredArray)
+    setConstantUsers(filteredArray)
+  }
+
+  if(isLoading){
+    return <UsersLoader text="Loading requests" />
+  }
+
   return (
     <div id='home-right-display-pending-container'>
       <div id='home-right-display-pending-users'>
-        {isLoading && <Loader/>}
-        {!isLoading && <p id='home-right-display-pending-count'>PENDING - {users.length}</p>}
+        <p id='home-right-display-pending-count'>PENDING - {users.length}</p>
         <div id='home-right-display-pending-users-container' className='default-scrollbar'>
           {users.map((e,i) => {
             if(e.recipient.id === user.id){
@@ -95,8 +104,7 @@ const PendingRequests = ({ query, setShowSearch }) => {
                 username={e.sender.username} 
                 image={e.sender.image} 
                 status={e.sender.status}
-                fetchRequests={fetchRequests}
-                setIsAccepting={setIsAccepting}
+                updateRequestsLocally={updateRequestsLocally}                
               />
             }
             else {
@@ -105,12 +113,10 @@ const PendingRequests = ({ query, setShowSearch }) => {
                 username={e.recipient.username} 
                 image={e.recipient.image} 
                 status={e.recipient.status} 
-                fetchRequests={fetchRequests}
-                setIsAccepting={setIsAccepting}
+                updateRequestsLocally={updateRequestsLocally}                
               />
             }
           })}
-          {isAccepting && <Loader/>}
         </div>
       </div>
     </div>

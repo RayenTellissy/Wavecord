@@ -46,6 +46,11 @@
   color: #ACACAC;
 }
 
+#home-right-display-pending-buttons-container {
+  display: flex;
+  align-items: center;
+}
+
 .home-right-display-pending-action-button {
   margin: 0px 20px;
 }
