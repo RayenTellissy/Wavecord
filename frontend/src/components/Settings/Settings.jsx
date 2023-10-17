@@ -9,7 +9,7 @@ import { Context } from '../Context/Context';
 import DisplayButton from '../common/DisplayButton/DisplayButton';
 import MyAccount from './Screens/MyAccount/MyAccount';
 import PatchNotes from "../../utils/PatchNotes/PatchNotes"
-import Nitro from "./Screens/Nitro/Nitro"
+import Turbo from './Screens/Turbo/Turbo';
 import Notifications from './Screens/Notifications/Notifications';
 import LogoutModal from './Screens/LogoutModal/LogoutModal';
 import BugReport from "../../utils/BugReport/BugReport"
@@ -26,7 +26,7 @@ const Settings = () => {
   const navigate = useNavigate()
   const displays = {
     account: <MyAccount />,
-    nitro: <Nitro />,
+    Turbo: <Turbo />,
     notifications: <Notifications />
   }
 
@@ -74,9 +74,9 @@ const Settings = () => {
             highlighted={display === "account"}
           />
           <DisplayButton
-            display="Nitro"
-            callback={() => setDisplay("nitro")}
-            highlighted={display === "nitro"}
+            display="Turbo"
+            callback={() => setDisplay("Turbo")}
+            highlighted={display === "Turbo"}
           />
           <DisplayButton
             display="Notifications"

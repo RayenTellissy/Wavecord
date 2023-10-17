@@ -4,6 +4,7 @@ import { AccessToken } from 'livekit-server-sdk'
 import dotenv from "dotenv"
 dotenv.config()
 
+// creates a token for voice channel access
 const createToken = (channelId, id, username, image) => {
   const at = new AccessToken(process.env.LK_API_KEY, process.env.LK_API_SECRET, {
     identity: username,
