@@ -23,7 +23,8 @@
     "helmet": "^7.0.0",
     "jsonwebtoken": "^9.0.2",
     "prisma": "^5.1.1",
-    "socket.io": "^4.6.2"
+    "socket.io": "^4.6.2",
+    "stripe": "^14.1.0"
   },
   "devDependencies": {
     "dotenv": "^16.3.1",

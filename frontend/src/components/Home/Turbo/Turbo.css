@@ -1,13 +1,20 @@
 #turbo-container {
-  background-image: linear-gradient(#3e55d2, #966cc0);
+  background-image: linear-gradient(#3e55d2, #c06ad3);
   height: 100%;
   display: flex;
-  justify-content: center;
   flex-direction: column;
+  justify-content: start;
+  align-items: center;
 }
 
 #turbo-title {
   font-family: GibsonBold;
   font-size: 70px;
   margin-top: 50px;
+}
+
+#turbo-title2 {
+  font-family: GibsonRegular;
+  font-size: 27px;
+  margin-bottom: 20px;
 }

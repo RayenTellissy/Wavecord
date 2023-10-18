@@ -49,10 +49,6 @@ const MessageInput = ({
     inputRef.current.focus()
   },[channelId])
 
-  // useEffect(() => {
-  //   console.log(blockedConversation)
-  // }, [blockedConversation])
-
   // function to send a message 
   const sendMessage = async () => {
     if(message === "" || message.length > 500) return // if the no message was written, or too long nothing will happen

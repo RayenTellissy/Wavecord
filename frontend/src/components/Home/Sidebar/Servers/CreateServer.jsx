@@ -50,8 +50,8 @@ const CreateServer = () => {
       </motion.button>
 
       <Modal isOpen={isOpen} onClose={closeModal}>
-        <ModalOverlay/>
-        <ModalContent>
+        <ModalOverlay bgColor="blackAlpha.800" />
+        <ModalContent bgColor="#313338">
           <ModalCloseButton/>
 
           {screen === "main" &&

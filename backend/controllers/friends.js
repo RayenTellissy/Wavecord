@@ -399,7 +399,6 @@ module.exports = {
             id: row.id
           }
         })
-        console.log(row)
         await prisma.conversations.update({
           where: {
             id: row.conversationId

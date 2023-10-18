@@ -16,6 +16,7 @@ import ForgotPassword from "../components/auth/ForgotPassword/ForgotPassword"
 import Home from '../components/Home/Home'
 import NotFound from './NotFound/NotFound'
 import InternetIssue from './InternetIssue/InternetIssue'
+import TurboRedirect from '../components/Turbo/TurboRedirect';
 
 const Routing = () => {
   const { user, serversLoading, conversationsLoading } = useContext(Context)
@@ -39,6 +40,7 @@ const Routing = () => {
             <Route path='/signup' element={<Navigate to="/"/>}/>
             <Route path='/settings' element={<Settings/>}/>
             <Route path='/server/settings' element={<ServerSettings/>}/>
+            <Route path='/turbo' element={<TurboRedirect />} />
             <Route path='*' element={<NotFound/>}/>
           </>
         )

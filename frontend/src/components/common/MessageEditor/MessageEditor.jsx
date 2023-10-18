@@ -27,7 +27,6 @@ const MessageEditor = ({ message, callback, endEditing }) => {
       return edit()
     }
     if(e.key === "Escape"){
-      console.log("escape pressed")
       return endEditing()
     }
   }
