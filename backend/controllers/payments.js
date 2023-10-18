@@ -58,7 +58,7 @@ module.exports = {
   webhook: async (req,res) => {
     try {
       const body = req.body
-      const signature = req.get("Stripe-Signature")
+      const signature = req.headers["Stripe-Signature"]
 
       const event = stripe.webhooks.constructEvent(body, signature, process.env.STRIPE_WEBHOOK_SECRET)
 

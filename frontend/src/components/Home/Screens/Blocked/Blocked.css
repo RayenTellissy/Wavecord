@@ -3,8 +3,14 @@
   flex-direction: row;
   border-top: 1px solid #3e4047;
   margin: 15px 0px;
-  padding-top: 20px;
+  padding: 20px 10px;
   justify-content: space-between;
+  cursor: pointer;
+}
+
+#blockeduser-button-container:hover {
+  background-color: #3a3d43;
+  border-radius: 11px;
 }
 
 #blockeduser-button-username-status-container {

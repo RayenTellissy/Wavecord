@@ -32,7 +32,7 @@ const BlockedUser = ({ id, username, image, status, fetchBlocks }) => {
   }
 
   return (
-    <button id='blocked-user-button'>
+    <div id='blocked-user-button'>
       <div id='blockeduser-button-container'>
         <div id='blockeduser-button-details-container'>
           <Avatar image={image} status={status} />
@@ -62,7 +62,7 @@ const BlockedUser = ({ id, username, image, status, fetchBlocks }) => {
           </Tooltip>
         </div>
       </div>
-    </button>
+    </div>
   );
 };
 

@@ -1,0 +1,21 @@
+#user-settings-turbo-container {
+  margin-top: 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 500px;
+  width: 100%;
+  border-radius: 11px;
+  background-image: linear-gradient(20deg, #b844d6, #388bff, #3736ba);
+}
+
+#user-settings-turbo-title1 {
+  font-family: GibsonBold;
+  font-size: 50px;
+}
+
+#user-settings-turbo-title2 {
+  font-family: GibsonRegular;
+  font-size: 30px;
+}
