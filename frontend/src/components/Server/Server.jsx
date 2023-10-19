@@ -186,6 +186,37 @@ const Server = () => {
     }
   }
 
+  const renameChannelLocally = (channelType, channelId, newName) => {
+    if(channelType === "text"){
+      setServer(prevServer => ({
+        ...prevServer,
+        categories: prevServer.categories.map(category => {
+          const updatedTextChannels = category.Text_channels.map(channel => {
+            if(channelId === channel.id){
+              return { ...channel, name: newName }
+            }
+            return channel
+          })
+          return { ...category, Text_channels: updatedTextChannels }
+        })
+      }))
+    }
+    else if(channelType === "voice"){
+      setServer(prevServer => ({
+        ...prevServer,
+        categories: prevServer.categories.map(category => {
+          const updatedVoiceChannels = category.Voice_channels.map(channel => {
+            if(channelId === channel.id){
+              return { ...channel, name: newName }
+            }
+            return channel
+          })
+          return { ...category, Voice_channels: updatedVoiceChannels }
+        })
+      }))
+    }
+  }
+
   return (
     <div id='server-container'>
       <button id='voice-channel-join-sound-activator' onClick={() => playJoin()}/>
@@ -250,6 +281,7 @@ const Server = () => {
                     hoveredVoiceChannelId={hoveredVoiceChannelId}
                     setHoveredVoiceChannelId={setHoveredVoiceChannelId}
                     removeChannelLocally={removeChannelLocally}
+                    renameChannelLocally={renameChannelLocally}
                   />
                 })}
               </>

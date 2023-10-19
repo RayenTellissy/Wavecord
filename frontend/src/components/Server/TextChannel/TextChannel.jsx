@@ -16,7 +16,8 @@ const TextChannel = ({
   hoveredTextChannelId,
   setHoveredTextChannelId,
   isAdmin,
-  removeChannelLocally
+  removeChannelLocally,
+  renameChannelLocally
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
@@ -81,6 +82,7 @@ const TextChannel = ({
             id={id}
             name={name}
             removeChannelLocally={removeChannelLocally}
+            renameChannelLocally={renameChannelLocally}
           />
         </>
       )}

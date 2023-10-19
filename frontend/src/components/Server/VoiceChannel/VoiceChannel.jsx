@@ -22,7 +22,8 @@ const VoiceChannel = ({
   hoveredVoiceChannelId,
   setHoveredVoiceChannelId,
   isAdmin,
-  removeChannelLocally
+  removeChannelLocally,
+  renameChannelLocally
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { user, socket, currentVoiceChannelId, setCurrentVoiceChannelId, displayRoom, setDisplayRoom } = useContext(Context)
@@ -150,6 +151,7 @@ const VoiceChannel = ({
             id={id}
             name={name}
             removeChannelLocally={removeChannelLocally}
+            renameChannelLocally={renameChannelLocally}
           />
         </>
         )}

@@ -27,7 +27,8 @@ const Category = ({
   setHoveredTextChannelId,
   hoveredVoiceChannelId,
   setHoveredVoiceChannelId,
-  removeChannelLocally
+  removeChannelLocally,
+  renameChannelLocally
 }) => {
   const [hovered,setHovered] = useState(false)
 
@@ -67,6 +68,7 @@ const Category = ({
             setHoveredTextChannelId={setHoveredTextChannelId}
             isAdmin={isAdmin}
             removeChannelLocally={removeChannelLocally}
+            renameChannelLocally={renameChannelLocally}
           />
         }
       })}
@@ -81,6 +83,7 @@ const Category = ({
             setHoveredVoiceChannelId={setHoveredVoiceChannelId}
             isAdmin={isAdmin}
             removeChannelLocally={removeChannelLocally}
+            renameChannelLocally={renameChannelLocally}
           />
         }
       })}

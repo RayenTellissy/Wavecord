@@ -8,7 +8,7 @@ import { Context } from '../../Context/Context';
 // styles
 import "./EditChannelModal.css"
 
-const EditChannelModal = ({ isOpen, onClose, id, name, channelType, removeChannelLocally }) => {
+const EditChannelModal = ({ isOpen, onClose, id, name, channelType, removeChannelLocally, renameChannelLocally }) => {
   const { currentVoiceChannelId, setCurrentVoiceChannelId } = useContext(Context)
   const [channelName,setChannelName] = useState(name)
   const [askDelete,setAskDelete] = useState(false)
@@ -47,6 +47,7 @@ const EditChannelModal = ({ isOpen, onClose, id, name, channelType, removeChanne
     if(!channelName || channelName === name || channelName.length > 15) return
     try {
       if(channelType === "text"){
+        renameChannelLocally("text", id, channelName)
         await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/renameTextChannel`, {
           id,
           name: channelName
@@ -55,6 +56,7 @@ const EditChannelModal = ({ isOpen, onClose, id, name, channelType, removeChanne
         })
       }
       else if(channelType === "voice"){
+        renameChannelLocally("voice", id, channelName)
         await axios.post(`${import.meta.env.VITE_SERVER_URL}/servers/renameVoiceChannel`, {
           id,
           name: channelName
