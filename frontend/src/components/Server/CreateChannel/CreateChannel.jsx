@@ -10,6 +10,8 @@ import axios from 'axios';
 // components
 import Switch from "../../common/Switch/Switch"
 
+// styles
+import "./CreateChannel.css"
 
 const CreateChannel = ({
   isOpen,

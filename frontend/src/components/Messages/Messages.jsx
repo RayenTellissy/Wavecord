@@ -292,6 +292,7 @@ const Messages = () => {
   const loadMore = () => {
     setLoadedMore(true)
     setAmount(prevAmount => prevAmount + 10)
+    
   }
 
   const editMessageLocally = (messageId, newMessage) => {

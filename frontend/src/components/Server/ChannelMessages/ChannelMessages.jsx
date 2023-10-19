@@ -33,6 +33,7 @@ const ChannelMessages = ({
   const [amount,setAmount] = useState(15)
   const [hasMore,setHasMore] = useState(null)
   const [loadedMore,setLoadedMore] = useState(false)
+  const messagesRef = useRef(messages)
   const messagesEndRef = useRef(null)
   const messagesContainerRef = useRef(null)
   var isScrolling = false // used for debounce
@@ -79,6 +80,7 @@ const ChannelMessages = ({
   }, [socket])
 
   useEffect(() => {
+    messagesRef.current = messages
     if(messages && messages.length){
       scrollToBottom()
     }
@@ -206,7 +208,7 @@ const ChannelMessages = ({
   }
 
   const editMessageLocally = (messageId, newMessage) => {
-    var messagesCopy = [...messages]
+    var messagesCopy = [...messagesRef.current]
     const index = messagesCopy.findIndex(e => e.id === messageId)
     if(index !== -1){
       messagesCopy[index].message = newMessage
@@ -239,6 +241,7 @@ const ChannelMessages = ({
                     username={e.sender.username}
                     image={e.sender.image}
                     message={e.message}
+                    edited={e.edited}
                     type={e.type}
                     created_at={e.created_at}
                     conversationType="server"

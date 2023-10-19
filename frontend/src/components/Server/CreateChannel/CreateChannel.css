@@ -1,0 +1,180 @@
+.server-category-modal-body-type {
+  padding: 8px;
+  border-radius: 4px;
+  background-color: #2b2d31;
+  margin: 5px 0px;
+}
+
+#server-category-modal-body-text-type-active {
+  background-color: #41444a;
+}
+
+#server-category-modal-body-text-type-inactive:hover {
+  background-color: #393b41;
+}
+
+#server-category-modal-body-text-type-inactive:active {
+  background-color: #41444a;
+}
+
+#server-category-modal-body-voice-type-active {
+  background-color: #41444a;
+}
+
+#server-category-modal-body-voice-type-inactive:hover {
+  background-color: #393b41;
+}
+
+#server-category-modal-body-voice-type-inactive:active {
+  background-color: #41444a;
+}
+
+#server-category-modal-header-1 {
+  font-family: GibsonMedium;
+  font-size: 25px;
+  color: #f2f3f5;
+}
+
+#server-category-modal-header-2 {
+  font-family: GibsonLight;
+  font-size: 16px;
+  color: #adb1b9;
+}
+
+#server-category-modal-body-channel-type {
+  color: #a5aab2;
+  font-family: GibsonMedium;
+  font-size: 15px;
+  margin-bottom: 5px;
+}
+
+#server-category-modal-body-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.server-category-modal-body-type-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  position: relative;
+}
+
+.server-category-modal-body-type-details {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.server-category-modal-body-type-title {
+  font-family: GibsonMedium;
+  font-size: 20px;
+  color: #d6d8db;
+  margin-bottom: 8px;
+}
+
+.server-category-modal-body-type-description {
+  font-family: GibsonRegular;
+  font-size: 14px;
+  color: #a5aab1;
+}
+
+.server-category-modal-body-type-icon {
+  margin: 0px 11px;
+}
+
+.server-category-modal-body-radio-container {
+  position: absolute;
+  right: 10px;
+}
+
+#server-category-modal-body-channel-name {
+  color: #a5aab2;
+  font-family: GibsonMedium;
+  font-size: 15px;
+  margin-top: 15px;
+}
+
+#server-category-modal-body-channel-name-input {
+  background-color: #1e1f22;
+  width: 100%;
+  padding: 8px;
+  border-radius: 3px;
+  font-family: GibsonRegular;
+  padding-left: 30px;
+}
+
+#server-category-modal-body-channel-input-container {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  align-items: center;
+}
+
+.server-category-modal-body-channel-name-input-icon {
+  position: absolute;
+  left: 10px;
+  color: #b6b8be;
+}
+
+#server-category-modal-body-private-title-container {
+  display: flex;
+  flex-direction: row;
+  margin-top: 20px;
+  justify-content: space-between;
+}
+
+#server-category-modal-body-private-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+#server-category-modal-body-private-icon {
+  margin-right: 8px;
+  color: #b3b4b7;
+}
+
+#server-category-modal-body-private-text {
+  font-family: GibsonMedium;
+  font-size: 18px;
+}
+
+#server-category-modal-body-private-description {
+  font-family: GibsonRegular;
+  font-size: 14px;
+  color: #a5aab1;
+  margin: 5px 0px;
+}
+
+.server-category-modal-body-private-create-button {
+  padding: 10px;
+  width: 140px;
+  border-radius: 4px;
+  font-family: GibsonRegular;
+  margin-left: 20px;
+  align-items: center;
+}
+
+#server-category-modal-body-private-create-button-active {
+  background-color: #5865f1;
+  color: #f3f4fe;
+}
+
+#server-category-modal-body-private-create-button-inactive {
+  background-color: #414891;
+  color: #8a8c94;
+  cursor: not-allowed;
+}
+
+#server-category-modal-body-private-create-button-active:hover {
+  background-color: #4752c4;
+}
+
+#server-category-modal-body-private-cancel-button {
+  font-family: GibsonRegular;
+}
+
+#server-category-modal-body-private-cancel-button:hover {
+  text-decoration: underline;
+}
