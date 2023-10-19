@@ -2,10 +2,13 @@ import React, { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import useSound from 'use-sound'
 import { HiSpeakerWave } from "react-icons/hi2"
+import { useDisclosure, Tooltip } from '@chakra-ui/react';
+import { IoIosSettings } from "react-icons/io"
 
 // components
 import { Context } from '../../Context/Context';
 import UserInRoom from './UserInRoom/UserInRoom';
+import EditChannelModal from '../EditChannelModal/EditChannelModal';
 
 // styles
 import "./VoiceChannel.css"
@@ -17,8 +20,11 @@ const VoiceChannel = ({
   id,
   name,
   hoveredVoiceChannelId,
-  setHoveredVoiceChannelId
+  setHoveredVoiceChannelId,
+  isAdmin,
+  removeChannelLocally
 }) => {
+  const { isOpen, onOpen, onClose } = useDisclosure()
   const { user, socket, currentVoiceChannelId, setCurrentVoiceChannelId, displayRoom, setDisplayRoom } = useContext(Context)
   const [users,setUsers] = useState([])
   const [playJoin] = useSound(JoinRoom, { volume: 0.2 })
@@ -46,12 +52,15 @@ const VoiceChannel = ({
   },[socket])
 
   useEffect(() => {
+    if(!currentVoiceChannelId){
+      setDisplayRoom(false)
+    }
     // locally remove the user from this voice channel when he leaves
     if(currentVoiceChannelId !== id){
       setUsers(users.filter(e => e.id !== user.id))
       setHoveredVoiceChannelId("")
     }
-  },[currentVoiceChannelId])
+  }, [currentVoiceChannelId])
 
   const fetchUsersInRoom = async () => {
     try {
@@ -94,20 +103,56 @@ const VoiceChannel = ({
     setHoveredVoiceChannelId("")
   }
 
+  const openModal = (e) => {
+    e.stopPropagation()
+    onOpen()
+  }
+
   return (
-    <button id='server-voice-channel-button'
+    <div id='server-voice-channel-button'
       onClick={handleClick} 
       onMouseEnter={() => handleActive(true)}
       onMouseLeave={() => handleActive(false)}
     >
       <div id='server-voice-channel-title-container'>
-        <HiSpeakerWave id='server-voice-channel-speaker'/>
-        <p id={currentVoiceChannelId === id || hoveredVoiceChannelId === id
-          ? 'server-voice-channel-name-active'
-          : 'server-voice-channel-name'}
-        >
-          { name }
-        </p>
+        <div id='server-voice-channel-title-info'>
+          <HiSpeakerWave id='server-voice-channel-speaker'/>
+          <p id={currentVoiceChannelId === id || hoveredVoiceChannelId === id
+            ? 'server-voice-channel-name-active'
+            : 'server-voice-channel-name'}
+          >
+            { name }
+          </p>
+        </div>
+        {isAdmin && (
+          <>
+          {(currentVoiceChannelId === id || hoveredVoiceChannelId === id) && (
+            <Tooltip
+              label="Edit Channel"
+              placement='top'
+              color="white"
+              backgroundColor="black"
+              fontFamily="GibsonRegular"
+              hasArrow={true}
+              arrowSize={10}
+              padding="7px 13px"
+              borderRadius={7}
+              >
+              <button onClick={openModal}>
+                <IoIosSettings size={18} color='#949ba4'/>
+              </button>
+            </Tooltip>
+          )}
+          <EditChannelModal
+            channelType="voice"
+            isOpen={isOpen}
+            onClose={onClose}
+            id={id}
+            name={name}
+            removeChannelLocally={removeChannelLocally}
+          />
+        </>
+        )}
       </div>
       {users && users.map((e,i) => {
         return <UserInRoom
@@ -121,7 +166,7 @@ const VoiceChannel = ({
           userScreenShareEnabled={e.isScreenShareEnabled}
         />
       })}
-    </button>
+    </div>
   );
 };
 

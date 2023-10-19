@@ -53,10 +53,7 @@ const Server = () => {
   const [hoveredVoiceChannelId,setHoveredVoiceChannelId] = useState("")
   const [categoryChosen,setCategoryChosen] = useState("")
   const [categoryIdChosen,setCategoryIdChosen] = useState("")
-  const [modalChannelType,setModalChannelType] = useState("text")
-  const [modalChannelName,setModalChannelName] = useState("")
   const [showDropdown,setShowDropdown] = useState(false)
-  const [isLoading,setisLoading] = useState(false)
   const [isFetching,setIsFetching] = useState(null)
   const [role,setRole] = useState({})
   const [playJoin] = useSound(JoinRoom, { volume: 0.2 })
@@ -152,6 +149,43 @@ const Server = () => {
     }
   }
 
+  const removeChannelLocally = (channelType, channelId) => {
+    if(channelType === "text"){
+      const categoryIndex = server.categories.findIndex(category => {
+        return category.Text_channels.some(channel => channel.id === channelId)
+      })
+    
+      const textChannelIndex = server.categories[categoryIndex].Text_channels.findIndex(channel => {
+        return channel.id === channelId
+      })
+
+      setServer(prevServer => ({
+        ...prevServer,
+        categories: server.categories.map(category => {
+            const textChannels = category.Text_channels.filter((channel, index) => index !== textChannelIndex)
+            return { ...category, Text_channels: textChannels }
+        })
+      }))
+    }
+    else if(channelType === "voice"){
+      const categoryIndex = server.categories.findIndex(category => {
+        return category.Voice_channels.some(channel => channel.id === channelId)
+      })
+    
+      const voiceChannelIndex = server.categories[categoryIndex].Voice_channels.findIndex(channel => {
+        return channel.id === channelId
+      })
+
+      setServer(prevServer => ({
+        ...prevServer,
+        categories: server.categories.map(category => {
+            const voiceChannels = category.Voice_channels.filter((channel, index) => index !== voiceChannelIndex)
+            return { ...category, Voice_channels: voiceChannels }
+        })
+      }))
+    }
+  }
+
   return (
     <div id='server-container'>
       <button id='voice-channel-join-sound-activator' onClick={() => playJoin()}/>
@@ -215,6 +249,7 @@ const Server = () => {
                     setHoveredTextChannelId={setHoveredTextChannelId}
                     hoveredVoiceChannelId={hoveredVoiceChannelId}
                     setHoveredVoiceChannelId={setHoveredVoiceChannelId}
+                    removeChannelLocally={removeChannelLocally}
                   />
                 })}
               </>

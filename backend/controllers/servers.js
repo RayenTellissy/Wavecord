@@ -1049,5 +1049,83 @@ module.exports = {
     catch(error){
       res.send(error)
     }
+  },
+
+  removeTextChannel: async (req,res) => {
+    try {
+      const { id } = req.body
+
+      await prisma.text_channels.delete({
+        where: {
+          id
+        }
+      })
+
+      res.send({ success: true })
+    }
+    catch(error){
+      res.send(error)
+    }
+  },
+
+  removeVoiceChannel: async (req,res) => {
+    try {
+      const { id } = req.body
+
+      await prisma.voice_channels.delete({
+        where: {
+          id
+        }
+      })
+
+      res.send({ success: true })
+    }
+    catch(error){
+      res.send(error)
+    }
+  },
+
+  renameTextChannel: async (req,res) => {
+    try {
+      const { id, name } = req.body
+
+      if(name.length > 15) return res.send({ error: "Channel name is too long" })
+
+      await prisma.text_channels.update({
+        where: {
+          id
+        },
+        data: {
+          name
+        }
+      })
+      
+      res.send({ success: true })
+    }
+    catch(error){
+      res.send(error)
+    }
+  },
+
+  renameVoiceChannel: async (req,res) => {
+    try {
+      const { id, name } = req.body
+
+      if(name.length > 15) return res.send({ error: "Channel name is too long" })
+
+      await prisma.voice_channels.update({
+        where: {
+          id
+        },
+        data: {
+          name
+        }
+      })
+      
+      res.send({ success: true })
+    }
+    catch(error){
+      res.send(error)
+    }
   }
 }

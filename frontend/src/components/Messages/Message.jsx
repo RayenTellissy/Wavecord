@@ -34,11 +34,11 @@ const Message = ({
 
   const deleteMessage = async () => {
     try {
+      setIsDeleting(true)
       socket.emit("delete_message", {
         messageId: id,
         conversation
       })
-      setIsDeleting(true)
       if (conversationType === "dm") {
         await axios.post(`${import.meta.env.VITE_SERVER_URL}/conversations/deleteMessage`, {
           senderId,
@@ -147,6 +147,8 @@ const Message = ({
         hovered={hovered}
         deleteMessage={deleteMessage}
         editMessage={setIsEditing}
+        message={message}
+        image={image}
       />}
     </div>
   );

@@ -1,4 +1,4 @@
-#dm-message-util-buttons {
+#message-util-buttons {
   position: absolute;
   top: -20px;
   right: 20px;
@@ -10,4 +10,65 @@
   flex-direction: row;
   align-items: center;
   gap: 15px;
+}
+
+#message-util-header-text {
+  font-family: GibsonMedium;
+  color: #edecef;
+}
+
+#message-util-modal-body {
+  font-family: GibsonRegular;
+  color: #b6bbbd;
+  margin: 15px 0px
+}
+
+#message-util-message-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-top: 10px;
+  box-shadow: 0px 0px 5px 3px #27292d;
+  padding: 10px;
+}
+
+#message-util-message {
+  font-size: 20px;
+  font-family: GibsonRegular;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 80%;
+  color: #c3c5c9;
+}
+
+#message-util-modal-footer {
+  display: flex;
+  flex-direction: row;
+}
+
+#message-util-modal-delete {
+  background-color: #da373c;
+  padding: 9px;
+  width: 130px;
+  border-radius: 3px;
+  font-family: GibsonRegular;
+  transition: .2s ease;
+  margin-left: 20px;
+}
+
+#message-util-modal-delete:hover {
+  background-color: #a12828;
+}
+
+#message-util-modal-delete:active {
+  background-color: #8f2022;
+}
+
+#message-util-modal-cancel {
+  font-family: GibsonRegular;
+}
+
+#message-util-modal-cancel:hover {
+  text-decoration: underline;
 }

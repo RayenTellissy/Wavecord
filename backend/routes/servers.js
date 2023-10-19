@@ -32,6 +32,10 @@ const {
   fetchUsersInRoom,
   deleteMessage,
   editMessage,
+  removeTextChannel,
+  removeVoiceChannel,
+  renameTextChannel,
+  renameVoiceChannel,
 } = require("../controllers/servers")
 const { createLimit, joinLimit, deleteLimit, leaveLimit } = require("../middleware/serverLimiter")
 const authentication = require("../middleware/authentication")
@@ -51,6 +55,10 @@ router.post("/join", authentication, joinServer)
 router.post("/createCategory", authentication, createCategory)
 router.post("/createTextChannel", authentication, createTextChannel)
 router.post("/createVoiceChannel", authentication, createVoiceChannel)
+router.post("/removeTextChannel", authentication, removeTextChannel)
+router.post("/removeVoiceChannel", authentication, removeVoiceChannel)
+router.post("/renameTextChannel", authentication, renameTextChannel)
+router.post("/renameVoiceChannel", authentication, renameVoiceChannel)
 router.post("/fetchTextChannelMessages", authentication, fetchTextChannelMessages)
 router.post("/sendMessage", authentication, sendMessage)
 router.post("/editMessage", authentication, editMessage)

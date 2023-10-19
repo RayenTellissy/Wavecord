@@ -1,0 +1,57 @@
+#edit-channel-modal-header {
+  font-family: GibsonMedium;
+}
+
+#edit-channel-body {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.edit-channel-text {
+  color: #aeb2ba;
+  font-family: GibsonMedium;
+}
+
+#edit-channel-input {
+  font-family: GibsonRegular;
+  background-color: #1f1f23;
+  border-radius: 3px;
+  padding: 7px;
+  width: 100%;
+}
+
+#edit-channel-delete-button {
+  background-color: #da373c;
+  padding: 9px;
+  width: 130px;
+  border-radius: 3px;
+  font-family: GibsonRegular;
+  transition: .2s ease;
+  margin-bottom: 10px;
+}
+
+#edit-channel-delete-button:hover {
+  background-color: #a12828;
+}
+
+#edit-channel-delete-button:active {
+  background-color: #8f2022;
+}
+
+#edit-channe-modal-done {
+  font-family: GibsonRegular;
+  background-color: #5865f2;
+  transition: .2s ease;
+  height: 40px;
+  width: 100px;
+  border-radius: 4px;
+}
+
+#edit-channe-modal-done:hover {
+  background-color: #4752c4;
+}
+
+#edit-channe-modal-done:active {
+  background-color: #3c45a5;
+}
