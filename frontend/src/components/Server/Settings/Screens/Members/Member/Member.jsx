@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { BiPlus, BiDotsVerticalRounded, BiSearch } from "react-icons/bi"
 import { Popover, PopoverBody, PopoverContent, PopoverTrigger, useDisclosure } from '@chakra-ui/react';
-import { BeatLoader } from 'react-spinners';
 
 // components
 import Avatar from "../../../../../common/Avatar/Avatar"

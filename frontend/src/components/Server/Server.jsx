@@ -10,7 +10,6 @@ import {
 } from "@chakra-ui/react"
 import { IoIosArrowDown } from "react-icons/io"
 import { MdClose } from "react-icons/md"
-import { RiVerifiedBadgeFill } from "react-icons/ri"
 import useSound from 'use-sound';
 
 // components
@@ -33,6 +32,7 @@ import { applyMemorization, memorizeTextChannel } from "../../utils/Helper/memor
 // sounds
 import JoinRoom from "../../assets/sounds/JoinRoom.mp3"
 import LeaveRoom from "../../assets/sounds/LeaveRoom.mp3"
+import VerificationBadge from '../common/VerificationBadge/VerificationBadge';
 
 const Server = () => {
   const { 
@@ -40,7 +40,6 @@ const Server = () => {
     socket,
     displayRoom,
     setDisplayRoom,
-    fetchServers,
     currentVoiceChannelId,
     currentServerId
   } = useContext(Context)
@@ -70,10 +69,6 @@ const Server = () => {
       window.removeEventListener("beforeunload", handleUnload)
     }
   },[currentServerId])
-  
-  useEffect(() => {
-    console.log(role)
-  }, [role])
 
   useEffect(() => {
     handleDefaultChannel()
@@ -109,7 +104,6 @@ const Server = () => {
       console.log(error)
     }
   }
-
 
   const handlePopoverOpen = () => {
     setShowDropdown(true)
@@ -237,7 +231,7 @@ const Server = () => {
               <button id='server-name-container'>
                 <div id='server-popover-name-icon'>
                   {isFetching ? <SimpleLoader /> : <>
-                    <p id='server-name'>{server.verified && <RiVerifiedBadgeFill id='server-verified-badge' />}
+                    <p id='server-name'>{server.verified && <VerificationBadge />}
                       {server.name}
                     </p>
                     <div id='server-banner-icon-container'>

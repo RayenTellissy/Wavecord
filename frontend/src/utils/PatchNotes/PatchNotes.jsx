@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalFooter } from "@chakra-ui/react"
+import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton } from "@chakra-ui/react"
 
 // styles
 import "./PatchNotes.css"
@@ -23,6 +23,7 @@ const PatchNotes = ({ isOpen, onOpen, onClose }) => {
     <Modal isOpen={isOpen} onClose={onClose} size={"lg"}>
       <ModalOverlay bgColor={"blackAlpha.700"}/>
       <ModalContent bgColor="#313338">
+        <ModalCloseButton />
         <ModalHeader bgColor="#2b2d31" borderTopRadius={7}>
           <p id='patch-notes-header-text'>What's New in { appVersion }!</p>
         </ModalHeader>

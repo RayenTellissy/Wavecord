@@ -13,10 +13,6 @@
   align-items: center;
 }
 
-#server-verified-badge {
-  margin-right: 5px;
-}
-
 #server-name-container {
   border-bottom: 3px #3c3f45 solid;
   border-radius: 2px;

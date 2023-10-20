@@ -16,7 +16,7 @@ import Facebook from '../../common/FacebookButton/Facebook';
 import "./Login.css"
 
 const Login = () => {
-  const { setUser, handleConnect } = useContext(Context)
+  const { setUser } = useContext(Context)
   const [username,setUsername] = useState("")
   const [password,setPassword] = useState("")
   const [isLoading,setIsLoading] = useState(false)

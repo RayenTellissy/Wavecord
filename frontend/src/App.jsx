@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom"
 import { useDisclosure } from "@chakra-ui/react"
 
 // common components
-import BugReport from "./utils/BugReport/BugReport"
 import { Context } from "./components/Context/Context"
 import BanModal from "./utils/BanModal/BanModal"
 import NotificationSound from "./utils/NotificationSound"
