@@ -8,6 +8,7 @@
   height: 100%;
   overflow-y: auto;
   flex: 1;
+  position: relative;
 }
 
 #server-content-main{

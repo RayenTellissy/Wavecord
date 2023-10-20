@@ -53,6 +53,7 @@ module.exports = {
       const role = await prisma.usersInServers.findFirst({
         where: {
           userId,
+          serverId
         },
         select: {
           role: true

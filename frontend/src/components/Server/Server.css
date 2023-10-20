@@ -8,6 +8,13 @@
   font-size: 20px;
   white-space: nowrap;
   overflow: hidden;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+#server-verified-badge {
+  margin-right: 5px;
 }
 
 #server-name-container {

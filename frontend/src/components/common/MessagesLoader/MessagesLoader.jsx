@@ -1,5 +1,5 @@
 import React from 'react';
-import { LuLoader, LuLoader2 } from "react-icons/lu"
+import { LuLoader2 } from "react-icons/lu"
 
 // styles
 import "./MessagesLoader.css"

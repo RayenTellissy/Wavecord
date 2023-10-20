@@ -10,6 +10,7 @@ import {
 } from "@chakra-ui/react"
 import { IoIosArrowDown } from "react-icons/io"
 import { MdClose } from "react-icons/md"
+import { RiVerifiedBadgeFill } from "react-icons/ri"
 import useSound from 'use-sound';
 
 // components
@@ -62,7 +63,6 @@ const Server = () => {
   useEffect(() => {
     window.addEventListener("beforeunload", (e) => handleUnload(e))
     socket.emit("open_server", currentServerId)
-    fetchServers()
     applyMemorization(currentServerId, setCurrentTextChannelId, setCurrentTextChannel) // text channel memo
     fetchData()
     return () => {
@@ -70,6 +70,10 @@ const Server = () => {
       window.removeEventListener("beforeunload", handleUnload)
     }
   },[currentServerId])
+  
+  useEffect(() => {
+    console.log(role)
+  }, [role])
 
   useEffect(() => {
     handleDefaultChannel()
@@ -233,7 +237,9 @@ const Server = () => {
               <button id='server-name-container'>
                 <div id='server-popover-name-icon'>
                   {isFetching ? <SimpleLoader /> : <>
-                    <p id='server-name'>{server.name}</p>
+                    <p id='server-name'>{server.verified && <RiVerifiedBadgeFill id='server-verified-badge' />}
+                      {server.name}
+                    </p>
                     <div id='server-banner-icon-container'>
                       {showDropdown
                         ? <MdClose size={25}/>

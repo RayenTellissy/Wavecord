@@ -12,7 +12,7 @@ import BeatLoader from 'react-spinners/BeatLoader';
 import { Context } from '../../../../Context/Context';
 
 const Join = ({ onClose, setScreen }) => {
-  const { user, setCurrentServerId, setDisplay } = useContext(Context)
+  const { user, setCurrentServerId, setDisplay, fetchServers } = useContext(Context)
   const [joinDisabled, setJoinDisabled] = useState(false)
   const [invite,setInvite] = useState("")
   const [isLoading,setIsLoading] = useState(false)
@@ -63,7 +63,7 @@ const Join = ({ onClose, setScreen }) => {
         position: "top",
       })
     }
-
+    fetchServers()
     onClose() // close modal
     setCurrentServerId(response.data.serverId)
     setDisplay("server")

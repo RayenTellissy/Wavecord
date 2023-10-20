@@ -35,6 +35,7 @@ const ServerSettings = () => {
       console.log(error)
     }
   }
+
   const handleKeyPress = (e) => {
     if(e.key === "Escape"){
       navigate("/")

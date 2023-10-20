@@ -44,6 +44,7 @@ model Servers {
   name           String
   image          String
   server_link    String              @unique @default(cuid())
+  verified       Boolean             @default(false)
   created_at     DateTime            @default(now())
   owner          Users               @relation(fields: [ownerId], references: [id])
   ownerId        String
