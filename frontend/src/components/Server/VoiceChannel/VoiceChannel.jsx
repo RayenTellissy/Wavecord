@@ -124,6 +124,9 @@ const VoiceChannel = ({
           >
             { name }
           </p>
+          {currentVoiceChannelId === id && <p id='server-voice-channel-click-display'>
+            {displayRoom ? "(click to display text channel)" : "(click to display room)"}
+          </p>}
         </div>
         {isAdmin && (
           <>

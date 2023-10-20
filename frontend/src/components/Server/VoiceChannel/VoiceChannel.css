@@ -45,3 +45,9 @@
   margin-right: 7px;
   color: #949ba4;
 }
+
+#server-voice-channel-click-display {
+  font-family: GibsonLight;
+  font-size: 11px;
+  margin-left: 10px;
+}

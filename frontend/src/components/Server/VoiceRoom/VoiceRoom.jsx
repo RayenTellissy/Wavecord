@@ -7,6 +7,9 @@ import { LiveKitRoom, VideoConference } from "@livekit/components-react"
 import { Context } from '../../Context/Context';
 import ContextTransfer from './ContextTransfer';
 
+// styles
+import "./VoiceRoom.css"
+
 const VoiceRoom = ({
   serverId,
   channelId,
@@ -77,7 +80,7 @@ const VoiceRoom = ({
   }
 
   return (
-    <div>
+    <div id='livekit-renderer'>
       <LiveKitRoom
         serverUrl={import.meta.env.VITE_LIVEKIT_PUBLIC_URL}
         token={token}
@@ -85,7 +88,7 @@ const VoiceRoom = ({
         audio={true}
         onConnected={handleConnect}
         onDisconnected={handleDisconnect}
-        style={{ backgroundColor: "black"}}
+        style={{ backgroundColor: "#1f1f23" }}
       >
         <ContextTransfer
           serverId={serverId}

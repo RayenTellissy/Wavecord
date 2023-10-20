@@ -59,10 +59,6 @@ const Messages = () => {
       fetchMessages()
     }
   }, [amount])
-
-  useEffect(() => {
-    console.log(blockedConversation)
-  }, [blockedConversation])
   
   // handling conversation switching
   useEffect(() => {

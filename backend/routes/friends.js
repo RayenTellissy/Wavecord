@@ -12,8 +12,9 @@ const {
   removeFriend,
   fetchFriendsWithNoConversation
 } = require("../controllers/friends")
+
 const authentication = require("../middleware/authentication")
-const { addFriendLimit, removeFriendLimit, blockUserLimit, unblockUserLimit } = require("../middleware/friendsLimiter")
+const { addFriendLimit, removeFriendLimit, blockUserLimit, unblockUserLimit, acceptFriendRequestLimit } = require("../middleware/friendsLimiter")
 
 router.get("/fetchPending/:id", authentication, fetchPending)
 router.get("/removeRequest/:id", authentication, removeRequest)
@@ -24,7 +25,7 @@ router.post("/fetchOnlineFriends", authentication, fetchOnlineFriends)
 router.post("/fetchAllFriends", authentication, fetchAllFriends)
 router.post("/addFriend", addFriendLimit, authentication, addFriend)
 router.post("/removeFriend", removeFriendLimit, authentication, removeFriend)
-router.post("/acceptFriendRequest", acceptFriendRequest, authentication, acceptFriendRequest)
+router.post("/acceptFriendRequest", acceptFriendRequestLimit, authentication, acceptFriendRequest)
 router.post("/blockUser", blockUserLimit, authentication, blockUser)
 router.post("/unblockUser", unblockUserLimit, authentication, unblockUser)
 

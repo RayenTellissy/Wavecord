@@ -5,4 +5,6 @@
   font-size: 14px;
   background-color: #f23f42;
   color: #fae1ff;
+  display: flex;
+  justify-content: center;
 }

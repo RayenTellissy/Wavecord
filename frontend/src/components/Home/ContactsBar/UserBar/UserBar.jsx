@@ -20,6 +20,8 @@ import "./UserBar.css"
 
 // sounds
 import LeaveRoom from "../../../../assets/sounds/LeaveRoom.mp3"
+import Mute from "../../../../assets/sounds/mute.mp3"
+import Unmute from "../../../../assets/sounds/unmute.mp3"
 
 // helper functions
 import returnServerIds from '../../../../utils/Helper/returnServerId';
@@ -36,6 +38,7 @@ const UserBar = () => {
     setCameraEnabled,
     selectScreenShare,
     setSelectScreenShare,
+    screenShareEnabled,
     connectionQuality,
     status,
     setStatus,
@@ -47,6 +50,18 @@ const UserBar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [statusHovered,setStatusHovered] = useState("")
   const [playLeave] = useSound(LeaveRoom, { volume: 0.2 })
+  const [playMute] = useSound(Mute, { volume: 0.2 })
+  const [playUnmute] = useSound(Unmute, { volume: 0.2 })
+
+  // use effect that handles muting and unmuting sound effects
+  const changeMicActivity = (micEnabled) => {
+    if(micEnabled){
+      playMute()
+      return setMicEnabled(false)
+    }
+    playUnmute()
+    setMicEnabled(true)
+  }
 
   const disconnect = () => {
     playLeave()
@@ -116,8 +131,12 @@ const UserBar = () => {
           </Tooltip>
         </div>
         <div id='home-contacts-userbar-voice-tools-buttons'>
-          <ToolButton tool="Camera" callback={() => setCameraEnabled(!cameraEnabled)}/>
-          <ToolButton tool="Share Screen" callback={() => setSelectScreenShare(!selectScreenShare)}/>
+          <ToolButton tool="Camera" cameraEnabled={cameraEnabled} callback={() => setCameraEnabled(!cameraEnabled)}/>
+          <ToolButton
+            tool="Share Screen"
+            screenShareEnabled={screenShareEnabled}
+            callback={() => setSelectScreenShare(!selectScreenShare)}
+          />
         </div>
       </div>}
 
@@ -180,7 +199,7 @@ const UserBar = () => {
             padding="7px 13px"
             borderRadius={7}
           >
-            <button onClick={() => setMicEnabled(!micEnabled)}>
+            <button onClick={() => changeMicActivity(micEnabled)}>
               {micEnabled
               ? <BiSolidMicrophone className='home-contacts-userbar-icon'/>
               : <BiSolidMicrophoneOff className='home-contacts-userbar-icon'/>}
