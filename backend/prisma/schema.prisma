@@ -11,7 +11,7 @@ model Users {
   id                                 String                       @id
   username                           String                       @unique
   email                              String
-  image                              String?
+  image                              String?                      @default("https://tinyurl.com/wavecord")
   status                             Status                       @default(ONLINE)
   current_vc                         Voice_channels?              @relation(fields: [voice_channelId], references: [id])
   voice_channelId                    String?

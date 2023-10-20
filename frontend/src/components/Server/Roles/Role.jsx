@@ -14,7 +14,7 @@ const Role = ({ roleName, roleColor, users }) => {
         {users.map((e, i) => {
           if(e.user.status !== "OFFLINE"){
             return <button className='one-role-container' key={i}>
-              <Avatar status={e.user.status} />
+              <Avatar image={e.user.image} status={e.user.status} />
               <p style={{ color: roleColor, fontFamily: "GibsonRegular", fontSize: 18 }}>{e.user.username}</p>
             </button>
           }

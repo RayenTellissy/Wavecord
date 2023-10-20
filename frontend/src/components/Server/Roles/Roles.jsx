@@ -50,6 +50,7 @@ const Roles = ({ serverId, fetchServerData }) => {
       const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/servers/fetchUsersByRoles/${serverId}`, {
         withCredentials: true
       })
+      console.log(response.data)
       setRoles(response.data.withRole)
       setNoRoles(response.data.noRole)
       setOffline(response.data.offline)
@@ -71,14 +72,14 @@ const Roles = ({ serverId, fetchServerData }) => {
           {noRoles.length !== 0 && <p className='one-role-name'>ONLINE - { noRoles.length }</p>}
           {noRoles.map((e, i) => {
             return <button key={i} className='one-role-container'>
-              <Avatar status={e.user.status} />
+              <Avatar image={e.user.image} status={e.user.status} />
               <p className='one-role-username'>{e.user.username}</p>
             </button>
           })}
           {offline.length !== 0 && <p className='one-role-name' id='one-role-offline-name'>OFFLINE - { offline.length }</p>}
           {offline.map((e, i) => {
             return <button key={i} className='one-role-offline'>
-              <Avatar status={e.user.status} />
+              <Avatar image={e.user.image} status={e.user.status} />
               <p style={e.role ? { color: e.role.color } : { color: '#a6aeb3' }}>{e.user.username}</p>
             </button>
           })}
