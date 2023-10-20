@@ -61,7 +61,7 @@ module.exports = {
       const signature = req.headers["Stripe-Signature"]
 
       const event = stripe.webhooks.constructEvent(body, signature, process.env.STRIPE_WEBHOOK_SECRET)
-
+      
       const session = event.data.object
       const userId = session.metadata.userId
 
