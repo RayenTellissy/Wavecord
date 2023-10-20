@@ -88,13 +88,14 @@ const VoiceRoom = ({
         audio={true}
         onConnected={handleConnect}
         onDisconnected={handleDisconnect}
-        style={{ backgroundColor: "#1f1f23" }}
       >
         <ContextTransfer
           serverId={serverId}
           channelId={channelId}
         />
-        {displayRoom && <VideoConference/>}
+        <div style={{ opacity: displayRoom ? "100%" : "0%", backgroundColor: "#1f1f23" }}>
+          <VideoConference/>
+        </div>
       </LiveKitRoom>
     </div>
   );
