@@ -13,7 +13,7 @@ import ConfirmationModal from './ConfirmationModal/ConfirmationModal';
 import "./FriendButton.css"
 
 const FriendButton = ({ id, username, image, status, isUpdating, setIsUpdating, fetchUsers, toast, conversationId }) => {
-  const { user, setConversationChosen, setCurrentConversationId, setDisplay, setSelected } = useContext(Context)
+  const { user, setConversationChosen, setCurrentConversationId, setDisplay, setSelected, fetchConversations } = useContext(Context)
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [action,setAction] = useState(null)
 
@@ -88,6 +88,7 @@ const FriendButton = ({ id, username, image, status, isUpdating, setIsUpdating, 
       }, {
         withCredentials: true
       })
+      fetchConversations()
       setCurrentConversationId(response.data.id)
       return setDisplay("directMessages")
     }
