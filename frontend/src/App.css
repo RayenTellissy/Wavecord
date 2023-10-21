@@ -60,8 +60,7 @@ img {
 }
 
 p:not(.selectable),
-h1:not(.selectable),
-div:not(.selectable) {
+h1:not(.selectable) {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
