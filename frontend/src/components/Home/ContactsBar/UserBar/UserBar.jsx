@@ -54,7 +54,7 @@ const UserBar = () => {
   const [playUnmute] = useSound(Unmute, { volume: 0.2 })
 
   // use effect that handles muting and unmuting sound effects
-  const changeMicActivity = (micEnabled) => {
+  const changeMicActivity = () => {
     if(micEnabled){
       playMute()
       return setMicEnabled(false)
@@ -199,7 +199,7 @@ const UserBar = () => {
             padding="7px 13px"
             borderRadius={7}
           >
-            <button onClick={() => changeMicActivity(micEnabled)}>
+            <button onClick={changeMicActivity}>
               {micEnabled
               ? <BiSolidMicrophone className='home-contacts-userbar-icon'/>
               : <BiSolidMicrophoneOff className='home-contacts-userbar-icon'/>}

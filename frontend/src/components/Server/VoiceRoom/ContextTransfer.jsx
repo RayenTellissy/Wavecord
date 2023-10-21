@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useRoomContext, useParticipants } from '@livekit/components-react';
 import axios from 'axios';
+import useSound from 'use-sound';
 
 // components
 import { Context } from '../../Context/Context';
@@ -14,6 +15,10 @@ import {
   handleSpeaking,
   handleLocalScreenShare
 } from '../../../utils/Helper/roomEventsHandler';
+
+// sounds
+import enableScreenShare from "../../../assets/sounds/screenShareStarted.mp3"
+import disableScreenShare from "../../../assets/sounds/screenShareStopped.mp3"
 
 const ContextTransfer = ({ serverId, channelId }) => {
   const {
@@ -33,6 +38,8 @@ const ContextTransfer = ({ serverId, channelId }) => {
   const participants = useParticipants()
   const room = useRoomContext()
   const [connected,setConnected] = useState(false)
+  const [screenShareEnabled] = useSound(enableScreenShare, { volume: 0.2 })
+  const [screenShareDisabled] = useSound(disableScreenShare, { volume: 0.2 })
 
   // watching if user left the room
   useEffect(() => {
@@ -88,18 +95,18 @@ const ContextTransfer = ({ serverId, channelId }) => {
     if(connected){
       room.localParticipant.setMicrophoneEnabled(micEnabled)
     }
-  },[micEnabled])
+  }, [micEnabled, connected])
 
   useEffect(() => {
     if(connected){
       room.localParticipant.setCameraEnabled(cameraEnabled)
     }
-  },[cameraEnabled])
+  }, [cameraEnabled])
 
   useEffect(() => {
     room.localParticipant.setScreenShareEnabled(selectScreenShare)
     setSelectScreenShare(false)
-  },[selectScreenShare])
+  }, [selectScreenShare])
   
   useEffect(() => {
     handleRoomEvents()
@@ -108,19 +115,25 @@ const ContextTransfer = ({ serverId, channelId }) => {
       channelId,
       users: returnParticipantsInfo(participants)
     })
-  },[participants])
+  }, [participants])
 
   useEffect(() => {
     // handling localparticipant's camera activity
     handleLocalCamera(room.localParticipant.isCameraEnabled,setCameraEnabled)
-  },[room.localParticipant.isCameraEnabled])
+  }, [room.localParticipant.isCameraEnabled])
 
   useEffect(() => {
     // handling localparticipant's screen share activity
+    if(room.localParticipant.isScreenShareEnabled){
+      screenShareEnabled()
+    }
+    else {
+      screenShareDisabled()
+    }
     setScreenShareEnabled(room.localParticipant.isScreenShareEnabled)
     handleLocalScreenShare(room.localParticipant.isScreenShareEnabled,setScreenShareEnabled)
-  },[room.localParticipant.isScreenShareEnabled])
-
+  }, [room.localParticipant.isScreenShareEnabled])
+  
   const handleRoomEvents = () => {
     room.localParticipant.on("trackMuted", () => localMute(setMicEnabled))
     room.localParticipant.on("trackUnmuted", () => localUnmute(setMicEnabled))

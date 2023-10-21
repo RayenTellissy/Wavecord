@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react';
 import axios from 'axios';
 import "@livekit/components-styles"
-import { LiveKitRoom, VideoConference } from "@livekit/components-react"
+import { LiveKitRoom, RoomAudioRenderer, VideoConference } from "@livekit/components-react"
 
 // components
 import { Context } from '../../Context/Context';
@@ -93,9 +93,11 @@ const VoiceRoom = ({
           serverId={serverId}
           channelId={channelId}
         />
-        <div style={{ opacity: displayRoom ? "100%" : "0%", backgroundColor: "#1f1f23" }}>
+        {displayRoom 
+        ? <div style={{ backgroundColor: "#1f1f23" }}>
           <VideoConference/>
         </div>
+        : <RoomAudioRenderer />}
       </LiveKitRoom>
     </div>
   );
