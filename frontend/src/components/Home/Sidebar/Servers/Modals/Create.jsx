@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { FaCamera } from 'react-icons/fa';
+import { BiImageAdd } from "react-icons/bi"
 import BeatLoader from "react-spinners/BeatLoader"
 import {
   ModalHeader,
@@ -132,7 +132,7 @@ const Create = ({ setScreen, onClose }) => {
       <div id='home-server-bar-modal-container'>
         <p className='home-server-bar-modal-text'>Give your new server a personality with a name and an icon. You can always change it later.</p>
         <label id='home-server-bar-modal-create-camera-label' htmlFor='home-server-bar-modal-create-camera'>
-          {image ? <img id='home-server-bar-modal-create-picture' src={image} /> : <FaCamera/>}
+          {image ? <img id='home-server-bar-modal-create-picture' src={image} /> : <BiImageAdd size={100}/>}
         </label>
         <input id='home-server-bar-modal-create-camera' type='file' onChange={importImage} />
       </div>
