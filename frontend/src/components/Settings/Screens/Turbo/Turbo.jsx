@@ -14,8 +14,7 @@ const Turbo = () => {
   const handleSubmit = async () => {
     try {
       const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/payments/createSession`, {
-        id: user.id,
-        email: user.email
+        id: user.id
       }, {
         withCredentials: true
       })

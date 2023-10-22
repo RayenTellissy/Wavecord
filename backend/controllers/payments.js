@@ -4,14 +4,14 @@ const { prisma } = require("../prisma/connection")
 module.exports = {
   createSession: async (req,res) => {
     try {
-      const { id, email } = req.body
+      const { id } = req.body
 
       // checking if user is a registered stripe customer
       await stripe.customers.retrieve(id, async (error, customer) => {
         if(error){
           // if the customer doesn't exist in the stripe customers then create a new customer
           await stripe.customers.create({
-            email
+            id
           })
         }
       })
