@@ -1,11 +1,14 @@
 #server-settings-bans-container {
   width: 65%;
-  margin-top: 50px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 #server-settings-bans-title {
   font-family: GibsonMedium;
   font-size: 25px;
+  margin-top: 50px;
 }
 
 #server-settings-bans-search-container {
@@ -22,4 +25,10 @@
   width: 100%;
   margin: 20px 0px;
   padding-left: 20px;
+}
+
+#server-settings-bans-banned-users-container {
+  margin-top: 10px;
+  overflow-y: auto;
+  flex: 1;
 }

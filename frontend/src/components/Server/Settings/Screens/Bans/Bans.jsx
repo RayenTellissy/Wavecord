@@ -52,7 +52,7 @@ const Bans = ({ server }) => {
         />
         <BiSearch id='server-settings-members-search-input-icon' size={25}/>
       </div>
-      <div id='server-settings-bans-banned-users-container'>
+      <div id='server-settings-bans-banned-users-container' className='default-scrollbar'>
         {users.map((e,i) => {
           return <BannedUser
             key={i}
