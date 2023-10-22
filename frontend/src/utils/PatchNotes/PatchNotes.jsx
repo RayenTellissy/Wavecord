@@ -25,7 +25,7 @@ const PatchNotes = ({ isOpen, onOpen, onClose }) => {
       <ModalContent bgColor="#313338">
         <ModalCloseButton />
         <ModalHeader bgColor="#2b2d31" borderTopRadius={7}>
-          <p id='patch-notes-header-text'>What's New in { appVersion }!</p>
+          <p id='patch-notes-header-text'>Welcome to Wavecord!</p>
         </ModalHeader>
         <ModalBody padding={5} maxHeight="600px" overflowY="auto" className='default-scrollbar'>
           <div id='patch-notes-new-features-container'>
@@ -52,6 +52,8 @@ const PatchNotes = ({ isOpen, onOpen, onClose }) => {
               <p>- fixed a bug where a user that has been kicked or banned from a server can use the browser developer tools to get access back to the server.</p>
               <p>- fixed a bug where the if a user is admin in one server, then he has admin in every other server.</p>
               <p>- many other fixes...</p>
+              <br></br>
+              <h1 style={{ fontWeight: "bolder"}}>On a last note, please keep in mind that Wavecord is made by just one person. So the app might still have some bugs or issues, feel free to report the bugs in the bug report section in user settings. Thank you!</h1>
           </div>
         </ModalBody>
       </ModalContent>
