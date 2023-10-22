@@ -30,10 +30,10 @@ const Roles = ({ serverId, fetchServerData }) => {
 
   useEffect(() => {
     socket.on("receive_member_status", () => {
-      fetchRoles()
+      fetchRoles(true)
     })
     socket.on("receive_member_role_updated", data => {
-      fetchRoles()
+      fetchRoles(true)
       if(data.id === user.id){
         fetchServerData()
       }
@@ -44,9 +44,9 @@ const Roles = ({ serverId, fetchServerData }) => {
     }
   }, [socket])
 
-  const fetchRoles = async () => {
+  const fetchRoles = async (noLoader) => {
     try {
-      setIsLoading(true)
+      if(!noLoader) setIsLoading(true)
       const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/servers/fetchUsersByRoles/${serverId}`, {
         withCredentials: true
       })
