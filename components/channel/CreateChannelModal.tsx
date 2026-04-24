@@ -17,6 +17,7 @@ export function CreateChannelModal() {
 
   const open = isOpen && type === "createChannel";
   const serverId = data.serverId;
+  const categoryId = data.categoryId;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -27,13 +28,11 @@ export function CreateChannelModal() {
     try {
       const { data: channel } = await axios.post(
         `/api/servers/${serverId}/channels`,
-        { name: name.toLowerCase().replace(/\s+/g, "-"), type: channelType }
+        { name: name.toLowerCase().replace(/\s+/g, "-"), type: channelType, categoryId }
       );
       close();
       setName("");
-      if (channelType === "TEXT") {
-        router.push(`/servers/${serverId}/channels/${channel.id}`);
-      }
+      router.push(`/servers/${serverId}/channels/${channel.id}`);
       router.refresh();
     } catch (err) {
       if (axios.isAxiosError(err)) {

@@ -19,6 +19,7 @@ export type ModalType =
 interface ModalData {
   serverId?: string;
   channelId?: string;
+  categoryId?: string;
   memberId?: string;
   messageId?: string;
   inviteCode?: string;

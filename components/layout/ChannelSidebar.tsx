@@ -215,7 +215,7 @@ export function ChannelSidebar({ server, currentUserId, currentMemberRole }: Cha
                   <span
                     onClick={(e) => {
                       e.stopPropagation();
-                      open("createChannel", { serverId: server.id });
+                      open("createChannel", { serverId: server.id, categoryId: category.id });
                     }}
                     style={{
                       display: "flex",
