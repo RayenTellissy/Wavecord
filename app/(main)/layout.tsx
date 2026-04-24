@@ -12,6 +12,7 @@ import { DeleteServerModal } from "@/components/server/DeleteServerModal";
 import { ServerSettingsModal } from "@/components/server/ServerSettingsModal";
 import { UserSettingsModal } from "@/components/settings/UserSettingsModal";
 import { MobileOverlay } from "@/components/layout/MobileOverlay";
+import { PersistentVoice } from "@/components/voice/PersistentVoice";
 
 export default async function MainLayout({
   children,
@@ -44,7 +45,9 @@ export default async function MainLayout({
       overflow: "hidden",
     }}>
       <MainSidebar initialServers={servers} />
-      {children}
+      <PersistentVoice>
+        {children}
+      </PersistentVoice>
 
       {/* Global modals */}
       <CreateServerModal />

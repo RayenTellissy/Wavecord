@@ -1,11 +1,14 @@
 import { create } from "zustand";
 
 export interface VoiceState {
-  /** ID of the voice channel currently connected to (null = not in voice) */
   channelId: string | null;
   channelName: string | null;
   serverId: string | null;
   serverName: string | null;
+
+  /** LiveKit credentials — set when a token is fetched, cleared on leave */
+  token: string | null;
+  lkUrl: string | null;
 
   micEnabled: boolean;
   deafened: boolean;
@@ -16,7 +19,9 @@ export interface VoiceState {
     channelId: string,
     channelName: string,
     serverId: string,
-    serverName: string
+    serverName: string,
+    token: string,
+    lkUrl: string
   ) => void;
   leave: () => void;
   toggleMic: () => void;
@@ -30,17 +35,21 @@ export const useVoiceStore = create<VoiceState>((set) => ({
   channelName: null,
   serverId: null,
   serverName: null,
+  token: null,
+  lkUrl: null,
   micEnabled: true,
   deafened: false,
   cameraEnabled: false,
   screenSharing: false,
 
-  join: (channelId, channelName, serverId, serverName) =>
+  join: (channelId, channelName, serverId, serverName, token, lkUrl) =>
     set({
       channelId,
       channelName,
       serverId,
       serverName,
+      token,
+      lkUrl,
       micEnabled: true,
       deafened: false,
       cameraEnabled: false,
@@ -53,6 +62,8 @@ export const useVoiceStore = create<VoiceState>((set) => ({
       channelName: null,
       serverId: null,
       serverName: null,
+      token: null,
+      lkUrl: null,
       cameraEnabled: false,
       screenSharing: false,
     }),
@@ -61,7 +72,6 @@ export const useVoiceStore = create<VoiceState>((set) => ({
   toggleDeafen: () =>
     set((s) => ({
       deafened: !s.deafened,
-      // Deafening also mutes mic
       micEnabled: s.deafened ? s.micEnabled : false,
     })),
   toggleCamera: () => set((s) => ({ cameraEnabled: !s.cameraEnabled })),

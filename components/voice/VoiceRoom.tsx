@@ -3,8 +3,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
-  LiveKitRoom,
-  RoomAudioRenderer,
   useParticipants,
   useLocalParticipant,
   useTracks,
@@ -37,29 +35,30 @@ interface VoiceRoomProps {
 }
 
 export function VoiceRoom({ channel, serverId, serverName }: VoiceRoomProps) {
-  const [token, setToken] = useState<string | null>(null);
-  const [lkUrl, setLkUrl] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { join, leave } = useVoiceStore();
+  const { join, leave, channelId: activeChannelId, token } = useVoiceStore();
   const router = useRouter();
 
+  const alreadyConnected = activeChannelId === channel.id && !!token;
+
   useEffect(() => {
-    join(channel.id, channel.name, serverId, serverName);
+    if (alreadyConnected) return;
+
+    setLoading(true);
+    setError(null);
 
     fetch(`/api/livekit/token?channelId=${channel.id}`)
       .then((r) => r.json())
       .then((data: { token?: string; serverUrl?: string; error?: string }) => {
         if (data.error) throw new Error(data.error);
-        setToken(data.token!);
-        setLkUrl(data.serverUrl!);
+        join(channel.id, channel.name, serverId, serverName, data.token!, data.serverUrl!);
       })
       .catch((e: Error) => setError(e.message))
       .finally(() => setLoading(false));
 
-    return () => {
-      leave();
-    };
+    // Intentionally no cleanup — navigating away keeps the voice connection alive.
+    // The user must click Disconnect to leave the channel.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [channel.id]);
 
@@ -82,9 +81,7 @@ export function VoiceRoom({ channel, serverId, serverName }: VoiceRoomProps) {
           background: "var(--surface-1)",
         }}
       >
-        <style>{`
-          @keyframes spin { to { transform: rotate(360deg); } }
-        `}</style>
+        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
         <div
           style={{
             width: 44,
@@ -102,7 +99,7 @@ export function VoiceRoom({ channel, serverId, serverName }: VoiceRoomProps) {
     );
   }
 
-  if (error || !token || !lkUrl) {
+  if (error) {
     return (
       <div
         style={{
@@ -116,7 +113,7 @@ export function VoiceRoom({ channel, serverId, serverName }: VoiceRoomProps) {
           background: "var(--surface-1)",
         }}
       >
-        <p>Failed to connect: {error ?? "LiveKit not configured"}</p>
+        <p>Failed to connect: {error}</p>
         <button
           onClick={() => window.location.reload()}
           style={{
@@ -134,23 +131,11 @@ export function VoiceRoom({ channel, serverId, serverName }: VoiceRoomProps) {
     );
   }
 
-  return (
-    <LiveKitRoom
-      token={token}
-      serverUrl={lkUrl}
-      connect
-      audio
-      video={false}
-      onDisconnected={handleLeave}
-      style={{ flex: 1, display: "flex", flexDirection: "column" }}
-    >
-      <RoomAudioRenderer />
-      <VoiceRoomInner channel={channel} onLeave={handleLeave} />
-    </LiveKitRoom>
-  );
+  // Renders using the RoomContext provided by PersistentVoice in the layout
+  return <VoiceRoomInner channel={channel} onLeave={handleLeave} />;
 }
 
-// ─── Inner (has access to LiveKit context) ────────────────────────────────────
+// ─── Inner UI (uses LiveKit context from PersistentVoice) ─────────────────────
 
 function VoiceRoomInner({
   channel,
@@ -164,11 +149,9 @@ function VoiceRoomInner({
   const { micEnabled, deafened, cameraEnabled, screenSharing, toggleMic, toggleDeafen, toggleCamera, toggleScreenShare } =
     useVoiceStore();
 
-  // Sync store → LiveKit track states
   useEffect(() => {
     if (!localParticipant) return;
-    const enable = micEnabled && !deafened;
-    localParticipant.setMicrophoneEnabled(enable);
+    localParticipant.setMicrophoneEnabled(micEnabled && !deafened);
   }, [micEnabled, deafened, localParticipant]);
 
   useEffect(() => {
@@ -181,10 +164,8 @@ function VoiceRoomInner({
     localParticipant.setScreenShareEnabled(screenSharing);
   }, [screenSharing, localParticipant]);
 
-  // All camera tracks for the video grid
   const cameraTrackRefs = useTracks([Track.Source.Camera]);
   const screenTrackRefs = useTracks([Track.Source.ScreenShare]);
-
   const hasVideo = cameraTrackRefs.length > 0 || screenTrackRefs.length > 0;
 
   return (
@@ -234,7 +215,6 @@ function VoiceRoomInner({
       {/* ── Participants / Video Grid ── */}
       <div style={{ flex: 1, overflowY: "auto", padding: "1.5rem" }}>
         {hasVideo ? (
-          // Video grid: show all camera + screen share tracks
           <div
             style={{
               display: "grid",
@@ -276,39 +256,36 @@ function VoiceRoomInner({
               </div>
             ))}
           </div>
+        ) : participants.length === 0 ? (
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              height: "100%",
+              gap: "0.75rem",
+              color: "var(--text-muted)",
+            }}
+          >
+            <VolumeIcon size={52} style={{ opacity: 0.25 }} />
+            <p style={{ fontSize: "0.95rem" }}>Waiting for others to join…</p>
+            <p style={{ fontSize: "0.8rem", opacity: 0.7 }}>
+              You&apos;re connected · share the invite link to bring friends in
+            </p>
+          </div>
         ) : (
-          // Audio-only: participant cards
-          participants.length === 0 ? (
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                height: "100%",
-                gap: "0.75rem",
-                color: "var(--text-muted)",
-              }}
-            >
-              <VolumeIcon size={52} style={{ opacity: 0.25 }} />
-              <p style={{ fontSize: "0.95rem" }}>Waiting for others to join…</p>
-              <p style={{ fontSize: "0.8rem", opacity: 0.7 }}>
-                You&apos;re connected · share the invite link to bring friends in
-              </p>
-            </div>
-          ) : (
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(120px, 1fr))",
-                gap: "0.75rem",
-              }}
-            >
-              {participants.map((p) => (
-                <ParticipantCard key={p.identity} participant={p} />
-              ))}
-            </div>
-          )
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(120px, 1fr))",
+              gap: "0.75rem",
+            }}
+          >
+            {participants.map((p) => (
+              <ParticipantCard key={p.identity} participant={p} />
+            ))}
+          </div>
         )}
       </div>
 
@@ -350,7 +327,6 @@ function ParticipantCard({ participant }: { participant: Participant }) {
         transition: "border-color 0.15s",
       }}
     >
-      {/* Avatar */}
       <div
         style={{
           width: 52,
@@ -378,8 +354,6 @@ function ParticipantCard({ participant }: { participant: Participant }) {
           <PersonIcon size={24} />
         )}
       </div>
-
-      {/* Name */}
       <span
         style={{
           fontSize: "0.8rem",
@@ -394,8 +368,6 @@ function ParticipantCard({ participant }: { participant: Participant }) {
       >
         {participant.name ?? participant.identity}
       </span>
-
-      {/* Mic status */}
       <span style={{ color: isMicOn ? "var(--text-muted)" : "var(--danger)" }}>
         {isMicOn ? <MicIcon size={14} /> : <MicOffIcon size={14} />}
       </span>
@@ -504,7 +476,6 @@ function VoiceControls({
         </Tooltip>
       ))}
 
-      {/* Leave */}
       <Tooltip content="Disconnect" side="top">
         <motion.button
           whileHover={{ scale: 1.08 }}
