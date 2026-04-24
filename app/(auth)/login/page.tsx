@@ -1,0 +1,260 @@
+"use client";
+
+import { useState } from "react";
+import { signIn } from "next-auth/react";
+import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
+import { motion } from "framer-motion";
+import { WaveLogo } from "@/components/ui/WaveLogo";
+
+export default function LoginPage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams?.get("callbackUrl") ?? "/";
+
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+
+    const result = await signIn("credentials", {
+      username,
+      password,
+      redirect: false,
+    });
+
+    setLoading(false);
+
+    if (result?.error) {
+      setError("Invalid email or password.");
+    } else {
+      router.push(callbackUrl);
+      router.refresh();
+    }
+  }
+
+  async function handleGitHub() {
+    await signIn("github", { callbackUrl });
+  }
+
+  return (
+    <>
+      <style>{`
+        .auth-input {
+          width: 100%;
+          background: var(--surface-2);
+          border: 1.5px solid var(--border);
+          border-radius: 10px;
+          padding: 0.72rem 0.9rem;
+          color: var(--text-primary);
+          outline: none;
+          font-size: 0.95rem;
+          font-family: inherit;
+          transition: border-color 0.18s, box-shadow 0.18s, background 0.18s;
+          display: block;
+        }
+        .auth-input:hover { background: var(--surface-3); }
+        .auth-input:focus {
+          border-color: var(--accent);
+          background: var(--surface-2);
+          box-shadow: 0 0 0 3.5px rgba(29,78,216,0.2);
+        }
+        .auth-input::placeholder { color: var(--text-muted); }
+        .auth-input.error { border-color: var(--danger); }
+        .auth-input.error:focus { box-shadow: 0 0 0 3.5px rgba(239,68,68,0.2); }
+
+        .auth-btn-primary {
+          width: 100%;
+          padding: 0.78rem;
+          background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
+          color: #fff;
+          border: none;
+          border-radius: 10px;
+          font-weight: 600;
+          font-size: 0.95rem;
+          font-family: inherit;
+          letter-spacing: 0.01em;
+          margin-top: 0.5rem;
+          cursor: pointer;
+          box-shadow: 0 4px 14px rgba(29,78,216,0.35);
+          transition: box-shadow 0.18s, transform 0.18s, opacity 0.18s;
+        }
+        .auth-btn-primary:hover:not(:disabled) {
+          box-shadow: 0 6px 22px rgba(29,78,216,0.5);
+          transform: translateY(-1px);
+        }
+        .auth-btn-primary:active:not(:disabled) {
+          transform: translateY(0);
+          box-shadow: 0 3px 10px rgba(29,78,216,0.35);
+        }
+        .auth-btn-primary:disabled { opacity: 0.65; cursor: not-allowed; }
+
+        .auth-btn-github {
+          width: 100%;
+          padding: 0.72rem 1rem;
+          background: var(--surface-2);
+          border: 1.5px solid var(--border);
+          border-radius: 10px;
+          color: var(--text-primary);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.55rem;
+          font-size: 0.9rem;
+          font-weight: 500;
+          font-family: inherit;
+          margin-bottom: 1.25rem;
+          cursor: pointer;
+          transition: background 0.15s, border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+        }
+        .auth-btn-github:hover {
+          background: var(--surface-3);
+          border-color: var(--text-muted);
+          box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+          transform: translateY(-1px);
+        }
+        .auth-btn-github:active { transform: translateY(0); }
+      `}</style>
+
+      <motion.div
+        initial={{ opacity: 0, y: 12, scale: 0.97 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.22, ease: "easeOut" }}
+        style={{
+          background: "linear-gradient(160deg, rgba(33,38,45,0.98) 0%, rgba(22,27,34,0.98) 100%)",
+          border: "1.5px solid rgba(48,54,61,0.8)",
+          borderRadius: "16px",
+          padding: "2.5rem",
+          width: "100%",
+          maxWidth: "420px",
+          boxShadow: "0 24px 60px rgba(0,0,0,0.55), 0 0 0 1px rgba(29,78,216,0.06)",
+        }}
+      >
+        {/* Logo */}
+        <div style={{ textAlign: "center", marginBottom: "2rem" }}>
+          <div style={{ display: "flex", justifyContent: "center", marginBottom: "0.75rem" }}>
+            <WaveLogo size={52} />
+          </div>
+          <div style={{
+            fontSize: "1.55rem",
+            fontWeight: 700,
+            color: "var(--text-primary)",
+            letterSpacing: "-0.6px",
+            marginBottom: "0.25rem",
+          }}>
+            Wavecord
+          </div>
+          <p style={{ color: "var(--text-secondary)", fontSize: "0.875rem" }}>
+            Welcome back! Sign in to continue.
+          </p>
+        </div>
+
+        {/* GitHub */}
+        <button className="auth-btn-github" onClick={handleGitHub}>
+          <GitHubSVG />
+          Continue with GitHub
+        </button>
+
+        <div style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "0.75rem",
+          marginBottom: "1.25rem",
+        }}>
+          <div style={{ flex: 1, height: "1px", background: "var(--border)" }} />
+          <span style={{ color: "var(--text-muted)", fontSize: "0.78rem", letterSpacing: "0.04em" }}>OR</span>
+          <div style={{ flex: 1, height: "1px", background: "var(--border)" }} />
+        </div>
+
+        {error && (
+          <motion.div
+            initial={{ opacity: 0, y: -4 }}
+            animate={{ opacity: 1, y: 0 }}
+            style={{
+              background: "rgba(239,68,68,0.08)",
+              border: "1.5px solid rgba(239,68,68,0.25)",
+              borderRadius: "8px",
+              padding: "0.65rem 0.85rem",
+              color: "var(--danger)",
+              fontSize: "0.85rem",
+              marginBottom: "1rem",
+              display: "flex",
+              alignItems: "center",
+              gap: "0.5rem",
+            }}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+            {error}
+          </motion.div>
+        )}
+
+        <form onSubmit={handleSubmit}>
+          <div style={{ marginBottom: "1rem" }}>
+            <label style={labelStyle}>Username</label>
+            <input
+              className="auth-input"
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+              autoComplete="username"
+            />
+          </div>
+
+          <div style={{ marginBottom: "1rem" }}>
+            <label style={labelStyle}>Password</label>
+            <input
+              className="auth-input"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              autoComplete="current-password"
+            />
+          </div>
+
+          <button type="submit" className="auth-btn-primary" disabled={loading}>
+            {loading ? "Signing in…" : "Sign in"}
+          </button>
+        </form>
+
+        <p style={{
+          textAlign: "center",
+          marginTop: "1.4rem",
+          color: "var(--text-secondary)",
+          fontSize: "0.85rem",
+        }}>
+          Don&apos;t have an account?{" "}
+          <Link href="/register" style={{ color: "var(--accent)", fontWeight: 700 }}>
+            Register
+          </Link>
+        </p>
+      </motion.div>
+    </>
+  );
+}
+
+const labelStyle: React.CSSProperties = {
+  display: "block",
+  fontSize: "0.78rem",
+  fontWeight: 600,
+  color: "var(--text-secondary)",
+  textTransform: "uppercase",
+  letterSpacing: "0.06em",
+  marginBottom: "0.4rem",
+};
+
+function GitHubSVG() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
+    </svg>
+  );
+}
