@@ -1,12 +1,17 @@
 import { create } from "zustand";
 
+export interface VoiceParticipant {
+  identity: string;
+  name: string;
+  metadata?: string;
+}
+
 export interface VoiceState {
   channelId: string | null;
   channelName: string | null;
   serverId: string | null;
   serverName: string | null;
 
-  /** LiveKit credentials — set when a token is fetched, cleared on leave */
   token: string | null;
   lkUrl: string | null;
 
@@ -14,6 +19,8 @@ export interface VoiceState {
   deafened: boolean;
   cameraEnabled: boolean;
   screenSharing: boolean;
+
+  participants: VoiceParticipant[];
 
   join: (
     channelId: string,
@@ -24,6 +31,7 @@ export interface VoiceState {
     lkUrl: string
   ) => void;
   leave: () => void;
+  setParticipants: (participants: VoiceParticipant[]) => void;
   toggleMic: () => void;
   toggleDeafen: () => void;
   toggleCamera: () => void;
@@ -41,6 +49,7 @@ export const useVoiceStore = create<VoiceState>((set) => ({
   deafened: false,
   cameraEnabled: false,
   screenSharing: false,
+  participants: [],
 
   join: (channelId, channelName, serverId, serverName, token, lkUrl) =>
     set({
@@ -54,6 +63,7 @@ export const useVoiceStore = create<VoiceState>((set) => ({
       deafened: false,
       cameraEnabled: false,
       screenSharing: false,
+      participants: [],
     }),
 
   leave: () =>
@@ -66,7 +76,10 @@ export const useVoiceStore = create<VoiceState>((set) => ({
       lkUrl: null,
       cameraEnabled: false,
       screenSharing: false,
+      participants: [],
     }),
+
+  setParticipants: (participants) => set({ participants }),
 
   toggleMic: () => set((s) => ({ micEnabled: !s.micEnabled })),
   toggleDeafen: () =>

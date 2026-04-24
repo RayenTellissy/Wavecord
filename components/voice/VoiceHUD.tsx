@@ -3,12 +3,20 @@
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useVoiceStore } from "@/stores/voiceStore";
-import { MicIcon, MicOffIcon, HeadphonesIcon, HeadphonesOffIcon, LeaveIcon, VolumeIcon } from "@/components/icons";
+import {
+  MicIcon,
+  MicOffIcon,
+  CameraIcon,
+  CameraOffIcon,
+  ScreenShareIcon,
+  LeaveIcon,
+  VolumeIcon,
+} from "@/components/icons";
 import { Tooltip } from "@/components/ui/Tooltip";
 
 /**
- * Shown at the bottom of the ChannelSidebar when the user is in a voice channel.
- * Gives quick mic/deafen/disconnect controls without leaving the current page.
+ * Compact bar at the bottom of ChannelSidebar while in a voice channel.
+ * Shows channel name + mic / camera / screen-share / disconnect controls.
  */
 export function VoiceHUD() {
   const {
@@ -17,9 +25,11 @@ export function VoiceHUD() {
     serverId,
     serverName,
     micEnabled,
-    deafened,
+    cameraEnabled,
+    screenSharing,
     toggleMic,
-    toggleDeafen,
+    toggleCamera,
+    toggleScreenShare,
     leave,
   } = useVoiceStore();
 
@@ -59,12 +69,7 @@ export function VoiceHUD() {
             <div style={{ flex: 1, minWidth: 0 }}>
               <Link
                 href={`/servers/${serverId}/channels/${channelId}`}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "0.3rem",
-                  textDecoration: "none",
-                }}
+                style={{ display: "flex", alignItems: "center", gap: "0.3rem", textDecoration: "none" }}
               >
                 <VolumeIcon size={13} style={{ color: "var(--success)", flexShrink: 0 }} />
                 <span
@@ -94,7 +99,6 @@ export function VoiceHUD() {
               </p>
             </div>
 
-            {/* Disconnect */}
             <Tooltip content="Disconnect" side="top">
               <motion.button
                 whileHover={{ scale: 1.12 }}
@@ -118,62 +122,70 @@ export function VoiceHUD() {
             </Tooltip>
           </div>
 
-          {/* Quick controls row */}
+          {/* Controls row: mic / camera / screen share */}
           <div style={{ display: "flex", gap: "0.25rem" }}>
-            <Tooltip content={micEnabled ? "Mute" : "Unmute"} side="top">
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                onClick={toggleMic}
-                style={{
-                  flex: 1,
-                  height: 28,
-                  borderRadius: "6px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  background: !micEnabled ? "rgba(239,68,68,0.15)" : "var(--surface-2)",
-                  color: !micEnabled ? "var(--danger)" : "var(--text-secondary)",
-                  border: `1px solid ${!micEnabled ? "rgba(239,68,68,0.4)" : "var(--border)"}`,
-                  gap: "0.3rem",
-                  fontSize: "0.72rem",
-                  fontWeight: 600,
-                  transition: "background 0.12s, color 0.12s",
-                }}
-              >
-                {micEnabled ? <MicIcon size={13} /> : <MicOffIcon size={13} />}
-                {micEnabled ? "Muted off" : "Muted"}
-              </motion.button>
-            </Tooltip>
+            <HudButton
+              tooltip={micEnabled ? "Mute" : "Unmute"}
+              active={!micEnabled}
+              onClick={toggleMic}
+            >
+              {micEnabled ? <MicIcon size={13} /> : <MicOffIcon size={13} />}
+            </HudButton>
 
-            <Tooltip content={deafened ? "Undeafen" : "Deafen"} side="top">
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                onClick={toggleDeafen}
-                style={{
-                  flex: 1,
-                  height: 28,
-                  borderRadius: "6px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  background: deafened ? "rgba(239,68,68,0.15)" : "var(--surface-2)",
-                  color: deafened ? "var(--danger)" : "var(--text-secondary)",
-                  border: `1px solid ${deafened ? "rgba(239,68,68,0.4)" : "var(--border)"}`,
-                  gap: "0.3rem",
-                  fontSize: "0.72rem",
-                  fontWeight: 600,
-                  transition: "background 0.12s, color 0.12s",
-                }}
-              >
-                {deafened ? <HeadphonesOffIcon size={13} /> : <HeadphonesIcon size={13} />}
-                {deafened ? "Deafened" : "Deafen"}
-              </motion.button>
-            </Tooltip>
+            <HudButton
+              tooltip={cameraEnabled ? "Stop Video" : "Start Video"}
+              active={cameraEnabled}
+              onClick={toggleCamera}
+            >
+              {cameraEnabled ? <CameraIcon size={13} /> : <CameraOffIcon size={13} />}
+            </HudButton>
+
+            <HudButton
+              tooltip={screenSharing ? "Stop Share" : "Share Screen"}
+              active={screenSharing}
+              onClick={toggleScreenShare}
+            >
+              <ScreenShareIcon size={13} />
+            </HudButton>
           </div>
         </motion.div>
       )}
     </AnimatePresence>
+  );
+}
+
+function HudButton({
+  tooltip,
+  active,
+  onClick,
+  children,
+}: {
+  tooltip: string;
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <Tooltip content={tooltip} side="top">
+      <motion.button
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+        onClick={onClick}
+        style={{
+          flex: 1,
+          height: 28,
+          borderRadius: "6px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          background: active ? "rgba(99,102,241,0.15)" : "var(--surface-2)",
+          color: active ? "var(--accent)" : "var(--text-secondary)",
+          border: `1px solid ${active ? "rgba(99,102,241,0.4)" : "var(--border)"}`,
+          transition: "background 0.12s, color 0.12s",
+        }}
+      >
+        {children}
+      </motion.button>
+    </Tooltip>
   );
 }

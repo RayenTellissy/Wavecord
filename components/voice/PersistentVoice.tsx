@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { Room, RoomEvent } from "livekit-client";
-import { RoomContext, RoomAudioRenderer } from "@livekit/components-react";
+import { RoomContext, RoomAudioRenderer, useParticipants } from "@livekit/components-react";
 import { useVoiceStore } from "@/stores/voiceStore";
 
 /**
@@ -14,7 +14,6 @@ export function PersistentVoice({ children }: { children: React.ReactNode }) {
   const roomRef = useRef<Room>(new Room());
   const { token, lkUrl, channelId, leave } = useVoiceStore();
 
-  // Connect / disconnect the persistent Room when credentials change
   useEffect(() => {
     const room = roomRef.current;
     if (token && lkUrl) {
@@ -24,7 +23,7 @@ export function PersistentVoice({ children }: { children: React.ReactNode }) {
     }
   }, [token, lkUrl]);
 
-  // If LiveKit drops the connection unexpectedly, clear the store
+  // Clear store if LiveKit drops the connection unexpectedly
   useEffect(() => {
     const room = roomRef.current;
     const handleDisconnect = () => {
@@ -37,9 +36,32 @@ export function PersistentVoice({ children }: { children: React.ReactNode }) {
 
   return (
     <RoomContext.Provider value={roomRef.current}>
-      {/* Keep audio renderer mounted while in a channel so audio plays everywhere */}
-      {channelId && <RoomAudioRenderer />}
+      {channelId && (
+        <>
+          <RoomAudioRenderer />
+          <ParticipantSync />
+        </>
+      )}
       {children}
     </RoomContext.Provider>
   );
+}
+
+/** Syncs LiveKit participant list into voiceStore so the sidebar can display it. */
+function ParticipantSync() {
+  const participants = useParticipants();
+  const setParticipants = useVoiceStore((s) => s.setParticipants);
+
+  useEffect(() => {
+    setParticipants(
+      participants.map((p) => ({
+        identity: p.identity,
+        name: p.name ?? p.identity,
+        metadata: p.metadata,
+      }))
+    );
+    return () => setParticipants([]);
+  }, [participants, setParticipants]);
+
+  return null;
 }

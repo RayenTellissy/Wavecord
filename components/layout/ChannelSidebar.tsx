@@ -2,20 +2,20 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Tooltip } from "@/components/ui/Tooltip";
 import {
-  HashIcon, VolumeIcon, ChevronDownIcon, ChevronRightIcon,
+  HashIcon, VolumeIcon, ChevronDownIcon,
   PlusIcon, LeaveIcon, LinkIcon, SettingsIcon,
 } from "@/components/icons";
 import { UserPanel } from "./UserPanel";
 import { VoiceHUD } from "@/components/voice/VoiceHUD";
 import { useModal } from "@/stores/modalStore";
 import { useSidebar } from "@/stores/sidebarStore";
+import { useVoiceStore, type VoiceParticipant } from "@/stores/voiceStore";
 import type { Server, Channel, Category, ServerMember, User } from "@prisma/client";
 import axios from "axios";
-import { useRouter } from "next/navigation";
 import Image from "next/image";
 
 type PopulatedCategory = Category & { channels: Channel[] };
@@ -32,12 +32,8 @@ interface ChannelSidebarProps {
 
 const stagger = {
   initial: { opacity: 0 },
-  animate: {
-    opacity: 1,
-    transition: { staggerChildren: 0.04 },
-  },
+  animate: { opacity: 1, transition: { staggerChildren: 0.04 } },
 };
-
 const itemVariant = {
   initial: { opacity: 0, x: -8 },
   animate: { opacity: 1, x: 0, transition: { duration: 0.15 } },
@@ -48,9 +44,17 @@ export function ChannelSidebar({ server, currentUserId, currentMemberRole }: Cha
   const router = useRouter();
   const { open } = useModal();
   const { mobileOpen, closeMobile } = useSidebar();
+  const {
+    channelId: voiceChannelId,
+    token: voiceToken,
+    participants: voiceParticipants,
+    join: joinVoice,
+  } = useVoiceStore();
+
   const activeChannelId = params?.channelId as string | undefined;
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
   const [serverMenuOpen, setServerMenuOpen] = useState(false);
+  const [joiningVoice, setJoiningVoice] = useState<string | null>(null);
 
   const isAdmin = currentMemberRole === "ADMIN";
   const isModOrAdmin = currentMemberRole === "ADMIN" || currentMemberRole === "MODERATOR";
@@ -66,6 +70,28 @@ export function ChannelSidebar({ server, currentUserId, currentMemberRole }: Cha
     } catch { /* silent */ }
   }
 
+  async function handleVoiceChannelClick(channel: Channel) {
+    // Already connected to this exact channel → navigate to full room UI
+    if (voiceChannelId === channel.id && voiceToken) {
+      router.push(`/servers/${server.id}/channels/${channel.id}`);
+      closeMobile();
+      return;
+    }
+
+    // Otherwise join (or switch) — stay on current page, audio connects in background
+    setJoiningVoice(channel.id);
+    try {
+      const res = await fetch(`/api/livekit/token?channelId=${channel.id}`);
+      const data = await res.json() as { token?: string; serverUrl?: string; error?: string };
+      if (data.error) throw new Error(data.error);
+      joinVoice(channel.id, channel.name, server.id, server.name, data.token!, data.serverUrl!);
+    } catch (e) {
+      console.error("Voice join failed:", e);
+    } finally {
+      setJoiningVoice(null);
+    }
+  }
+
   return (
     <div
       className={`sidebar-channel${mobileOpen ? " mobile-open" : ""}`}
@@ -79,7 +105,7 @@ export function ChannelSidebar({ server, currentUserId, currentMemberRole }: Cha
         overflow: "hidden",
       }}
     >
-      {/* Server Header */}
+      {/* ── Server Header ── */}
       <div style={{ position: "relative" }}>
         <button
           onClick={() => setServerMenuOpen(!serverMenuOpen)}
@@ -97,36 +123,21 @@ export function ChannelSidebar({ server, currentUserId, currentMemberRole }: Cha
           onMouseLeave={(e) => { if (!serverMenuOpen) (e.currentTarget.style.background = "transparent"); }}
         >
           {server.imageUrl && (
-            <Image
-              src={server.imageUrl}
-              alt={server.name}
-              width={20}
-              height={20}
-              style={{ borderRadius: "4px" }}
-            />
+            <Image src={server.imageUrl} alt={server.name} width={20} height={20} style={{ borderRadius: "4px" }} />
           )}
           <span style={{
-            flex: 1,
-            fontWeight: 700,
-            fontSize: "0.95rem",
-            textAlign: "left",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
+            flex: 1, fontWeight: 700, fontSize: "0.95rem", textAlign: "left",
+            overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
           }}>
             {server.name}
           </span>
           <ChevronDownIcon size={16} style={{ color: "var(--text-secondary)", flexShrink: 0 }} />
         </button>
 
-        {/* Server dropdown menu */}
         <AnimatePresence>
           {serverMenuOpen && (
             <>
-              <div
-                style={{ position: "fixed", inset: 0, zIndex: 50 }}
-                onClick={() => setServerMenuOpen(false)}
-              />
+              <div style={{ position: "fixed", inset: 0, zIndex: 50 }} onClick={() => setServerMenuOpen(false)} />
               <motion.div
                 initial={{ opacity: 0, scale: 0.95, y: -4 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -134,46 +145,26 @@ export function ChannelSidebar({ server, currentUserId, currentMemberRole }: Cha
                 transition={{ duration: 0.12 }}
                 style={{
                   position: "absolute",
-                  top: "calc(100% + 4px)",
-                  left: "0.5rem",
-                  right: "0.5rem",
-                  background: "var(--surface-2)",
-                  border: "1px solid var(--border)",
-                  borderRadius: "8px",
-                  padding: "0.35rem",
-                  zIndex: 51,
+                  top: "calc(100% + 4px)", left: "0.5rem", right: "0.5rem",
+                  background: "var(--surface-2)", border: "1px solid var(--border)",
+                  borderRadius: "8px", padding: "0.35rem", zIndex: 51,
                   boxShadow: "0 8px 24px rgba(0,0,0,0.4)",
                 }}
                 onClick={() => setServerMenuOpen(false)}
               >
-                <MenuItem
-                  icon={<LinkIcon size={16} />}
-                  label="Invite People"
-                  onClick={() => open("invite", { serverId: server.id })}
-                />
+                <MenuItem icon={<LinkIcon size={16} />} label="Invite People" onClick={() => open("invite", { serverId: server.id })} />
                 {isModOrAdmin && (
-                  <MenuItem
-                    icon={<PlusIcon size={16} />}
-                    label="Create Channel"
-                    onClick={() => open("createChannel", { serverId: server.id })}
-                  />
+                  <MenuItem icon={<PlusIcon size={16} />} label="Create Channel" onClick={() => open("createChannel", { serverId: server.id })} />
                 )}
                 {isAdmin && (
-                  <MenuItem
-                    icon={<SettingsIcon size={16} />}
-                    label="Server Settings"
-                    onClick={() => open("serverSettings", { serverId: server.id })}
-                  />
+                  <MenuItem icon={<SettingsIcon size={16} />} label="Server Settings" onClick={() => open("serverSettings", { serverId: server.id })} />
                 )}
                 <div style={{ height: 1, background: "var(--border)", margin: "0.35rem 0" }} />
                 <MenuItem
                   icon={<LeaveIcon size={16} />}
                   label={isAdmin ? "Delete Server" : "Leave Server"}
                   danger
-                  onClick={isAdmin
-                    ? () => open("deleteServer", { serverId: server.id })
-                    : handleLeave
-                  }
+                  onClick={isAdmin ? () => open("deleteServer", { serverId: server.id }) : handleLeave}
                 />
               </motion.div>
             </>
@@ -181,93 +172,135 @@ export function ChannelSidebar({ server, currentUserId, currentMemberRole }: Cha
         </AnimatePresence>
       </div>
 
-      {/* Channel List */}
+      {/* ── Channel List ── */}
       <div style={{ flex: 1, overflowY: "auto", padding: "0.5rem 0" }}>
-        {/* Uncategorized channels */}
-        {server.categories.map((category) => (
-          <div key={category.id}>
-            {/* Category header */}
-            <button
-              onClick={() => setCollapsed((c) => ({ ...c, [category.id]: !c[category.id] }))}
-              style={{
-                width: "100%",
-                display: "flex",
-                alignItems: "center",
-                gap: "0.25rem",
-                padding: "0.75rem 0.5rem 0.25rem",
-                color: "var(--text-muted)",
-                fontSize: "0.72rem",
-                fontWeight: 700,
-                textTransform: "uppercase",
-                letterSpacing: "0.6px",
-              }}
-            >
-              <motion.span
-                animate={{ rotate: collapsed[category.id] ? -90 : 0 }}
-                transition={{ duration: 0.15 }}
-                style={{ display: "flex" }}
+        {server.categories.map((category) => {
+          const textChannels = category.channels.filter((c) => c.type === "TEXT");
+          const voiceChannels = category.channels.filter((c) => c.type === "VOICE");
+
+          return (
+            <div key={category.id}>
+              {/* Category header */}
+              <button
+                onClick={() => setCollapsed((c) => ({ ...c, [category.id]: !c[category.id] }))}
+                style={{
+                  width: "100%",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.25rem",
+                  padding: "0.75rem 0.5rem 0.25rem",
+                  color: "var(--text-muted)",
+                  fontSize: "0.72rem",
+                  fontWeight: 700,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.6px",
+                }}
               >
-                <ChevronDownIcon size={14} />
-              </motion.span>
-              <span style={{ flex: 1, textAlign: "left" }}>{category.name}</span>
-              {isModOrAdmin && (
-                <Tooltip content="Create Channel" side="right">
-                  <span
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      open("createChannel", { serverId: server.id, categoryId: category.id });
-                    }}
-                    style={{
-                      display: "flex",
-                      padding: "2px",
-                      borderRadius: "4px",
-                      opacity: 0,
-                    }}
-                    className="category-plus"
-                  >
-                    <PlusIcon size={14} />
-                  </span>
-                </Tooltip>
-              )}
-            </button>
-
-            <style>{`.category-plus:hover { opacity: 1 !important; } .category-header:hover .category-plus { opacity: 0.7; }`}</style>
-
-            {/* Channels */}
-            <AnimatePresence initial={false}>
-              {!collapsed[category.id] && (
-                <motion.div
-                  variants={stagger}
-                  initial="initial"
-                  animate="animate"
+                <motion.span
+                  animate={{ rotate: collapsed[category.id] ? -90 : 0 }}
+                  transition={{ duration: 0.15 }}
+                  style={{ display: "flex" }}
                 >
-                  {category.channels.map((channel) => (
-                    <motion.div key={channel.id} variants={itemVariant}>
-                      <ChannelItem
-                        channel={channel}
-                        serverId={server.id}
-                        isActive={channel.id === activeChannelId}
-                        onNavigate={closeMobile}
-                      />
-                    </motion.div>
-                  ))}
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        ))}
+                  <ChevronDownIcon size={14} />
+                </motion.span>
+                <span style={{ flex: 1, textAlign: "left" }}>{category.name}</span>
+                {isModOrAdmin && (
+                  <Tooltip content="Create Channel" side="top">
+                    <span
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        open("createChannel", { serverId: server.id, categoryId: category.id });
+                      }}
+                      style={{ display: "flex", padding: "2px", borderRadius: "4px", opacity: 0 }}
+                      className="category-plus"
+                    >
+                      <PlusIcon size={14} />
+                    </span>
+                  </Tooltip>
+                )}
+              </button>
+
+              <style>{`.category-plus:hover { opacity: 1 !important; }`}</style>
+
+              <AnimatePresence initial={false}>
+                {!collapsed[category.id] && (
+                  <motion.div variants={stagger} initial="initial" animate="animate">
+                    {/* ── Text channels ── */}
+                    {textChannels.length > 0 && (
+                      <>
+                        {voiceChannels.length > 0 && (
+                          <SectionLabel label="Text Channels" />
+                        )}
+                        {textChannels.map((channel) => (
+                          <motion.div key={channel.id} variants={itemVariant}>
+                            <TextChannelItem
+                              channel={channel}
+                              serverId={server.id}
+                              isActive={channel.id === activeChannelId}
+                              onNavigate={closeMobile}
+                            />
+                          </motion.div>
+                        ))}
+                      </>
+                    )}
+
+                    {/* ── Voice channels ── */}
+                    {voiceChannels.length > 0 && (
+                      <>
+                        {textChannels.length > 0 && (
+                          <SectionLabel label="Voice Channels" />
+                        )}
+                        {voiceChannels.map((channel) => (
+                          <motion.div key={channel.id} variants={itemVariant}>
+                            <VoiceChannelItem
+                              channel={channel}
+                              isActive={channel.id === activeChannelId}
+                              isConnected={channel.id === voiceChannelId && !!voiceToken}
+                              isJoining={joiningVoice === channel.id}
+                              participants={channel.id === voiceChannelId ? voiceParticipants : []}
+                              onClick={() => handleVoiceChannelClick(channel)}
+                            />
+                          </motion.div>
+                        ))}
+                      </>
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          );
+        })}
       </div>
 
-      {/* Voice HUD — shown when connected to a voice channel */}
       <VoiceHUD />
-
-      {/* User Panel */}
       <UserPanel />
     </div>
   );
 }
 
-function ChannelItem({
+// ─── Section divider label ────────────────────────────────────────────────────
+
+function SectionLabel({ label }: { label: string }) {
+  return (
+    <div
+      style={{
+        padding: "0.5rem 0.75rem 0.2rem",
+        fontSize: "0.68rem",
+        fontWeight: 700,
+        color: "var(--text-muted)",
+        textTransform: "uppercase",
+        letterSpacing: "0.5px",
+        opacity: 0.7,
+      }}
+    >
+      {label}
+    </div>
+  );
+}
+
+// ─── Text channel item ────────────────────────────────────────────────────────
+
+function TextChannelItem({
   channel,
   serverId,
   isActive,
@@ -278,59 +311,201 @@ function ChannelItem({
   isActive: boolean;
   onNavigate?: () => void;
 }) {
-  const href = `/servers/${serverId}/channels/${channel.id}`;
-
   return (
-    <Link href={href} onClick={onNavigate}>
+    <Link href={`/servers/${serverId}/channels/${channel.id}`} onClick={onNavigate}>
       <motion.div
         whileHover={{ x: 2 }}
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "0.4rem",
-          padding: "0.3rem 0.5rem 0.3rem 0.75rem",
-          margin: "0.05rem 0.5rem",
-          borderRadius: "6px",
-          background: isActive ? "var(--surface-2)" : "transparent",
-          color: isActive ? "var(--text-primary)" : "var(--text-secondary)",
-          fontSize: "0.9rem",
-          fontWeight: isActive ? 600 : 400,
-          transition: "background 0.12s, color 0.12s",
-          textDecoration: "none",
-        }}
-        onMouseEnter={(e) => {
-          if (!isActive) {
-            (e.currentTarget.style.background = "var(--surface-2)");
-            (e.currentTarget.style.color = "var(--text-primary)");
-          }
-        }}
-        onMouseLeave={(e) => {
-          if (!isActive) {
-            (e.currentTarget.style.background = "transparent");
-            (e.currentTarget.style.color = "var(--text-secondary)");
-          }
-        }}
+        style={channelRowStyle(isActive)}
+        onMouseEnter={(e) => applyHover(e, isActive)}
+        onMouseLeave={(e) => clearHover(e, isActive)}
       >
         <span style={{ display: "flex", color: isActive ? "var(--accent)" : "inherit", flexShrink: 0 }}>
-          {channel.type === "TEXT" ? <HashIcon size={17} /> : <VolumeIcon size={17} />}
+          <HashIcon size={17} />
         </span>
-        <span style={{
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          whiteSpace: "nowrap",
-        }}>
-          {channel.name}
-        </span>
+        <span style={channelNameStyle}>{channel.name}</span>
       </motion.div>
     </Link>
   );
 }
 
-function MenuItem({
-  icon,
-  label,
+// ─── Voice channel item ───────────────────────────────────────────────────────
+
+function VoiceChannelItem({
+  channel,
+  isActive,
+  isConnected,
+  isJoining,
+  participants,
   onClick,
-  danger = false,
+}: {
+  channel: Channel;
+  isActive: boolean;
+  isConnected: boolean;
+  isJoining: boolean;
+  participants: VoiceParticipant[];
+  onClick: () => void;
+}) {
+  const accentColor = isConnected ? "var(--success)" : isActive ? "var(--accent)" : "inherit";
+
+  return (
+    <div>
+      <Tooltip content={isConnected ? "Click to view room" : "Click to join"} side="right">
+        <motion.div
+          whileHover={{ x: 2 }}
+          onClick={onClick}
+          style={{
+            ...channelRowStyle(isActive || isConnected),
+            cursor: isJoining ? "wait" : "pointer",
+            color: isConnected ? "var(--success)" : isActive ? "var(--text-primary)" : "var(--text-secondary)",
+            background: isConnected
+              ? "rgba(34,197,94,0.08)"
+              : isActive
+              ? "var(--surface-2)"
+              : "transparent",
+          }}
+          onMouseEnter={(e) => {
+            if (!isActive && !isConnected) {
+              (e.currentTarget as HTMLElement).style.background = "var(--surface-2)";
+              (e.currentTarget as HTMLElement).style.color = "var(--text-primary)";
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (!isActive && !isConnected) {
+              (e.currentTarget as HTMLElement).style.background = "transparent";
+              (e.currentTarget as HTMLElement).style.color = "var(--text-secondary)";
+            }
+          }}
+        >
+          <span style={{ display: "flex", color: accentColor, flexShrink: 0 }}>
+            {isJoining ? (
+              <span style={{ display: "flex", animation: "spin 0.8s linear infinite" }}>
+                <VolumeIcon size={17} />
+              </span>
+            ) : (
+              <VolumeIcon size={17} />
+            )}
+          </span>
+          <span style={channelNameStyle}>{channel.name}</span>
+          {isConnected && (
+            <span
+              style={{
+                width: 7,
+                height: 7,
+                borderRadius: "50%",
+                background: "var(--success)",
+                flexShrink: 0,
+                boxShadow: "0 0 5px var(--success)",
+              }}
+            />
+          )}
+        </motion.div>
+      </Tooltip>
+
+      {/* Participants list */}
+      {isConnected && participants.length > 0 && (
+        <div style={{ paddingLeft: "1.75rem", paddingBottom: "0.25rem" }}>
+          {participants.map((p) => (
+            <div
+              key={p.identity}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "0.4rem",
+                padding: "0.15rem 0.5rem",
+                marginRight: "0.5rem",
+                borderRadius: "4px",
+              }}
+            >
+              {p.metadata ? (
+                <Image
+                  src={p.metadata}
+                  alt={p.name}
+                  width={16}
+                  height={16}
+                  style={{ borderRadius: "50%", flexShrink: 0 }}
+                />
+              ) : (
+                <span
+                  style={{
+                    width: 16,
+                    height: 16,
+                    borderRadius: "50%",
+                    background: "var(--surface-3)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "0.6rem",
+                    fontWeight: 700,
+                    color: "var(--text-muted)",
+                    flexShrink: 0,
+                  }}
+                >
+                  {p.name.charAt(0).toUpperCase()}
+                </span>
+              )}
+              <span
+                style={{
+                  fontSize: "0.78rem",
+                  color: "var(--text-secondary)",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {p.name}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Shared styles ────────────────────────────────────────────────────────────
+
+function channelRowStyle(isActive: boolean): React.CSSProperties {
+  return {
+    display: "flex",
+    alignItems: "center",
+    gap: "0.4rem",
+    padding: "0.3rem 0.5rem 0.3rem 0.75rem",
+    margin: "0.05rem 0.5rem",
+    borderRadius: "6px",
+    background: isActive ? "var(--surface-2)" : "transparent",
+    color: isActive ? "var(--text-primary)" : "var(--text-secondary)",
+    fontSize: "0.9rem",
+    fontWeight: isActive ? 600 : 400,
+    transition: "background 0.12s, color 0.12s",
+    textDecoration: "none",
+  };
+}
+
+const channelNameStyle: React.CSSProperties = {
+  flex: 1,
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
+};
+
+function applyHover(e: React.MouseEvent, isActive: boolean) {
+  if (!isActive) {
+    (e.currentTarget as HTMLElement).style.background = "var(--surface-2)";
+    (e.currentTarget as HTMLElement).style.color = "var(--text-primary)";
+  }
+}
+
+function clearHover(e: React.MouseEvent, isActive: boolean) {
+  if (!isActive) {
+    (e.currentTarget as HTMLElement).style.background = "transparent";
+    (e.currentTarget as HTMLElement).style.color = "var(--text-secondary)";
+  }
+}
+
+// ─── Dropdown menu item ───────────────────────────────────────────────────────
+
+function MenuItem({
+  icon, label, onClick, danger = false,
 }: {
   icon: React.ReactNode;
   label: string;
@@ -341,17 +516,11 @@ function MenuItem({
     <button
       onClick={onClick}
       style={{
-        width: "100%",
-        display: "flex",
-        alignItems: "center",
-        gap: "0.5rem",
-        padding: "0.5rem 0.6rem",
-        borderRadius: "4px",
+        width: "100%", display: "flex", alignItems: "center", gap: "0.5rem",
+        padding: "0.5rem 0.6rem", borderRadius: "4px",
         color: danger ? "var(--danger)" : "var(--text-secondary)",
-        fontSize: "0.88rem",
-        fontWeight: 500,
-        transition: "background 0.12s, color 0.12s",
-        textAlign: "left",
+        fontSize: "0.88rem", fontWeight: 500,
+        transition: "background 0.12s, color 0.12s", textAlign: "left",
       }}
       onMouseEnter={(e) => {
         (e.currentTarget.style.background = danger ? "var(--danger)" : "var(--accent)");
