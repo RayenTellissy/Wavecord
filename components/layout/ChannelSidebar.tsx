@@ -10,7 +10,6 @@ import {
   PlusIcon, LeaveIcon, LinkIcon, SettingsIcon,
 } from "@/components/icons";
 import { UserPanel } from "./UserPanel";
-import { VoiceHUD } from "@/components/voice/VoiceHUD";
 import { useModal } from "@/stores/modalStore";
 import { useSidebar } from "@/stores/sidebarStore";
 import { useVoiceStore, type VoiceParticipant } from "@/stores/voiceStore";
@@ -254,6 +253,7 @@ export function ChannelSidebar({ server, currentUserId, currentMemberRole }: Cha
                           <motion.div key={channel.id} variants={itemVariant}>
                             <VoiceChannelItem
                               channel={channel}
+                              serverId={server.id}
                               isActive={channel.id === activeChannelId}
                               isConnected={channel.id === voiceChannelId && !!voiceToken}
                               isJoining={joiningVoice === channel.id}
@@ -272,7 +272,8 @@ export function ChannelSidebar({ server, currentUserId, currentMemberRole }: Cha
         })}
       </div>
 
-      <VoiceHUD />
+      {/* Spacer so UserPanel stays above the fixed VoiceHUD when connected */}
+      {voiceChannelId && <div style={{ height: 80, flexShrink: 0 }} />}
       <UserPanel />
     </div>
   );
@@ -332,6 +333,7 @@ function TextChannelItem({
 
 function VoiceChannelItem({
   channel,
+  serverId,
   isActive,
   isConnected,
   isJoining,
@@ -339,74 +341,67 @@ function VoiceChannelItem({
   onClick,
 }: {
   channel: Channel;
+  serverId: string;
   isActive: boolean;
   isConnected: boolean;
   isJoining: boolean;
   participants: VoiceParticipant[];
   onClick: () => void;
 }) {
+  const { open } = useModal();
   const accentColor = isConnected ? "var(--success)" : isActive ? "var(--accent)" : "inherit";
 
   return (
     <div>
-      <Tooltip content={isConnected ? "Click to view room" : "Click to join"} side="right">
-        <motion.div
-          whileHover={{ x: 2 }}
-          onClick={onClick}
-          style={{
-            ...channelRowStyle(isActive || isConnected),
-            cursor: isJoining ? "wait" : "pointer",
-            color: isConnected ? "var(--success)" : isActive ? "var(--text-primary)" : "var(--text-secondary)",
-            background: isConnected
-              ? "rgba(34,197,94,0.08)"
-              : isActive
-              ? "var(--surface-2)"
-              : "transparent",
-          }}
-          onMouseEnter={(e) => {
-            if (!isActive && !isConnected) {
-              (e.currentTarget as HTMLElement).style.background = "var(--surface-2)";
-              (e.currentTarget as HTMLElement).style.color = "var(--text-primary)";
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (!isActive && !isConnected) {
-              (e.currentTarget as HTMLElement).style.background = "transparent";
-              (e.currentTarget as HTMLElement).style.color = "var(--text-secondary)";
-            }
-          }}
-        >
-          <span style={{ display: "flex", color: accentColor, flexShrink: 0 }}>
-            {isJoining ? (
-              <span style={{ display: "flex", animation: "spin 0.8s linear infinite" }}>
-                <VolumeIcon size={17} />
-              </span>
-            ) : (
-              <VolumeIcon size={17} />
-            )}
-          </span>
-          <span style={channelNameStyle}>{channel.name}</span>
-          {isConnected && (
-            <span
-              style={{
-                width: 7,
-                height: 7,
-                borderRadius: "50%",
-                background: "var(--success)",
-                flexShrink: 0,
-                boxShadow: "0 0 5px var(--success)",
-              }}
-            />
-          )}
-        </motion.div>
-      </Tooltip>
+      <motion.div
+        whileHover={{ x: 2 }}
+        onClick={onClick}
+        style={{
+          ...channelRowStyle(isActive || isConnected),
+          cursor: isJoining ? "default" : "pointer",
+          color: isConnected ? "var(--success)" : isActive ? "var(--text-primary)" : "var(--text-secondary)",
+          background: isConnected ? "rgba(34,197,94,0.08)" : isActive ? "var(--surface-2)" : "transparent",
+        }}
+        onMouseEnter={(e) => {
+          if (!isActive && !isConnected) {
+            (e.currentTarget as HTMLElement).style.background = "var(--surface-2)";
+            (e.currentTarget as HTMLElement).style.color = "var(--text-primary)";
+          }
+        }}
+        onMouseLeave={(e) => {
+          if (!isActive && !isConnected) {
+            (e.currentTarget as HTMLElement).style.background = "transparent";
+            (e.currentTarget as HTMLElement).style.color = "var(--text-secondary)";
+          }
+        }}
+      >
+        <span style={{ display: "flex", color: accentColor, flexShrink: 0 }}>
+          <VolumeIcon size={17} />
+        </span>
+        <span style={channelNameStyle}>{channel.name}</span>
+        {isJoining && <JoiningIndicator />}
+        {isConnected && !isJoining && (
+          <span
+            style={{
+              width: 7,
+              height: 7,
+              borderRadius: "50%",
+              background: "var(--success)",
+              flexShrink: 0,
+              boxShadow: "0 0 5px var(--success)",
+            }}
+          />
+        )}
+      </motion.div>
 
       {/* Participants list */}
       {isConnected && participants.length > 0 && (
         <div style={{ paddingLeft: "1.75rem", paddingBottom: "0.25rem" }}>
           {participants.map((p) => (
-            <div
+            <motion.div
               key={p.identity}
+              whileHover={{ x: 2 }}
+              onClick={() => open("voiceParticipantProfile", { targetUserId: p.identity, serverId })}
               style={{
                 display: "flex",
                 alignItems: "center",
@@ -414,7 +409,11 @@ function VoiceChannelItem({
                 padding: "0.15rem 0.5rem",
                 marginRight: "0.5rem",
                 borderRadius: "4px",
+                cursor: "pointer",
+                transition: "background 0.12s",
               }}
+              onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "var(--surface-2)"; }}
+              onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "transparent"; }}
             >
               {p.metadata ? (
                 <Image
@@ -454,11 +453,39 @@ function VoiceChannelItem({
               >
                 {p.name}
               </span>
-            </div>
+            </motion.div>
           ))}
         </div>
       )}
     </div>
+  );
+}
+
+// ─── Joining indicator: three pulsing dots ────────────────────────────────────
+
+function JoiningIndicator() {
+  return (
+    <span style={{ display: "flex", alignItems: "center", gap: "3px", flexShrink: 0 }}>
+      <style>{`
+        @keyframes dot-pulse {
+          0%, 80%, 100% { opacity: 0.2; transform: scale(0.85); }
+          40% { opacity: 1; transform: scale(1); }
+        }
+      `}</style>
+      {[0, 1, 2].map((i) => (
+        <span
+          key={i}
+          style={{
+            width: 4,
+            height: 4,
+            borderRadius: "50%",
+            background: "var(--text-muted)",
+            display: "inline-block",
+            animation: `dot-pulse 1.2s ease-in-out ${i * 0.2}s infinite`,
+          }}
+        />
+      ))}
+    </span>
   );
 }
 

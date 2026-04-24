@@ -7,10 +7,12 @@ import { motion, AnimatePresence } from "framer-motion";
 interface TooltipProps {
   content: string;
   side?: "right" | "left" | "top" | "bottom";
+  adjustX?: number;
+  adjustY?: number;
   children: React.ReactNode;
 }
 
-export function Tooltip({ content, side = "right", children }: TooltipProps) {
+export function Tooltip({ content, side = "right", adjustX = 0, adjustY = 0, children }: TooltipProps) {
   const [visible, setVisible] = useState(false);
   const [pos, setPos] = useState({ top: 0, left: 0 });
   const ref = useRef<HTMLDivElement>(null);
@@ -22,16 +24,16 @@ export function Tooltip({ content, side = "right", children }: TooltipProps) {
     const r = ref.current.getBoundingClientRect();
     switch (side) {
       case "right":
-        setPos({ top: r.top + r.height / 2, left: r.right + offset });
+        setPos({ top: r.top + r.height / 2 + adjustY, left: r.right + offset + adjustX });
         break;
       case "left":
-        setPos({ top: r.top + r.height / 2, left: r.left - offset });
+        setPos({ top: r.top + r.height / 2 + adjustY, left: r.left - offset + adjustX });
         break;
       case "top":
-        setPos({ top: r.top - offset, left: r.left + r.width / 2 });
+        setPos({ top: r.top - offset + adjustY, left: r.left + r.width / 2 + adjustX });
         break;
       case "bottom":
-        setPos({ top: r.bottom + offset, left: r.left + r.width / 2 });
+        setPos({ top: r.bottom + offset + adjustY, left: r.left + r.width / 2 + adjustX });
         break;
     }
     setVisible(true);
@@ -61,11 +63,11 @@ export function Tooltip({ content, side = "right", children }: TooltipProps) {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.92 }}
                 transition={{ duration: 0.1 }}
+                transformTemplate={({ scale }) => `${transformMap[side]} scale(${scale ?? 1})`}
                 style={{
                   position: "fixed",
                   top: pos.top,
                   left: pos.left,
-                  transform: transformMap[side],
                   background: "#0d1117",
                   border: "1px solid var(--border)",
                   color: "var(--text-primary)",

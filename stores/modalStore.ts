@@ -14,7 +14,8 @@ export type ModalType =
   | "deleteChannel"
   | "deleteMessage"
   | "editProfile"
-  | "serverSettings";
+  | "serverSettings"
+  | "voiceParticipantProfile";
 
 interface ModalData {
   serverId?: string;

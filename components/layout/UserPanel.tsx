@@ -1,9 +1,9 @@
 "use client";
 
-import { useSession, signOut } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { motion } from "framer-motion";
 import { Tooltip } from "@/components/ui/Tooltip";
-import { MicIcon, MicOffIcon, HeadphonesIcon, HeadphonesOffIcon, SettingsIcon, PersonIcon, LeaveIcon } from "@/components/icons";
+import { MicIcon, MicOffIcon, HeadphonesIcon, HeadphonesOffIcon, SettingsIcon, PersonIcon } from "@/components/icons";
 import { useState } from "react";
 import Image from "next/image";
 import { useModal } from "@/stores/modalStore";
@@ -23,10 +23,6 @@ export function UserPanel() {
 
   if (!session?.user) return null;
   const user = session.user;
-
-  function handleSignOut() {
-    signOut({ callbackUrl: "/login" });
-  }
 
   return (
     <div style={{
@@ -94,7 +90,7 @@ export function UserPanel() {
 
       {/* Controls */}
       <div style={{ display: "flex", gap: "0.1rem" }}>
-        <Tooltip content={muted ? "Unmute" : "Mute"} side="top">
+        <Tooltip content={muted ? "Unmute" : "Mute"} side="top" adjustX={6} adjustY={-4}>
           <motion.button
             whileHover={{ scale: 1.15 }}
             whileTap={{ scale: 0.9 }}
@@ -116,7 +112,7 @@ export function UserPanel() {
           </motion.button>
         </Tooltip>
 
-        <Tooltip content={deafened ? "Undeafen" : "Deafen"} side="top">
+        <Tooltip content={deafened ? "Undeafen" : "Deafen"} side="top" adjustX={6} adjustY={-4}>
           <motion.button
             whileHover={{ scale: 1.15 }}
             whileTap={{ scale: 0.9 }}
@@ -138,7 +134,7 @@ export function UserPanel() {
           </motion.button>
         </Tooltip>
 
-        <Tooltip content="User Settings" side="top">
+        <Tooltip content="User Settings" side="top" adjustX={6} adjustY={-4}>
           <motion.button
             whileHover={{ scale: 1.15 }}
             whileTap={{ scale: 0.9 }}
@@ -160,27 +156,6 @@ export function UserPanel() {
           </motion.button>
         </Tooltip>
 
-        <Tooltip content="Log Out" side="top">
-          <motion.button
-            whileHover={{ scale: 1.15 }}
-            whileTap={{ scale: 0.9 }}
-            onClick={handleSignOut}
-            style={{
-              width: 30,
-              height: 30,
-              borderRadius: "6px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              color: "var(--text-secondary)",
-              transition: "color 0.15s, background 0.15s",
-            }}
-            onMouseEnter={(e) => { (e.currentTarget.style.color = "var(--danger)"); (e.currentTarget.style.background = "var(--surface-2)"); }}
-            onMouseLeave={(e) => { (e.currentTarget.style.color = "var(--text-secondary)"); (e.currentTarget.style.background = "none"); }}
-          >
-            <LeaveIcon size={17} />
-          </motion.button>
-        </Tooltip>
       </div>
     </div>
   );

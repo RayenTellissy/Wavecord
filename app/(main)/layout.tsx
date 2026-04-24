@@ -13,6 +13,8 @@ import { ServerSettingsModal } from "@/components/server/ServerSettingsModal";
 import { UserSettingsModal } from "@/components/settings/UserSettingsModal";
 import { MobileOverlay } from "@/components/layout/MobileOverlay";
 import { PersistentVoice } from "@/components/voice/PersistentVoice";
+import { VoiceHUD } from "@/components/voice/VoiceHUD";
+import { VoiceParticipantModal } from "@/components/voice/VoiceParticipantModal";
 
 export default async function MainLayout({
   children,
@@ -49,6 +51,8 @@ export default async function MainLayout({
         {children}
       </PersistentVoice>
 
+      <VoiceHUD />
+
       {/* Global modals */}
       <CreateServerModal />
       <JoinServerModal />
@@ -59,6 +63,7 @@ export default async function MainLayout({
       <DeleteServerModal />
       <ServerSettingsModal />
       <UserSettingsModal />
+      <VoiceParticipantModal />
       <MobileOverlay />
     </div>
   );

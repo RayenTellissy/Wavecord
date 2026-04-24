@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { useSession } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Modal } from "@/components/ui/Modal";
 import { useModal } from "@/stores/modalStore";
@@ -11,6 +11,7 @@ import {
   BellOffIcon,
   CheckIcon,
   ImageIcon,
+  LeaveIcon,
 } from "@/components/icons";
 import Image from "next/image";
 import axios from "axios";
@@ -586,6 +587,32 @@ export function UserSettingsModal() {
               {tab}
             </button>
           ))}
+
+          <div style={{ marginTop: "auto", paddingTop: "0.75rem", borderTop: "1px solid var(--border)" }}>
+            <button
+              onClick={() => signOut({ callbackUrl: "/login" })}
+              style={{
+                width: "100%",
+                padding: "0.55rem 0.75rem",
+                borderRadius: "6px",
+                textAlign: "left",
+                fontSize: "0.88rem",
+                fontWeight: 400,
+                color: "var(--danger)",
+                background: "transparent",
+                display: "flex",
+                alignItems: "center",
+                gap: "0.5rem",
+                transition: "background 0.12s",
+                cursor: "pointer",
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(239,68,68,0.1)"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
+            >
+              <LeaveIcon size={15} />
+              Log Out
+            </button>
+          </div>
         </div>
 
         {/* Divider */}

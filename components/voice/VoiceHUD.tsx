@@ -4,8 +4,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useVoiceStore } from "@/stores/voiceStore";
 import {
-  MicIcon,
-  MicOffIcon,
   CameraIcon,
   CameraOffIcon,
   ScreenShareIcon,
@@ -24,10 +22,8 @@ export function VoiceHUD() {
     channelName,
     serverId,
     serverName,
-    micEnabled,
     cameraEnabled,
     screenSharing,
-    toggleMic,
     toggleCamera,
     toggleScreenShare,
     leave,
@@ -42,7 +38,13 @@ export function VoiceHUD() {
           exit={{ opacity: 0, y: 8 }}
           transition={{ duration: 0.18 }}
           style={{
+            position: "fixed",
+            bottom: 54,
+            left: 72,
+            width: 240,
+            zIndex: 200,
             borderTop: "1px solid var(--border)",
+            borderBottom: "1px solid var(--border)",
             background: "var(--bg)",
             padding: "0.5rem 0.6rem 0.45rem",
           }}
@@ -99,7 +101,7 @@ export function VoiceHUD() {
               </p>
             </div>
 
-            <Tooltip content="Disconnect" side="top">
+            <Tooltip content="Disconnect" side="top" adjustX={6} adjustY={-4}>
               <motion.button
                 whileHover={{ scale: 1.12 }}
                 whileTap={{ scale: 0.9 }}
@@ -122,16 +124,8 @@ export function VoiceHUD() {
             </Tooltip>
           </div>
 
-          {/* Controls row: mic / camera / screen share */}
+          {/* Controls row: camera / screen share */}
           <div style={{ display: "flex", gap: "0.25rem" }}>
-            <HudButton
-              tooltip={micEnabled ? "Mute" : "Unmute"}
-              active={!micEnabled}
-              onClick={toggleMic}
-            >
-              {micEnabled ? <MicIcon size={13} /> : <MicOffIcon size={13} />}
-            </HudButton>
-
             <HudButton
               tooltip={cameraEnabled ? "Stop Video" : "Start Video"}
               active={cameraEnabled}
@@ -166,26 +160,25 @@ function HudButton({
   children: React.ReactNode;
 }) {
   return (
-    <Tooltip content={tooltip} side="top">
-      <motion.button
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.9 }}
-        onClick={onClick}
-        style={{
-          flex: 1,
-          height: 28,
-          borderRadius: "6px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          background: active ? "rgba(99,102,241,0.15)" : "var(--surface-2)",
-          color: active ? "var(--accent)" : "var(--text-secondary)",
-          border: `1px solid ${active ? "rgba(99,102,241,0.4)" : "var(--border)"}`,
-          transition: "background 0.12s, color 0.12s",
-        }}
-      >
-        {children}
-      </motion.button>
-    </Tooltip>
+    <motion.button
+      title={tooltip}
+      whileHover={{ scale: 1.04 }}
+      whileTap={{ scale: 0.96 }}
+      onClick={onClick}
+      style={{
+        flex: 1,
+        height: 28,
+        borderRadius: "6px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        background: active ? "rgba(99,102,241,0.15)" : "var(--surface-2)",
+        color: active ? "var(--accent)" : "var(--text-secondary)",
+        border: `1px solid ${active ? "rgba(99,102,241,0.4)" : "var(--border)"}`,
+        transition: "background 0.12s, color 0.12s",
+      }}
+    >
+      {children}
+    </motion.button>
   );
 }
