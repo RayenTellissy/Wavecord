@@ -13,6 +13,8 @@ import { UserPanel } from "./UserPanel";
 import { useModal } from "@/stores/modalStore";
 import { useSidebar } from "@/stores/sidebarStore";
 import { useVoiceStore, type VoiceParticipant } from "@/stores/voiceStore";
+import { useLocalParticipant, useConnectionQualityIndicator } from "@livekit/components-react";
+import { ConnectionQuality } from "livekit-client";
 import type { Server, Channel, Category, ServerMember, User } from "@prisma/client";
 import axios from "axios";
 import Image from "next/image";
@@ -47,7 +49,9 @@ export function ChannelSidebar({ server, currentUserId, currentMemberRole }: Cha
     channelId: voiceChannelId,
     token: voiceToken,
     participants: voiceParticipants,
+    optimisticParticipant: voiceOptimisticParticipant,
     join: joinVoice,
+    setOptimisticParticipant,
   } = useVoiceStore();
 
   const activeChannelId = params?.channelId as string | undefined;
@@ -77,6 +81,16 @@ export function ChannelSidebar({ server, currentUserId, currentMemberRole }: Cha
       return;
     }
 
+    // Optimistically show the current user in the participant list immediately
+    const currentMember = server.members.find((m) => m.user.id === currentUserId);
+    if (currentMember) {
+      setOptimisticParticipant({
+        identity: currentUserId,
+        name: currentMember.user.name ?? currentMember.user.username ?? "User",
+        metadata: currentMember.user.image ?? undefined,
+      });
+    }
+
     // Otherwise join (or switch) — stay on current page, audio connects in background
     setJoiningVoice(channel.id);
     try {
@@ -86,6 +100,7 @@ export function ChannelSidebar({ server, currentUserId, currentMemberRole }: Cha
       joinVoice(channel.id, channel.name, server.id, server.name, data.token!, data.serverUrl!);
     } catch (e) {
       console.error("Voice join failed:", e);
+      setOptimisticParticipant(null);
     } finally {
       setJoiningVoice(null);
     }
@@ -258,6 +273,7 @@ export function ChannelSidebar({ server, currentUserId, currentMemberRole }: Cha
                               isConnected={channel.id === voiceChannelId && !!voiceToken}
                               isJoining={joiningVoice === channel.id}
                               participants={channel.id === voiceChannelId ? voiceParticipants : []}
+                              optimisticParticipant={joiningVoice === channel.id ? voiceOptimisticParticipant : null}
                               onClick={() => handleVoiceChannelClick(channel)}
                             />
                           </motion.div>
@@ -338,6 +354,7 @@ function VoiceChannelItem({
   isConnected,
   isJoining,
   participants,
+  optimisticParticipant,
   onClick,
 }: {
   channel: Channel;
@@ -346,6 +363,7 @@ function VoiceChannelItem({
   isConnected: boolean;
   isJoining: boolean;
   participants: VoiceParticipant[];
+  optimisticParticipant?: VoiceParticipant | null;
   onClick: () => void;
 }) {
   const { open } = useModal();
@@ -380,23 +398,66 @@ function VoiceChannelItem({
         </span>
         <span style={channelNameStyle}>{channel.name}</span>
         {isJoining && <JoiningIndicator />}
-        {isConnected && !isJoining && (
-          <span
-            style={{
-              width: 7,
-              height: 7,
-              borderRadius: "50%",
-              background: "var(--success)",
-              flexShrink: 0,
-              boxShadow: "0 0 5px var(--success)",
-            }}
-          />
-        )}
+        {isConnected && !isJoining && <ConnectionQualityDot />}
       </motion.div>
 
-      {/* Participants list */}
-      {isConnected && participants.length > 0 && (
+      {/* Participants list — shown while joining (optimistic) or connected (real) */}
+      {(isConnected || isJoining) && (participants.length > 0 || optimisticParticipant) && (
         <div style={{ paddingLeft: "1.75rem", paddingBottom: "0.25rem" }}>
+          {/* Optimistic self-entry: shown while connecting, grayed out */}
+          {optimisticParticipant && !participants.find((p) => p.identity === optimisticParticipant.identity) && (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "0.4rem",
+                padding: "0.15rem 0.5rem",
+                marginRight: "0.5rem",
+                borderRadius: "4px",
+                opacity: 0.45,
+                filter: "grayscale(0.6)",
+              }}
+            >
+              {optimisticParticipant.metadata ? (
+                <Image
+                  src={optimisticParticipant.metadata}
+                  alt={optimisticParticipant.name}
+                  width={16}
+                  height={16}
+                  style={{ borderRadius: "50%", flexShrink: 0 }}
+                />
+              ) : (
+                <span
+                  style={{
+                    width: 16,
+                    height: 16,
+                    borderRadius: "50%",
+                    background: "var(--surface-3)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "0.6rem",
+                    fontWeight: 700,
+                    color: "var(--text-muted)",
+                    flexShrink: 0,
+                  }}
+                >
+                  {optimisticParticipant.name.charAt(0).toUpperCase()}
+                </span>
+              )}
+              <span
+                style={{
+                  fontSize: "0.78rem",
+                  color: "var(--text-secondary)",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {optimisticParticipant.name}
+              </span>
+            </div>
+          )}
           {participants.map((p) => (
             <motion.div
               key={p.identity}
@@ -458,6 +519,41 @@ function VoiceChannelItem({
         </div>
       )}
     </div>
+  );
+}
+
+// ─── Connection quality dot ───────────────────────────────────────────────────
+
+const QUALITY_CONFIG = {
+  [ConnectionQuality.Excellent]: { color: "#22c55e", glow: "0 0 5px #22c55e", pulse: false },
+  [ConnectionQuality.Good]:      { color: "#86efac", glow: "0 0 4px #86efac", pulse: false },
+  [ConnectionQuality.Poor]:      { color: "#f59e0b", glow: "0 0 5px #f59e0b", pulse: false },
+  [ConnectionQuality.Lost]:      { color: "#ef4444", glow: "0 0 5px #ef4444", pulse: true  },
+  [ConnectionQuality.Unknown]:   { color: "var(--text-muted)", glow: "none",       pulse: false },
+} as const;
+
+function ConnectionQualityDot() {
+  const { localParticipant } = useLocalParticipant();
+  const { quality } = useConnectionQualityIndicator({ participant: localParticipant });
+  const cfg = QUALITY_CONFIG[quality] ?? QUALITY_CONFIG[ConnectionQuality.Unknown];
+
+  return (
+    <>
+      {cfg.pulse && (
+        <style>{`@keyframes q-pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }`}</style>
+      )}
+      <span
+        style={{
+          width: 7,
+          height: 7,
+          borderRadius: "50%",
+          background: cfg.color,
+          flexShrink: 0,
+          boxShadow: cfg.glow,
+          animation: cfg.pulse ? "q-pulse 1s ease-in-out infinite" : "none",
+        }}
+      />
+    </>
   );
 }
 

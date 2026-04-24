@@ -35,7 +35,7 @@ interface VoiceRoomProps {
 }
 
 export function VoiceRoom({ channel, serverId, serverName }: VoiceRoomProps) {
-  const [loading, setLoading] = useState(false);
+  const [connecting, setConnecting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { join, leave, channelId: activeChannelId, token } = useVoiceStore();
   const router = useRouter();
@@ -45,7 +45,7 @@ export function VoiceRoom({ channel, serverId, serverName }: VoiceRoomProps) {
   useEffect(() => {
     if (alreadyConnected) return;
 
-    setLoading(true);
+    setConnecting(true);
     setError(null);
 
     fetch(`/api/livekit/token?channelId=${channel.id}`)
@@ -55,7 +55,7 @@ export function VoiceRoom({ channel, serverId, serverName }: VoiceRoomProps) {
         join(channel.id, channel.name, serverId, serverName, data.token!, data.serverUrl!);
       })
       .catch((e: Error) => setError(e.message))
-      .finally(() => setLoading(false));
+      .finally(() => setConnecting(false));
 
     // Intentionally no cleanup — navigating away keeps the voice connection alive.
     // The user must click Disconnect to leave the channel.
@@ -67,72 +67,9 @@ export function VoiceRoom({ channel, serverId, serverName }: VoiceRoomProps) {
     router.push(`/servers/${serverId}/channels`);
   }
 
-  if (loading) {
-    return (
-      <div
-        style={{
-          flex: 1,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: "1rem",
-          color: "var(--text-muted)",
-          background: "var(--surface-1)",
-        }}
-      >
-        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-        <div
-          style={{
-            width: 44,
-            height: 44,
-            borderRadius: "50%",
-            border: "3px solid var(--border)",
-            borderTopColor: "var(--accent)",
-            animation: "spin 0.8s linear infinite",
-          }}
-        />
-        <p style={{ fontSize: "0.9rem" }}>
-          Connecting to <strong style={{ color: "var(--text-primary)" }}>#{channel.name}</strong>…
-        </p>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div
-        style={{
-          flex: 1,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: "0.75rem",
-          color: "var(--text-muted)",
-          background: "var(--surface-1)",
-        }}
-      >
-        <p>Failed to connect: {error}</p>
-        <button
-          onClick={() => window.location.reload()}
-          style={{
-            padding: "0.4rem 1rem",
-            borderRadius: "6px",
-            background: "var(--accent)",
-            color: "#fff",
-            fontSize: "0.88rem",
-            fontWeight: 600,
-          }}
-        >
-          Try again
-        </button>
-      </div>
-    );
-  }
-
-  // Renders using the RoomContext provided by PersistentVoice in the layout
-  return <VoiceRoomInner channel={channel} onLeave={handleLeave} />;
+  // Render the room immediately — participants populate once LiveKit connects.
+  // A subtle header indicator communicates the connecting state.
+  return <VoiceRoomInner channel={channel} onLeave={handleLeave} connecting={connecting} error={error} />;
 }
 
 // ─── Inner UI (uses LiveKit context from PersistentVoice) ─────────────────────
@@ -140,9 +77,13 @@ export function VoiceRoom({ channel, serverId, serverName }: VoiceRoomProps) {
 function VoiceRoomInner({
   channel,
   onLeave,
+  connecting,
+  error,
 }: {
   channel: Channel;
   onLeave: () => void;
+  connecting?: boolean;
+  error?: string | null;
 }) {
   const participants = useParticipants();
   const { localParticipant } = useLocalParticipant();
@@ -193,19 +134,49 @@ function VoiceRoomInner({
         <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
           <VolumeIcon size={18} style={{ color: "var(--text-secondary)" }} />
           <span style={{ fontWeight: 600, fontSize: "1rem" }}>{channel.name}</span>
-          <span
-            style={{
-              fontSize: "0.68rem",
-              fontWeight: 700,
-              color: "var(--success)",
-              background: "rgba(34,197,94,0.15)",
-              padding: "0.1rem 0.45rem",
-              borderRadius: "10px",
-              letterSpacing: "0.3px",
-            }}
-          >
-            LIVE
-          </span>
+          {error ? (
+            <span
+              style={{
+                fontSize: "0.68rem",
+                fontWeight: 700,
+                color: "var(--danger, #ef4444)",
+                background: "rgba(239,68,68,0.15)",
+                padding: "0.1rem 0.45rem",
+                borderRadius: "10px",
+                letterSpacing: "0.3px",
+              }}
+            >
+              FAILED
+            </span>
+          ) : connecting ? (
+            <span
+              style={{
+                fontSize: "0.68rem",
+                fontWeight: 700,
+                color: "var(--text-muted)",
+                background: "var(--surface-3)",
+                padding: "0.1rem 0.45rem",
+                borderRadius: "10px",
+                letterSpacing: "0.3px",
+              }}
+            >
+              CONNECTING…
+            </span>
+          ) : (
+            <span
+              style={{
+                fontSize: "0.68rem",
+                fontWeight: 700,
+                color: "var(--success)",
+                background: "rgba(34,197,94,0.15)",
+                padding: "0.1rem 0.45rem",
+                borderRadius: "10px",
+                letterSpacing: "0.3px",
+              }}
+            >
+              LIVE
+            </span>
+          )}
         </div>
         <span style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>
           {participants.length} connected
@@ -269,10 +240,33 @@ function VoiceRoomInner({
             }}
           >
             <VolumeIcon size={52} style={{ opacity: 0.25 }} />
-            <p style={{ fontSize: "0.95rem" }}>Waiting for others to join…</p>
-            <p style={{ fontSize: "0.8rem", opacity: 0.7 }}>
-              You&apos;re connected · share the invite link to bring friends in
-            </p>
+            {error ? (
+              <>
+                <p style={{ fontSize: "0.95rem" }}>Failed to connect: {error}</p>
+                <button
+                  onClick={() => window.location.reload()}
+                  style={{
+                    padding: "0.4rem 1rem",
+                    borderRadius: "6px",
+                    background: "var(--accent)",
+                    color: "#fff",
+                    fontSize: "0.88rem",
+                    fontWeight: 600,
+                  }}
+                >
+                  Try again
+                </button>
+              </>
+            ) : connecting ? (
+              <p style={{ fontSize: "0.95rem" }}>Connecting to #{channel.name}…</p>
+            ) : (
+              <>
+                <p style={{ fontSize: "0.95rem" }}>Waiting for others to join…</p>
+                <p style={{ fontSize: "0.8rem", opacity: 0.7 }}>
+                  You&apos;re connected · share the invite link to bring friends in
+                </p>
+              </>
+            )}
           </div>
         ) : (
           <div

@@ -21,6 +21,8 @@ export interface VoiceState {
   screenSharing: boolean;
 
   participants: VoiceParticipant[];
+  /** Shown immediately when the user initiates a join, before LiveKit confirms connection. */
+  optimisticParticipant: VoiceParticipant | null;
 
   join: (
     channelId: string,
@@ -32,6 +34,7 @@ export interface VoiceState {
   ) => void;
   leave: () => void;
   setParticipants: (participants: VoiceParticipant[]) => void;
+  setOptimisticParticipant: (p: VoiceParticipant | null) => void;
   toggleMic: () => void;
   toggleDeafen: () => void;
   toggleCamera: () => void;
@@ -50,6 +53,7 @@ export const useVoiceStore = create<VoiceState>((set) => ({
   cameraEnabled: false,
   screenSharing: false,
   participants: [],
+  optimisticParticipant: null,
 
   join: (channelId, channelName, serverId, serverName, token, lkUrl) =>
     set({
@@ -77,9 +81,13 @@ export const useVoiceStore = create<VoiceState>((set) => ({
       cameraEnabled: false,
       screenSharing: false,
       participants: [],
+      optimisticParticipant: null,
     }),
 
-  setParticipants: (participants) => set({ participants }),
+  // Once real participants arrive from LiveKit, the optimistic entry is no longer needed.
+  setParticipants: (participants) => set({ participants, optimisticParticipant: null }),
+
+  setOptimisticParticipant: (optimisticParticipant) => set({ optimisticParticipant }),
 
   toggleMic: () => set((s) => ({ micEnabled: !s.micEnabled })),
   toggleDeafen: () =>
