@@ -34,9 +34,10 @@ export function DMMessageItem({
   const [editContent, setEditContent] = useState(message.content);
   const [saving, setSaving] = useState(false);
 
+  const isPending = message.id.startsWith("optimistic-");
   const isOwn = message.senderId === currentUserId;
-  const canEdit = isOwn && !message.deleted;
-  const canDelete = isOwn && !message.deleted;
+  const canEdit = isOwn && !message.deleted && !isPending;
+  const canDelete = isOwn && !message.deleted && !isPending;
 
   async function handleEdit() {
     if (!editContent.trim() || editContent === message.content) {
@@ -62,7 +63,7 @@ export function DMMessageItem({
   return (
     <motion.div
       initial={{ opacity: 0, y: 6 }}
-      animate={{ opacity: 1, y: 0 }}
+      animate={{ opacity: isPending ? 0.55 : 1, y: 0 }}
       transition={{ duration: 0.15 }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
@@ -71,7 +72,7 @@ export function DMMessageItem({
         gap: "0.75rem",
         padding: `${isGrouped ? "0.1rem" : "0.75rem"} 1rem 0.1rem`,
         position: "relative",
-        background: hovered ? "rgba(255,255,255,0.02)" : "transparent",
+        background: hovered && !isPending ? "rgba(255,255,255,0.02)" : "transparent",
         transition: "background 0.1s",
       }}
     >

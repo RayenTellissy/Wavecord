@@ -6,6 +6,7 @@ import { AttachIcon, EmojiIcon, XIcon, ImageIcon } from "@/components/icons";
 import Image from "next/image";
 import axios from "axios";
 import { useQueryClient } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
 import type { DMWithRelations } from "@/hooks/useDirectMessages";
 
 interface PendingFile {
@@ -28,6 +29,7 @@ export function DMMessageInput({ conversationId, recipientName }: DMMessageInput
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
+  const { data: session } = useSession();
 
   const canSend = (content.trim().length > 0 || pendingFile !== null) && !sending && !uploading;
 
@@ -69,6 +71,74 @@ export function DMMessageInput({ conversationId, recipientName }: DMMessageInput
     setContent("");
     setPendingFile(null);
     if (textareaRef.current) textareaRef.current.style.height = "auto";
+
+    const optimisticId = `optimistic-${Date.now()}`;
+    const now = new Date();
+    const optimistic: DMWithRelations = {
+      id: optimisticId,
+      content: text,
+      conversationId,
+      senderId: session?.user?.id ?? "",
+      sender: {
+        id: session?.user?.id ?? "",
+        name: session?.user?.name ?? null,
+        username: session?.user?.username ?? null,
+        image: session?.user?.image ?? null,
+      },
+      attachments: fileSnapshot
+        ? [{
+            id: `opt-att-${Date.now()}`,
+            messageId: optimisticId,
+            url: fileSnapshot.url,
+            fileType: fileSnapshot.fileType,
+            fileName: fileSnapshot.fileName,
+            fileSize: fileSnapshot.fileSize,
+            createdAt: now,
+          } as DMWithRelations["attachments"][number]]
+        : [],
+      fileUrl: null,
+      deleted: false,
+      edited: false,
+      createdAt: now,
+      updatedAt: now,
+    } as DMWithRelations;
+
+    type CacheShape = {
+      pages: { messages: DMWithRelations[]; nextCursor: string | null }[];
+      pageParams: unknown[];
+    };
+
+    queryClient.setQueryData(["direct-messages", conversationId], (old: unknown) => {
+      if (!old) return old;
+      const data = old as CacheShape;
+      return {
+        ...data,
+        pages: data.pages.map((page, i) =>
+          i === 0 ? { ...page, messages: [optimistic, ...page.messages] } : page
+        ),
+      };
+    });
+
+    function replaceOptimistic(real: DMWithRelations | null) {
+      queryClient.setQueryData(["direct-messages", conversationId], (old: unknown) => {
+        if (!old) return old;
+        const data = old as CacheShape;
+        // If the socket already delivered the real message, just drop the optimistic one
+        const realAlreadyInCache =
+          real !== null && data.pages.some((p) => p.messages.some((m) => m.id === real.id));
+        return {
+          ...data,
+          pages: data.pages.map((page) => ({
+            ...page,
+            messages:
+              real && !realAlreadyInCache
+                ? page.messages.map((m) => (m.id === optimisticId ? real : m))
+                : page.messages.filter((m) => m.id !== optimisticId),
+          })),
+        };
+      });
+    }
+
     try {
       const { data: newMessage } = await axios.post<DMWithRelations>("/api/direct-messages", {
         content: text,
@@ -77,22 +147,9 @@ export function DMMessageInput({ conversationId, recipientName }: DMMessageInput
           ? [{ url: fileSnapshot.url, fileType: fileSnapshot.fileType, fileName: fileSnapshot.fileName, fileSize: fileSnapshot.fileSize }]
           : undefined,
       });
-      // Immediately add to cache so sender sees their message without waiting for socket
-      queryClient.setQueryData(
-        ["direct-messages", conversationId],
-        (old: { pages: { messages: DMWithRelations[]; nextCursor: string | null }[]; pageParams: unknown[] } | undefined) => {
-          if (!old) return old;
-          const alreadyInCache = old.pages.some((p) => p.messages.some((m) => m.id === newMessage.id));
-          if (alreadyInCache) return old;
-          return {
-            ...old,
-            pages: old.pages.map((page, i) =>
-              i === 0 ? { ...page, messages: [newMessage, ...page.messages] } : page
-            ),
-          };
-        }
-      );
+      replaceOptimistic(newMessage);
     } catch {
+      replaceOptimistic(null);
       setContent(text);
       setPendingFile(fileSnapshot);
     } finally {

@@ -11,14 +11,14 @@ export type DMWithRelations = DirectMessage & {
   attachments: Attachment[];
 };
 
+type DMPage = { messages: DMWithRelations[]; nextCursor: string | null };
+type DMQueryData = { pages: DMPage[]; pageParams: unknown[] };
+
 async function fetchDirectMessages(conversationId: string, cursor?: string) {
   const url = `/api/direct-messages?conversationId=${conversationId}${cursor ? `&cursor=${cursor}` : ""}`;
   const res = await fetch(url);
   if (!res.ok) throw new Error("Failed to fetch messages");
-  return res.json() as Promise<{
-    messages: DMWithRelations[];
-    nextCursor: string | null;
-  }>;
+  return res.json() as Promise<DMPage>;
 }
 
 export function useDirectMessages(conversationId: string) {
@@ -37,23 +37,18 @@ export function useDirectMessages(conversationId: string) {
   useEffect(() => {
     if (!socket) return;
 
-    function joinRoom() {
-      socket!.emit("join-dm", conversationId);
-    }
-
-    joinRoom();
-    socket.on("connect", joinRoom);
-
     function onNewMessage(message: DMWithRelations) {
-      queryClient.setQueryData(queryKey, (old: Parameters<typeof queryClient.setQueryData>[1]) => {
+      if (message.conversationId !== conversationId) return;
+      queryClient.setQueryData<DMQueryData>(queryKey, (old) => {
         if (!old) return old;
-        const data = old as {
-          pages: { messages: DMWithRelations[]; nextCursor: string | null }[];
-          pageParams: unknown[];
-        };
+        // Dedup in case the sender's optimistic insert already added it
+        const alreadyInCache = old.pages.some((p) =>
+          p.messages.some((m) => m.id === message.id)
+        );
+        if (alreadyInCache) return old;
         return {
-          ...data,
-          pages: data.pages.map((page, i) =>
+          ...old,
+          pages: old.pages.map((page, i) =>
             i === 0 ? { ...page, messages: [message, ...page.messages] } : page
           ),
         };
@@ -61,15 +56,12 @@ export function useDirectMessages(conversationId: string) {
     }
 
     function onUpdateMessage(message: DMWithRelations) {
-      queryClient.setQueryData(queryKey, (old: Parameters<typeof queryClient.setQueryData>[1]) => {
+      if (message.conversationId !== conversationId) return;
+      queryClient.setQueryData<DMQueryData>(queryKey, (old) => {
         if (!old) return old;
-        const data = old as {
-          pages: { messages: DMWithRelations[]; nextCursor: string | null }[];
-          pageParams: unknown[];
-        };
         return {
-          ...data,
-          pages: data.pages.map((page) => ({
+          ...old,
+          pages: old.pages.map((page) => ({
             ...page,
             messages: page.messages.map((m) =>
               m.id === message.id ? message : m
@@ -84,8 +76,6 @@ export function useDirectMessages(conversationId: string) {
     socket.on(SocketEvents.DM_MESSAGE_DELETE, onUpdateMessage);
 
     return () => {
-      socket.emit("leave-dm", conversationId);
-      socket.off("connect", joinRoom);
       socket.off(SocketEvents.DM_MESSAGE_NEW, onNewMessage);
       socket.off(SocketEvents.DM_MESSAGE_UPDATE, onUpdateMessage);
       socket.off(SocketEvents.DM_MESSAGE_DELETE, onUpdateMessage);

@@ -20,6 +20,7 @@ export function setIO(io: SocketIOServer): void {
 export const channelRoom = (channelId: string) => `channel:${channelId}`;
 export const dmRoom = (conversationId: string) => `dm:${conversationId}`;
 export const serverRoom = (serverId: string) => `server:${serverId}`;
+export const userRoom = (userId: string) => `user:${userId}`;
 
 // Socket event names (shared between server and client)
 export const SocketEvents = {

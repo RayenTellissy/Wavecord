@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { requireUserId } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { getIO, dmRoom, SocketEvents } from "@/lib/socket";
+import { getIO, userRoom, SocketEvents } from "@/lib/socket";
 
 const EditDMSchema = z.object({
   content: z.string().min(1).max(4000),
@@ -24,7 +24,12 @@ export async function PATCH(req: Request, { params }: RouteParams) {
 
     const message = await db.directMessage.findUnique({
       where: { id: messageId },
-      select: { senderId: true, conversationId: true, deleted: true },
+      select: {
+        senderId: true,
+        conversationId: true,
+        deleted: true,
+        conversation: { select: { memberOneId: true, memberTwoId: true } },
+      },
     });
 
     if (!message) return NextResponse.json({ error: "Not found" }, { status: 404 });
@@ -41,7 +46,8 @@ export async function PATCH(req: Request, { params }: RouteParams) {
     });
 
     getIO()
-      ?.to(dmRoom(message.conversationId))
+      ?.to(userRoom(message.conversation.memberOneId))
+      .to(userRoom(message.conversation.memberTwoId))
       .emit(SocketEvents.DM_MESSAGE_UPDATE, updated);
 
     return NextResponse.json(updated);
@@ -59,7 +65,11 @@ export async function DELETE(_req: Request, { params }: RouteParams) {
 
     const message = await db.directMessage.findUnique({
       where: { id: messageId },
-      select: { senderId: true, conversationId: true },
+      select: {
+        senderId: true,
+        conversationId: true,
+        conversation: { select: { memberOneId: true, memberTwoId: true } },
+      },
     });
 
     if (!message) return NextResponse.json({ error: "Not found" }, { status: 404 });
@@ -75,7 +85,8 @@ export async function DELETE(_req: Request, { params }: RouteParams) {
     });
 
     getIO()
-      ?.to(dmRoom(message.conversationId))
+      ?.to(userRoom(message.conversation.memberOneId))
+      .to(userRoom(message.conversation.memberTwoId))
       .emit(SocketEvents.DM_MESSAGE_DELETE, deleted);
 
     return NextResponse.json(deleted);

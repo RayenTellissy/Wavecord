@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { requireUserId } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { getIO, dmRoom, SocketEvents } from "@/lib/socket";
+import { getIO, userRoom, SocketEvents } from "@/lib/socket";
 import { checkRateLimit, tooManyRequests } from "@/lib/rateLimit";
 
 const MESSAGE_BATCH = 50;
@@ -131,7 +131,20 @@ export async function POST(req: Request) {
       data: { updatedAt: new Date() },
     });
 
-    getIO()?.to(dmRoom(conversationId)).emit(SocketEvents.DM_MESSAGE_NEW, message);
+    const io = getIO();
+    if (io) {
+      const rooms = [userRoom(conversation.memberOneId), userRoom(conversation.memberTwoId)];
+      io.to(rooms[0]).to(rooms[1]).emit(SocketEvents.DM_MESSAGE_NEW, message);
+      if (process.env.NODE_ENV === "development") {
+        const socketsA = (await io.in(rooms[0]).fetchSockets()).length;
+        const socketsB = (await io.in(rooms[1]).fetchSockets()).length;
+        console.log(
+          `[DM emit] to ${rooms[0]} (${socketsA} sockets), ${rooms[1]} (${socketsB} sockets)`
+        );
+      }
+    } else if (process.env.NODE_ENV === "development") {
+      console.warn("[DM emit] getIO() returned undefined — message not broadcast");
+    }
 
     return NextResponse.json(message, { status: 201 });
   } catch (err) {

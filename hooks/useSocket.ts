@@ -1,56 +1,69 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 import { io as socketIO, type Socket } from "socket.io-client";
 
 let globalSocket: Socket | null = null;
-let serverInitialized = false;
 
-async function ensureServerInitialized() {
-  if (serverInitialized) return;
-  try {
-    await fetch("/api/socket/io");
-    serverInitialized = true;
-  } catch {
-    // will retry on next mount
+function ensureSocket(userId: string | undefined): Socket {
+  if (globalSocket) return globalSocket;
+  globalSocket = socketIO({
+    path: "/api/socket/io",
+    addTrailingSlash: false,
+    transports: ["websocket"],
+    reconnection: true,
+    reconnectionAttempts: Infinity,
+    reconnectionDelay: 500,
+    reconnectionDelayMax: 5000,
+    auth: userId ? { userId } : {},
+  });
+  if (process.env.NODE_ENV === "development") {
+    globalSocket.on("connect", () => console.log("[ws] connect", globalSocket!.id));
+    globalSocket.on("disconnect", (r) => console.log("[ws] disconnect", r));
+    globalSocket.on("connect_error", (e) => console.log("[ws] connect_error", e.message));
   }
+  return globalSocket;
 }
 
 export function useSocket() {
-  const [connected, setConnected] = useState(false);
-  const socketRef = useRef<Socket | null>(null);
+  const { data: session, status } = useSession();
+  const userId = session?.user?.id;
+
+  const [socket, setSocket] = useState<Socket | null>(globalSocket);
+  const [connected, setConnected] = useState<boolean>(globalSocket?.connected ?? false);
 
   useEffect(() => {
-    let onConnect: (() => void) | undefined;
-    let onDisconnect: (() => void) | undefined;
+    if (status === "loading") return;
+    const s = ensureSocket(userId);
+    setSocket(s);
+    setConnected(s.connected);
+  }, [status, userId]);
 
-    ensureServerInitialized().then(() => {
-      if (!globalSocket) {
-        globalSocket = socketIO({
-          path: "/api/socket/io",
-          addTrailingSlash: false,
-          // WebSocket only — polling requests are routed through the Pages Router
-          // handler which calls res.end(), breaking socket.io's protocol.
-          transports: ["websocket"],
-        });
-      }
-
-      socketRef.current = globalSocket;
-
-      onConnect = () => setConnected(true);
-      onDisconnect = () => setConnected(false);
-
-      globalSocket.on("connect", onConnect);
-      globalSocket.on("disconnect", onDisconnect);
-
-      if (globalSocket.connected) setConnected(true);
-    });
-
+  useEffect(() => {
+    if (!socket) return;
+    const onConnect = () => setConnected(true);
+    const onDisconnect = () => setConnected(false);
+    socket.on("connect", onConnect);
+    socket.on("disconnect", onDisconnect);
+    if (socket.connected) setConnected(true);
     return () => {
-      if (onConnect) globalSocket?.off("connect", onConnect);
-      if (onDisconnect) globalSocket?.off("disconnect", onDisconnect);
+      socket.off("connect", onConnect);
+      socket.off("disconnect", onDisconnect);
     };
-  }, []);
+  }, [socket]);
 
-  return { socket: socketRef.current, connected };
+  // Supplemental identify — idempotent on the server; closes the race if
+  // the socket was created before the session resolved.
+  useEffect(() => {
+    if (!socket || !userId) return;
+    const emitIdentify = () => socket.emit("identify", userId);
+    if (socket.connected) emitIdentify();
+    socket.on("connect", emitIdentify);
+    return () => {
+      socket.off("connect", emitIdentify);
+    };
+  }, [socket, userId]);
+
+  return { socket, connected };
 }
