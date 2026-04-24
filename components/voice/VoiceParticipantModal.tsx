@@ -2,8 +2,10 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { Modal } from "@/components/ui/Modal";
 import { useModal } from "@/stores/modalStore";
+import { useVoiceStore } from "@/stores/voiceStore";
 
 type Status = "ONLINE" | "IDLE" | "DND" | "OFFLINE";
 type Role = "ADMIN" | "MODERATOR" | "GUEST";
@@ -40,6 +42,9 @@ const ROLE_COLOR: Record<Role, string> = {
 export function VoiceParticipantModal() {
   const { isOpen, type, data, close } = useModal();
   const open = isOpen && type === "voiceParticipantProfile";
+
+  const { channelId: voiceChannelId, serverId: voiceServerId, participants: voiceParticipants } = useVoiceStore();
+  const isLive = voiceParticipants.find((p) => p.identity === data.targetUserId)?.isLive ?? false;
 
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(false);
@@ -177,6 +182,50 @@ export function VoiceParticipantModal() {
               </div>
             </div>
           </div>
+
+          {/* Join Live button */}
+          {isLive && voiceChannelId && voiceServerId && (
+            <div style={{ marginBottom: "1rem" }}>
+              <Link
+                href={`/servers/${voiceServerId}/channels/${voiceChannelId}`}
+                onClick={close}
+                style={{ textDecoration: "none" }}
+              >
+                <button
+                  style={{
+                    width: "100%",
+                    padding: "0.5rem 1rem",
+                    borderRadius: "8px",
+                    background: "var(--danger, #ef4444)",
+                    color: "#fff",
+                    fontWeight: 700,
+                    fontSize: "0.88rem",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "0.4rem",
+                    transition: "opacity 0.15s",
+                  }}
+                  onMouseEnter={(e) => { (e.currentTarget.style.opacity = "0.85"); }}
+                  onMouseLeave={(e) => { (e.currentTarget.style.opacity = "1"); }}
+                >
+                  <span
+                    style={{
+                      fontSize: "0.62rem",
+                      fontWeight: 700,
+                      background: "rgba(255,255,255,0.25)",
+                      padding: "0.05rem 0.35rem",
+                      borderRadius: "4px",
+                      letterSpacing: "0.4px",
+                    }}
+                  >
+                    LIVE
+                  </span>
+                  Join Live
+                </button>
+              </Link>
+            </div>
+          )}
 
           {/* Bio */}
           {profile.bio && (

@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { Room, RoomEvent } from "livekit-client";
-import { RoomContext, RoomAudioRenderer, useParticipants } from "@livekit/components-react";
+import { Room, RoomEvent, Track } from "livekit-client";
+import { RoomContext, RoomAudioRenderer, useParticipants, useTracks, isTrackReference } from "@livekit/components-react";
 import { useVoiceStore } from "@/stores/voiceStore";
 
 /**
@@ -50,18 +50,30 @@ export function PersistentVoice({ children }: { children: React.ReactNode }) {
 /** Syncs LiveKit participant list into voiceStore so the sidebar can display it. */
 function ParticipantSync() {
   const participants = useParticipants();
+  const cameraTracks = useTracks([Track.Source.Camera]);
+  const screenTracks = useTracks([Track.Source.ScreenShare]);
   const setParticipants = useVoiceStore((s) => s.setParticipants);
 
   useEffect(() => {
+    const liveIdentities = new Set([
+      ...cameraTracks
+        .filter((t) => isTrackReference(t) && !t.publication.isMuted)
+        .map((t) => t.participant.identity),
+      ...screenTracks
+        .filter((t) => isTrackReference(t) && !t.publication.isMuted)
+        .map((t) => t.participant.identity),
+    ]);
+
     setParticipants(
       participants.map((p) => ({
         identity: p.identity,
         name: p.name ?? p.identity,
         metadata: p.metadata,
+        isLive: liveIdentities.has(p.identity),
       }))
     );
     return () => setParticipants([]);
-  }, [participants, setParticipants]);
+  }, [participants, cameraTracks, screenTracks, setParticipants]);
 
   return null;
 }

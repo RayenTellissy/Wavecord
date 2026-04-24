@@ -2,6 +2,7 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import { useLocalParticipant } from "@livekit/components-react";
 import { useVoiceStore } from "@/stores/voiceStore";
 import {
   CameraIcon,
@@ -28,6 +29,26 @@ export function VoiceHUD() {
     toggleScreenShare,
     leave,
   } = useVoiceStore();
+
+  const { localParticipant } = useLocalParticipant();
+
+  function handleToggleCamera() {
+    const next = !cameraEnabled;
+    toggleCamera();
+    localParticipant?.setCameraEnabled(next).catch((err) => {
+      console.error("Camera toggle failed:", err);
+      if (next) toggleCamera();
+    });
+  }
+
+  function handleToggleScreenShare() {
+    const next = !screenSharing;
+    toggleScreenShare();
+    localParticipant?.setScreenShareEnabled(next).catch((err) => {
+      console.error("Screen share failed:", err);
+      if (next) toggleScreenShare();
+    });
+  }
 
   return (
     <AnimatePresence>
@@ -129,7 +150,7 @@ export function VoiceHUD() {
             <HudButton
               tooltip={cameraEnabled ? "Stop Video" : "Start Video"}
               active={cameraEnabled}
-              onClick={toggleCamera}
+              onClick={handleToggleCamera}
             >
               {cameraEnabled ? <CameraIcon size={13} /> : <CameraOffIcon size={13} />}
             </HudButton>
@@ -137,7 +158,7 @@ export function VoiceHUD() {
             <HudButton
               tooltip={screenSharing ? "Stop Share" : "Share Screen"}
               active={screenSharing}
-              onClick={toggleScreenShare}
+              onClick={handleToggleScreenShare}
             >
               <ScreenShareIcon size={13} />
             </HudButton>

@@ -1,13 +1,16 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { useState, useEffect, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   useParticipants,
   useLocalParticipant,
   useTracks,
   VideoTrack,
+  isTrackReference,
+  type TrackReferenceOrPlaceholder,
 } from "@livekit/components-react";
+import type { TrackReference } from "@livekit/components-react";
 import { Track, type Participant } from "livekit-client";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -37,7 +40,7 @@ interface VoiceRoomProps {
 export function VoiceRoom({ channel, serverId, serverName }: VoiceRoomProps) {
   const [connecting, setConnecting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { join, leave, channelId: activeChannelId, token } = useVoiceStore();
+  const { join, leave, channelId: activeChannelId, token, lastTextChannelId, lastTextServerId } = useVoiceStore();
   const router = useRouter();
 
   const alreadyConnected = activeChannelId === channel.id && !!token;
@@ -64,7 +67,11 @@ export function VoiceRoom({ channel, serverId, serverName }: VoiceRoomProps) {
 
   function handleLeave() {
     leave();
-    router.push(`/servers/${serverId}/channels`);
+    if (lastTextChannelId && lastTextServerId) {
+      router.push(`/servers/${lastTextServerId}/channels/${lastTextChannelId}`);
+    } else {
+      router.push(`/servers/${serverId}/channels`);
+    }
   }
 
   // Render the room immediately — participants populate once LiveKit connects.
@@ -89,25 +96,54 @@ function VoiceRoomInner({
   const { localParticipant } = useLocalParticipant();
   const { micEnabled, deafened, cameraEnabled, screenSharing, toggleMic, toggleDeafen, toggleCamera, toggleScreenShare } =
     useVoiceStore();
+  const [mediaError, setMediaError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!localParticipant) return;
     localParticipant.setMicrophoneEnabled(micEnabled && !deafened);
   }, [micEnabled, deafened, localParticipant]);
 
-  useEffect(() => {
-    if (!localParticipant) return;
-    localParticipant.setCameraEnabled(cameraEnabled);
-  }, [cameraEnabled, localParticipant]);
+  // Camera and screen share must be triggered directly from the click handler —
+  // not via useEffect — so the browser's transient user activation is still active
+  // when getUserMedia / getDisplayMedia is called.
+  function handleToggleCamera() {
+    const next = !cameraEnabled;
+    toggleCamera();
+    setMediaError(null);
+    localParticipant?.setCameraEnabled(next)?.catch((err: Error) => {
+      console.error("Camera toggle failed:", err);
+      if (next) toggleCamera();
+      if (err.name === "NotAllowedError") {
+        setMediaError("Camera access denied. Go to System Settings → Privacy & Security → Camera and allow your browser.");
+      } else {
+        setMediaError("Could not start camera: " + err.message);
+      }
+    });
+  }
 
-  useEffect(() => {
-    if (!localParticipant) return;
-    localParticipant.setScreenShareEnabled(screenSharing);
-  }, [screenSharing, localParticipant]);
+  function handleToggleScreenShare() {
+    const next = !screenSharing;
+    toggleScreenShare();
+    setMediaError(null);
+    localParticipant?.setScreenShareEnabled(next)?.catch((err: Error) => {
+      console.error("Screen share failed:", err);
+      if (next) toggleScreenShare();
+      if (err.name === "NotAllowedError") {
+        setMediaError("Screen share permission denied.");
+      } else {
+        setMediaError("Could not start screen share: " + err.message);
+      }
+    });
+  }
 
-  const cameraTrackRefs = useTracks([Track.Source.Camera]);
+  const cameraTrackRefs = useTracks([Track.Source.Camera]).filter(
+    (t) => isTrackReference(t) && !t.publication.isMuted
+  );
   const screenTrackRefs = useTracks([Track.Source.ScreenShare]);
   const hasVideo = cameraTrackRefs.length > 0 || screenTrackRefs.length > 0;
+
+  const [focusedTrack, setFocusedTrack] = useState<TrackReference | null>(null);
+  const closeFocused = useCallback(() => setFocusedTrack(null), []);
 
   return (
     <div
@@ -196,12 +232,14 @@ function VoiceRoomInner({
             {[...cameraTrackRefs, ...screenTrackRefs].map((trackRef) => (
               <div
                 key={`${trackRef.participant.identity}-${trackRef.source}`}
+                onClick={() => isTrackReference(trackRef) && setFocusedTrack(trackRef)}
                 style={{
                   position: "relative",
                   borderRadius: "10px",
                   overflow: "hidden",
                   background: "var(--surface-3)",
                   aspectRatio: "16/9",
+                  cursor: "pointer",
                 }}
               >
                 <VideoTrack
@@ -224,6 +262,8 @@ function VoiceRoomInner({
                   {trackRef.participant.name ?? trackRef.participant.identity}
                   {trackRef.source === Track.Source.ScreenShare && " (screen)"}
                 </div>
+                {/* expand hint on hover */}
+                <ExpandHint />
               </div>
             ))}
           </div>
@@ -283,6 +323,32 @@ function VoiceRoomInner({
         )}
       </div>
 
+      {/* ── Media permission error banner ── */}
+      {mediaError && (
+        <div
+          style={{
+            padding: "0.6rem 1rem",
+            background: "rgba(239,68,68,0.12)",
+            borderTop: "1px solid rgba(239,68,68,0.3)",
+            color: "var(--danger, #ef4444)",
+            fontSize: "0.82rem",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: "0.5rem",
+            flexShrink: 0,
+          }}
+        >
+          <span>{mediaError}</span>
+          <button
+            onClick={() => setMediaError(null)}
+            style={{ background: "none", color: "inherit", fontWeight: 700, fontSize: "1rem", lineHeight: 1, padding: "0 0.25rem" }}
+          >
+            ×
+          </button>
+        </div>
+      )}
+
       {/* ── Controls bar ── */}
       <VoiceControls
         micEnabled={micEnabled}
@@ -291,10 +357,12 @@ function VoiceRoomInner({
         screenSharing={screenSharing}
         onToggleMic={toggleMic}
         onToggleDeafen={toggleDeafen}
-        onToggleCamera={toggleCamera}
-        onToggleScreenShare={toggleScreenShare}
+        onToggleCamera={handleToggleCamera}
+        onToggleScreenShare={handleToggleScreenShare}
         onLeave={onLeave}
       />
+
+      <FullscreenOverlay trackRef={focusedTrack} onClose={closeFocused} />
     </div>
   );
 }
@@ -501,5 +569,119 @@ function VoiceControls({
         </motion.button>
       </Tooltip>
     </div>
+  );
+}
+
+// ─── Expand-on-hover hint overlay ────────────────────────────────────────────
+
+function ExpandHint() {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <div
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        position: "absolute",
+        inset: 0,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        background: hovered ? "rgba(0,0,0,0.28)" : "rgba(0,0,0,0)",
+        transition: "background 0.15s",
+        pointerEvents: "none",
+      }}
+    >
+      <svg
+        width="32" height="32" viewBox="0 0 24 24" fill="none"
+        style={{ opacity: hovered ? 1 : 0, transition: "opacity 0.15s" }}
+      >
+        <path d="M3 3h6M3 3v6M21 3h-6M21 3v6M3 21h6M3 21v-6M21 21h-6M21 21v-6"
+          stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
+    </div>
+  );
+}
+
+// ─── Fullscreen overlay ───────────────────────────────────────────────────────
+
+function FullscreenOverlay({
+  trackRef,
+  onClose,
+}: {
+  trackRef: TrackReference | null;
+  onClose: () => void;
+}) {
+  // Close on Escape
+  useEffect(() => {
+    if (!trackRef) return;
+    const handler = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [trackRef, onClose]);
+
+  return (
+    <AnimatePresence>
+      {trackRef && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.18 }}
+          onClick={onClose}
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 9999,
+            background: "rgba(0,0,0,0.88)",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "0.75rem",
+          }}
+        >
+          {/* Video fills available space, click-through blocked so video events don't bubble */}
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              position: "relative",
+              width: "min(92vw, 160vh)",
+              aspectRatio: "16/9",
+              borderRadius: "12px",
+              overflow: "hidden",
+              background: "#000",
+              boxShadow: "0 24px 80px rgba(0,0,0,0.7)",
+            }}
+          >
+            <VideoTrack
+              trackRef={trackRef}
+              style={{ width: "100%", height: "100%", objectFit: "contain" }}
+            />
+            {/* Name badge */}
+            <div
+              style={{
+                position: "absolute",
+                bottom: "0.75rem",
+                left: "0.75rem",
+                background: "rgba(0,0,0,0.65)",
+                padding: "0.2rem 0.6rem",
+                borderRadius: "6px",
+                fontSize: "0.85rem",
+                fontWeight: 600,
+                color: "#fff",
+              }}
+            >
+              {trackRef.participant.name ?? trackRef.participant.identity}
+              {trackRef.source === Track.Source.ScreenShare && " (screen)"}
+            </div>
+          </div>
+
+          {/* Dismiss hint */}
+          <span style={{ color: "rgba(255,255,255,0.45)", fontSize: "0.8rem" }}>
+            Click anywhere or press Esc to close
+          </span>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }

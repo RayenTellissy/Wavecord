@@ -510,10 +510,27 @@ function VoiceChannelItem({
                   overflow: "hidden",
                   textOverflow: "ellipsis",
                   whiteSpace: "nowrap",
+                  flex: 1,
                 }}
               >
                 {p.name}
               </span>
+              {p.isLive && (
+                <span
+                  style={{
+                    fontSize: "0.58rem",
+                    fontWeight: 700,
+                    color: "#fff",
+                    background: "var(--danger, #ef4444)",
+                    padding: "0.05rem 0.3rem",
+                    borderRadius: "4px",
+                    letterSpacing: "0.4px",
+                    flexShrink: 0,
+                  }}
+                >
+                  LIVE
+                </span>
+              )}
             </motion.div>
           ))}
         </div>

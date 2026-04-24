@@ -49,9 +49,8 @@ export default async function MainLayout({
       <MainSidebar initialServers={servers} />
       <PersistentVoice>
         {children}
+        <VoiceHUD />
       </PersistentVoice>
-
-      <VoiceHUD />
 
       {/* Global modals */}
       <CreateServerModal />

@@ -4,6 +4,7 @@ export interface VoiceParticipant {
   identity: string;
   name: string;
   metadata?: string;
+  isLive?: boolean;
 }
 
 export interface VoiceState {
@@ -24,6 +25,9 @@ export interface VoiceState {
   /** Shown immediately when the user initiates a join, before LiveKit confirms connection. */
   optimisticParticipant: VoiceParticipant | null;
 
+  lastTextChannelId: string | null;
+  lastTextServerId: string | null;
+
   join: (
     channelId: string,
     channelName: string,
@@ -35,6 +39,7 @@ export interface VoiceState {
   leave: () => void;
   setParticipants: (participants: VoiceParticipant[]) => void;
   setOptimisticParticipant: (p: VoiceParticipant | null) => void;
+  setLastTextChannel: (channelId: string, serverId: string) => void;
   toggleMic: () => void;
   toggleDeafen: () => void;
   toggleCamera: () => void;
@@ -54,6 +59,8 @@ export const useVoiceStore = create<VoiceState>((set) => ({
   screenSharing: false,
   participants: [],
   optimisticParticipant: null,
+  lastTextChannelId: null,
+  lastTextServerId: null,
 
   join: (channelId, channelName, serverId, serverName, token, lkUrl) =>
     set({
@@ -88,6 +95,8 @@ export const useVoiceStore = create<VoiceState>((set) => ({
   setParticipants: (participants) => set({ participants, optimisticParticipant: null }),
 
   setOptimisticParticipant: (optimisticParticipant) => set({ optimisticParticipant }),
+
+  setLastTextChannel: (lastTextChannelId, lastTextServerId) => set({ lastTextChannelId, lastTextServerId }),
 
   toggleMic: () => set((s) => ({ micEnabled: !s.micEnabled })),
   toggleDeafen: () =>

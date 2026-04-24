@@ -1,8 +1,10 @@
 "use client";
 
+import { useEffect } from "react";
 import { ChatHeader } from "./ChatHeader";
 import { MessageList } from "./MessageList";
 import { MessageInput } from "./MessageInput";
+import { useVoiceStore } from "@/stores/voiceStore";
 import type { Channel } from "@prisma/client";
 
 interface ChatAreaProps {
@@ -12,6 +14,11 @@ interface ChatAreaProps {
 }
 
 export function ChatArea({ channel, currentUserId, isModOrAdmin }: ChatAreaProps) {
+  const setLastTextChannel = useVoiceStore((s) => s.setLastTextChannel);
+  useEffect(() => {
+    setLastTextChannel(channel.id, channel.serverId);
+  }, [channel.id, channel.serverId, setLastTextChannel]);
+
   return (
     <div style={{
       flex: 1,
