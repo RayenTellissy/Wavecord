@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { AttachIcon, EmojiIcon, XIcon, ImageIcon } from "@/components/icons";
 import Image from "next/image";
@@ -8,6 +8,7 @@ import axios from "axios";
 import { useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import type { DMWithRelations } from "@/hooks/useDirectMessages";
+import EmojiPicker, { type EmojiClickData, Theme } from "emoji-picker-react";
 
 interface PendingFile {
   url: string;
@@ -26,10 +27,42 @@ export function DMMessageInput({ conversationId, recipientName }: DMMessageInput
   const [sending, setSending] = useState(false);
   const [pendingFile, setPendingFile] = useState<PendingFile | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const emojiPickerRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
   const { data: session } = useSession();
+
+  useEffect(() => {
+    if (!showEmojiPicker) return;
+    function handleClickOutside(e: MouseEvent) {
+      if (emojiPickerRef.current && !emojiPickerRef.current.contains(e.target as Node)) {
+        setShowEmojiPicker(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [showEmojiPicker]);
+
+  function handleEmojiClick(emojiData: EmojiClickData) {
+    const textarea = textareaRef.current;
+    if (textarea) {
+      const start = textarea.selectionStart ?? content.length;
+      const end = textarea.selectionEnd ?? content.length;
+      const newContent = content.slice(0, start) + emojiData.emoji + content.slice(end);
+      setContent(newContent);
+      setTimeout(() => {
+        textarea.focus();
+        const pos = start + emojiData.emoji.length;
+        textarea.setSelectionRange(pos, pos);
+        autoResize();
+      }, 0);
+    } else {
+      setContent((c) => c + emojiData.emoji);
+    }
+    setShowEmojiPicker(false);
+  }
 
   const canSend = (content.trim().length > 0 || pendingFile !== null) && !sending && !uploading;
 
@@ -168,7 +201,7 @@ export function DMMessageInput({ conversationId, recipientName }: DMMessageInput
   const isImage = pendingFile?.fileType.startsWith("image/") ?? false;
 
   return (
-    <div style={{ padding: "0 1rem 1rem", background: "var(--surface-1)" }}>
+    <div style={{ padding: "0.75rem 1rem 1rem", background: "var(--surface-1)" }}>
       <input
         ref={fileInputRef}
         type="file"
@@ -246,7 +279,7 @@ export function DMMessageInput({ conversationId, recipientName }: DMMessageInput
         background: "var(--surface-2)",
         border: "1px solid var(--border)",
         borderRadius: "10px",
-        padding: "0 0.5rem 0.5rem",
+        padding: "0.5rem 0.5rem 0.5rem",
       }}>
         <motion.button
           whileHover={{ scale: 1.1 }}
@@ -283,16 +316,24 @@ export function DMMessageInput({ conversationId, recipientName }: DMMessageInput
           }}
         />
 
-        <motion.button
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-          style={{ color: "var(--text-muted)", padding: "0.55rem 0.4rem", display: "flex", flexShrink: 0, alignSelf: "flex-end", marginBottom: "0.05rem" }}
-          onMouseEnter={(e) => { (e.currentTarget.style.color = "var(--warning)"); }}
-          onMouseLeave={(e) => { (e.currentTarget.style.color = "var(--text-muted)"); }}
-          title="Emoji"
-        >
-          <EmojiIcon size={20} />
-        </motion.button>
+        <div style={{ position: "relative", flexShrink: 0, alignSelf: "flex-end" }} ref={emojiPickerRef}>
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={() => setShowEmojiPicker((v) => !v)}
+            style={{ color: showEmojiPicker ? "var(--warning)" : "var(--text-muted)", padding: "0.55rem 0.4rem", display: "flex", marginBottom: "0.05rem" }}
+            onMouseEnter={(e) => { (e.currentTarget.style.color = "var(--warning)"); }}
+            onMouseLeave={(e) => { if (!showEmojiPicker) (e.currentTarget.style.color = "var(--text-muted)"); }}
+            title="Emoji"
+          >
+            <EmojiIcon size={20} />
+          </motion.button>
+          {showEmojiPicker && (
+            <div style={{ position: "absolute", bottom: "calc(100% + 8px)", right: 0, zIndex: 50 }}>
+              <EmojiPicker onEmojiClick={handleEmojiClick} theme={Theme.DARK} lazyLoadEmojis />
+            </div>
+          )}
+        </div>
 
         <AnimatePresence>
           {canSend && (

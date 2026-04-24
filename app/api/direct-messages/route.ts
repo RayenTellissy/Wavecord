@@ -125,23 +125,15 @@ export async function POST(req: Request) {
       },
     });
 
-    // Bump conversation updatedAt so sidebar sorts correctly
-    await db.conversation.update({
-      where: { id: conversationId },
-      data: { updatedAt: new Date() },
-    });
+    // Bump conversation updatedAt so sidebar sorts correctly — fire and forget
+    db.conversation
+      .update({ where: { id: conversationId }, data: { updatedAt: new Date() } })
+      .catch((err) => console.error("[DM_POST] conversation bump failed", err));
 
     const io = getIO();
     if (io) {
       const rooms = [userRoom(conversation.memberOneId), userRoom(conversation.memberTwoId)];
       io.to(rooms[0]).to(rooms[1]).emit(SocketEvents.DM_MESSAGE_NEW, message);
-      if (process.env.NODE_ENV === "development") {
-        const socketsA = (await io.in(rooms[0]).fetchSockets()).length;
-        const socketsB = (await io.in(rooms[1]).fetchSockets()).length;
-        console.log(
-          `[DM emit] to ${rooms[0]} (${socketsA} sockets), ${rooms[1]} (${socketsB} sockets)`
-        );
-      }
     } else if (process.env.NODE_ENV === "development") {
       console.warn("[DM emit] getIO() returned undefined — message not broadcast");
     }

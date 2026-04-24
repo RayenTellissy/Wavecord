@@ -33,7 +33,7 @@ export async function GET() {
   const servers = memberships.map((m) => ({
     id: m.server.id,
     name: m.server.name,
-    image: m.server.image,
+    image: m.server.imageUrl,
     channels: m.server.channels.map((ch) => ({
       id: ch.id,
       name: ch.name,

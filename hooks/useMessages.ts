@@ -53,6 +53,10 @@ export function useMessages(channelId: string) {
           pages: { messages: MessageWithRelations[]; nextCursor: string | null }[];
           pageParams: unknown[];
         };
+        const alreadyInCache = data.pages.some((p) =>
+          p.messages.some((m) => m.id === message.id)
+        );
+        if (alreadyInCache) return old;
         return {
           ...data,
           pages: data.pages.map((page, i) =>

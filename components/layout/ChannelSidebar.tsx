@@ -184,15 +184,6 @@ export function ChannelSidebar({ server, currentUserId, currentMemberRole }: Cha
       {/* Channel List */}
       <div style={{ flex: 1, overflowY: "auto", padding: "0.5rem 0" }}>
         {/* Uncategorized channels */}
-        {(() => {
-          const uncategorized = server.categories
-            .flatMap((c) => c.channels)
-            .length === 0
-            ? [] // handled below with empty state
-            : [];
-          void uncategorized;
-        })()}
-
         {server.categories.map((category) => (
           <div key={category.id}>
             {/* Category header */}

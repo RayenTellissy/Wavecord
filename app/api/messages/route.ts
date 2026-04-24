@@ -150,13 +150,7 @@ export async function POST(req: Request) {
     });
 
     // Emit to all clients in this channel room
-    const io = getIO();
-    if (io) {
-      const room = channelRoom(channelId);
-      const sockets = await io.in(room).fetchSockets();
-      console.log(`[Socket.io] Emitting ${SocketEvents.CHANNEL_MESSAGE_NEW} to room ${room} (${sockets.length} clients)`);
-      io.to(room).emit(SocketEvents.CHANNEL_MESSAGE_NEW, message);
-    }
+    getIO()?.to(channelRoom(channelId)).emit(SocketEvents.CHANNEL_MESSAGE_NEW, message);
 
     return NextResponse.json(message, { status: 201 });
   } catch (err) {

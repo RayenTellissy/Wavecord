@@ -26,6 +26,7 @@
     "bcryptjs": "^2.4.3",
     "cloudinary": "^2.5.1",
     "date-fns": "^4.1.0",
+    "emoji-picker-react": "^4.18.0",
     "framer-motion": "^11.14.1",
     "livekit-client": "^2.7.2",
     "livekit-server-sdk": "^2.8.0",
