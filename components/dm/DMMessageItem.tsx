@@ -8,6 +8,7 @@ import remarkGfm from "remark-gfm";
 import { EditIcon, TrashIcon } from "@/components/icons";
 import Image from "next/image";
 import axios from "axios";
+import { useQueryClient } from "@tanstack/react-query";
 import { useModal } from "@/stores/modalStore";
 import type { DMWithRelations } from "@/hooks/useDirectMessages";
 
@@ -28,13 +29,13 @@ export function DMMessageItem({
   message,
   isGrouped,
   currentUserId,
-  conversationId: _conversationId,
+  conversationId,
 }: DMMessageItemProps) {
   const { open: openModal } = useModal();
+  const queryClient = useQueryClient();
   const [hovered, setHovered] = useState(false);
   const [editing, setEditing] = useState(false);
   const [editContent, setEditContent] = useState(message.content);
-  const [saving, setSaving] = useState(false);
 
   const isPending = message.id.startsWith("optimistic-");
   const isOwn = message.senderId === currentUserId;
@@ -42,16 +43,42 @@ export function DMMessageItem({
   const canDelete = isOwn && !message.deleted && !isPending;
 
   async function handleEdit() {
-    if (!editContent.trim() || editContent === message.content) {
+    const newContent = editContent.trim();
+    if (!newContent || newContent === message.content) {
       setEditing(false);
       return;
     }
-    setSaving(true);
+
+    const queryKey = ["direct-messages", conversationId];
+    const snapshot = queryClient.getQueryData(queryKey);
+
+    queryClient.setQueryData(queryKey, (old: unknown) => {
+      if (!old) return old;
+      const data = old as {
+        pages: { messages: DMWithRelations[]; nextCursor: string | null }[];
+        pageParams: unknown[];
+      };
+      return {
+        ...data,
+        pages: data.pages.map((page) => ({
+          ...page,
+          messages: page.messages.map((m) =>
+            m.id === message.id
+              ? { ...m, content: newContent, updatedAt: new Date().toISOString() }
+              : m
+          ),
+        })),
+      };
+    });
+
+    setEditing(false);
+
     try {
-      await axios.patch(`/api/direct-messages/${message.id}`, { content: editContent });
-      setEditing(false);
-    } finally {
-      setSaving(false);
+      await axios.patch(`/api/direct-messages/${message.id}`, { content: newContent });
+    } catch {
+      queryClient.setQueryData(queryKey, snapshot);
+      setEditContent(newContent);
+      setEditing(true);
     }
   }
 
@@ -63,9 +90,6 @@ export function DMMessageItem({
 
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: isPending ? 0.55 : 1 }}
-      transition={{ duration: 0.15 }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
@@ -164,7 +188,7 @@ export function DMMessageItem({
                   style={{ color: "var(--accent)", fontWeight: 500 }}
                 >cancel</button>
                 {" · "}enter to{" "}
-                <button onClick={handleEdit} disabled={saving}
+                <button onClick={handleEdit}
                   style={{ color: "var(--accent)", fontWeight: 500 }}
                 >save</button>
               </span>

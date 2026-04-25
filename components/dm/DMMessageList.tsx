@@ -174,7 +174,7 @@ export function DMMessageList({ conversationId, recipient, currentUserId }: DMMe
         </div>
       )}
 
-      <div ref={bottomRef} style={{ height: 16 }} />
+      <div ref={bottomRef} style={{ height: 32 }} />
     </div>
   );
 }

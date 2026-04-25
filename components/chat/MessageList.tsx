@@ -5,6 +5,7 @@ import { MessageItem } from "./MessageItem";
 import { useMessages } from "@/hooks/useMessages";
 import { differenceInMinutes } from "date-fns";
 import { HashIcon } from "@/components/icons";
+import type { ReplyTarget } from "./ChatArea";
 import type { Message, User } from "@prisma/client";
 
 interface MessageListProps {
@@ -12,9 +13,10 @@ interface MessageListProps {
   channelName: string;
   currentUserId: string;
   isModOrAdmin: boolean;
+  onReply: (target: ReplyTarget) => void;
 }
 
-export function MessageList({ channelId, channelName, currentUserId, isModOrAdmin }: MessageListProps) {
+export function MessageList({ channelId, channelName, currentUserId, isModOrAdmin, onReply }: MessageListProps) {
   const { messages, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useMessages(channelId);
   const bottomRef = useRef<HTMLDivElement>(null);
   const topRef = useRef<HTMLDivElement>(null);
@@ -157,6 +159,7 @@ export function MessageList({ channelId, channelName, currentUserId, isModOrAdmi
             currentUserId={currentUserId}
             channelId={channelId}
             isModOrAdmin={isModOrAdmin}
+            onReply={onReply}
           />
         );
       })}
@@ -176,7 +179,7 @@ export function MessageList({ channelId, channelName, currentUserId, isModOrAdmi
       )}
 
       {/* Bottom anchor */}
-      <div ref={bottomRef} style={{ height: 16 }} />
+      <div ref={bottomRef} style={{ height: 32 }} />
     </div>
   );
 }

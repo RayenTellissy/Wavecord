@@ -5,10 +5,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import { format, isToday, isYesterday } from "date-fns";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { EditIcon, TrashIcon, ReplyIcon, MoreIcon, PersonIcon } from "@/components/icons";
+import { EditIcon, TrashIcon, ReplyIcon, PersonIcon } from "@/components/icons";
 import Image from "next/image";
 import axios from "axios";
+import { useQueryClient } from "@tanstack/react-query";
 import { useModal } from "@/stores/modalStore";
+import type { ReplyTarget } from "./ChatArea";
 import type { Message, User, Reaction, Attachment } from "@prisma/client";
 
 type MessageWithRelations = Message & {
@@ -24,6 +26,7 @@ interface MessageItemProps {
   currentUserId: string;
   channelId: string;
   isModOrAdmin: boolean;
+  onReply: (target: ReplyTarget) => void;
 }
 
 function formatTimestamp(date: Date): string {
@@ -38,12 +41,13 @@ export function MessageItem({
   currentUserId,
   channelId,
   isModOrAdmin,
+  onReply,
 }: MessageItemProps) {
   const { open: openModal } = useModal();
+  const queryClient = useQueryClient();
   const [hovered, setHovered] = useState(false);
   const [editing, setEditing] = useState(false);
   const [editContent, setEditContent] = useState(message.content);
-  const [saving, setSaving] = useState(false);
 
   const isPending = message.id.startsWith("optimistic-");
   const isOwn = message.authorId === currentUserId;
@@ -51,16 +55,42 @@ export function MessageItem({
   const canEdit = isOwn && !message.deleted && !isPending;
 
   async function handleEdit() {
-    if (!editContent.trim() || editContent === message.content) {
+    const newContent = editContent.trim();
+    if (!newContent || newContent === message.content) {
       setEditing(false);
       return;
     }
-    setSaving(true);
+
+    const queryKey = ["messages", channelId];
+    const snapshot = queryClient.getQueryData(queryKey);
+
+    queryClient.setQueryData(queryKey, (old: unknown) => {
+      if (!old) return old;
+      const data = old as {
+        pages: { messages: MessageWithRelations[]; nextCursor: string | null }[];
+        pageParams: unknown[];
+      };
+      return {
+        ...data,
+        pages: data.pages.map((page) => ({
+          ...page,
+          messages: page.messages.map((m) =>
+            m.id === message.id
+              ? { ...m, content: newContent, updatedAt: new Date().toISOString() }
+              : m
+          ),
+        })),
+      };
+    });
+
+    setEditing(false);
+
     try {
-      await axios.patch(`/api/messages/${message.id}`, { content: editContent });
-      setEditing(false);
-    } finally {
-      setSaving(false);
+      await axios.patch(`/api/messages/${message.id}`, { content: newContent });
+    } catch {
+      queryClient.setQueryData(queryKey, snapshot);
+      setEditContent(newContent);
+      setEditing(true);
     }
   }
 
@@ -72,9 +102,6 @@ export function MessageItem({
 
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: isPending ? 0.55 : 1 }}
-      transition={{ duration: 0.15 }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
@@ -201,7 +228,7 @@ export function MessageItem({
               <span style={{ color: "var(--text-muted)" }}>
                 esc to <button onClick={() => { setEditing(false); setEditContent(message.content); }}
                   style={{ color: "var(--accent)", fontWeight: 500 }}>cancel</button>
-                {" · "}enter to <button onClick={handleEdit} disabled={saving}
+                {" · "}enter to <button onClick={handleEdit}
                   style={{ color: "var(--accent)", fontWeight: 500 }}>save</button>
               </span>
             </div>
@@ -401,10 +428,10 @@ export function MessageItem({
             }}
           >
             {[
-              { icon: <ReplyIcon size={15} />, label: "Reply", action: () => {} },
+              { icon: <ReplyIcon size={15} />, label: "Reply", action: () => onReply({ id: message.id, content: message.content, authorName: message.author.name ?? message.author.username ?? "User" }) },
               ...(canEdit ? [{ icon: <EditIcon size={15} />, label: "Edit", action: () => setEditing(true) }] : []),
               ...(canDelete ? [{ icon: <TrashIcon size={15} />, label: "Delete", action: handleDelete, danger: true }] : []),
-              { icon: <MoreIcon size={15} />, label: "More", action: () => {} },
+
             ].map(({ icon, label, action, danger }) => (
               <Tooltip key={label} content={label} side="top">
                 <button

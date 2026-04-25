@@ -106,16 +106,27 @@ export async function POST(req: Request) {
 
     const { content, channelId, fileUrl, replyToId, attachments } = parsed.data;
 
+    // Single query: fetch channel + verify membership in one round-trip
     const channel = await db.channel.findUnique({
       where: { id: channelId },
-      select: { serverId: true, name: true },
+      select: {
+        serverId: true,
+        name: true,
+        server: {
+          select: {
+            members: {
+              where: { userId },
+              select: { id: true },
+              take: 1,
+            },
+          },
+        },
+      },
     });
     if (!channel) return NextResponse.json({ error: "Not found" }, { status: 404 });
-
-    const isMember = await db.serverMember.findFirst({
-      where: { serverId: channel.serverId, userId },
-    });
-    if (!isMember) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    if (channel.server.members.length === 0) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
 
     const message = await db.message.create({
       data: {
@@ -150,15 +161,13 @@ export async function POST(req: Request) {
     });
 
     const io = getIO();
-    // Emit full message to active channel viewers
+    // Emit full message to active channel viewers — keeps recipients near-instant
     io?.to(channelRoom(channelId)).emit(SocketEvents.CHANNEL_MESSAGE_NEW, message);
 
-    // Notify each server member via their personal room (always joined on connect)
+    // Fan-out per-user notifications off the response critical path. The custom
+    // Node server (server.ts) keeps the process alive after the response, so the
+    // promise continues to run.
     if (io) {
-      const members = await db.serverMember.findMany({
-        where: { serverId: channel.serverId },
-        select: { userId: true },
-      });
       const notifyPayload = {
         channelId,
         serverId: channel.serverId,
@@ -170,9 +179,17 @@ export async function POST(req: Request) {
           author: message.author,
         },
       };
-      for (const { userId: memberId } of members) {
-        io.to(userRoom(memberId)).emit(SocketEvents.CHANNEL_MESSAGE_NOTIFY, notifyPayload);
-      }
+      db.serverMember
+        .findMany({
+          where: { serverId: channel.serverId },
+          select: { userId: true },
+        })
+        .then((members) => {
+          for (const { userId: memberId } of members) {
+            io.to(userRoom(memberId)).emit(SocketEvents.CHANNEL_MESSAGE_NOTIFY, notifyPayload);
+          }
+        })
+        .catch((err) => console.error("[MESSAGE_POST] notify fan-out failed", err));
     }
 
     return NextResponse.json(message, { status: 201 });

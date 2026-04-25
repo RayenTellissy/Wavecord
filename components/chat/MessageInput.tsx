@@ -2,12 +2,13 @@
 
 import { useState, useRef, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { AttachIcon, EmojiIcon, XIcon, ImageIcon } from "@/components/icons";
+import { AttachIcon, EmojiIcon, XIcon, ImageIcon, ReplyIcon } from "@/components/icons";
 import Image from "next/image";
 import axios from "axios";
 import { useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import EmojiPicker, { type EmojiClickData, Theme } from "emoji-picker-react";
+import type { ReplyTarget } from "./ChatArea";
 
 interface PendingFile {
   url: string;
@@ -19,9 +20,11 @@ interface PendingFile {
 interface MessageInputProps {
   channelId: string;
   channelName: string;
+  replyTo?: ReplyTarget | null;
+  onClearReply?: () => void;
 }
 
-export function MessageInput({ channelId, channelName }: MessageInputProps) {
+export function MessageInput({ channelId, channelName, replyTo, onClearReply }: MessageInputProps) {
   const [content, setContent] = useState("");
   const [sending, setSending] = useState(false);
   const [pendingFile, setPendingFile] = useState<PendingFile | null>(null);
@@ -32,6 +35,10 @@ export function MessageInput({ channelId, channelName }: MessageInputProps) {
   const emojiPickerRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
   const { data: session } = useSession();
+
+  useEffect(() => {
+    if (replyTo) textareaRef.current?.focus();
+  }, [replyTo]);
 
   useEffect(() => {
     if (!showEmojiPicker) return;
@@ -104,10 +111,12 @@ export function MessageInput({ channelId, channelName }: MessageInputProps) {
 
     const text = content.trim();
     const fileSnapshot = pendingFile;
+    const replySnapshot = replyTo ?? null;
 
     setSending(true);
     setContent("");
     setPendingFile(null);
+    onClearReply?.();
     if (textareaRef.current) textareaRef.current.style.height = "auto";
 
     // Optimistic message — appears instantly while the request is in flight
@@ -125,8 +134,10 @@ export function MessageInput({ channelId, channelName }: MessageInputProps) {
         image: session?.user?.image ?? null,
       },
       reactions: [],
-      replyTo: null,
-      replyToId: null,
+      replyTo: replySnapshot
+        ? { id: replySnapshot.id, content: replySnapshot.content, author: { id: "", name: replySnapshot.authorName, image: null } }
+        : null,
+      replyToId: replySnapshot?.id ?? null,
       attachments: fileSnapshot
         ? [{
             id: `opt-att-${Date.now()}`,
@@ -184,6 +195,7 @@ export function MessageInput({ channelId, channelName }: MessageInputProps) {
       const { data: newMessage } = await axios.post<typeof optimistic>("/api/messages", {
         content: text,
         channelId,
+        replyToId: replySnapshot?.id,
         attachments: fileSnapshot
           ? [{
               url: fileSnapshot.url,
@@ -224,6 +236,61 @@ export function MessageInput({ channelId, channelName }: MessageInputProps) {
         style={{ display: "none" }}
         onChange={handleFileSelect}
       />
+
+      {/* Reply banner */}
+      <AnimatePresence>
+        {replyTo && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.15 }}
+            style={{ overflow: "hidden" }}
+          >
+            <div style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "0.5rem",
+              background: "rgba(139,92,246,0.08)",
+              border: "1px solid rgba(139,92,246,0.2)",
+              borderBottom: "none",
+              borderRadius: "8px 8px 0 0",
+              padding: "0.4rem 0.75rem",
+              fontSize: "0.8rem",
+              color: "var(--text-secondary)",
+            }}>
+              <ReplyIcon size={13} />
+              <span>Replying to <strong style={{ color: "var(--accent-bright)" }}>{replyTo.authorName}</strong></span>
+              <span style={{
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+                flex: 1,
+                color: "var(--text-muted)",
+                maxWidth: 300,
+              }}>
+                {replyTo.content}
+              </span>
+              <button
+                onClick={onClearReply}
+                style={{
+                  marginLeft: "auto",
+                  color: "var(--text-muted)",
+                  display: "flex",
+                  alignItems: "center",
+                  padding: "0.1rem",
+                  borderRadius: "4px",
+                  transition: "color 0.1s",
+                }}
+                onMouseEnter={(e) => { (e.currentTarget.style.color = "var(--text-primary)"); }}
+                onMouseLeave={(e) => { (e.currentTarget.style.color = "var(--text-muted)"); }}
+              >
+                <XIcon size={14} />
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Pending file preview */}
       <AnimatePresence>
