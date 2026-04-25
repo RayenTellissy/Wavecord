@@ -11,3 +11,6 @@ export const playDeafenSound = () => play("deafen.mp3");
 export const playUndeafenSound = () => play("undeafen.mp3");
 export const playJoinSound = () => play("user_join.mp3");
 export const playLeaveSound = () => play("disconnect.mp3");
+export const playUserJoinSound = () => play("user_join.mp3");
+export const playUserLeaveSound = () => play("user_leave.mp3");
+export const playScreenShareSound = () => play("screen_share.mp3");

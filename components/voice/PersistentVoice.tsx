@@ -2,10 +2,11 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
-import { Room, RoomEvent, Track } from "livekit-client";
+import { Room, RoomEvent, Track, type RemoteTrackPublication, type RemoteParticipant } from "livekit-client";
 import { RoomContext, RoomAudioRenderer, useParticipants, useLocalParticipant, useTracks, isTrackReference, useRoomContext } from "@livekit/components-react";
 import { useVoiceStore } from "@/stores/voiceStore";
 import { useSocket } from "@/hooks/useSocket";
+import { playUserJoinSound, playUserLeaveSound, playScreenShareSound } from "@/lib/sounds";
 
 /**
  * Keeps a single LiveKit Room alive across page navigations.
@@ -44,6 +45,7 @@ export function PersistentVoice({ children }: { children: React.ReactNode }) {
         <>
           {!deafened && <RoomAudioRenderer />}
           <ParticipantSync />
+          <SoundSync />
         </>
       )}
       <VoicePresenceSync />
@@ -98,6 +100,48 @@ function VoicePresenceSync() {
       isLive: cameraEnabled || screenSharing,
     });
   }, [socket, channelId, micEnabled, deafened, cameraEnabled, screenSharing]);
+
+  return null;
+}
+
+/**
+ * Plays sounds when remote participants join, leave, or start camera/screen share.
+ * Uses a connectedAt ref to skip sounds for state that already existed when we joined.
+ */
+function SoundSync() {
+  const room = useRoomContext();
+  const { localParticipant } = useLocalParticipant();
+  const connectedAt = useRef<number>(0);
+
+  useEffect(() => {
+    connectedAt.current = Date.now();
+
+    const onParticipantConnected = () => {
+      playUserJoinSound();
+    };
+
+    const onParticipantDisconnected = () => {
+      playUserLeaveSound();
+    };
+
+    const onTrackPublished = (publication: RemoteTrackPublication, participant: RemoteParticipant) => {
+      if (participant.identity === localParticipant?.identity) return;
+      if (Date.now() - connectedAt.current < 1000) return;
+      if (publication.source === Track.Source.Camera || publication.source === Track.Source.ScreenShare) {
+        playScreenShareSound();
+      }
+    };
+
+    room.on(RoomEvent.ParticipantConnected, onParticipantConnected);
+    room.on(RoomEvent.ParticipantDisconnected, onParticipantDisconnected);
+    room.on(RoomEvent.TrackPublished, onTrackPublished);
+
+    return () => {
+      room.off(RoomEvent.ParticipantConnected, onParticipantConnected);
+      room.off(RoomEvent.ParticipantDisconnected, onParticipantDisconnected);
+      room.off(RoomEvent.TrackPublished, onTrackPublished);
+    };
+  }, [room, localParticipant]);
 
   return null;
 }
