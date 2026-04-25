@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
@@ -8,7 +8,7 @@ import { Tooltip } from "@/components/ui/Tooltip";
 import {
   HashIcon, VolumeIcon, ChevronDownIcon,
   PlusIcon, LeaveIcon, LinkIcon, SettingsIcon,
-  MicOffIcon, HeadphonesOffIcon,
+  MicOffIcon, HeadphonesOffIcon, ScreenShareIcon,
 } from "@/components/icons";
 import { UserPanel } from "./UserPanel";
 import { useModal } from "@/stores/modalStore";
@@ -75,7 +75,7 @@ export function ChannelSidebar({ server, currentUserId, currentMemberRole }: Cha
     } catch { /* silent */ }
   }
 
-  async function handleVoiceChannelClick(channel: Channel) {
+  async function handleVoiceChannelClick(channel: Channel, forceNavigate = false) {
     // Already connected to this exact channel → navigate to full room UI
     if (voiceChannelId === channel.id && voiceToken) {
       router.push(`/servers/${server.id}/channels/${channel.id}`);
@@ -101,12 +101,20 @@ export function ChannelSidebar({ server, currentUserId, currentMemberRole }: Cha
       if (data.error) throw new Error(data.error);
       joinVoice(channel.id, channel.name, server.id, server.name, data.token!, data.serverUrl!);
       import("@/lib/sounds").then(({ playJoinSound }) => playJoinSound());
+      if (forceNavigate) {
+        router.push(`/servers/${server.id}/channels/${channel.id}`);
+        closeMobile();
+      }
     } catch (e) {
       console.error("Voice join failed:", e);
       setOptimisticParticipant(null);
     } finally {
       setJoiningVoice(null);
     }
+  }
+
+  function handleWatchStream(channel: Channel) {
+    handleVoiceChannelClick(channel, true);
   }
 
   return (
@@ -293,6 +301,7 @@ export function ChannelSidebar({ server, currentUserId, currentMemberRole }: Cha
                                     : null
                                 }
                                 onClick={() => handleVoiceChannelClick(channel)}
+                                onWatchStream={() => handleWatchStream(channel)}
                               />
                             </motion.div>
                           );
@@ -375,6 +384,7 @@ function VoiceChannelItem({
   participants,
   optimisticParticipant,
   onClick,
+  onWatchStream,
 }: {
   channel: Channel;
   serverId: string;
@@ -384,9 +394,33 @@ function VoiceChannelItem({
   participants: VoiceParticipant[];
   optimisticParticipant?: VoiceParticipant | null;
   onClick: () => void;
+  onWatchStream: () => void;
 }) {
   const { open } = useModal();
   const accentColor = isConnected ? "var(--success)" : isActive ? "var(--accent)" : "inherit";
+
+  const [streamPopup, setStreamPopup] = useState<{
+    participant: VoiceParticipant;
+    x: number;
+    y: number;
+  } | null>(null);
+  const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  function showStreamPopup(participant: VoiceParticipant, el: HTMLElement) {
+    if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
+    const rect = el.getBoundingClientRect();
+    const popupHeight = 175;
+    const y = Math.min(rect.top, window.innerHeight - popupHeight - 8);
+    setStreamPopup({ participant, x: rect.right + 8, y });
+  }
+
+  function scheduleHidePopup() {
+    hideTimerRef.current = setTimeout(() => setStreamPopup(null), 180);
+  }
+
+  function cancelHidePopup() {
+    if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
+  }
 
   return (
     <div>
@@ -492,8 +526,14 @@ function VoiceChannelItem({
                 cursor: "pointer",
                 transition: "background 0.12s",
               }}
-              onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "var(--surface-2)"; }}
-              onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "transparent"; }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLElement).style.background = "var(--surface-2)";
+                if (p.isLive) showStreamPopup(p, e.currentTarget as HTMLElement);
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLElement).style.background = "transparent";
+                if (p.isLive) scheduleHidePopup();
+              }}
             >
               {p.metadata ? (
                 <Image
@@ -555,6 +595,148 @@ function VoiceChannelItem({
           ))}
         </div>
       )}
+
+      {/* ── Stream hover popup ── */}
+      <AnimatePresence>
+        {streamPopup && (
+        <motion.div
+          key="stream-popup"
+          initial={{ opacity: 0, scale: 0.95, x: -6 }}
+          animate={{ opacity: 1, scale: 1, x: 0 }}
+          exit={{ opacity: 0, scale: 0.95, x: -6 }}
+          transition={{ duration: 0.14, ease: "easeOut" }}
+          onMouseEnter={cancelHidePopup}
+          onMouseLeave={() => setStreamPopup(null)}
+          style={{
+            position: "fixed",
+            left: streamPopup.x,
+            top: streamPopup.y,
+            zIndex: 9999,
+            width: 220,
+            background: "var(--surface-3)",
+            border: "1px solid var(--border)",
+            borderRadius: "10px",
+            overflow: "hidden",
+            boxShadow: "0 8px 32px rgba(0,0,0,0.55)",
+            pointerEvents: "all",
+          }}
+        >
+          {/* Thumbnail */}
+          <div
+            style={{
+              background: "#0d0f10",
+              aspectRatio: "16/9",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              position: "relative",
+              overflow: "hidden",
+            }}
+          >
+            {streamPopup.participant.metadata ? (
+              <Image
+                src={streamPopup.participant.metadata}
+                alt=""
+                width={44}
+                height={44}
+                style={{ borderRadius: "50%", opacity: 0.3, filter: "blur(2px)" }}
+              />
+            ) : (
+              <span
+                style={{
+                  width: 44,
+                  height: 44,
+                  borderRadius: "50%",
+                  background: "var(--surface-2)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: "1.1rem",
+                  fontWeight: 700,
+                  color: "var(--text-muted)",
+                  opacity: 0.4,
+                }}
+              >
+                {streamPopup.participant.name.charAt(0).toUpperCase()}
+              </span>
+            )}
+            <ScreenShareIcon
+              size={30}
+              style={{ position: "absolute", color: "rgba(255,255,255,0.18)" }}
+            />
+            <span
+              style={{
+                position: "absolute",
+                top: "0.4rem",
+                left: "0.4rem",
+                background: "#ef4444",
+                color: "#fff",
+                fontSize: "0.58rem",
+                fontWeight: 700,
+                padding: "0.05rem 0.32rem",
+                borderRadius: "4px",
+                letterSpacing: "0.5px",
+              }}
+            >
+              LIVE
+            </span>
+          </div>
+
+          {/* Info + button */}
+          <div style={{ padding: "0.6rem 0.75rem 0.75rem" }}>
+            <div
+              style={{
+                fontSize: "0.8rem",
+                fontWeight: 600,
+                color: "var(--text-primary)",
+                marginBottom: "0.15rem",
+              }}
+            >
+              Streaming Now
+            </div>
+            <div
+              style={{
+                fontSize: "0.72rem",
+                color: "var(--text-muted)",
+                marginBottom: "0.6rem",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {streamPopup.participant.name}
+            </div>
+            <button
+              onClick={() => {
+                setStreamPopup(null);
+                onWatchStream();
+              }}
+              style={{
+                width: "100%",
+                padding: "0.42rem",
+                borderRadius: "6px",
+                background: "var(--success, #22c55e)",
+                color: "#fff",
+                fontSize: "0.8rem",
+                fontWeight: 600,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "0.35rem",
+                border: "none",
+                cursor: "pointer",
+                transition: "opacity 0.1s",
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.opacity = "0.85"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.opacity = "1"; }}
+            >
+              <ScreenShareIcon size={13} />
+              Watch Stream
+            </button>
+          </div>
+        </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

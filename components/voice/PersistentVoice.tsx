@@ -2,11 +2,11 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
-import { Room, RoomEvent, Track, type RemoteTrackPublication, type RemoteParticipant } from "livekit-client";
+import { Room, RoomEvent, Track, type RemoteTrackPublication, type RemoteParticipant, type LocalTrackPublication } from "livekit-client";
 import { RoomContext, RoomAudioRenderer, useParticipants, useLocalParticipant, useTracks, isTrackReference, useRoomContext } from "@livekit/components-react";
 import { useVoiceStore } from "@/stores/voiceStore";
 import { useSocket } from "@/hooks/useSocket";
-import { playUserJoinSound, playUserLeaveSound, playScreenShareSound, playNotificationSound } from "@/lib/sounds";
+import { playUserJoinSound, playUserLeaveSound, playScreenShareSound, playScreenShareEndSound, playNotificationSound } from "@/lib/sounds";
 
 /**
  * Keeps a single LiveKit Room alive across page navigations.
@@ -66,8 +66,8 @@ function VoicePresenceSync() {
   const serverId = useVoiceStore((s) => s.serverId);
   const micEnabled = useVoiceStore((s) => s.micEnabled);
   const deafened = useVoiceStore((s) => s.deafened);
-  const cameraEnabled = useVoiceStore((s) => s.cameraEnabled);
-  const screenSharing = useVoiceStore((s) => s.screenSharing);
+  const screenShareLive = useVoiceStore((s) => s.screenShareLive);
+  const cameraLive = useVoiceStore((s) => s.cameraLive);
 
   const user = session?.user;
   const userId = user?.id;
@@ -97,51 +97,76 @@ function VoicePresenceSync() {
     socket.emit("voice:state", {
       isMuted: !micEnabled || deafened,
       isDeafened: deafened,
-      isLive: cameraEnabled || screenSharing,
+      isLive: screenShareLive || cameraLive,
     });
-  }, [socket, channelId, micEnabled, deafened, cameraEnabled, screenSharing]);
+  }, [socket, channelId, micEnabled, deafened, screenShareLive, cameraLive]);
 
   return null;
 }
 
 /**
- * Plays sounds when remote participants join, leave, or start camera/screen share.
- * Uses a connectedAt ref to skip sounds for state that already existed when we joined.
+ * Plays sounds for voice/screen share events.
+ * Local track events fire after the OS picker is confirmed and the track is
+ * actually publishing — not on button click — so timing is correct.
  */
 function SoundSync() {
   const room = useRoomContext();
   const { localParticipant } = useLocalParticipant();
   const connectedAt = useRef<number>(0);
+  const setScreenShareLive = useVoiceStore((s) => s.setScreenShareLive);
+  const setCameraLive = useVoiceStore((s) => s.setCameraLive);
 
   useEffect(() => {
     connectedAt.current = Date.now();
 
-    const onParticipantConnected = () => {
-      playUserJoinSound();
-    };
+    const onParticipantConnected = () => playUserJoinSound();
+    const onParticipantDisconnected = () => playUserLeaveSound();
 
-    const onParticipantDisconnected = () => {
-      playUserLeaveSound();
-    };
-
+    // Remote participants starting screen share or camera
     const onTrackPublished = (publication: RemoteTrackPublication, participant: RemoteParticipant) => {
       if (participant.identity === localParticipant?.identity) return;
       if (Date.now() - connectedAt.current < 1000) return;
-      if (publication.source === Track.Source.Camera || publication.source === Track.Source.ScreenShare) {
-        playNotificationSound();
+      if (publication.source === Track.Source.ScreenShare || publication.source === Track.Source.Camera) {
+        playScreenShareSound();
+      }
+    };
+
+    // Local participant: fires after the OS picker is confirmed and track is live.
+    // Also drives the LIVE badge via the store flags read by VoicePresenceSync.
+    const onLocalTrackPublished = (publication: LocalTrackPublication) => {
+      if (publication.source === Track.Source.ScreenShare) {
+        setScreenShareLive(true);
+        playScreenShareSound();
+      } else if (publication.source === Track.Source.Camera) {
+        setCameraLive(true);
+        playScreenShareSound();
+      }
+    };
+
+    const onLocalTrackUnpublished = (publication: LocalTrackPublication) => {
+      if (publication.source === Track.Source.ScreenShare) {
+        setScreenShareLive(false);
+        playScreenShareEndSound();
+      } else if (publication.source === Track.Source.Camera) {
+        setCameraLive(false);
+        playScreenShareEndSound();
       }
     };
 
     room.on(RoomEvent.ParticipantConnected, onParticipantConnected);
     room.on(RoomEvent.ParticipantDisconnected, onParticipantDisconnected);
     room.on(RoomEvent.TrackPublished, onTrackPublished);
+    room.on(RoomEvent.LocalTrackPublished, onLocalTrackPublished);
+    room.on(RoomEvent.LocalTrackUnpublished, onLocalTrackUnpublished);
 
     return () => {
       room.off(RoomEvent.ParticipantConnected, onParticipantConnected);
       room.off(RoomEvent.ParticipantDisconnected, onParticipantDisconnected);
       room.off(RoomEvent.TrackPublished, onTrackPublished);
+      room.off(RoomEvent.LocalTrackPublished, onLocalTrackPublished);
+      room.off(RoomEvent.LocalTrackUnpublished, onLocalTrackUnpublished);
     };
-  }, [room, localParticipant]);
+  }, [room, localParticipant, setScreenShareLive, setCameraLive]);
 
   return null;
 }

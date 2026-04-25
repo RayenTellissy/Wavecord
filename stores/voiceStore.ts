@@ -22,6 +22,10 @@ export interface VoiceState {
   deafened: boolean;
   cameraEnabled: boolean;
   screenSharing: boolean;
+  /** True only after LiveKit confirms the local screen-share track is publishing. */
+  screenShareLive: boolean;
+  /** True only after LiveKit confirms the local camera track is publishing. */
+  cameraLive: boolean;
 
   participants: VoiceParticipant[];
   /** Shown immediately when the user initiates a join, before LiveKit confirms connection. */
@@ -46,6 +50,8 @@ export interface VoiceState {
   toggleDeafen: () => void;
   toggleCamera: () => void;
   toggleScreenShare: () => void;
+  setScreenShareLive: (v: boolean) => void;
+  setCameraLive: (v: boolean) => void;
 }
 
 export const useVoiceStore = create<VoiceState>((set) => ({
@@ -59,6 +65,8 @@ export const useVoiceStore = create<VoiceState>((set) => ({
   deafened: false,
   cameraEnabled: false,
   screenSharing: false,
+  screenShareLive: false,
+  cameraLive: false,
   participants: [],
   optimisticParticipant: null,
   lastTextChannelId: null,
@@ -76,6 +84,8 @@ export const useVoiceStore = create<VoiceState>((set) => ({
       deafened: false,
       cameraEnabled: false,
       screenSharing: false,
+      screenShareLive: false,
+      cameraLive: false,
       participants: [],
     }),
 
@@ -89,6 +99,8 @@ export const useVoiceStore = create<VoiceState>((set) => ({
       lkUrl: null,
       cameraEnabled: false,
       screenSharing: false,
+      screenShareLive: false,
+      cameraLive: false,
       participants: [],
       optimisticParticipant: null,
     }),
@@ -123,4 +135,6 @@ export const useVoiceStore = create<VoiceState>((set) => ({
   },
   toggleCamera: () => set((s) => ({ cameraEnabled: !s.cameraEnabled })),
   toggleScreenShare: () => set((s) => ({ screenSharing: !s.screenSharing })),
+  setScreenShareLive: (v) => set({ screenShareLive: v }),
+  setCameraLive: (v) => set({ cameraLive: v }),
 }));
