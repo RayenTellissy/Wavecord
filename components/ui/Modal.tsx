@@ -37,7 +37,8 @@ export function Modal({ isOpen, onClose, title, children, width = 460 }: ModalPr
             style={{
               position: "fixed",
               inset: 0,
-              background: "rgba(0,0,0,0.7)",
+              background: "rgba(0,0,0,0.75)",
+              backdropFilter: "blur(4px)",
               zIndex: 200,
             }}
           />
@@ -62,11 +63,13 @@ export function Modal({ isOpen, onClose, title, children, width = 460 }: ModalPr
             transition={{ duration: 0.15 }}
             style={{
               width: `min(${width}px, calc(100vw - 2rem))`,
-              background: "var(--surface-1)",
-              border: "1px solid var(--border)",
-              borderRadius: "12px",
+              background: "rgba(12,12,20,0.92)",
+              border: "1px solid rgba(255,255,255,0.1)",
+              borderRadius: "14px",
               overflow: "hidden",
               pointerEvents: "all",
+              backdropFilter: "blur(24px)",
+              boxShadow: "0 24px 64px rgba(0,0,0,0.6), 0 0 0 1px rgba(139,92,246,0.08), var(--accent-glow-sm)",
             }}
           >
             {/* Header */}
@@ -75,7 +78,7 @@ export function Modal({ isOpen, onClose, title, children, width = 460 }: ModalPr
               alignItems: "center",
               justifyContent: "space-between",
               padding: "1.25rem 1.5rem",
-              borderBottom: "1px solid var(--border)",
+              borderBottom: "1px solid rgba(255,255,255,0.07)",
             }}>
               <h2 style={{ fontSize: "1rem", fontWeight: 700 }}>{title}</h2>
               <button
@@ -87,8 +90,14 @@ export function Modal({ isOpen, onClose, title, children, width = 460 }: ModalPr
                   transition: "color 0.15s",
                   display: "flex",
                 }}
-                onMouseEnter={(e) => { (e.currentTarget.style.color = "var(--text-primary)"); }}
-                onMouseLeave={(e) => { (e.currentTarget.style.color = "var(--text-secondary)"); }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget.style.color = "var(--danger)");
+                  (e.currentTarget.style.background = "rgba(244,63,94,0.1)");
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget.style.color = "var(--text-secondary)");
+                  (e.currentTarget.style.background = "transparent");
+                }}
               >
                 <XIcon size={18} />
               </button>

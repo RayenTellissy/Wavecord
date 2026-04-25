@@ -95,11 +95,12 @@ export function MessageItem({
             height: 40,
             borderRadius: "50%",
             overflow: "hidden",
-            background: "var(--surface-2)",
+            background: "rgba(139,92,246,0.12)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             color: "var(--text-secondary)",
+            border: "1px solid rgba(139,92,246,0.18)",
           }}>
             {message.author.image ? (
               <Image
@@ -179,8 +180,8 @@ export function MessageItem({
               autoFocus
               style={{
                 width: "100%",
-                background: "var(--surface-2)",
-                border: "1px solid var(--accent)",
+                background: "rgba(255,255,255,0.04)",
+                border: "1px solid rgba(139,92,246,0.5)",
                 borderRadius: "6px",
                 padding: "0.5rem 0.75rem",
                 color: "var(--text-primary)",
@@ -189,6 +190,7 @@ export function MessageItem({
                 fontSize: "0.92rem",
                 lineHeight: 1.5,
                 minHeight: 60,
+                boxShadow: "0 0 0 3px rgba(139,92,246,0.1)",
               }}
             />
             <div style={{ display: "flex", gap: "0.5rem", marginTop: "0.35rem", fontSize: "0.78rem" }}>
@@ -213,22 +215,25 @@ export function MessageItem({
                 p: ({ children }) => <span>{children}</span>,
                 code: ({ children }) => (
                   <code style={{
-                    background: "var(--bg)",
+                    background: "rgba(139,92,246,0.1)",
+                    border: "1px solid rgba(139,92,246,0.2)",
                     padding: "0.1em 0.35em",
                     borderRadius: "4px",
                     fontSize: "0.85em",
                     fontFamily: "monospace",
+                    color: "var(--accent-bright)",
                   }}>{children}</code>
                 ),
                 pre: ({ children }) => (
                   <pre style={{
-                    background: "var(--bg)",
-                    border: "1px solid var(--border)",
-                    borderRadius: "6px",
+                    background: "rgba(10,10,15,0.8)",
+                    border: "1px solid rgba(255,255,255,0.08)",
+                    borderRadius: "8px",
                     padding: "0.75rem",
                     overflow: "auto",
                     fontSize: "0.85em",
                     marginTop: "0.35rem",
+                    backdropFilter: "blur(8px)",
                   }}>{children}</pre>
                 ),
               }}
@@ -289,15 +294,22 @@ export function MessageItem({
                       display: "inline-flex",
                       alignItems: "center",
                       gap: "0.6rem",
-                      background: "var(--surface-2)",
-                      border: "1px solid var(--border)",
+                      background: "rgba(255,255,255,0.04)",
+                      border: "1px solid rgba(255,255,255,0.09)",
                       borderRadius: "8px",
                       padding: "0.5rem 0.75rem",
                       maxWidth: 320,
-                      transition: "border-color 0.12s",
+                      transition: "border-color 0.15s, box-shadow 0.15s",
+                      backdropFilter: "blur(8px)",
                     }}
-                    onMouseEnter={(e) => { (e.currentTarget.style.borderColor = "var(--accent)"); }}
-                    onMouseLeave={(e) => { (e.currentTarget.style.borderColor = "var(--border)"); }}
+                    onMouseEnter={(e) => {
+                      (e.currentTarget.style.borderColor = "rgba(139,92,246,0.4)");
+                      (e.currentTarget.style.boxShadow = "var(--accent-glow-sm)");
+                    }}
+                    onMouseLeave={(e) => {
+                      (e.currentTarget.style.borderColor = "rgba(255,255,255,0.09)");
+                      (e.currentTarget.style.boxShadow = "none");
+                    }}
                   >
                     <FileIcon fileType={att.fileType} />
                     <div style={{ minWidth: 0 }}>
@@ -343,10 +355,14 @@ export function MessageItem({
                   gap: "0.25rem",
                   padding: "0.15rem 0.5rem",
                   borderRadius: "12px",
-                  background: users.includes(currentUserId) ? "var(--accent-muted)" : "var(--surface-2)",
-                  border: `1px solid ${users.includes(currentUserId) ? "var(--accent)" : "var(--border)"}`,
+                  background: users.includes(currentUserId)
+                    ? "rgba(139,92,246,0.18)"
+                    : "rgba(255,255,255,0.05)",
+                  border: `1px solid ${users.includes(currentUserId) ? "rgba(139,92,246,0.4)" : "rgba(255,255,255,0.09)"}`,
                   fontSize: "0.82rem",
                   cursor: "pointer",
+                  boxShadow: users.includes(currentUserId) ? "var(--accent-glow-sm)" : "none",
+                  backdropFilter: "blur(8px)",
                 }}
               >
                 <span>{emoji}</span>
@@ -371,11 +387,13 @@ export function MessageItem({
               right: "1rem",
               display: "flex",
               gap: "0.1rem",
-              background: "var(--surface-2)",
-              border: "1px solid var(--border)",
+              background: "rgba(13,13,20,0.9)",
+              border: "1px solid rgba(255,255,255,0.1)",
               borderRadius: "8px",
               padding: "0.2rem",
               zIndex: 10,
+              backdropFilter: "blur(16px)",
+              boxShadow: "0 4px 20px rgba(0,0,0,0.4)",
             }}
           >
             {[
@@ -398,8 +416,8 @@ export function MessageItem({
                     transition: "background 0.1s, color 0.1s",
                   }}
                   onMouseEnter={(e) => {
-                    (e.currentTarget.style.background = danger ? "rgba(239,68,68,0.15)" : "var(--surface-3)");
-                    (e.currentTarget.style.color = danger ? "var(--danger)" : "var(--text-primary)");
+                    (e.currentTarget.style.background = danger ? "rgba(244,63,94,0.15)" : "rgba(139,92,246,0.15)");
+                    (e.currentTarget.style.color = danger ? "var(--danger)" : "var(--accent-bright)");
                   }}
                   onMouseLeave={(e) => {
                     (e.currentTarget.style.background = "transparent");
@@ -463,8 +481,8 @@ function Tooltip({ content, side = "top", children }: { content: string; side?: 
             style={{
               position: "absolute",
               ...(pos[side] ?? pos.top),
-              background: "#0d1117",
-              border: "1px solid var(--border)",
+              background: "rgba(10,10,18,0.95)",
+              border: "1px solid rgba(255,255,255,0.1)",
               color: "var(--text-primary)",
               padding: "0.25rem 0.5rem",
               borderRadius: "5px",
@@ -473,6 +491,7 @@ function Tooltip({ content, side = "top", children }: { content: string; side?: 
               whiteSpace: "nowrap",
               pointerEvents: "none",
               zIndex: 1000,
+              backdropFilter: "blur(12px)",
             }}
           >
             {content}

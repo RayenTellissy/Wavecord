@@ -27,8 +27,9 @@ export function UserPanel() {
   return (
     <div style={{
       padding: "0.6rem 0.5rem",
-      background: "var(--bg)",
-      borderTop: "1px solid var(--border)",
+      background: "rgba(7,7,12,0.85)",
+      borderTop: "1px solid rgba(255,255,255,0.07)",
+      backdropFilter: "blur(12px)",
       display: "flex",
       alignItems: "center",
       gap: "0.5rem",
@@ -40,11 +41,12 @@ export function UserPanel() {
           height: 34,
           borderRadius: "50%",
           overflow: "hidden",
-          background: "var(--surface-2)",
+          background: "rgba(139,92,246,0.15)",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           color: "var(--text-secondary)",
+          border: "1px solid rgba(139,92,246,0.2)",
         }}>
           {user.image ? (
             <Image src={user.image} alt={user.name ?? ""} width={34} height={34} style={{ objectFit: "cover" }} />
@@ -61,7 +63,8 @@ export function UserPanel() {
           height: 10,
           borderRadius: "50%",
           background: STATUS_COLORS["ONLINE"],
-          border: "2px solid var(--bg)",
+          border: "2px solid var(--surface-solid-1)",
+          boxShadow: "0 0 6px rgba(34,197,94,0.6)",
         }} />
       </div>
 
@@ -105,7 +108,7 @@ export function UserPanel() {
               color: muted ? "var(--danger)" : "var(--text-secondary)",
               transition: "color 0.15s, background 0.15s",
             }}
-            onMouseEnter={(e) => { (e.currentTarget.style.background = "var(--surface-2)"); }}
+            onMouseEnter={(e) => { (e.currentTarget.style.background = "rgba(244,63,94,0.12)"); }}
             onMouseLeave={(e) => { (e.currentTarget.style.background = "none"); }}
           >
             {muted ? <MicOffIcon size={17} /> : <MicIcon size={17} />}
@@ -127,7 +130,7 @@ export function UserPanel() {
               color: deafened ? "var(--danger)" : "var(--text-secondary)",
               transition: "color 0.15s, background 0.15s",
             }}
-            onMouseEnter={(e) => { (e.currentTarget.style.background = "var(--surface-2)"); }}
+            onMouseEnter={(e) => { (e.currentTarget.style.background = "rgba(244,63,94,0.12)"); }}
             onMouseLeave={(e) => { (e.currentTarget.style.background = "none"); }}
           >
             {deafened ? <HeadphonesOffIcon size={17} /> : <HeadphonesIcon size={17} />}
@@ -149,7 +152,7 @@ export function UserPanel() {
               color: "var(--text-secondary)",
               transition: "color 0.15s, background 0.15s",
             }}
-            onMouseEnter={(e) => { (e.currentTarget.style.color = "var(--text-primary)"); (e.currentTarget.style.background = "var(--surface-2)"); }}
+            onMouseEnter={(e) => { (e.currentTarget.style.color = "var(--accent-bright)"); (e.currentTarget.style.background = "rgba(139,92,246,0.12)"); }}
             onMouseLeave={(e) => { (e.currentTarget.style.color = "var(--text-secondary)"); (e.currentTarget.style.background = "none"); }}
           >
             <SettingsIcon size={17} />

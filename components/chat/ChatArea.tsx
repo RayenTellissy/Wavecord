@@ -24,7 +24,7 @@ export function ChatArea({ channel, currentUserId, isModOrAdmin }: ChatAreaProps
       flex: 1,
       display: "flex",
       flexDirection: "column",
-      background: "var(--surface-1)",
+      background: "var(--bg-3)",
       minWidth: 0,
       overflow: "hidden",
     }}>

@@ -17,13 +17,18 @@ function Toast({ toast }: { toast: NotificationToast }) {
     return () => clearTimeout(t);
   }, [toast.id, dismiss]);
 
+  const accentColor = toast.type === "dm" ? "#22d3ee" : "#8b5cf6";
+  const accentGlow = toast.type === "dm"
+    ? "0 0 20px rgba(34,211,238,0.15)"
+    : "0 0 20px rgba(139,92,246,0.15)";
+
   return (
     <motion.div
       layout
-      initial={{ opacity: 0, y: 24, scale: 0.95 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      exit={{ opacity: 0, y: 8, scale: 0.95 }}
-      transition={{ duration: 0.2 }}
+      initial={{ opacity: 0, x: 40, scale: 0.95 }}
+      animate={{ opacity: 1, x: 0, scale: 1 }}
+      exit={{ opacity: 0, x: 40, scale: 0.95 }}
+      transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
       onClick={() => {
         router.push(toast.href);
         dismiss(toast.id);
@@ -33,14 +38,17 @@ function Toast({ toast }: { toast: NotificationToast }) {
         alignItems: "flex-start",
         gap: 12,
         padding: "12px 14px",
-        borderRadius: 8,
-        background: "var(--color-bg-secondary, #2b2d31)",
-        border: "1px solid var(--color-border, rgba(255,255,255,0.06))",
-        boxShadow: "0 4px 20px rgba(0,0,0,0.4)",
+        paddingLeft: 18,
+        borderRadius: 10,
+        background: "rgba(12,12,20,0.88)",
+        border: "1px solid rgba(255,255,255,0.09)",
+        borderLeft: `3px solid ${accentColor}`,
+        boxShadow: `0 8px 32px rgba(0,0,0,0.55), ${accentGlow}`,
         cursor: "pointer",
         width: 320,
         maxWidth: "calc(100vw - 32px)",
         userSelect: "none",
+        backdropFilter: "blur(20px)",
       }}
     >
       {/* Avatar */}
@@ -51,13 +59,16 @@ function Toast({ toast }: { toast: NotificationToast }) {
           height: 36,
           borderRadius: "50%",
           overflow: "hidden",
-          background: "var(--color-bg-tertiary, #1e1f22)",
+          background: toast.type === "dm"
+            ? "rgba(34,211,238,0.12)"
+            : "rgba(139,92,246,0.12)",
+          border: `1px solid ${accentColor}40`,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           fontSize: 16,
           fontWeight: 600,
-          color: "#fff",
+          color: accentColor,
         }}
       >
         {toast.avatarUrl ? (
@@ -79,7 +90,7 @@ function Toast({ toast }: { toast: NotificationToast }) {
           style={{
             fontSize: 13,
             fontWeight: 600,
-            color: "var(--color-text-primary, #f2f3f5)",
+            color: "#e2e8f0",
             marginBottom: 2,
             overflow: "hidden",
             textOverflow: "ellipsis",
@@ -91,7 +102,7 @@ function Toast({ toast }: { toast: NotificationToast }) {
         <div
           style={{
             fontSize: 13,
-            color: "var(--color-text-muted, #949ba4)",
+            color: "#94a3b8",
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
@@ -112,7 +123,7 @@ function Toast({ toast }: { toast: NotificationToast }) {
           background: "none",
           border: "none",
           cursor: "pointer",
-          color: "var(--color-text-muted, #949ba4)",
+          color: "#475569",
           fontSize: 16,
           lineHeight: 1,
           padding: "0 2px",

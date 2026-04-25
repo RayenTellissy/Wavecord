@@ -215,7 +215,7 @@ export function MessageInput({ channelId, channelName }: MessageInputProps) {
   const isImage = pendingFile?.fileType.startsWith("image/") ?? false;
 
   return (
-    <div style={{ padding: "0 1rem 1rem", background: "var(--surface-1)" }}>
+    <div style={{ padding: "0 1rem 1rem", background: "transparent" }}>
       {/* Hidden file input */}
       <input
         ref={fileInputRef}
@@ -240,11 +240,12 @@ export function MessageInput({ channelId, channelName }: MessageInputProps) {
                 display: "inline-flex",
                 alignItems: "center",
                 gap: "0.5rem",
-                background: "var(--surface-2)",
-                border: "1px solid var(--border)",
+                background: "rgba(255,255,255,0.05)",
+                border: "1px solid rgba(255,255,255,0.09)",
                 borderRadius: "8px",
                 padding: "0.4rem 0.6rem",
                 maxWidth: "100%",
+                backdropFilter: "blur(12px)",
               }}
             >
               {uploading ? (
@@ -254,7 +255,7 @@ export function MessageInput({ channelId, channelName }: MessageInputProps) {
                     style={{
                       width: 16,
                       height: 16,
-                      border: "2px solid var(--border)",
+                      border: "2px solid rgba(255,255,255,0.08)",
                       borderTopColor: "var(--accent)",
                       borderRadius: "50%",
                       animation: "spin 0.7s linear infinite",
@@ -275,7 +276,7 @@ export function MessageInput({ channelId, channelName }: MessageInputProps) {
                         borderRadius: "6px",
                         overflow: "hidden",
                         flexShrink: 0,
-                        background: "var(--surface-3)",
+                        background: "rgba(255,255,255,0.06)",
                       }}
                     >
                       <Image
@@ -333,15 +334,26 @@ export function MessageInput({ channelId, channelName }: MessageInputProps) {
 
       {/* Input box */}
       <div
+        onFocusCapture={(e) => {
+          (e.currentTarget.style.borderColor = "rgba(139,92,246,0.5)");
+          (e.currentTarget.style.boxShadow = "0 0 0 3px rgba(139,92,246,0.12)");
+        }}
+        onBlurCapture={(e) => {
+          if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+            (e.currentTarget.style.borderColor = "rgba(255,255,255,0.09)");
+            (e.currentTarget.style.boxShadow = "none");
+          }
+        }}
         style={{
           display: "flex",
           alignItems: "flex-end",
           gap: "0.5rem",
-          background: "var(--surface-2)",
-          border: "1px solid var(--border)",
-          borderRadius: "10px",
+          background: "rgba(255,255,255,0.05)",
+          border: "1px solid rgba(255,255,255,0.09)",
+          borderRadius: "12px",
           padding: "0 0.5rem 0.5rem",
-          transition: "border-color 0.15s",
+          transition: "border-color 0.18s, box-shadow 0.18s",
+          backdropFilter: "blur(12px)",
         }}
       >
         {/* Attach button */}
@@ -440,7 +452,7 @@ export function MessageInput({ channelId, channelName }: MessageInputProps) {
                 width: 32,
                 height: 32,
                 borderRadius: "8px",
-                background: "var(--accent)",
+                background: "linear-gradient(135deg, var(--accent-dim), var(--accent))",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -448,7 +460,8 @@ export function MessageInput({ channelId, channelName }: MessageInputProps) {
                 alignSelf: "flex-end",
                 marginBottom: "0.1rem",
                 color: "#fff",
-                transition: "background 0.15s",
+                transition: "box-shadow 0.15s",
+                boxShadow: "var(--accent-glow-sm)",
               }}
             >
               <SendIcon />

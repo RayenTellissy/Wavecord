@@ -20,7 +20,8 @@ export function ChatHeader({ channel }: ChatHeaderProps) {
       alignItems: "center",
       gap: "0.5rem",
       borderBottom: "1px solid var(--border)",
-      background: "var(--surface-1)",
+      background: "rgba(10,10,15,0.85)",
+      backdropFilter: "blur(16px)",
       zIndex: 5,
     }}>
       {/* Hamburger — only shown on mobile via CSS */}
@@ -40,7 +41,7 @@ export function ChatHeader({ channel }: ChatHeaderProps) {
           transition: "background 0.15s, color 0.15s",
         }}
         onMouseEnter={(e) => {
-          (e.currentTarget.style.background = "var(--surface-2)");
+          (e.currentTarget.style.background = "rgba(255,255,255,0.06)");
           (e.currentTarget.style.color = "var(--text-primary)");
         }}
         onMouseLeave={(e) => {
@@ -51,14 +52,14 @@ export function ChatHeader({ channel }: ChatHeaderProps) {
         <HamburgerIcon />
       </button>
 
-      <span style={{ color: "var(--text-secondary)", display: "flex" }}>
+      <span style={{ color: "var(--accent-bright)", display: "flex" }}>
         {channel.type === "TEXT" ? <HashIcon size={20} /> : <VolumeIcon size={20} />}
       </span>
       <span style={{ fontWeight: 700, fontSize: "0.95rem" }}>{channel.name}</span>
 
       <div style={{ flex: 1 }} />
 
-      {/* Search placeholder */}
+      {/* Search */}
       <button
         style={{
           display: "flex",
@@ -66,11 +67,21 @@ export function ChatHeader({ channel }: ChatHeaderProps) {
           gap: "0.4rem",
           padding: "0.3rem 0.6rem",
           borderRadius: "6px",
-          background: "var(--bg)",
-          border: "1px solid var(--border)",
+          background: "rgba(255,255,255,0.04)",
+          border: "1px solid rgba(255,255,255,0.08)",
           color: "var(--text-muted)",
           fontSize: "0.82rem",
           minWidth: 140,
+          backdropFilter: "blur(8px)",
+          transition: "border-color 0.15s, color 0.15s",
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.borderColor = "rgba(139,92,246,0.3)";
+          e.currentTarget.style.color = "var(--text-secondary)";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)";
+          e.currentTarget.style.color = "var(--text-muted)";
         }}
       >
         <SearchIcon size={14} />

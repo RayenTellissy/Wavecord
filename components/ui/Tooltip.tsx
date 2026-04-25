@@ -68,17 +68,18 @@ export function Tooltip({ content, side = "right", adjustX = 0, adjustY = 0, chi
                   position: "fixed",
                   top: pos.top,
                   left: pos.left,
-                  background: "#0d1117",
-                  border: "1px solid var(--border)",
+                  background: "rgba(8,8,16,0.95)",
+                  border: "1px solid rgba(255,255,255,0.1)",
                   color: "var(--text-primary)",
                   padding: "0.35rem 0.65rem",
-                  borderRadius: "6px",
+                  borderRadius: "7px",
                   fontSize: "0.82rem",
                   fontWeight: 600,
                   whiteSpace: "nowrap",
                   pointerEvents: "none",
                   zIndex: 9999,
-                  boxShadow: "0 4px 16px rgba(0,0,0,0.4)",
+                  backdropFilter: "blur(16px)",
+                  boxShadow: "0 4px 16px rgba(0,0,0,0.5), 0 0 0 1px rgba(139,92,246,0.06)",
                 }}
               >
                 {content}

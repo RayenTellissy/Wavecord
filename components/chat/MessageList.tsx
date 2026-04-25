@@ -110,11 +110,13 @@ export function MessageList({ channelId, channelName, currentUserId, isModOrAdmi
             width: 64,
             height: 64,
             borderRadius: "50%",
-            background: "var(--surface-2)",
+            background: "linear-gradient(135deg, rgba(139,92,246,0.15), rgba(34,211,238,0.08))",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            color: "var(--accent)",
+            color: "var(--accent-bright)",
+            border: "1px solid rgba(139,92,246,0.2)",
+            boxShadow: "var(--accent-glow-sm)",
             marginBottom: "1rem",
           }}>
             <HashIcon size={32} />
@@ -182,7 +184,7 @@ function LoadingSpinner({ size = 28 }: { size?: number }) {
       style={{ animation: "spin 0.8s linear infinite" }}
     >
       <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-      <circle cx="12" cy="12" r="10" stroke="var(--border)" strokeWidth="2.5" />
+      <circle cx="12" cy="12" r="10" stroke="rgba(255,255,255,0.08)" strokeWidth="2.5" />
       <path d="M12 2C6.477 2 2 6.477 2 12" stroke="var(--accent)" strokeWidth="2.5" strokeLinecap="round" />
     </svg>
   );

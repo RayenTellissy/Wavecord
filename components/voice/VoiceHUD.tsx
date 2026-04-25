@@ -64,10 +64,12 @@ export function VoiceHUD() {
             left: 72,
             width: 240,
             zIndex: 200,
-            borderTop: "1px solid var(--border)",
-            borderBottom: "1px solid var(--border)",
-            background: "var(--bg)",
+            borderTop: "1px solid rgba(34,197,94,0.15)",
+            borderBottom: "1px solid rgba(255,255,255,0.06)",
+            background: "rgba(7,12,9,0.92)",
+            backdropFilter: "blur(16px)",
             padding: "0.5rem 0.6rem 0.45rem",
+            boxShadow: "0 -4px 20px rgba(34,197,94,0.08)",
           }}
         >
           {/* Channel info row */}
@@ -140,7 +142,7 @@ export function VoiceHUD() {
                   color: "var(--danger)",
                   transition: "background 0.12s",
                 }}
-                onMouseEnter={(e) => { (e.currentTarget.style.background = "rgba(239,68,68,0.2)"); }}
+                onMouseEnter={(e) => { (e.currentTarget.style.background = "rgba(244,63,94,0.18)"); }}
                 onMouseLeave={(e) => { (e.currentTarget.style.background = "transparent"); }}
               >
                 <LeaveIcon size={14} />
@@ -196,9 +198,10 @@ function HudButton({
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        background: active ? "rgba(99,102,241,0.15)" : "var(--surface-2)",
-        color: active ? "var(--accent)" : "var(--text-secondary)",
-        border: `1px solid ${active ? "rgba(99,102,241,0.4)" : "var(--border)"}`,
+        background: active ? "rgba(139,92,246,0.15)" : "rgba(255,255,255,0.05)",
+        color: active ? "var(--accent-bright)" : "var(--text-secondary)",
+        border: `1px solid ${active ? "rgba(139,92,246,0.4)" : "rgba(255,255,255,0.08)"}`,
+        boxShadow: active ? "var(--accent-glow-sm)" : "none",
         transition: "background 0.12s, color 0.12s",
       }}
     >

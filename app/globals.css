@@ -8,25 +8,60 @@
 }
 
 :root {
-  --bg: #0d1117;
-  --surface-1: #161b22;
-  --surface-2: #21262d;
-  --surface-3: #2d333b;
-  --accent: #1d4ed8;
-  --accent-hover: #1e40af;
-  --accent-muted: rgba(29, 78, 216, 0.15);
-  --text-primary: #e6edf3;
-  --text-secondary: #8b949e;
-  --text-muted: #6e7681;
-  --border: #30363d;
-  --danger: #ef4444;
-  --danger-hover: #dc2626;
-  --success: #22c55e;
-  --warning: #f59e0b;
-  --online: #22c55e;
-  --idle: #f59e0b;
-  --dnd: #ef4444;
-  --offline: #6e7681;
+  /* ── Base backgrounds ─────────────────────────────────── */
+  --bg:        #0a0a0f;
+  --bg-2:      #0d0d14;
+  --bg-3:      #111118;
+
+  /* ── Glass surfaces ───────────────────────────────────── */
+  --surface-1: rgba(255,255,255,0.04);
+  --surface-2: rgba(255,255,255,0.07);
+  --surface-3: rgba(255,255,255,0.10);
+  --surface-solid-1: #0f0f17;
+  --surface-solid-2: #13131e;
+  --surface-solid-3: #1a1a28;
+
+  /* ── Glass borders ────────────────────────────────────── */
+  --border:    rgba(255,255,255,0.08);
+  --border-2:  rgba(255,255,255,0.12);
+
+  /* ── Primary neon: electric violet ───────────────────── */
+  --accent:         #8b5cf6;
+  --accent-bright:  #a78bfa;
+  --accent-dim:     #7c3aed;
+  --accent-hover:   #9d72f8;
+  --accent-muted:   rgba(139,92,246,0.15);
+  --accent-glow:    0 0 12px rgba(139,92,246,0.5), 0 0 40px rgba(139,92,246,0.15);
+  --accent-glow-sm: 0 0 8px rgba(139,92,246,0.4);
+
+  /* ── Accent neon: cyan ────────────────────────────────── */
+  --cyan:        #22d3ee;
+  --cyan-muted:  rgba(34,211,238,0.15);
+  --cyan-glow:   0 0 10px rgba(34,211,238,0.45);
+
+  /* ── Danger neon: red/pink ────────────────────────────── */
+  --danger:       #f43f5e;
+  --danger-hover: #e11d48;
+  --danger-muted: rgba(244,63,94,0.15);
+  --danger-glow:  0 0 10px rgba(244,63,94,0.45);
+
+  /* ── Status colors ────────────────────────────────────── */
+  --success:  #22c55e;
+  --warning:  #f59e0b;
+  --online:   #22c55e;
+  --idle:     #f59e0b;
+  --dnd:      #f43f5e;
+  --offline:  #475569;
+
+  /* ── Text ─────────────────────────────────────────────── */
+  --text-primary:   #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-muted:     #475569;
+
+  /* ── Blur values ──────────────────────────────────────── */
+  --blur-sm:  blur(8px);
+  --blur-md:  blur(16px);
+  --blur-lg:  blur(24px);
 }
 
 *,
@@ -51,6 +86,10 @@ body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Subtle gradient noise on the body */
+  background-image:
+    radial-gradient(ellipse 80% 60% at 50% -10%, rgba(139,92,246,0.06) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 40% at 90% 80%, rgba(34,211,238,0.04) 0%, transparent 60%);
 }
 
 a {
@@ -82,16 +121,16 @@ textarea {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--border);
+  background: rgba(255,255,255,0.1);
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--text-muted);
+  background: rgba(139,92,246,0.4);
 }
 
 /* ── Selection ────────────────────────────────────────── */
 ::selection {
-  background: rgba(29, 78, 216, 0.35);
+  background: rgba(139, 92, 246, 0.35);
 }
 
 /* ── Utilities ────────────────────────────────────────── */
@@ -148,7 +187,7 @@ textarea {
   }
   .sidebar-main.mobile-open {
     transform: translateX(0);
-    box-shadow: 4px 0 32px rgba(0, 0, 0, 0.7);
+    box-shadow: 4px 0 32px rgba(0, 0, 0, 0.85), 2px 0 12px rgba(139,92,246,0.08);
   }
 
   .sidebar-channel {

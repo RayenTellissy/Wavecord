@@ -123,7 +123,7 @@ export function ChannelSidebar({ server, currentUserId, currentMemberRole }: Cha
       style={{
         width: 240,
         minWidth: 240,
-        background: "var(--surface-1)",
+        background: "var(--surface-solid-1)",
         borderRight: "1px solid var(--border)",
         display: "flex",
         flexDirection: "column",
@@ -141,10 +141,10 @@ export function ChannelSidebar({ server, currentUserId, currentMemberRole }: Cha
             alignItems: "center",
             gap: "0.5rem",
             borderBottom: "1px solid var(--border)",
-            background: serverMenuOpen ? "var(--surface-2)" : "transparent",
+            background: serverMenuOpen ? "rgba(255,255,255,0.06)" : "transparent",
             transition: "background 0.15s",
           }}
-          onMouseEnter={(e) => { if (!serverMenuOpen) (e.currentTarget.style.background = "var(--surface-2)"); }}
+          onMouseEnter={(e) => { if (!serverMenuOpen) (e.currentTarget.style.background = "rgba(255,255,255,0.05)"); }}
           onMouseLeave={(e) => { if (!serverMenuOpen) (e.currentTarget.style.background = "transparent"); }}
         >
           {server.imageUrl && (
@@ -171,9 +171,11 @@ export function ChannelSidebar({ server, currentUserId, currentMemberRole }: Cha
                 style={{
                   position: "absolute",
                   top: "calc(100% + 4px)", left: "0.5rem", right: "0.5rem",
-                  background: "var(--surface-2)", border: "1px solid var(--border)",
-                  borderRadius: "8px", padding: "0.35rem", zIndex: 51,
-                  boxShadow: "0 8px 24px rgba(0,0,0,0.4)",
+                  background: "rgba(15,15,23,0.92)",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                  borderRadius: "10px", padding: "0.35rem", zIndex: 51,
+                  boxShadow: "0 12px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(139,92,246,0.08)",
+                  backdropFilter: "blur(20px)",
                 }}
                 onClick={() => setServerMenuOpen(false)}
               >
@@ -431,11 +433,20 @@ function VoiceChannelItem({
           ...channelRowStyle(isActive || isConnected),
           cursor: isJoining ? "default" : "pointer",
           color: isConnected ? "var(--success)" : isActive ? "var(--text-primary)" : "var(--text-secondary)",
-          background: isConnected ? "rgba(34,197,94,0.08)" : isActive ? "var(--surface-2)" : "transparent",
+          background: isConnected
+            ? "rgba(34,197,94,0.1)"
+            : isActive
+            ? "rgba(139,92,246,0.15)"
+            : "transparent",
+          border: isConnected
+            ? "1px solid rgba(34,197,94,0.2)"
+            : isActive
+            ? "1px solid rgba(139,92,246,0.2)"
+            : "1px solid transparent",
         }}
         onMouseEnter={(e) => {
           if (!isActive && !isConnected) {
-            (e.currentTarget as HTMLElement).style.background = "var(--surface-2)";
+            (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.05)";
             (e.currentTarget as HTMLElement).style.color = "var(--text-primary)";
           }
         }}
@@ -527,7 +538,7 @@ function VoiceChannelItem({
                 transition: "background 0.12s",
               }}
               onMouseEnter={(e) => {
-                (e.currentTarget as HTMLElement).style.background = "var(--surface-2)";
+                (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.05)";
                 if (p.isLive) showStreamPopup(p, e.currentTarget as HTMLElement);
               }}
               onMouseLeave={(e) => {
@@ -613,11 +624,12 @@ function VoiceChannelItem({
             top: streamPopup.y,
             zIndex: 9999,
             width: 220,
-            background: "var(--surface-3)",
-            border: "1px solid var(--border)",
-            borderRadius: "10px",
+            background: "rgba(13,13,20,0.92)",
+            border: "1px solid rgba(255,255,255,0.1)",
+            borderRadius: "12px",
             overflow: "hidden",
-            boxShadow: "0 8px 32px rgba(0,0,0,0.55)",
+            boxShadow: "0 16px 48px rgba(0,0,0,0.7), 0 0 0 1px rgba(139,92,246,0.08)",
+            backdropFilter: "blur(20px)",
             pointerEvents: "all",
           }}
         >
@@ -715,20 +727,20 @@ function VoiceChannelItem({
                 width: "100%",
                 padding: "0.42rem",
                 borderRadius: "6px",
-                background: "var(--success, #22c55e)",
-                color: "#fff",
+                background: "linear-gradient(135deg, rgba(34,211,238,0.2), rgba(139,92,246,0.2))",
+                color: "var(--cyan)",
                 fontSize: "0.8rem",
                 fontWeight: 600,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 gap: "0.35rem",
-                border: "none",
+                border: "1px solid rgba(34,211,238,0.3)",
                 cursor: "pointer",
-                transition: "opacity 0.1s",
+                transition: "box-shadow 0.15s, background 0.15s",
               }}
-              onMouseEnter={(e) => { e.currentTarget.style.opacity = "0.85"; }}
-              onMouseLeave={(e) => { e.currentTarget.style.opacity = "1"; }}
+              onMouseEnter={(e) => { e.currentTarget.style.boxShadow = "var(--cyan-glow)"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.boxShadow = "none"; }}
             >
               <ScreenShareIcon size={13} />
               Watch Stream
@@ -829,12 +841,17 @@ function channelRowStyle(isActive: boolean): React.CSSProperties {
     padding: "0.3rem 0.5rem 0.3rem 0.75rem",
     margin: "0.05rem 0.5rem",
     borderRadius: "6px",
-    background: isActive ? "var(--surface-2)" : "transparent",
+    background: isActive
+      ? "rgba(139,92,246,0.15)"
+      : "transparent",
     color: isActive ? "var(--text-primary)" : "var(--text-secondary)",
     fontSize: "0.9rem",
     fontWeight: isActive ? 600 : 400,
     transition: "background 0.12s, color 0.12s",
     textDecoration: "none",
+    border: isActive
+      ? "1px solid rgba(139,92,246,0.2)"
+      : "1px solid transparent",
   };
 }
 
@@ -847,7 +864,7 @@ const channelNameStyle: React.CSSProperties = {
 
 function applyHover(e: React.MouseEvent, isActive: boolean) {
   if (!isActive) {
-    (e.currentTarget as HTMLElement).style.background = "var(--surface-2)";
+    (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.05)";
     (e.currentTarget as HTMLElement).style.color = "var(--text-primary)";
   }
 }
@@ -880,8 +897,8 @@ function MenuItem({
         transition: "background 0.12s, color 0.12s", textAlign: "left",
       }}
       onMouseEnter={(e) => {
-        (e.currentTarget.style.background = danger ? "var(--danger)" : "var(--accent)");
-        (e.currentTarget.style.color = "#fff");
+        (e.currentTarget.style.background = danger ? "rgba(244,63,94,0.15)" : "rgba(139,92,246,0.15)");
+        (e.currentTarget.style.color = danger ? "var(--danger)" : "var(--accent-bright)");
       }}
       onMouseLeave={(e) => {
         (e.currentTarget.style.background = "transparent");

@@ -55,8 +55,8 @@ export default function RegisterPage() {
       <style>{`
         .auth-input {
           width: 100%;
-          background: var(--surface-2);
-          border: 1.5px solid var(--border);
+          background: rgba(255,255,255,0.04);
+          border: 1.5px solid rgba(255,255,255,0.09);
           border-radius: 10px;
           padding: 0.72rem 0.9rem;
           color: var(--text-primary);
@@ -65,20 +65,21 @@ export default function RegisterPage() {
           font-family: inherit;
           transition: border-color 0.18s, box-shadow 0.18s, background 0.18s;
           display: block;
+          backdrop-filter: blur(8px);
         }
-        .auth-input:hover { background: var(--surface-3); }
+        .auth-input:hover { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.14); }
         .auth-input:focus {
-          border-color: var(--accent);
-          background: var(--surface-2);
-          box-shadow: 0 0 0 3.5px rgba(29,78,216,0.2);
+          border-color: rgba(139,92,246,0.6);
+          background: rgba(139,92,246,0.05);
+          box-shadow: 0 0 0 3px rgba(139,92,246,0.15);
         }
         .auth-input.error { border-color: var(--danger); }
-        .auth-input.error:focus { box-shadow: 0 0 0 3.5px rgba(239,68,68,0.2); }
+        .auth-input.error:focus { box-shadow: 0 0 0 3px rgba(244,63,94,0.18); }
 
         .auth-btn-primary {
           width: 100%;
           padding: 0.78rem;
-          background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
+          background: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 60%, #a78bfa 100%);
           color: #fff;
           border: none;
           border-radius: 10px;
@@ -88,16 +89,16 @@ export default function RegisterPage() {
           letter-spacing: 0.01em;
           margin-top: 0.5rem;
           cursor: pointer;
-          box-shadow: 0 4px 14px rgba(29,78,216,0.35);
+          box-shadow: 0 4px 14px rgba(139,92,246,0.4), 0 0 40px rgba(139,92,246,0.1);
           transition: box-shadow 0.18s, transform 0.18s, opacity 0.18s;
         }
         .auth-btn-primary:hover:not(:disabled) {
-          box-shadow: 0 6px 22px rgba(29,78,216,0.5);
+          box-shadow: 0 6px 24px rgba(139,92,246,0.55), 0 0 60px rgba(139,92,246,0.15);
           transform: translateY(-1px);
         }
         .auth-btn-primary:active:not(:disabled) {
           transform: translateY(0);
-          box-shadow: 0 3px 10px rgba(29,78,216,0.35);
+          box-shadow: 0 3px 10px rgba(139,92,246,0.35);
         }
         .auth-btn-primary:disabled { opacity: 0.65; cursor: not-allowed; }
       `}</style>
@@ -107,13 +108,14 @@ export default function RegisterPage() {
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.22, ease: "easeOut" }}
         style={{
-          background: "linear-gradient(160deg, rgba(33,38,45,0.98) 0%, rgba(22,27,34,0.98) 100%)",
-          border: "1.5px solid rgba(48,54,61,0.8)",
-          borderRadius: "16px",
+          background: "rgba(10,10,18,0.85)",
+          border: "1px solid rgba(255,255,255,0.09)",
+          borderRadius: "18px",
           padding: "2.5rem",
           width: "100%",
           maxWidth: "420px",
-          boxShadow: "0 24px 60px rgba(0,0,0,0.55), 0 0 0 1px rgba(29,78,216,0.06)",
+          backdropFilter: "blur(24px)",
+          boxShadow: "0 32px 80px rgba(0,0,0,0.65), 0 0 0 1px rgba(139,92,246,0.08), 0 0 80px rgba(139,92,246,0.05)",
         }}
       >
         <div style={{ textAlign: "center", marginBottom: "2rem" }}>
