@@ -8,11 +8,13 @@ import { Tooltip } from "@/components/ui/Tooltip";
 import {
   HashIcon, VolumeIcon, ChevronDownIcon,
   PlusIcon, LeaveIcon, LinkIcon, SettingsIcon,
+  MicOffIcon, HeadphonesOffIcon,
 } from "@/components/icons";
 import { UserPanel } from "./UserPanel";
 import { useModal } from "@/stores/modalStore";
 import { useSidebar } from "@/stores/sidebarStore";
 import { useVoiceStore, type VoiceParticipant } from "@/stores/voiceStore";
+import { useVoiceSessions } from "@/hooks/useVoiceSessions";
 import { useLocalParticipant, useConnectionQualityIndicator } from "@livekit/components-react";
 import { ConnectionQuality } from "livekit-client";
 import type { Server, Channel, Category, ServerMember, User } from "@prisma/client";
@@ -48,11 +50,11 @@ export function ChannelSidebar({ server, currentUserId, currentMemberRole }: Cha
   const {
     channelId: voiceChannelId,
     token: voiceToken,
-    participants: voiceParticipants,
     optimisticParticipant: voiceOptimisticParticipant,
     join: joinVoice,
     setOptimisticParticipant,
   } = useVoiceStore();
+  const voiceSessions = useVoiceSessions(server.id);
 
   const activeChannelId = params?.channelId as string | undefined;
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
@@ -264,20 +266,36 @@ export function ChannelSidebar({ server, currentUserId, currentMemberRole }: Cha
                         {textChannels.length > 0 && (
                           <SectionLabel label="Voice Channels" />
                         )}
-                        {voiceChannels.map((channel) => (
-                          <motion.div key={channel.id} variants={itemVariant}>
-                            <VoiceChannelItem
-                              channel={channel}
-                              serverId={server.id}
-                              isActive={channel.id === activeChannelId}
-                              isConnected={channel.id === voiceChannelId && !!voiceToken}
-                              isJoining={joiningVoice === channel.id}
-                              participants={channel.id === voiceChannelId ? voiceParticipants : []}
-                              optimisticParticipant={joiningVoice === channel.id ? voiceOptimisticParticipant : null}
-                              onClick={() => handleVoiceChannelClick(channel)}
-                            />
-                          </motion.div>
-                        ))}
+                        {voiceChannels.map((channel) => {
+                          const sessions = voiceSessions[channel.id] ?? [];
+                          const participants: VoiceParticipant[] = sessions.map((s) => ({
+                            identity: s.userId,
+                            name: s.name,
+                            metadata: s.image ?? undefined,
+                            isMuted: s.isMuted,
+                            isDeafened: s.isDeafened,
+                            isLive: s.isLive,
+                          }));
+                          return (
+                            <motion.div key={channel.id} variants={itemVariant}>
+                              <VoiceChannelItem
+                                channel={channel}
+                                serverId={server.id}
+                                isActive={channel.id === activeChannelId}
+                                isConnected={channel.id === voiceChannelId && !!voiceToken}
+                                isJoining={joiningVoice === channel.id}
+                                participants={participants}
+                                optimisticParticipant={
+                                  joiningVoice === channel.id &&
+                                  !participants.find((p) => p.identity === voiceOptimisticParticipant?.identity)
+                                    ? voiceOptimisticParticipant
+                                    : null
+                                }
+                                onClick={() => handleVoiceChannelClick(channel)}
+                              />
+                            </motion.div>
+                          );
+                        })}
                       </>
                     )}
                   </motion.div>
@@ -401,8 +419,8 @@ function VoiceChannelItem({
         {isConnected && !isJoining && <ConnectionQualityDot />}
       </motion.div>
 
-      {/* Participants list — shown while joining (optimistic) or connected (real) */}
-      {(isConnected || isJoining) && (participants.length > 0 || optimisticParticipant) && (
+      {/* Participants list — visible to everyone in the server, not just those connected */}
+      {(participants.length > 0 || optimisticParticipant) && (
         <div style={{ paddingLeft: "1.75rem", paddingBottom: "0.25rem" }}>
           {/* Optimistic self-entry: shown while connecting, grayed out */}
           {optimisticParticipant && !participants.find((p) => p.identity === optimisticParticipant.identity) && (
@@ -410,8 +428,8 @@ function VoiceChannelItem({
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: "0.4rem",
-                padding: "0.15rem 0.5rem",
+                gap: "0.5rem",
+                padding: "0.25rem 0.5rem",
                 marginRight: "0.5rem",
                 borderRadius: "4px",
                 opacity: 0.45,
@@ -422,21 +440,21 @@ function VoiceChannelItem({
                 <Image
                   src={optimisticParticipant.metadata}
                   alt={optimisticParticipant.name}
-                  width={16}
-                  height={16}
+                  width={22}
+                  height={22}
                   style={{ borderRadius: "50%", flexShrink: 0 }}
                 />
               ) : (
                 <span
                   style={{
-                    width: 16,
-                    height: 16,
+                    width: 22,
+                    height: 22,
                     borderRadius: "50%",
                     background: "var(--surface-3)",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    fontSize: "0.6rem",
+                    fontSize: "0.65rem",
                     fontWeight: 700,
                     color: "var(--text-muted)",
                     flexShrink: 0,
@@ -447,7 +465,7 @@ function VoiceChannelItem({
               )}
               <span
                 style={{
-                  fontSize: "0.78rem",
+                  fontSize: "0.88rem",
                   color: "var(--text-secondary)",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
@@ -466,8 +484,8 @@ function VoiceChannelItem({
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: "0.4rem",
-                padding: "0.15rem 0.5rem",
+                gap: "0.5rem",
+                padding: "0.25rem 0.5rem",
                 marginRight: "0.5rem",
                 borderRadius: "4px",
                 cursor: "pointer",
@@ -480,21 +498,21 @@ function VoiceChannelItem({
                 <Image
                   src={p.metadata}
                   alt={p.name}
-                  width={16}
-                  height={16}
+                  width={22}
+                  height={22}
                   style={{ borderRadius: "50%", flexShrink: 0 }}
                 />
               ) : (
                 <span
                   style={{
-                    width: 16,
-                    height: 16,
+                    width: 22,
+                    height: 22,
                     borderRadius: "50%",
                     background: "var(--surface-3)",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    fontSize: "0.6rem",
+                    fontSize: "0.65rem",
                     fontWeight: 700,
                     color: "var(--text-muted)",
                     flexShrink: 0,
@@ -505,7 +523,7 @@ function VoiceChannelItem({
               )}
               <span
                 style={{
-                  fontSize: "0.78rem",
+                  fontSize: "0.88rem",
                   color: "var(--text-secondary)",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
@@ -531,11 +549,27 @@ function VoiceChannelItem({
                   LIVE
                 </span>
               )}
+              <ParticipantStatusIcons isMuted={!!p.isMuted} isDeafened={!!p.isDeafened} />
             </motion.div>
           ))}
         </div>
       )}
     </div>
+  );
+}
+
+// ─── Per-participant mute / deafen icons ──────────────────────────────────────
+
+function ParticipantStatusIcons({ isMuted, isDeafened }: { isMuted: boolean; isDeafened: boolean }) {
+  return (
+    <>
+      {isDeafened && (
+        <HeadphonesOffIcon size={13} style={{ color: "var(--danger, #ef4444)", flexShrink: 0 }} />
+      )}
+      {isMuted && !isDeafened && (
+        <MicOffIcon size={13} style={{ color: "var(--danger, #ef4444)", flexShrink: 0 }} />
+      )}
+    </>
   );
 }
 

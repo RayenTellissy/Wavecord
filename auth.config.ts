@@ -14,6 +14,8 @@ export const authConfig: NextAuthConfig = {
       if (user) {
         token.id = user.id;
         token.username = (user as { username?: string }).username ?? null;
+        if (user.image) token.image = user.image;
+        if (user.name) token.name = user.name;
       }
       if (trigger === "update" && session) {
         token.name = session.name ?? token.name;
@@ -26,6 +28,8 @@ export const authConfig: NextAuthConfig = {
       if (token) {
         session.user.id = token.id as string;
         session.user.username = (token.username as string) ?? null;
+        if (token.name) session.user.name = token.name as string;
+        if (token.image) session.user.image = token.image as string;
       }
       return session;
     },

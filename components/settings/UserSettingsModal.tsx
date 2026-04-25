@@ -151,7 +151,7 @@ function ProfileTab({ initialProfile }: { initialProfile: UserProfile }) {
       <div style={{ display: "flex", alignItems: "center", gap: "1.25rem" }}>
         <div style={{ position: "relative", flexShrink: 0 }}>
           <div
-            onClick={() => fileRef.current?.click()}
+            onClick={() => { if (!uploading) fileRef.current?.click(); }}
             style={{
               width: 80,
               height: 80,
@@ -162,7 +162,7 @@ function ProfileTab({ initialProfile }: { initialProfile: UserProfile }) {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              cursor: "pointer",
+              cursor: uploading ? "default" : "pointer",
               position: "relative",
             }}
           >
@@ -177,27 +177,38 @@ function ProfileTab({ initialProfile }: { initialProfile: UserProfile }) {
             ) : (
               <PersonIcon size={32} style={{ color: "var(--text-muted)" }} />
             )}
-            {/* Hover overlay */}
+            {/* Hover / upload overlay */}
             <div style={{
               position: "absolute",
               inset: 0,
-              background: "rgba(0,0,0,0.5)",
+              background: "rgba(0,0,0,0.55)",
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
-              opacity: 0,
+              opacity: uploading ? 1 : 0,
               transition: "opacity 0.15s",
               borderRadius: "50%",
               gap: "0.2rem",
+              pointerEvents: uploading ? "none" : "auto",
             }}
-              onMouseEnter={(e) => { (e.currentTarget.style.opacity = "1"); }}
-              onMouseLeave={(e) => { (e.currentTarget.style.opacity = "0"); }}
+              onMouseEnter={(e) => { if (!uploading) e.currentTarget.style.opacity = "1"; }}
+              onMouseLeave={(e) => { if (!uploading) e.currentTarget.style.opacity = "0"; }}
             >
-              <ImageIcon size={18} style={{ color: "#fff" }} />
-              <span style={{ fontSize: "0.65rem", color: "#fff", fontWeight: 600, textAlign: "center", lineHeight: 1.2 }}>
-                {uploading ? "Uploading…" : "Change\nAvatar"}
-              </span>
+              {uploading ? (
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round">
+                  <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83">
+                    <animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="0.8s" repeatCount="indefinite" />
+                  </path>
+                </svg>
+              ) : (
+                <>
+                  <ImageIcon size={18} style={{ color: "#fff" }} />
+                  <span style={{ fontSize: "0.65rem", color: "#fff", fontWeight: 600, textAlign: "center", lineHeight: 1.2 }}>
+                    Change{"\n"}Avatar
+                  </span>
+                </>
+              )}
             </div>
           </div>
           <input

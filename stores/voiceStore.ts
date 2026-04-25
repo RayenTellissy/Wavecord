@@ -5,6 +5,8 @@ export interface VoiceParticipant {
   name: string;
   metadata?: string;
   isLive?: boolean;
+  isMuted?: boolean;
+  isDeafened?: boolean;
 }
 
 export interface VoiceState {

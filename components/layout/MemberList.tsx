@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { PersonIcon, KickIcon, BanIcon, ShieldIcon } from "@/components/icons";
 import { useModal } from "@/stores/modalStore";
+import { useSocket } from "@/hooks/useSocket";
 import type { Server, ServerMember, User } from "@prisma/client";
 
 type MemberWithUser = ServerMember & {
@@ -42,7 +43,18 @@ const ROLE_GROUPS = [
 
 export function MemberList({ server, currentUserId, currentMemberRole }: MemberListProps) {
   const { open } = useModal();
+  const { socket } = useSocket();
   const [contextMenu, setContextMenu] = useState<ContextMenu | null>(null);
+  const [statusOverrides, setStatusOverrides] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    if (!socket) return;
+    const onUserStatus = ({ userId, status }: { userId: string; status: string }) => {
+      setStatusOverrides((prev) => ({ ...prev, [userId]: status }));
+    };
+    socket.on("user:status", onUserStatus);
+    return () => { socket.off("user:status", onUserStatus); };
+  }, [socket]);
 
   const isModOrAdmin = currentMemberRole === "ADMIN" || currentMemberRole === "MODERATOR";
   const isAdmin = currentMemberRole === "ADMIN";
@@ -103,6 +115,7 @@ export function MemberList({ server, currentUserId, currentMemberRole }: MemberL
                 <MemberRow
                   key={member.id}
                   member={member}
+                  effectiveStatus={statusOverrides[member.user.id] ?? member.user.status}
                   isSelf={member.user.id === currentUserId}
                   canModerate={isModOrAdmin && member.user.id !== currentUserId}
                   onContextMenu={(e) => handleContextMenu(e, member)}
@@ -198,18 +211,20 @@ export function MemberList({ server, currentUserId, currentMemberRole }: MemberL
 
 function MemberRow({
   member,
+  effectiveStatus,
   isSelf,
   canModerate,
   onContextMenu,
 }: {
   member: MemberWithUser;
+  effectiveStatus: string | null | undefined;
   isSelf: boolean;
   canModerate: boolean;
   onContextMenu: (e: React.MouseEvent) => void;
 }) {
   const [hovered, setHovered] = useState(false);
   const displayName = member.user.name ?? member.user.username ?? "User";
-  const statusColor = STATUS_COLOR[member.user.status ?? "OFFLINE"] ?? "var(--text-muted)";
+  const statusColor = STATUS_COLOR[effectiveStatus ?? "OFFLINE"] ?? "var(--text-muted)";
 
   return (
     <div

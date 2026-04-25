@@ -1,9 +1,11 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useSession } from "next-auth/react";
 import { Room, RoomEvent, Track } from "livekit-client";
-import { RoomContext, RoomAudioRenderer, useParticipants, useTracks, isTrackReference } from "@livekit/components-react";
+import { RoomContext, RoomAudioRenderer, useParticipants, useLocalParticipant, useTracks, isTrackReference, useRoomContext } from "@livekit/components-react";
 import { useVoiceStore } from "@/stores/voiceStore";
+import { useSocket } from "@/hooks/useSocket";
 
 /**
  * Keeps a single LiveKit Room alive across page navigations.
@@ -42,17 +44,86 @@ export function PersistentVoice({ children }: { children: React.ReactNode }) {
           <ParticipantSync />
         </>
       )}
+      <VoicePresenceSync />
       {children}
     </RoomContext.Provider>
   );
 }
 
+/**
+ * Broadcasts the current user's voice presence (join/leave/mute/deafen/live)
+ * to the Socket.io server, so every member of the server can see who's in
+ * which voice channel — without having to be connected themselves.
+ */
+function VoicePresenceSync() {
+  const { socket } = useSocket();
+  const { data: session } = useSession();
+  const channelId = useVoiceStore((s) => s.channelId);
+  const serverId = useVoiceStore((s) => s.serverId);
+  const micEnabled = useVoiceStore((s) => s.micEnabled);
+  const deafened = useVoiceStore((s) => s.deafened);
+  const cameraEnabled = useVoiceStore((s) => s.cameraEnabled);
+  const screenSharing = useVoiceStore((s) => s.screenSharing);
+
+  const user = session?.user;
+  const userId = user?.id;
+  const name = user?.name ?? user?.username ?? "User";
+  const image = user?.image ?? null;
+
+  // Join / leave — re-emit on (re)connect so presence survives socket resets.
+  useEffect(() => {
+    if (!socket || !userId || !channelId || !serverId) return;
+    const join = () => socket.emit("voice:join", {
+      channelId, serverId, userId, name, image,
+      isMuted: !useVoiceStore.getState().micEnabled || useVoiceStore.getState().deafened,
+      isDeafened: useVoiceStore.getState().deafened,
+    });
+    join();
+    socket.on("connect", join);
+    return () => {
+      socket.off("connect", join);
+      socket.emit("voice:leave");
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [socket, channelId, serverId, userId]);
+
+  // State updates (mute / deafen / live)
+  useEffect(() => {
+    if (!socket || !channelId) return;
+    socket.emit("voice:state", {
+      isMuted: !micEnabled || deafened,
+      isDeafened: deafened,
+      isLive: cameraEnabled || screenSharing,
+    });
+  }, [socket, channelId, micEnabled, deafened, cameraEnabled, screenSharing]);
+
+  return null;
+}
+
 /** Syncs LiveKit participant list into voiceStore so the sidebar can display it. */
 function ParticipantSync() {
+  const room = useRoomContext();
   const participants = useParticipants();
+  const { localParticipant } = useLocalParticipant();
   const cameraTracks = useTracks([Track.Source.Camera]);
   const screenTracks = useTracks([Track.Source.ScreenShare]);
   const setParticipants = useVoiceStore((s) => s.setParticipants);
+  const deafened = useVoiceStore((s) => s.deafened);
+  const micEnabled = useVoiceStore((s) => s.micEnabled);
+  const [attrTick, setAttrTick] = useState(0);
+
+  // Publish local deafen state so remote peers can render the headphones-off icon.
+  useEffect(() => {
+    if (!localParticipant) return;
+    localParticipant.setAttributes({ deafened: deafened ? "1" : "0" }).catch(() => {});
+  }, [deafened, localParticipant]);
+
+  // Re-render when any participant's attributes change (deafened broadcast).
+  useEffect(() => {
+    const bump = () => setAttrTick((t) => t + 1);
+    room.on(RoomEvent.ParticipantAttributesChanged, bump);
+    return () => { room.off(RoomEvent.ParticipantAttributesChanged, bump); };
+  }, [room]);
 
   useEffect(() => {
     const liveIdentities = new Set([
@@ -65,15 +136,22 @@ function ParticipantSync() {
     ]);
 
     setParticipants(
-      participants.map((p) => ({
-        identity: p.identity,
-        name: p.name ?? p.identity,
-        metadata: p.metadata,
-        isLive: liveIdentities.has(p.identity),
-      }))
+      participants.map((p) => {
+        const isLocal = p.identity === localParticipant?.identity;
+        const isDeafened = isLocal ? deafened : p.attributes?.deafened === "1";
+        return {
+          identity: p.identity,
+          name: p.name ?? p.identity,
+          metadata: p.metadata,
+          isLive: liveIdentities.has(p.identity),
+          // Deafened users can't hear, so show them as muted too.
+          isMuted: isDeafened || (isLocal ? !micEnabled : !p.isMicrophoneEnabled),
+          isDeafened,
+        };
+      })
     );
     return () => setParticipants([]);
-  }, [participants, cameraTracks, screenTracks, setParticipants]);
+  }, [participants, localParticipant, cameraTracks, screenTracks, setParticipants, deafened, micEnabled, attrTick]);
 
   return null;
 }

@@ -37,4 +37,6 @@ export const SocketEvents = {
   MEMBER_REMOVE: "member:remove",
   // Voice
   VOICE_STATE_UPDATE: "voice:state:update",
+  // Presence
+  USER_STATUS: "user:status",
 } as const;
