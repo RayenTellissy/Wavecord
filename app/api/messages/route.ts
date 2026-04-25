@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { requireUserId } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { getIO, channelRoom, SocketEvents } from "@/lib/socket";
+import { getIO, channelRoom, userRoom, SocketEvents } from "@/lib/socket";
 import { checkRateLimit, tooManyRequests } from "@/lib/rateLimit";
 
 const MESSAGE_BATCH = 50;
@@ -108,7 +108,7 @@ export async function POST(req: Request) {
 
     const channel = await db.channel.findUnique({
       where: { id: channelId },
-      select: { serverId: true },
+      select: { serverId: true, name: true },
     });
     if (!channel) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
@@ -149,8 +149,31 @@ export async function POST(req: Request) {
       },
     });
 
-    // Emit to all clients in this channel room
-    getIO()?.to(channelRoom(channelId)).emit(SocketEvents.CHANNEL_MESSAGE_NEW, message);
+    const io = getIO();
+    // Emit full message to active channel viewers
+    io?.to(channelRoom(channelId)).emit(SocketEvents.CHANNEL_MESSAGE_NEW, message);
+
+    // Notify each server member via their personal room (always joined on connect)
+    if (io) {
+      const members = await db.serverMember.findMany({
+        where: { serverId: channel.serverId },
+        select: { userId: true },
+      });
+      const notifyPayload = {
+        channelId,
+        serverId: channel.serverId,
+        channelName: channel.name,
+        message: {
+          id: message.id,
+          content: message.content,
+          authorId: message.authorId,
+          author: message.author,
+        },
+      };
+      for (const { userId: memberId } of members) {
+        io.to(userRoom(memberId)).emit(SocketEvents.CHANNEL_MESSAGE_NOTIFY, notifyPayload);
+      }
+    }
 
     return NextResponse.json(message, { status: 201 });
   } catch (err) {

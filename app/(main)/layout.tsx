@@ -12,6 +12,8 @@ import { DeleteServerModal } from "@/components/server/DeleteServerModal";
 import { ServerSettingsModal } from "@/components/server/ServerSettingsModal";
 import { UserSettingsModal } from "@/components/settings/UserSettingsModal";
 import { MobileOverlay } from "@/components/layout/MobileOverlay";
+import { NotificationManager } from "@/components/layout/NotificationManager";
+import { NotificationToasts } from "@/components/layout/NotificationToasts";
 import { PersistentVoice } from "@/components/voice/PersistentVoice";
 import { VoiceHUD } from "@/components/voice/VoiceHUD";
 import { VoiceParticipantModal } from "@/components/voice/VoiceParticipantModal";
@@ -64,6 +66,8 @@ export default async function MainLayout({
       <UserSettingsModal />
       <VoiceParticipantModal />
       <MobileOverlay />
+      <NotificationManager />
+      <NotificationToasts />
     </div>
   );
 }

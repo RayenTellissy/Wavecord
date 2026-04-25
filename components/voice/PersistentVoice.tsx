@@ -6,7 +6,7 @@ import { Room, RoomEvent, Track, type RemoteTrackPublication, type RemotePartici
 import { RoomContext, RoomAudioRenderer, useParticipants, useLocalParticipant, useTracks, isTrackReference, useRoomContext } from "@livekit/components-react";
 import { useVoiceStore } from "@/stores/voiceStore";
 import { useSocket } from "@/hooks/useSocket";
-import { playUserJoinSound, playUserLeaveSound, playScreenShareSound } from "@/lib/sounds";
+import { playUserJoinSound, playUserLeaveSound, playScreenShareSound, playNotificationSound } from "@/lib/sounds";
 
 /**
  * Keeps a single LiveKit Room alive across page navigations.
@@ -128,7 +128,7 @@ function SoundSync() {
       if (participant.identity === localParticipant?.identity) return;
       if (Date.now() - connectedAt.current < 1000) return;
       if (publication.source === Track.Source.Camera || publication.source === Track.Source.ScreenShare) {
-        playScreenShareSound();
+        playNotificationSound();
       }
     };
 
