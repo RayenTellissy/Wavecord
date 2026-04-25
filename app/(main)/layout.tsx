@@ -9,6 +9,7 @@ import { CreateChannelModal } from "@/components/channel/CreateChannelModal";
 import { KickMemberModal } from "@/components/server/KickMemberModal";
 import { BanMemberModal } from "@/components/server/BanMemberModal";
 import { DeleteServerModal } from "@/components/server/DeleteServerModal";
+import { DeleteMessageModal } from "@/components/chat/DeleteMessageModal";
 import { ServerSettingsModal } from "@/components/server/ServerSettingsModal";
 import { UserSettingsModal } from "@/components/settings/UserSettingsModal";
 import { MobileOverlay } from "@/components/layout/MobileOverlay";
@@ -62,6 +63,7 @@ export default async function MainLayout({
       <KickMemberModal />
       <BanMemberModal />
       <DeleteServerModal />
+      <DeleteMessageModal />
       <ServerSettingsModal />
       <UserSettingsModal />
       <VoiceParticipantModal />

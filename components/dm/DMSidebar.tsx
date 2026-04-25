@@ -122,11 +122,14 @@ export function DMSidebar({ currentUserId, initialConversations }: DMSidebarProp
     <div style={{
       width: 240,
       minWidth: 240,
-      background: "var(--surface-1)",
-      borderRight: "1px solid var(--border)",
+      background: "rgba(12,12,16,0.24)",
+      backdropFilter: "blur(80px) saturate(3) brightness(1.06)",
+      WebkitBackdropFilter: "blur(80px) saturate(3) brightness(1.06)",
+      borderRight: "1px solid rgba(255,255,255,0.10)",
       display: "flex",
       flexDirection: "column",
       overflow: "hidden",
+      boxShadow: "inset -1px 0 0 rgba(139,92,246,0.12), inset 0 2px 0 rgba(255,255,255,0.14), 4px 0 40px rgba(0,0,0,0.45)",
     }}>
       {/* Header */}
       <div style={{

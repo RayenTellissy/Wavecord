@@ -335,25 +335,29 @@ export function MessageInput({ channelId, channelName }: MessageInputProps) {
       {/* Input box */}
       <div
         onFocusCapture={(e) => {
-          (e.currentTarget.style.borderColor = "rgba(139,92,246,0.5)");
-          (e.currentTarget.style.boxShadow = "0 0 0 3px rgba(139,92,246,0.12)");
+          e.currentTarget.style.borderColor = "rgba(139,92,246,0.55)";
+          e.currentTarget.style.boxShadow = "0 0 0 3px rgba(139,92,246,0.14), 0 0 24px rgba(139,92,246,0.08)";
+          e.currentTarget.style.background = "rgba(255,255,255,0.07)";
         }}
         onBlurCapture={(e) => {
           if (!e.currentTarget.contains(e.relatedTarget as Node)) {
-            (e.currentTarget.style.borderColor = "rgba(255,255,255,0.09)");
-            (e.currentTarget.style.boxShadow = "none");
+            e.currentTarget.style.borderColor = "rgba(255,255,255,0.10)";
+            e.currentTarget.style.boxShadow = "none";
+            e.currentTarget.style.background = "rgba(255,255,255,0.05)";
           }
         }}
         style={{
           display: "flex",
           alignItems: "flex-end",
           gap: "0.5rem",
-          background: "rgba(255,255,255,0.05)",
-          border: "1px solid rgba(255,255,255,0.09)",
-          borderRadius: "12px",
+          background: "rgba(14,14,18,0.22)",
+          border: "1px solid rgba(255,255,255,0.12)",
+          borderRadius: "14px",
           padding: "0 0.5rem 0.5rem",
-          transition: "border-color 0.18s, box-shadow 0.18s",
-          backdropFilter: "blur(12px)",
+          transition: "border-color 0.2s, box-shadow 0.2s, background 0.2s",
+          backdropFilter: "blur(72px) saturate(2.8) brightness(1.06)",
+          WebkitBackdropFilter: "blur(72px) saturate(2.8) brightness(1.06)",
+          boxShadow: "inset 0 1.5px 0 rgba(255,255,255,0.16), 0 4px 24px rgba(0,0,0,0.35)",
         }}
       >
         {/* Attach button */}

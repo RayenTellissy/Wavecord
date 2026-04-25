@@ -201,7 +201,7 @@ export function DMMessageInput({ conversationId, recipientName }: DMMessageInput
   const isImage = pendingFile?.fileType.startsWith("image/") ?? false;
 
   return (
-    <div style={{ padding: "0.75rem 1rem 1rem", background: "var(--surface-1)" }}>
+    <div style={{ padding: "0 1rem 1rem", background: "transparent" }}>
       <input
         ref={fileInputRef}
         type="file"
@@ -223,18 +223,19 @@ export function DMMessageInput({ conversationId, recipientName }: DMMessageInput
               display: "inline-flex",
               alignItems: "center",
               gap: "0.5rem",
-              background: "var(--surface-2)",
-              border: "1px solid var(--border)",
+              background: "rgba(255,255,255,0.05)",
+              border: "1px solid rgba(255,255,255,0.09)",
               borderRadius: "8px",
               padding: "0.4rem 0.6rem",
               maxWidth: "100%",
+              backdropFilter: "blur(12px)",
             }}>
               {uploading ? (
                 <>
                   <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
                   <div style={{
                     width: 16, height: 16,
-                    border: "2px solid var(--border)",
+                    border: "2px solid rgba(255,255,255,0.08)",
                     borderTopColor: "var(--accent)",
                     borderRadius: "50%",
                     animation: "spin 0.7s linear infinite",
@@ -245,7 +246,7 @@ export function DMMessageInput({ conversationId, recipientName }: DMMessageInput
               ) : pendingFile ? (
                 <>
                   {isImage ? (
-                    <div style={{ width: 48, height: 48, borderRadius: "6px", overflow: "hidden", flexShrink: 0, background: "var(--surface-3)" }}>
+                    <div style={{ width: 48, height: 48, borderRadius: "6px", overflow: "hidden", flexShrink: 0, background: "rgba(255,255,255,0.06)" }}>
                       <Image src={pendingFile.url} alt={pendingFile.fileName} width={48} height={48} style={{ objectFit: "cover", width: "100%", height: "100%" }} />
                     </div>
                   ) : (
@@ -272,15 +273,33 @@ export function DMMessageInput({ conversationId, recipientName }: DMMessageInput
         )}
       </AnimatePresence>
 
-      <div style={{
-        display: "flex",
-        alignItems: "flex-end",
-        gap: "0.5rem",
-        background: "var(--surface-2)",
-        border: "1px solid var(--border)",
-        borderRadius: "10px",
-        padding: "0.5rem 0.5rem 0.5rem",
-      }}>
+      <div
+        onFocusCapture={(e) => {
+          e.currentTarget.style.borderColor = "rgba(139,92,246,0.55)";
+          e.currentTarget.style.boxShadow = "0 0 0 3px rgba(139,92,246,0.14), 0 0 24px rgba(139,92,246,0.08)";
+          e.currentTarget.style.background = "rgba(255,255,255,0.07)";
+        }}
+        onBlurCapture={(e) => {
+          if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+            e.currentTarget.style.borderColor = "rgba(255,255,255,0.10)";
+            e.currentTarget.style.boxShadow = "none";
+            e.currentTarget.style.background = "rgba(255,255,255,0.05)";
+          }
+        }}
+        style={{
+          display: "flex",
+          alignItems: "flex-end",
+          gap: "0.5rem",
+          background: "rgba(14,14,18,0.22)",
+          border: "1px solid rgba(255,255,255,0.12)",
+          borderRadius: "14px",
+          padding: "0 0.5rem 0.5rem",
+          transition: "border-color 0.2s, box-shadow 0.2s, background 0.2s",
+          backdropFilter: "blur(72px) saturate(2.8) brightness(1.06)",
+          WebkitBackdropFilter: "blur(72px) saturate(2.8) brightness(1.06)",
+          boxShadow: "inset 0 1.5px 0 rgba(255,255,255,0.16), 0 4px 24px rgba(0,0,0,0.35)",
+        }}
+      >
         <motion.button
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
@@ -347,10 +366,12 @@ export function DMMessageInput({ conversationId, recipientName }: DMMessageInput
               onClick={handleSend}
               style={{
                 width: 32, height: 32, borderRadius: "8px",
-                background: "var(--accent)",
+                background: "linear-gradient(135deg, var(--accent-dim), var(--accent))",
                 display: "flex", alignItems: "center", justifyContent: "center",
                 flexShrink: 0, alignSelf: "flex-end", marginBottom: "0.1rem",
                 color: "#fff",
+                transition: "box-shadow 0.15s",
+                boxShadow: "var(--accent-glow-sm)",
               }}
             >
               <SendIcon />

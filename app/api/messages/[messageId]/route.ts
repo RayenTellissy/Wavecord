@@ -86,22 +86,13 @@ export async function DELETE(_req: Request, { params }: RouteParams) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
-    // Soft delete — replace content, keep record
-    const deleted = await db.message.update({
-      where: { id: messageId },
-      data: { deleted: true, content: "This message was deleted." },
-      include: {
-        author: { select: { id: true, name: true, username: true, image: true } },
-        reactions: true,
-        attachments: true,
-      },
-    });
+    await db.message.delete({ where: { id: messageId } });
 
     getIO()
       ?.to(channelRoom(message.channelId))
-      .emit(SocketEvents.CHANNEL_MESSAGE_DELETE, deleted);
+      .emit(SocketEvents.CHANNEL_MESSAGE_DELETE, { id: messageId, channelId: message.channelId });
 
-    return NextResponse.json(deleted);
+    return NextResponse.json({ id: messageId });
   } catch (err) {
     console.error("[MESSAGE_DELETE]", err);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });

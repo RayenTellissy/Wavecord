@@ -46,6 +46,27 @@ export function useDirectMessages(conversationId: string) {
           p.messages.some((m) => m.id === message.id)
         );
         if (alreadyInCache) return old;
+        // Swap the sender's still-pending optimistic copy in place so the
+        // full-color message doesn't render alongside the grayed-out one.
+        const optimisticMatch = old.pages
+          .flatMap((p) => p.messages)
+          .find(
+            (m) =>
+              m.id.startsWith("optimistic-") &&
+              m.senderId === message.senderId &&
+              m.content === message.content
+          );
+        if (optimisticMatch) {
+          return {
+            ...old,
+            pages: old.pages.map((page) => ({
+              ...page,
+              messages: page.messages.map((m) =>
+                m.id === optimisticMatch.id ? message : m
+              ),
+            })),
+          };
+        }
         return {
           ...old,
           pages: old.pages.map((page, i) =>
@@ -71,14 +92,28 @@ export function useDirectMessages(conversationId: string) {
       });
     }
 
+    function onDeleteMessage(payload: { id: string; conversationId: string }) {
+      if (payload.conversationId !== conversationId) return;
+      queryClient.setQueryData<DMQueryData>(queryKey, (old) => {
+        if (!old) return old;
+        return {
+          ...old,
+          pages: old.pages.map((page) => ({
+            ...page,
+            messages: page.messages.filter((m) => m.id !== payload.id),
+          })),
+        };
+      });
+    }
+
     socket.on(SocketEvents.DM_MESSAGE_NEW, onNewMessage);
     socket.on(SocketEvents.DM_MESSAGE_UPDATE, onUpdateMessage);
-    socket.on(SocketEvents.DM_MESSAGE_DELETE, onUpdateMessage);
+    socket.on(SocketEvents.DM_MESSAGE_DELETE, onDeleteMessage);
 
     return () => {
       socket.off(SocketEvents.DM_MESSAGE_NEW, onNewMessage);
       socket.off(SocketEvents.DM_MESSAGE_UPDATE, onUpdateMessage);
-      socket.off(SocketEvents.DM_MESSAGE_DELETE, onUpdateMessage);
+      socket.off(SocketEvents.DM_MESSAGE_DELETE, onDeleteMessage);
     };
   }, [socket, conversationId, queryClient]); // eslint-disable-line react-hooks/exhaustive-deps
 

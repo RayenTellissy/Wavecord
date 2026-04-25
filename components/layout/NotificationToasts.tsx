@@ -17,10 +17,10 @@ function Toast({ toast }: { toast: NotificationToast }) {
     return () => clearTimeout(t);
   }, [toast.id, dismiss]);
 
-  const accentColor = toast.type === "dm" ? "#22d3ee" : "#8b5cf6";
+  const accentColor = toast.type === "dm" ? "#22d3ee" : "#a78bfa";
   const accentGlow = toast.type === "dm"
-    ? "0 0 20px rgba(34,211,238,0.15)"
-    : "0 0 20px rgba(139,92,246,0.15)";
+    ? "0 0 30px rgba(34,211,238,0.25), 0 0 60px rgba(34,211,238,0.1)"
+    : "0 0 30px rgba(139,92,246,0.3), 0 0 60px rgba(139,92,246,0.12)";
 
   return (
     <motion.div
@@ -39,16 +39,17 @@ function Toast({ toast }: { toast: NotificationToast }) {
         gap: 12,
         padding: "12px 14px",
         paddingLeft: 18,
-        borderRadius: 10,
-        background: "rgba(12,12,20,0.88)",
-        border: "1px solid rgba(255,255,255,0.09)",
+        borderRadius: 14,
+        background: `linear-gradient(rgba(16,16,20,0.22), rgba(10,10,14,0.26)) padding-box, linear-gradient(135deg, rgba(255,255,255,0.22) 0%, ${accentColor}55 40%, rgba(255,255,255,0.14) 100%) border-box`,
+        border: "1px solid transparent",
         borderLeft: `3px solid ${accentColor}`,
-        boxShadow: `0 8px 32px rgba(0,0,0,0.55), ${accentGlow}`,
+        boxShadow: `0 16px 48px rgba(0,0,0,0.65), ${accentGlow}, inset 0 2px 0 rgba(255,255,255,0.20)`,
         cursor: "pointer",
         width: 320,
         maxWidth: "calc(100vw - 32px)",
         userSelect: "none",
-        backdropFilter: "blur(20px)",
+        backdropFilter: "blur(80px) saturate(3) brightness(1.08)",
+        WebkitBackdropFilter: "blur(80px) saturate(3) brightness(1.08)",
       }}
     >
       {/* Avatar */}

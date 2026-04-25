@@ -55,60 +55,74 @@ function LoginForm() {
       <style>{`
         .auth-input {
           width: 100%;
-          background: rgba(255,255,255,0.04);
-          border: 1.5px solid rgba(255,255,255,0.09);
-          border-radius: 10px;
-          padding: 0.72rem 0.9rem;
+          background: rgba(255,255,255,0.055);
+          border: 1px solid rgba(255,255,255,0.12);
+          border-radius: 12px;
+          padding: 0.76rem 1rem;
           color: var(--text-primary);
           outline: none;
           font-size: 0.95rem;
           font-family: inherit;
           transition: border-color 0.18s, box-shadow 0.18s, background 0.18s;
           display: block;
-          backdrop-filter: blur(8px);
+          backdrop-filter: blur(20px) saturate(1.8);
+          -webkit-backdrop-filter: blur(20px) saturate(1.8);
+          box-shadow: inset 0 1px 0 rgba(255,255,255,0.10), inset 0 -1px 0 rgba(0,0,0,0.10);
         }
-        .auth-input:hover { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.14); }
+        .auth-input:hover {
+          background: rgba(255,255,255,0.08);
+          border-color: rgba(255,255,255,0.18);
+        }
         .auth-input:focus {
-          border-color: rgba(139,92,246,0.6);
-          background: rgba(139,92,246,0.05);
-          box-shadow: 0 0 0 3px rgba(139,92,246,0.15);
+          border-color: rgba(139,92,246,0.55);
+          background: rgba(139,92,246,0.07);
+          box-shadow: 0 0 0 3px rgba(139,92,246,0.14), inset 0 1px 0 rgba(255,255,255,0.10);
         }
         .auth-input::placeholder { color: var(--text-muted); }
-        .auth-input.error { border-color: var(--danger); }
-        .auth-input.error:focus { box-shadow: 0 0 0 3px rgba(244,63,94,0.18); }
+        .auth-input.error { border-color: rgba(244,63,94,0.55); }
+        .auth-input.error:focus { box-shadow: 0 0 0 3px rgba(244,63,94,0.16); }
 
         .auth-btn-primary {
           width: 100%;
-          padding: 0.78rem;
-          background: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 60%, #a78bfa 100%);
+          padding: 0.82rem;
+          background: linear-gradient(135deg, rgba(124,58,237,0.90) 0%, rgba(139,92,246,0.95) 55%, rgba(167,139,250,0.88) 100%);
           color: #fff;
-          border: none;
-          border-radius: 10px;
-          font-weight: 600;
+          border: 1px solid rgba(167,139,250,0.45);
+          border-radius: 12px;
+          font-weight: 700;
           font-size: 0.95rem;
           font-family: inherit;
           letter-spacing: 0.01em;
           margin-top: 0.5rem;
           cursor: pointer;
-          box-shadow: 0 4px 14px rgba(139,92,246,0.4), 0 0 40px rgba(139,92,246,0.1);
-          transition: box-shadow 0.18s, transform 0.18s, opacity 0.18s;
+          box-shadow:
+            0 6px 20px rgba(139,92,246,0.42),
+            0 0 60px rgba(139,92,246,0.12),
+            inset 0 1.5px 0 rgba(255,255,255,0.28),
+            inset 0 -1px 0 rgba(0,0,0,0.15);
+          transition: box-shadow 0.2s, transform 0.2s, opacity 0.2s;
+          backdrop-filter: blur(8px);
         }
         .auth-btn-primary:hover:not(:disabled) {
-          box-shadow: 0 6px 24px rgba(139,92,246,0.55), 0 0 60px rgba(139,92,246,0.15);
-          transform: translateY(-1px);
+          box-shadow:
+            0 10px 32px rgba(139,92,246,0.60),
+            0 0 80px rgba(139,92,246,0.18),
+            inset 0 1.5px 0 rgba(255,255,255,0.30),
+            inset 0 -1px 0 rgba(0,0,0,0.15);
+          transform: translateY(-1.5px);
         }
         .auth-btn-primary:active:not(:disabled) {
           transform: translateY(0);
-          box-shadow: 0 3px 10px rgba(139,92,246,0.35);
+          box-shadow: 0 4px 12px rgba(139,92,246,0.38), inset 0 1px 0 rgba(255,255,255,0.20);
         }
-        .auth-btn-primary:disabled { opacity: 0.65; cursor: not-allowed; }
+        .auth-btn-primary:disabled { opacity: 0.60; cursor: not-allowed; }
 
         .auth-btn-github {
           width: 100%;
-          padding: 0.72rem 1rem;
-          background: rgba(255,255,255,0.05);
-          border: 1.5px solid rgba(255,255,255,0.1);
-          border-radius: 10px;
+          padding: 0.76rem 1rem;
+          background: rgba(255,255,255,0.06);
+          border: 1px solid rgba(255,255,255,0.13);
+          border-radius: 12px;
           color: var(--text-primary);
           display: flex;
           align-items: center;
@@ -120,32 +134,51 @@ function LoginForm() {
           margin-bottom: 1.25rem;
           cursor: pointer;
           transition: background 0.15s, border-color 0.15s, box-shadow 0.15s, transform 0.15s;
-          backdrop-filter: blur(8px);
+          backdrop-filter: blur(20px) saturate(1.8);
+          box-shadow: inset 0 1px 0 rgba(255,255,255,0.10), inset 0 -1px 0 rgba(0,0,0,0.08);
         }
         .auth-btn-github:hover {
-          background: rgba(255,255,255,0.08);
-          border-color: rgba(255,255,255,0.18);
-          box-shadow: 0 4px 16px rgba(0,0,0,0.3);
-          transform: translateY(-1px);
+          background: rgba(255,255,255,0.10);
+          border-color: rgba(255,255,255,0.20);
+          box-shadow: 0 6px 20px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.14);
+          transform: translateY(-1.5px);
         }
         .auth-btn-github:active { transform: translateY(0); }
       `}</style>
 
+      {/* Outer: prismatic border + backdrop-filter */}
       <motion.div
-        initial={{ opacity: 0, y: 12, scale: 0.97 }}
+        initial={{ opacity: 0, y: 16, scale: 0.94 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: 0.22, ease: "easeOut" }}
+        transition={{ type: "spring", damping: 26, stiffness: 400, mass: 0.8 }}
         style={{
-          background: "rgba(10,10,18,0.85)",
-          border: "1px solid rgba(255,255,255,0.09)",
-          borderRadius: "18px",
-          padding: "2.5rem",
           width: "100%",
           maxWidth: "420px",
-          backdropFilter: "blur(24px)",
-          boxShadow: "0 32px 80px rgba(0,0,0,0.65), 0 0 0 1px rgba(139,92,246,0.08), 0 0 80px rgba(139,92,246,0.05)",
+          borderRadius: "26px",
+          padding: "1.5px",
+          background: "linear-gradient(135deg, rgba(255,255,255,0.32) 0%, rgba(192,162,250,0.50) 18%, rgba(167,139,250,0.44) 34%, rgba(99,200,230,0.36) 52%, rgba(34,211,238,0.32) 64%, rgba(255,170,210,0.28) 80%, rgba(255,255,255,0.26) 100%)",
+          backdropFilter: "blur(80px) saturate(3) brightness(1.12)",
+          WebkitBackdropFilter: "blur(80px) saturate(3) brightness(1.12)",
+          boxShadow: "0 48px 120px rgba(0,0,0,0.75), 0 20px 60px rgba(0,0,0,0.45), 0 6px 20px rgba(0,0,0,0.30)",
         }}
       >
+        {/* Inner: dark glass fill */}
+        <div style={{
+          borderRadius: "24.5px",
+          background: "rgba(13,13,16,0.82)",
+          padding: "2.5rem",
+          position: "relative",
+          overflow: "hidden",
+        }}>
+          {/* Specular highlight */}
+          <div style={{
+            position: "absolute",
+            top: 0, left: "10%", right: "10%",
+            height: "1px",
+            background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.55), rgba(255,255,255,0.72), rgba(255,255,255,0.55), transparent)",
+            zIndex: 1,
+          }} />
+
         {/* Logo */}
         <div style={{ textAlign: "center", marginBottom: "2rem" }}>
           <div style={{ display: "flex", justifyContent: "center", marginBottom: "0.75rem" }}>
@@ -247,6 +280,7 @@ function LoginForm() {
             Register
           </Link>
         </p>
+        </div>
       </motion.div>
     </>
   );

@@ -57,6 +57,27 @@ export function useMessages(channelId: string) {
           p.messages.some((m) => m.id === message.id)
         );
         if (alreadyInCache) return old;
+        // If the sender's optimistic copy is still in the cache, swap it in place
+        // so the full-color real message doesn't appear alongside the grayed-out one.
+        const optimisticMatch = data.pages
+          .flatMap((p) => p.messages)
+          .find(
+            (m) =>
+              m.id.startsWith("optimistic-") &&
+              m.authorId === message.authorId &&
+              m.content === message.content
+          );
+        if (optimisticMatch) {
+          return {
+            ...data,
+            pages: data.pages.map((page) => ({
+              ...page,
+              messages: page.messages.map((m) =>
+                m.id === optimisticMatch.id ? message : m
+              ),
+            })),
+          };
+        }
         return {
           ...data,
           pages: data.pages.map((page, i) =>
@@ -87,16 +108,33 @@ export function useMessages(channelId: string) {
       });
     }
 
+    function onDeleteMessage(payload: { id: string }) {
+      queryClient.setQueryData(queryKey, (old: Parameters<typeof queryClient.setQueryData>[1]) => {
+        if (!old) return old;
+        const data = old as {
+          pages: { messages: MessageWithRelations[]; nextCursor: string | null }[];
+          pageParams: unknown[];
+        };
+        return {
+          ...data,
+          pages: data.pages.map((page) => ({
+            ...page,
+            messages: page.messages.filter((m) => m.id !== payload.id),
+          })),
+        };
+      });
+    }
+
     socket.on(SocketEvents.CHANNEL_MESSAGE_NEW, onNewMessage);
     socket.on(SocketEvents.CHANNEL_MESSAGE_UPDATE, onUpdateMessage);
-    socket.on(SocketEvents.CHANNEL_MESSAGE_DELETE, onUpdateMessage);
+    socket.on(SocketEvents.CHANNEL_MESSAGE_DELETE, onDeleteMessage);
 
     return () => {
       socket.emit("leave-channel", channelId);
       socket.off("connect", joinRoom);
       socket.off(SocketEvents.CHANNEL_MESSAGE_NEW, onNewMessage);
       socket.off(SocketEvents.CHANNEL_MESSAGE_UPDATE, onUpdateMessage);
-      socket.off(SocketEvents.CHANNEL_MESSAGE_DELETE, onUpdateMessage);
+      socket.off(SocketEvents.CHANNEL_MESSAGE_DELETE, onDeleteMessage);
     };
   }, [socket, channelId, queryClient]); // eslint-disable-line react-hooks/exhaustive-deps
 

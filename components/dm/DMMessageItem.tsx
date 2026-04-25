@@ -8,6 +8,7 @@ import remarkGfm from "remark-gfm";
 import { EditIcon, TrashIcon } from "@/components/icons";
 import Image from "next/image";
 import axios from "axios";
+import { useModal } from "@/stores/modalStore";
 import type { DMWithRelations } from "@/hooks/useDirectMessages";
 
 interface DMMessageItemProps {
@@ -29,6 +30,7 @@ export function DMMessageItem({
   currentUserId,
   conversationId: _conversationId,
 }: DMMessageItemProps) {
+  const { open: openModal } = useModal();
   const [hovered, setHovered] = useState(false);
   const [editing, setEditing] = useState(false);
   const [editContent, setEditContent] = useState(message.content);
@@ -53,17 +55,16 @@ export function DMMessageItem({
     }
   }
 
-  async function handleDelete() {
-    if (!confirm("Delete this message?")) return;
-    await axios.delete(`/api/direct-messages/${message.id}`);
+  function handleDelete() {
+    openModal("deleteMessage", { messageId: message.id, isDM: true });
   }
 
   const createdAt = new Date(message.createdAt);
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 6 }}
-      animate={{ opacity: isPending ? 0.55 : 1, y: 0 }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: isPending ? 0.55 : 1 }}
       transition={{ duration: 0.15 }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}

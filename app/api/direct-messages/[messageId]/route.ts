@@ -75,21 +75,14 @@ export async function DELETE(_req: Request, { params }: RouteParams) {
     if (!message) return NextResponse.json({ error: "Not found" }, { status: 404 });
     if (message.senderId !== userId) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
-    const deleted = await db.directMessage.update({
-      where: { id: messageId },
-      data: { deleted: true, content: "This message was deleted." },
-      include: {
-        sender: { select: { id: true, name: true, username: true, image: true } },
-        attachments: true,
-      },
-    });
+    await db.directMessage.delete({ where: { id: messageId } });
 
     getIO()
       ?.to(userRoom(message.conversation.memberOneId))
       .to(userRoom(message.conversation.memberTwoId))
-      .emit(SocketEvents.DM_MESSAGE_DELETE, deleted);
+      .emit(SocketEvents.DM_MESSAGE_DELETE, { id: messageId, conversationId: message.conversationId });
 
-    return NextResponse.json(deleted);
+    return NextResponse.json({ id: messageId });
   } catch (err) {
     console.error("[DM_DELETE]", err);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });

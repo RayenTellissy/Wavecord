@@ -27,6 +27,7 @@ interface ModalData {
   channelType?: "TEXT" | "VOICE";
   memberName?: string;   // display name for kick/ban modals
   targetUserId?: string; // User.id for ban operations
+  isDM?: boolean;        // routes deleteMessage to /api/direct-messages
 }
 
 interface ModalState {

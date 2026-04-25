@@ -21,6 +21,7 @@ export function DMMessageList({ conversationId, recipient, currentUserId }: DMMe
   const topRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const isInitialLoad = useRef(true);
+  const prevMessageCountRef = useRef(0);
 
   useEffect(() => {
     if (messages.length > 0 && isInitialLoad.current) {
@@ -31,6 +32,11 @@ export function DMMessageList({ conversationId, recipient, currentUserId }: DMMe
 
   useEffect(() => {
     if (!containerRef.current || isInitialLoad.current) return;
+    if (messages.length <= prevMessageCountRef.current) {
+      prevMessageCountRef.current = messages.length;
+      return;
+    }
+    prevMessageCountRef.current = messages.length;
     const { scrollHeight, scrollTop, clientHeight } = containerRef.current;
     const isNearBottom = scrollHeight - scrollTop - clientHeight < 200;
     if (isNearBottom) {
@@ -168,7 +174,7 @@ export function DMMessageList({ conversationId, recipient, currentUserId }: DMMe
         </div>
       )}
 
-      <div ref={bottomRef} style={{ height: 1 }} />
+      <div ref={bottomRef} style={{ height: 16 }} />
     </div>
   );
 }

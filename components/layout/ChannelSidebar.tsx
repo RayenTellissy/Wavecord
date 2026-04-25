@@ -123,11 +123,14 @@ export function ChannelSidebar({ server, currentUserId, currentMemberRole }: Cha
       style={{
         width: 240,
         minWidth: 240,
-        background: "var(--surface-solid-1)",
-        borderRight: "1px solid var(--border)",
+        background: "rgba(12,12,16,0.24)",
+        backdropFilter: "blur(80px) saturate(3) brightness(1.06)",
+        WebkitBackdropFilter: "blur(80px) saturate(3) brightness(1.06)",
+        borderRight: "1px solid rgba(255,255,255,0.10)",
         display: "flex",
         flexDirection: "column",
         overflow: "hidden",
+        boxShadow: "inset -1px 0 0 rgba(139,92,246,0.12), inset 0 2px 0 rgba(255,255,255,0.14), inset 1px 0 0 rgba(255,255,255,0.05), 4px 0 40px rgba(0,0,0,0.45)",
       }}
     >
       {/* ── Server Header ── */}
@@ -140,12 +143,12 @@ export function ChannelSidebar({ server, currentUserId, currentMemberRole }: Cha
             display: "flex",
             alignItems: "center",
             gap: "0.5rem",
-            borderBottom: "1px solid var(--border)",
-            background: serverMenuOpen ? "rgba(255,255,255,0.06)" : "transparent",
+            borderBottom: "1px solid rgba(139,92,246,0.15)",
+            background: serverMenuOpen ? "rgba(139,92,246,0.12)" : "transparent",
             transition: "background 0.15s",
           }}
-          onMouseEnter={(e) => { if (!serverMenuOpen) (e.currentTarget.style.background = "rgba(255,255,255,0.05)"); }}
-          onMouseLeave={(e) => { if (!serverMenuOpen) (e.currentTarget.style.background = "transparent"); }}
+          onMouseEnter={(e) => { if (!serverMenuOpen) e.currentTarget.style.background = "rgba(139,92,246,0.08)"; }}
+          onMouseLeave={(e) => { if (!serverMenuOpen) e.currentTarget.style.background = "transparent"; }}
         >
           {server.imageUrl && (
             <Image src={server.imageUrl} alt={server.name} width={20} height={20} style={{ borderRadius: "4px" }} />
@@ -163,36 +166,56 @@ export function ChannelSidebar({ server, currentUserId, currentMemberRole }: Cha
           {serverMenuOpen && (
             <>
               <div style={{ position: "fixed", inset: 0, zIndex: 50 }} onClick={() => setServerMenuOpen(false)} />
+              {/* Outer: prismatic border wrapper */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.95, y: -4 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, y: -4 }}
-                transition={{ duration: 0.12 }}
+                transition={{ type: "spring", damping: 28, stiffness: 420, mass: 0.7 }}
                 style={{
                   position: "absolute",
-                  top: "calc(100% + 4px)", left: "0.5rem", right: "0.5rem",
-                  background: "rgba(15,15,23,0.92)",
-                  border: "1px solid rgba(255,255,255,0.1)",
-                  borderRadius: "10px", padding: "0.35rem", zIndex: 51,
-                  boxShadow: "0 12px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(139,92,246,0.08)",
-                  backdropFilter: "blur(20px)",
+                  top: "calc(100% + 6px)", left: "0.5rem", right: "0.5rem",
+                  borderRadius: "16px",
+                  padding: "1px",
+                  background: "linear-gradient(135deg, rgba(255,255,255,0.28) 0%, rgba(192,162,250,0.44) 20%, rgba(167,139,250,0.38) 38%, rgba(34,211,238,0.28) 65%, rgba(255,255,255,0.22) 100%)",
+                  backdropFilter: "blur(80px) saturate(3) brightness(1.10)",
+                  WebkitBackdropFilter: "blur(80px) saturate(3) brightness(1.10)",
+                  boxShadow: "0 24px 64px rgba(0,0,0,0.70), 0 8px 24px rgba(0,0,0,0.40)",
+                  zIndex: 51,
                 }}
                 onClick={() => setServerMenuOpen(false)}
               >
-                <MenuItem icon={<LinkIcon size={16} />} label="Invite People" onClick={() => open("invite", { serverId: server.id })} />
-                {isModOrAdmin && (
-                  <MenuItem icon={<PlusIcon size={16} />} label="Create Channel" onClick={() => open("createChannel", { serverId: server.id })} />
-                )}
-                {isAdmin && (
-                  <MenuItem icon={<SettingsIcon size={16} />} label="Server Settings" onClick={() => open("serverSettings", { serverId: server.id })} />
-                )}
-                <div style={{ height: 1, background: "var(--border)", margin: "0.35rem 0" }} />
-                <MenuItem
-                  icon={<LeaveIcon size={16} />}
-                  label={isAdmin ? "Delete Server" : "Leave Server"}
-                  danger
-                  onClick={isAdmin ? () => open("deleteServer", { serverId: server.id }) : handleLeave}
-                />
+                {/* Inner: dark glass fill */}
+                <div style={{
+                  borderRadius: "15px",
+                  background: "rgba(13,13,16,0.88)",
+                  padding: "0.35rem",
+                  position: "relative",
+                  overflow: "hidden",
+                }}>
+                  {/* Specular highlight */}
+                  <div style={{
+                    position: "absolute",
+                    top: 0, left: "8%", right: "8%",
+                    height: "1px",
+                    background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.50), rgba(255,255,255,0.65), rgba(255,255,255,0.50), transparent)",
+                    zIndex: 1,
+                  }} />
+                  <MenuItem icon={<LinkIcon size={16} />} label="Invite People" onClick={() => open("invite", { serverId: server.id })} />
+                  {isModOrAdmin && (
+                    <MenuItem icon={<PlusIcon size={16} />} label="Create Channel" onClick={() => open("createChannel", { serverId: server.id })} />
+                  )}
+                  {isAdmin && (
+                    <MenuItem icon={<SettingsIcon size={16} />} label="Server Settings" onClick={() => open("serverSettings", { serverId: server.id })} />
+                  )}
+                  <div style={{ height: 1, background: "rgba(255,255,255,0.08)", margin: "0.35rem 0" }} />
+                  <MenuItem
+                    icon={<LeaveIcon size={16} />}
+                    label={isAdmin ? "Delete Server" : "Leave Server"}
+                    danger
+                    onClick={isAdmin ? () => open("deleteServer", { serverId: server.id }) : handleLeave}
+                  />
+                </div>
               </motion.div>
             </>
           )}
@@ -432,28 +455,35 @@ function VoiceChannelItem({
         style={{
           ...channelRowStyle(isActive || isConnected),
           cursor: isJoining ? "default" : "pointer",
-          color: isConnected ? "var(--success)" : isActive ? "var(--text-primary)" : "var(--text-secondary)",
+          color: isConnected ? "#4ade80" : isActive ? "#f0eeff" : "var(--text-secondary)",
           background: isConnected
-            ? "rgba(34,197,94,0.1)"
+            ? "rgba(34,197,94,0.14)"
             : isActive
-            ? "rgba(139,92,246,0.15)"
+            ? "rgba(139,92,246,0.22)"
             : "transparent",
           border: isConnected
-            ? "1px solid rgba(34,197,94,0.2)"
+            ? "1px solid rgba(34,197,94,0.3)"
             : isActive
-            ? "1px solid rgba(139,92,246,0.2)"
+            ? "1px solid rgba(167,139,250,0.35)"
             : "1px solid transparent",
+          boxShadow: isConnected
+            ? "0 0 16px rgba(34,197,94,0.18), inset 0 1px 0 rgba(255,255,255,0.05)"
+            : isActive
+            ? "0 0 16px rgba(139,92,246,0.2), inset 0 1px 0 rgba(255,255,255,0.06)"
+            : "none",
         }}
         onMouseEnter={(e) => {
           if (!isActive && !isConnected) {
-            (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.05)";
-            (e.currentTarget as HTMLElement).style.color = "var(--text-primary)";
+            (e.currentTarget as HTMLElement).style.background = "rgba(139,92,246,0.10)";
+            (e.currentTarget as HTMLElement).style.color = "#f0eeff";
+            (e.currentTarget as HTMLElement).style.border = "1px solid rgba(139,92,246,0.18)";
           }
         }}
         onMouseLeave={(e) => {
           if (!isActive && !isConnected) {
             (e.currentTarget as HTMLElement).style.background = "transparent";
             (e.currentTarget as HTMLElement).style.color = "var(--text-secondary)";
+            (e.currentTarget as HTMLElement).style.border = "1px solid transparent";
           }
         }}
       >
@@ -624,19 +654,23 @@ function VoiceChannelItem({
             top: streamPopup.y,
             zIndex: 9999,
             width: 220,
-            background: "rgba(13,13,20,0.92)",
-            border: "1px solid rgba(255,255,255,0.1)",
-            borderRadius: "12px",
-            overflow: "hidden",
-            boxShadow: "0 16px 48px rgba(0,0,0,0.7), 0 0 0 1px rgba(139,92,246,0.08)",
-            backdropFilter: "blur(20px)",
+            borderRadius: "16px",
+            padding: "1px",
+            background: "linear-gradient(135deg, rgba(255,255,255,0.28) 0%, rgba(192,162,250,0.44) 20%, rgba(167,139,250,0.38) 38%, rgba(34,211,238,0.28) 65%, rgba(255,255,255,0.22) 100%)",
+            backdropFilter: "blur(80px) saturate(3) brightness(1.10)",
+            WebkitBackdropFilter: "blur(80px) saturate(3) brightness(1.10)",
+            boxShadow: "0 24px 64px rgba(0,0,0,0.72), 0 8px 24px rgba(0,0,0,0.40)",
             pointerEvents: "all",
           }}
         >
+          {/* Inner: dark glass fill */}
+          <div style={{ borderRadius: "15px", background: "rgba(13,13,16,0.88)", overflow: "hidden", position: "relative" }}>
+          {/* Specular */}
+          <div style={{ position: "absolute", top: 0, left: "8%", right: "8%", height: "1px", background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.50), rgba(255,255,255,0.65), rgba(255,255,255,0.50), transparent)", zIndex: 3 }} />
           {/* Thumbnail */}
           <div
             style={{
-              background: "#0d0f10",
+              background: "#0a0a0d",
               aspectRatio: "16/9",
               display: "flex",
               alignItems: "center",
@@ -746,6 +780,7 @@ function VoiceChannelItem({
               Watch Stream
             </button>
           </div>
+          </div>{/* /inner */}
         </motion.div>
         )}
       </AnimatePresence>
@@ -838,20 +873,21 @@ function channelRowStyle(isActive: boolean): React.CSSProperties {
     display: "flex",
     alignItems: "center",
     gap: "0.4rem",
-    padding: "0.3rem 0.5rem 0.3rem 0.75rem",
-    margin: "0.05rem 0.5rem",
-    borderRadius: "6px",
+    padding: "0.32rem 0.5rem 0.32rem 0.75rem",
+    margin: "0.06rem 0.5rem",
+    borderRadius: "8px",
     background: isActive
-      ? "rgba(139,92,246,0.15)"
+      ? "rgba(139,92,246,0.22)"
       : "transparent",
-    color: isActive ? "var(--text-primary)" : "var(--text-secondary)",
+    color: isActive ? "#f0eeff" : "var(--text-secondary)",
     fontSize: "0.9rem",
-    fontWeight: isActive ? 600 : 400,
-    transition: "background 0.12s, color 0.12s",
+    fontWeight: isActive ? 700 : 500,
+    transition: "background 0.15s, color 0.15s, box-shadow 0.15s",
     textDecoration: "none",
     border: isActive
-      ? "1px solid rgba(139,92,246,0.2)"
+      ? "1px solid rgba(167,139,250,0.35)"
       : "1px solid transparent",
+    boxShadow: isActive ? "0 0 16px rgba(139,92,246,0.2), inset 0 1px 0 rgba(255,255,255,0.06)" : "none",
   };
 }
 
@@ -864,8 +900,9 @@ const channelNameStyle: React.CSSProperties = {
 
 function applyHover(e: React.MouseEvent, isActive: boolean) {
   if (!isActive) {
-    (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.05)";
-    (e.currentTarget as HTMLElement).style.color = "var(--text-primary)";
+    (e.currentTarget as HTMLElement).style.background = "rgba(139,92,246,0.10)";
+    (e.currentTarget as HTMLElement).style.color = "#f0eeff";
+    (e.currentTarget as HTMLElement).style.border = "1px solid rgba(139,92,246,0.18)";
   }
 }
 
@@ -873,6 +910,7 @@ function clearHover(e: React.MouseEvent, isActive: boolean) {
   if (!isActive) {
     (e.currentTarget as HTMLElement).style.background = "transparent";
     (e.currentTarget as HTMLElement).style.color = "var(--text-secondary)";
+    (e.currentTarget as HTMLElement).style.border = "1px solid transparent";
   }
 }
 

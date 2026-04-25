@@ -20,6 +20,7 @@ export function MessageList({ channelId, channelName, currentUserId, isModOrAdmi
   const topRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const isInitialLoad = useRef(true);
+  const prevMessageCountRef = useRef(0);
 
   // Auto-scroll to bottom on initial load and new messages
   useEffect(() => {
@@ -29,9 +30,15 @@ export function MessageList({ channelId, channelName, currentUserId, isModOrAdmi
     }
   }, [messages.length]);
 
-  // Scroll to bottom when new message arrives (if already near bottom)
+  // Scroll to bottom only when a genuinely new message is added (not when an
+  // optimistic message is swapped out for the real one — same count, different id).
   useEffect(() => {
     if (!containerRef.current || isInitialLoad.current) return;
+    if (messages.length <= prevMessageCountRef.current) {
+      prevMessageCountRef.current = messages.length;
+      return;
+    }
+    prevMessageCountRef.current = messages.length;
     const { scrollHeight, scrollTop, clientHeight } = containerRef.current;
     const isNearBottom = scrollHeight - scrollTop - clientHeight < 200;
     if (isNearBottom) {
@@ -169,7 +176,7 @@ export function MessageList({ channelId, channelName, currentUserId, isModOrAdmi
       )}
 
       {/* Bottom anchor */}
-      <div ref={bottomRef} style={{ height: 1 }} />
+      <div ref={bottomRef} style={{ height: 16 }} />
     </div>
   );
 }

@@ -8,7 +8,7 @@ import remarkGfm from "remark-gfm";
 import { EditIcon, TrashIcon, ReplyIcon, MoreIcon, PersonIcon } from "@/components/icons";
 import Image from "next/image";
 import axios from "axios";
-import { useQueryClient } from "@tanstack/react-query";
+import { useModal } from "@/stores/modalStore";
 import type { Message, User, Reaction, Attachment } from "@prisma/client";
 
 type MessageWithRelations = Message & {
@@ -39,7 +39,7 @@ export function MessageItem({
   channelId,
   isModOrAdmin,
 }: MessageItemProps) {
-  const queryClient = useQueryClient();
+  const { open: openModal } = useModal();
   const [hovered, setHovered] = useState(false);
   const [editing, setEditing] = useState(false);
   const [editContent, setEditContent] = useState(message.content);
@@ -64,17 +64,16 @@ export function MessageItem({
     }
   }
 
-  async function handleDelete() {
-    if (!confirm("Delete this message?")) return;
-    await axios.delete(`/api/messages/${message.id}`);
+  function handleDelete() {
+    openModal("deleteMessage", { messageId: message.id });
   }
 
   const createdAt = new Date(message.createdAt);
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 6 }}
-      animate={{ opacity: isPending ? 0.55 : 1, y: 0 }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: isPending ? 0.55 : 1 }}
       transition={{ duration: 0.15 }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
@@ -83,8 +82,13 @@ export function MessageItem({
         gap: "0.75rem",
         padding: `${isGrouped ? "0.1rem" : "0.75rem"} 1rem 0.1rem`,
         position: "relative",
-        background: hovered && !isPending ? "rgba(255,255,255,0.02)" : "transparent",
-        transition: "background 0.1s",
+        background: hovered && !isPending
+          ? "rgba(139,92,246,0.055)"
+          : "transparent",
+        transition: "background 0.15s",
+        borderLeft: hovered && !isPending
+          ? "2px solid rgba(139,92,246,0.3)"
+          : "2px solid transparent",
       }}
     >
       {/* Avatar column */}
@@ -387,13 +391,13 @@ export function MessageItem({
               right: "1rem",
               display: "flex",
               gap: "0.1rem",
-              background: "rgba(13,13,20,0.9)",
-              border: "1px solid rgba(255,255,255,0.1)",
-              borderRadius: "8px",
+              background: "linear-gradient(rgba(16,16,20,0.24), rgba(10,10,14,0.28)) padding-box, linear-gradient(135deg, rgba(255,255,255,0.22) 0%, rgba(167,139,250,0.30) 50%, rgba(255,255,255,0.16) 100%) border-box",
+              border: "1px solid transparent",
+              borderRadius: "10px",
               padding: "0.2rem",
               zIndex: 10,
-              backdropFilter: "blur(16px)",
-              boxShadow: "0 4px 20px rgba(0,0,0,0.4)",
+              backdropFilter: "blur(60px) saturate(2.8) brightness(1.08)",
+              boxShadow: "0 8px 32px rgba(0,0,0,0.50), inset 0 1.5px 0 rgba(255,255,255,0.20)",
             }}
           >
             {[

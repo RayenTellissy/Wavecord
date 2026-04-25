@@ -19,8 +19,11 @@ export function DMHeader({ recipient }: DMHeaderProps) {
       alignItems: "center",
       gap: "0.6rem",
       padding: "0 1rem",
-      borderBottom: "1px solid var(--border)",
-      background: "var(--surface-1)",
+      borderBottom: "1px solid rgba(255,255,255,0.08)",
+      background: "rgba(10,10,14,0.20)",
+      backdropFilter: "blur(72px) saturate(2.8) brightness(1.06)",
+      WebkitBackdropFilter: "blur(72px) saturate(2.8) brightness(1.06)",
+      boxShadow: "0 1px 0 rgba(139,92,246,0.18), 0 4px 24px rgba(0,0,0,0.28), inset 0 1.5px 0 rgba(255,255,255,0.16)",
       flexShrink: 0,
     }}>
       {/* Avatar */}
