@@ -1,79 +1,59 @@
 # Wavecord
 
-Discord clone. Next.js 15 App Router, PostgreSQL/Prisma, Socket.io (real-time chat), LiveKit (voice/video), Cloudinary (file storage), NextAuth v5 (GitHub OAuth + Credentials), Zustand + React Query.
+Discord clone. Next.js 15 App Router, PostgreSQL/Prisma, Socket.io, LiveKit (voice/video), Cloudinary, NextAuth v5 (GitHub OAuth + Credentials), Zustand + React Query.
 
 ## Dev Setup
 
 ```bash
-npm install
-# fill in .env.local (see Environment Variables below)
-npm run db:push && npm run db:generate
+npm install && npm run db:push && npm run db:generate
 npm run db:seed   # alice/bob/carol@wavecord.dev — password: password123
-npm run dev
+npm run dev       # runs tsx server.ts (custom HTTP server + Socket.io)
 ```
 
 ## Scripts
 
-| Command | What it does |
-|---|---|
-| `npm run dev` | Start dev server |
-| `npm run db:migrate` | Prisma migrate dev (creates migration files) |
-| `npm run db:push` | Push schema without migration history (prototyping) |
-| `npm run db:generate` | Regenerate Prisma client after schema changes |
-| `npm run db:seed` | Seed test users + server |
-| `npm run db:studio` | Prisma Studio at localhost:5555 |
+`dev` · `build` · `start` · `db:migrate` · `db:push` · `db:generate` · `db:seed` · `db:studio`
 
-## Environment Variables
+## Env Vars (.env.local)
 
-```
-DATABASE_URL=             # PostgreSQL connection string
-NEXTAUTH_SECRET=          # openssl rand -base64 32
-NEXTAUTH_URL=             # http://localhost:3000
-GITHUB_CLIENT_ID=         # github.com → Settings → Developer settings → OAuth Apps
-GITHUB_CLIENT_SECRET=
-CLOUDINARY_CLOUD_NAME=    # cloudinary.com → Dashboard
-CLOUDINARY_API_KEY=
-CLOUDINARY_API_SECRET=
-NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=   # same value as CLOUDINARY_CLOUD_NAME
-LIVEKIT_API_KEY=          # cloud.livekit.io → Project Settings
-LIVEKIT_API_SECRET=
-NEXT_PUBLIC_LIVEKIT_URL=  # wss://your-project.livekit.cloud
-NEXT_PUBLIC_SITE_URL=     # http://localhost:3000
-```
+`DATABASE_URL` · `NEXTAUTH_SECRET` · `NEXTAUTH_URL` · `GITHUB_CLIENT_ID` · `GITHUB_CLIENT_SECRET` · `CLOUDINARY_CLOUD_NAME` · `CLOUDINARY_API_KEY` · `CLOUDINARY_API_SECRET` · `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME` · `LIVEKIT_API_KEY` · `LIVEKIT_API_SECRET` · `NEXT_PUBLIC_LIVEKIT_URL` · `NEXT_PUBLIC_SITE_URL`
 
 ## Architecture
 
-**Hybrid router**: App Router for pages + API routes. `pages/api/socket/io.ts` uses Pages Router — required because App Router lacks raw HTTP server access for Socket.io attachment.
+**Server:** `server.ts` — custom Node HTTP server wrapping Next.js. Socket.io attaches here (no `pages/api/socket` — that pattern was replaced). `setIO()` stores the singleton in `lib/socket.ts`.
 
 **Key directories:**
-- `app/(auth)/` — login/register pages
-- `app/(main)/servers/[serverId]/channels/[channelId]/` — chat or voice room
-- `app/api/` — all REST route handlers
-- `pages/api/socket/` — Socket.io server init
-- `components/` — chat, voice, layout, server, channel, ui subdirs
+- `app/(auth)/` — login/register
+- `app/(main)/servers/[serverId]/channels/[channelId]/` — text or voice channel page
+- `app/(main)/conversations/[conversationId]/` — DMs
+- `app/api/` — all REST handlers
+- `components/` — `chat/`, `dm/`, `voice/`, `layout/`, `server/`, `channel/`, `settings/`, `ui/`
 - `stores/` — Zustand: `modalStore`, `voiceStore`, `sidebarStore`
-- `hooks/` — `useSocket` (connection), `useMessages` (infinite query + socket listeners)
-- `lib/` — `db.ts` (Prisma singleton), `auth.ts` (requireAuth helper), `socket.ts` (IO singleton + event names)
-- `prisma/` — `schema.prisma`, `seed.ts`
+- `hooks/` — `useSocket`, `useMessages`, `useDirectMessages`, `useServers`, `useVoiceSessions`
+- `lib/` — `db.ts`, `auth.ts` (`requireAuth`), `socket.ts` (`getIO`/`setIO`), `sounds.ts`, `rateLimit.ts`
 
-**Real-time flow:** API route writes to DB → `getIO()?.to(room).emit(event, payload)` → `useMessages` socket listener mutates React Query cache → component re-renders.
+**Real-time flow:** API route writes DB → `getIO()?.to(room).emit(event, payload)` → hook listener updates React Query cache → re-render.
 
-**Socket rooms:** `channel:{channelId}`, `server:{serverId}`, `dm:{conversationId}`
+**Socket rooms:** `channel:{id}` · `server:{id}` · `dm:{conversationId}` · `user:{id}`
 
-**Auth:** NextAuth v5 JWT strategy. `requireAuth()` server-side; `useSession()` client-side. `session.user.id` and `session.user.username` are custom fields extended in `types/next-auth.d.ts`.
+**Voice presence:** `server.ts` maintains in-memory `voiceRooms` (channelId → userId → session). Events: `voice:join`, `voice:leave`, `voice:state` (mute/deafen/screen-share patch). Broadcasts `voice:state:update` to `server:{serverId}`. On `join-server` emits `voice:state:snapshot` for all occupied channels.
 
-**State layers:** URL params (serverId/channelId) → NextAuth session (identity) → Zustand (voice/modal/sidebar UI) → React Query (messages) → useState (forms/editing).
+**Presence:** `server.ts` tracks `userSockets` (userId → Set\<socketId\>). ONLINE/OFFLINE written to DB and broadcast as `user:status` to shared servers.
+
+**Auth:** NextAuth v5 JWT. `requireAuth()` server-side; `useSession()` client-side. `session.user.id` + `session.user.username` extended in `types/next-auth.d.ts`.
+
+**State layers:** URL (serverId/channelId) → session (identity) → Zustand (UI) → React Query (messages) → useState (forms).
 
 ## Database Models
 
-`User`, `Account`, `Session`, `VerificationToken` (NextAuth) · `Server`, `ServerMember` (role: ADMIN/MODERATOR/GUEST), `Ban` · `Category`, `Channel` (type: TEXT/VOICE) · `Message` (soft-delete), `Reaction`, `Attachment` · `Conversation`, `DirectMessage` · `ChannelNotification`
+`User` (status: ONLINE/IDLE/DND/OFFLINE, bio) · `Account/Session/VerificationToken` (NextAuth) · `Server`, `ServerMember` (ADMIN/MODERATOR/GUEST, nickname), `Ban` · `Category`, `Channel` (TEXT/VOICE, position, categoryId) · `Message` (soft-delete, replyTo), `Reaction`, `Attachment` · `Conversation`, `DirectMessage` · `ChannelNotification` (muted)
 
 ## Common Tasks
 
-**New API route:** create `app/api/[resource]/route.ts`, export `GET`/`POST`/etc., call `requireAuth()` at top, broadcast via `getIO()?.to(room).emit(...)` after DB write.
+**New API route:** `app/api/[resource]/route.ts` → `requireAuth()` → DB write → `getIO()?.to(room).emit(...)`.
 
-**New Prisma model:** add to `schema.prisma` → `npm run db:migrate` → `npm run db:generate`.
+**New model:** edit `schema.prisma` → `db:migrate` → `db:generate`.
 
-**New Zustand store:** `stores/[name]Store.ts` → `export const useXStore = create<XState>()(...)` — no Provider needed.
+**New Zustand store:** `stores/[name]Store.ts`, `create<XState>()(...)`, no Provider.
 
-**New channel type:** add to `ChannelType` enum in schema → migrate → update `CreateChannelModal.tsx` + channel page render logic.
+**New modal type:** add to `ModalType` union in `stores/modalStore.ts` + add component in `components/`.
