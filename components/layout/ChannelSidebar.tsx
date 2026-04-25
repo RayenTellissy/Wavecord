@@ -100,6 +100,7 @@ export function ChannelSidebar({ server, currentUserId, currentMemberRole }: Cha
       const data = await res.json() as { token?: string; serverUrl?: string; error?: string };
       if (data.error) throw new Error(data.error);
       joinVoice(channel.id, channel.name, server.id, server.name, data.token!, data.serverUrl!);
+      import("@/lib/sounds").then(({ playJoinSound }) => playJoinSound());
     } catch (e) {
       console.error("Voice join failed:", e);
       setOptimisticParticipant(null);

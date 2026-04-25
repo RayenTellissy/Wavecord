@@ -4,9 +4,9 @@ import { useSession } from "next-auth/react";
 import { motion } from "framer-motion";
 import { Tooltip } from "@/components/ui/Tooltip";
 import { MicIcon, MicOffIcon, HeadphonesIcon, HeadphonesOffIcon, SettingsIcon, PersonIcon } from "@/components/icons";
-import { useState } from "react";
 import Image from "next/image";
 import { useModal } from "@/stores/modalStore";
+import { useVoiceStore } from "@/stores/voiceStore";
 
 const STATUS_COLORS: Record<string, string> = {
   ONLINE: "var(--online)",
@@ -18,8 +18,8 @@ const STATUS_COLORS: Record<string, string> = {
 export function UserPanel() {
   const { data: session } = useSession();
   const { open: openModal } = useModal();
-  const [muted, setMuted] = useState(false);
-  const [deafened, setDeafened] = useState(false);
+  const { micEnabled, deafened, toggleMic, toggleDeafen } = useVoiceStore();
+  const muted = !micEnabled;
 
   if (!session?.user) return null;
   const user = session.user;
@@ -94,7 +94,7 @@ export function UserPanel() {
           <motion.button
             whileHover={{ scale: 1.15 }}
             whileTap={{ scale: 0.9 }}
-            onClick={() => setMuted(!muted)}
+            onClick={toggleMic}
             style={{
               width: 30,
               height: 30,
@@ -116,7 +116,7 @@ export function UserPanel() {
           <motion.button
             whileHover={{ scale: 1.15 }}
             whileTap={{ scale: 0.9 }}
-            onClick={() => setDeafened(!deafened)}
+            onClick={toggleDeafen}
             style={{
               width: 30,
               height: 30,

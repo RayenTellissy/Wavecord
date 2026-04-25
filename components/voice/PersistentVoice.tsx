@@ -36,11 +36,13 @@ export function PersistentVoice({ children }: { children: React.ReactNode }) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const deafened = useVoiceStore((s) => s.deafened);
+
   return (
     <RoomContext.Provider value={roomRef.current}>
       {channelId && (
         <>
-          <RoomAudioRenderer />
+          {!deafened && <RoomAudioRenderer />}
           <ParticipantSync />
         </>
       )}
@@ -111,6 +113,12 @@ function ParticipantSync() {
   const deafened = useVoiceStore((s) => s.deafened);
   const micEnabled = useVoiceStore((s) => s.micEnabled);
   const [attrTick, setAttrTick] = useState(0);
+
+  // Apply mic state to LiveKit regardless of which page the user is on.
+  useEffect(() => {
+    if (!localParticipant) return;
+    localParticipant.setMicrophoneEnabled(micEnabled && !deafened).catch(() => {});
+  }, [micEnabled, deafened, localParticipant]);
 
   // Publish local deafen state so remote peers can render the headphones-off icon.
   useEffect(() => {

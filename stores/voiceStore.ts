@@ -100,12 +100,27 @@ export const useVoiceStore = create<VoiceState>((set) => ({
 
   setLastTextChannel: (lastTextChannelId, lastTextServerId) => set({ lastTextChannelId, lastTextServerId }),
 
-  toggleMic: () => set((s) => ({ micEnabled: !s.micEnabled })),
-  toggleDeafen: () =>
+  toggleMic: () => {
+    if (typeof window !== "undefined") {
+      const { micEnabled } = useVoiceStore.getState();
+      import("@/lib/sounds").then(({ playMuteSound, playUnmuteSound }) => {
+        micEnabled ? playMuteSound() : playUnmuteSound();
+      });
+    }
+    set((s) => ({ micEnabled: !s.micEnabled }));
+  },
+  toggleDeafen: () => {
+    if (typeof window !== "undefined") {
+      const { deafened } = useVoiceStore.getState();
+      import("@/lib/sounds").then(({ playDeafenSound, playUndeafenSound }) => {
+        deafened ? playUndeafenSound() : playDeafenSound();
+      });
+    }
     set((s) => ({
       deafened: !s.deafened,
       micEnabled: s.deafened ? s.micEnabled : false,
-    })),
+    }));
+  },
   toggleCamera: () => set((s) => ({ cameraEnabled: !s.cameraEnabled })),
   toggleScreenShare: () => set((s) => ({ screenSharing: !s.screenSharing })),
 }));

@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   useParticipants,
   useLocalParticipant,
+  useSpeakingParticipants,
   useTracks,
   VideoTrack,
   isTrackReference,
@@ -66,6 +67,7 @@ export function VoiceRoom({ channel, serverId, serverName }: VoiceRoomProps) {
   }, [channel.id]);
 
   function handleLeave() {
+    import("@/lib/sounds").then(({ playLeaveSound }) => playLeaveSound());
     leave();
     if (lastTextChannelId && lastTextServerId) {
       router.push(`/servers/${lastTextServerId}/channels/${lastTextChannelId}`);
@@ -93,15 +95,12 @@ function VoiceRoomInner({
   error?: string | null;
 }) {
   const participants = useParticipants();
+  const speakingParticipants = useSpeakingParticipants();
+  const speakingSet = new Set(speakingParticipants.map((p) => p.identity));
   const { localParticipant } = useLocalParticipant();
   const { micEnabled, deafened, cameraEnabled, screenSharing, toggleMic, toggleDeafen, toggleCamera, toggleScreenShare } =
     useVoiceStore();
   const [mediaError, setMediaError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!localParticipant) return;
-    localParticipant.setMicrophoneEnabled(micEnabled && !deafened);
-  }, [micEnabled, deafened, localParticipant]);
 
   // Camera and screen share must be triggered directly from the click handler —
   // not via useEffect — so the browser's transient user activation is still active
@@ -317,7 +316,7 @@ function VoiceRoomInner({
             }}
           >
             {participants.map((p) => (
-              <ParticipantCard key={p.identity} participant={p} />
+              <ParticipantCard key={p.identity} participant={p} isSpeaking={speakingSet.has(p.identity)} />
             ))}
           </div>
         )}
@@ -369,9 +368,8 @@ function VoiceRoomInner({
 
 // ─── Participant card ─────────────────────────────────────────────────────────
 
-function ParticipantCard({ participant }: { participant: Participant }) {
+function ParticipantCard({ participant, isSpeaking }: { participant: Participant; isSpeaking: boolean }) {
   const isMicOn = participant.isMicrophoneEnabled;
-  const isSpeaking = participant.isSpeaking;
 
   return (
     <motion.div
@@ -385,10 +383,19 @@ function ParticipantCard({ participant }: { participant: Participant }) {
         padding: "0.9rem 0.5rem",
         borderRadius: "10px",
         background: "var(--surface-2)",
-        border: `2px solid ${isSpeaking ? "var(--accent)" : "transparent"}`,
-        transition: "border-color 0.15s",
+        border: "2px solid transparent",
       }}
     >
+      {/* Speaking ring wraps the avatar */}
+      <div
+        style={{
+          padding: 3,
+          borderRadius: "50%",
+          border: `3px solid ${isSpeaking ? "var(--success)" : "transparent"}`,
+          boxShadow: isSpeaking ? "0 0 8px var(--success)" : "none",
+          transition: "border-color 0.1s, box-shadow 0.1s",
+        }}
+      >
       <div
         style={{
           width: 52,
@@ -400,8 +407,6 @@ function ParticipantCard({ participant }: { participant: Participant }) {
           justifyContent: "center",
           color: "var(--text-secondary)",
           overflow: "hidden",
-          border: isSpeaking ? "2px solid var(--accent)" : "2px solid transparent",
-          transition: "border-color 0.15s",
         }}
       >
         {participant.metadata ? (
@@ -415,6 +420,7 @@ function ParticipantCard({ participant }: { participant: Participant }) {
         ) : (
           <PersonIcon size={24} />
         )}
+      </div>
       </div>
       <span
         style={{

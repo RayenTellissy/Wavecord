@@ -126,7 +126,10 @@ export function VoiceHUD() {
               <motion.button
                 whileHover={{ scale: 1.12 }}
                 whileTap={{ scale: 0.9 }}
-                onClick={leave}
+                onClick={() => {
+                  import("@/lib/sounds").then(({ playLeaveSound }) => playLeaveSound());
+                  leave();
+                }}
                 style={{
                   width: 26,
                   height: 26,
