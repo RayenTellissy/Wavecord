@@ -19,7 +19,8 @@ const PUBLIC_PATHS = [
 export default auth((req: NextRequest & { auth: unknown }) => {
   const { pathname } = req.nextUrl;
   const session = (req as { auth: { user?: unknown } | null }).auth;
-  const isPublic = PUBLIC_PATHS.some((p) => pathname.startsWith(p));
+  const isPublic =
+    pathname === "/" || PUBLIC_PATHS.some((p) => pathname.startsWith(p));
 
   if (!session?.user && !isPublic) {
     const loginUrl = new URL("/login", req.url);
