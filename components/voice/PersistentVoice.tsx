@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
-import { Room, RoomEvent, Track, type RemoteTrackPublication, type RemoteParticipant, type LocalTrackPublication } from "livekit-client";
+import { Room, RoomEvent, Track, type Participant, type RemoteTrackPublication, type RemoteParticipant, type LocalTrackPublication } from "livekit-client";
 import { RoomContext, RoomAudioRenderer, useParticipants, useLocalParticipant, useTracks, isTrackReference, useRoomContext } from "@livekit/components-react";
 import { useVoiceStore } from "@/stores/voiceStore";
 import { useSocket } from "@/hooks/useSocket";
@@ -45,6 +45,7 @@ export function PersistentVoice({ children }: { children: React.ReactNode }) {
         <>
           {!deafened && <RoomAudioRenderer />}
           <ParticipantSync />
+          <SpeakingSync />
           <SoundSync />
         </>
       )}
@@ -167,6 +168,21 @@ function SoundSync() {
       room.off(RoomEvent.LocalTrackUnpublished, onLocalTrackUnpublished);
     };
   }, [room, localParticipant, setScreenShareLive, setCameraLive]);
+
+  return null;
+}
+
+function SpeakingSync() {
+  const room = useRoomContext();
+  const setSpeakingIdentities = useVoiceStore((s) => s.setSpeakingIdentities);
+
+  useEffect(() => {
+    const handler = (speakers: Participant[]) => {
+      setSpeakingIdentities(new Set(speakers.map((p) => p.identity)));
+    };
+    room.on(RoomEvent.ActiveSpeakersChanged, handler);
+    return () => { room.off(RoomEvent.ActiveSpeakersChanged, handler); };
+  }, [room, setSpeakingIdentities]);
 
   return null;
 }

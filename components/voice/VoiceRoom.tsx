@@ -98,12 +98,8 @@ function VoiceRoomInner({
   const speakingParticipants = useSpeakingParticipants();
   const speakingSet = new Set(speakingParticipants.map((p) => p.identity));
   const { localParticipant } = useLocalParticipant();
-  const { micEnabled, deafened, cameraEnabled, screenSharing, toggleMic, toggleDeafen, toggleCamera, toggleScreenShare, setSpeakingIdentities } =
+  const { micEnabled, deafened, cameraEnabled, screenSharing, toggleMic, toggleDeafen, toggleCamera, toggleScreenShare } =
     useVoiceStore();
-
-  useEffect(() => {
-    setSpeakingIdentities(new Set(speakingParticipants.map((p) => p.identity)));
-  }, [speakingParticipants, setSpeakingIdentities]);
   const [mediaError, setMediaError] = useState<string | null>(null);
 
   // Camera and screen share must be triggered directly from the click handler —
