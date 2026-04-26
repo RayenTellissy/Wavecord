@@ -20,7 +20,7 @@ const syne = Syne({
 export const metadata: Metadata = {
   title: "Wavecord",
   description: "Chat, voice, and video for your communities",
-  icons: { icon: "/favicon.ico" },
+  icons: { icon: "/wave-logo-transparent.png" },
 };
 
 export default function RootLayout({
