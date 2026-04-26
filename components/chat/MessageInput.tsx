@@ -420,7 +420,7 @@ export function MessageInput({ channelId, channelName, replyTo, onClearReply }: 
           background: "rgba(14,14,18,0.22)",
           border: "1px solid rgba(255,255,255,0.12)",
           borderRadius: "14px",
-          padding: "0 0.5rem 0.5rem",
+          padding: "0.5rem",
           transition: "border-color 0.2s, box-shadow 0.2s, background 0.2s",
           backdropFilter: "blur(72px) saturate(2.8) brightness(1.06)",
           WebkitBackdropFilter: "blur(72px) saturate(2.8) brightness(1.06)",

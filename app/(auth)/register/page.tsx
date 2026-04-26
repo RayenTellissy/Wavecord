@@ -55,8 +55,8 @@ export default function RegisterPage() {
       <style>{`
         .auth-input {
           width: 100%;
-          background: rgba(255,255,255,0.055);
-          border: 1px solid rgba(255,255,255,0.12);
+          background: rgba(255,255,255,0.06);
+          border: 1px solid rgba(255,255,255,0.13);
           border-radius: 12px;
           padding: 0.76rem 1rem;
           color: var(--text-primary);
@@ -67,11 +67,11 @@ export default function RegisterPage() {
           display: block;
           backdrop-filter: blur(20px) saturate(1.8);
           -webkit-backdrop-filter: blur(20px) saturate(1.8);
-          box-shadow: inset 0 1px 0 rgba(255,255,255,0.10), inset 0 -1px 0 rgba(0,0,0,0.10);
+          box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
         }
         .auth-input:hover {
-          background: rgba(255,255,255,0.08);
-          border-color: rgba(255,255,255,0.18);
+          background: rgba(255,255,255,0.09);
+          border-color: rgba(255,255,255,0.20);
         }
         .auth-input:focus {
           border-color: rgba(139,92,246,0.55);
@@ -117,39 +117,16 @@ export default function RegisterPage() {
         .auth-btn-primary:disabled { opacity: 0.60; cursor: not-allowed; }
       `}</style>
 
-      {/* Outer: prismatic border + backdrop-filter */}
       <motion.div
-        initial={{ opacity: 0, y: 16, scale: 0.94 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
         transition={{ type: "spring", damping: 26, stiffness: 400, mass: 0.8 }}
         style={{
           width: "100%",
           maxWidth: "420px",
-          borderRadius: "26px",
-          padding: "1.5px",
-          background: "linear-gradient(135deg, rgba(255,255,255,0.32) 0%, rgba(192,162,250,0.50) 18%, rgba(167,139,250,0.44) 34%, rgba(99,200,230,0.36) 52%, rgba(34,211,238,0.32) 64%, rgba(255,170,210,0.28) 80%, rgba(255,255,255,0.26) 100%)",
-          backdropFilter: "blur(80px) saturate(3) brightness(1.12)",
-          WebkitBackdropFilter: "blur(80px) saturate(3) brightness(1.12)",
-          boxShadow: "0 48px 120px rgba(0,0,0,0.75), 0 20px 60px rgba(0,0,0,0.45), 0 6px 20px rgba(0,0,0,0.30)",
+          padding: "2.5rem",
         }}
       >
-        {/* Inner: dark glass fill */}
-        <div style={{
-          borderRadius: "24.5px",
-          background: "rgba(13,13,16,0.82)",
-          padding: "2.5rem",
-          position: "relative",
-          overflow: "hidden",
-        }}>
-          {/* Specular highlight */}
-          <div style={{
-            position: "absolute",
-            top: 0, left: "10%", right: "10%",
-            height: "1px",
-            background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.55), rgba(255,255,255,0.72), rgba(255,255,255,0.55), transparent)",
-            zIndex: 1,
-          }} />
-
         <div style={{ textAlign: "center", marginBottom: "2rem" }}>
           <div style={{ display: "flex", justifyContent: "center", marginBottom: "0.75rem" }}>
             <WaveLogo size={52} />
@@ -228,7 +205,6 @@ export default function RegisterPage() {
             Sign in
           </Link>
         </p>
-        </div>
       </motion.div>
     </>
   );
