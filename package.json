@@ -31,7 +31,7 @@
     "livekit-client": "^2.7.2",
     "livekit-server-sdk": "^2.8.0",
     "nanoid": "^5.0.9",
-    "next": "15.1.3",
+    "next": "15.1.11",
     "next-auth": "5.0.0-beta.25",
     "next-cloudinary": "^6.15.0",
     "pg": "^8.20.0",
