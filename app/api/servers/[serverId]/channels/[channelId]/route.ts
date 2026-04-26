@@ -12,6 +12,7 @@ const UpdateChannelSchema = z.object({
     .regex(/^[a-z0-9-_]+$/)
     .optional(),
   categoryId: z.string().uuid().nullable().optional(),
+  allowedRole: z.enum(["ADMIN", "MODERATOR", "GUEST"]).optional(),
 });
 
 type RouteParams = { params: Promise<{ serverId: string; channelId: string }> };

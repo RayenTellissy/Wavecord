@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useRef } from "react";
-import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Tooltip } from "@/components/ui/Tooltip";
@@ -9,7 +8,9 @@ import {
   HashIcon, VolumeIcon, ChevronDownIcon,
   PlusIcon, LeaveIcon, LinkIcon, SettingsIcon,
   MicOffIcon, HeadphonesOffIcon, ScreenShareIcon,
+  EditIcon, TrashIcon,
 } from "@/components/icons";
+import type { MemberRole } from "@prisma/client";
 import { UserPanel } from "./UserPanel";
 import { useModal } from "@/stores/modalStore";
 import { useSidebar } from "@/stores/sidebarStore";
@@ -53,6 +54,7 @@ export function ChannelSidebar({ server, currentUserId, currentMemberRole }: Cha
     optimisticParticipant: voiceOptimisticParticipant,
     join: joinVoice,
     setOptimisticParticipant,
+    speakingIdentities,
   } = useVoiceStore();
   const voiceSessions = useVoiceSessions(server.id);
 
@@ -60,6 +62,7 @@ export function ChannelSidebar({ server, currentUserId, currentMemberRole }: Cha
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
   const [serverMenuOpen, setServerMenuOpen] = useState(false);
   const [joiningVoice, setJoiningVoice] = useState<string | null>(null);
+  const [hoveredCategoryId, setHoveredCategoryId] = useState<string | null>(null);
 
   const isAdmin = currentMemberRole === "ADMIN";
   const isModOrAdmin = currentMemberRole === "ADMIN" || currentMemberRole === "MODERATOR";
@@ -205,6 +208,9 @@ export function ChannelSidebar({ server, currentUserId, currentMemberRole }: Cha
                   {isModOrAdmin && (
                     <MenuItem icon={<PlusIcon size={16} />} label="Create Channel" onClick={() => open("createChannel", { serverId: server.id })} />
                   )}
+                  {isModOrAdmin && (
+                    <MenuItem icon={<PlusIcon size={16} />} label="Create Category" onClick={() => open("createCategory", { serverId: server.id })} />
+                  )}
                   {isAdmin && (
                     <MenuItem icon={<SettingsIcon size={16} />} label="Server Settings" onClick={() => open("serverSettings", { serverId: server.id })} />
                   )}
@@ -233,6 +239,8 @@ export function ChannelSidebar({ server, currentUserId, currentMemberRole }: Cha
               {/* Category header */}
               <button
                 onClick={() => setCollapsed((c) => ({ ...c, [category.id]: !c[category.id] }))}
+                onMouseEnter={() => setHoveredCategoryId(category.id)}
+                onMouseLeave={() => setHoveredCategoryId(null)}
                 style={{
                   width: "100%",
                   display: "flex",
@@ -254,6 +262,34 @@ export function ChannelSidebar({ server, currentUserId, currentMemberRole }: Cha
                   <ChevronDownIcon size={14} />
                 </motion.span>
                 <span style={{ flex: 1, textAlign: "left" }}>{category.name}</span>
+                {isModOrAdmin && hoveredCategoryId === category.id && (
+                  <>
+                    <Tooltip content="Edit Category" side="top">
+                      <span
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          open("editCategory", { serverId: server.id, categoryId: category.id, categoryName: category.name });
+                        }}
+                        style={catActionStyle}
+                      >
+                        <EditIcon size={13} />
+                      </span>
+                    </Tooltip>
+                    {isAdmin && (
+                      <Tooltip content="Delete Category" side="top">
+                        <span
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            open("deleteCategory", { serverId: server.id, categoryId: category.id, categoryName: category.name });
+                          }}
+                          style={{ ...catActionStyle, color: "var(--danger)" }}
+                        >
+                          <TrashIcon size={13} />
+                        </span>
+                      </Tooltip>
+                    )}
+                  </>
+                )}
                 {isModOrAdmin && (
                   <Tooltip content="Create Channel" side="top">
                     <span
@@ -261,16 +297,13 @@ export function ChannelSidebar({ server, currentUserId, currentMemberRole }: Cha
                         e.stopPropagation();
                         open("createChannel", { serverId: server.id, categoryId: category.id });
                       }}
-                      style={{ display: "flex", padding: "2px", borderRadius: "4px", opacity: 0 }}
-                      className="category-plus"
+                      style={{ display: "flex", padding: "2px", borderRadius: "4px", opacity: hoveredCategoryId === category.id ? 1 : 0 }}
                     >
                       <PlusIcon size={14} />
                     </span>
                   </Tooltip>
                 )}
               </button>
-
-              <style>{`.category-plus:hover { opacity: 1 !important; }`}</style>
 
               <AnimatePresence initial={false}>
                 {!collapsed[category.id] && (
@@ -287,6 +320,8 @@ export function ChannelSidebar({ server, currentUserId, currentMemberRole }: Cha
                               channel={channel}
                               serverId={server.id}
                               isActive={channel.id === activeChannelId}
+                              isModOrAdmin={isModOrAdmin}
+                              isAdmin={isAdmin}
                               onNavigate={closeMobile}
                             />
                           </motion.div>
@@ -318,7 +353,10 @@ export function ChannelSidebar({ server, currentUserId, currentMemberRole }: Cha
                                 isActive={channel.id === activeChannelId}
                                 isConnected={channel.id === voiceChannelId && !!voiceToken}
                                 isJoining={joiningVoice === channel.id}
+                                isModOrAdmin={isModOrAdmin}
+                                isAdmin={isAdmin}
                                 participants={participants}
+                                speakingIdentities={speakingIdentities}
                                 optimisticParticipant={
                                   joiningVoice === channel.id &&
                                   !participants.find((p) => p.identity === voiceOptimisticParticipant?.identity)
@@ -374,27 +412,48 @@ function TextChannelItem({
   channel,
   serverId,
   isActive,
+  isModOrAdmin,
   onNavigate,
 }: {
-  channel: Channel;
+  channel: Channel & { allowedRole?: MemberRole };
   serverId: string;
   isActive: boolean;
+  isModOrAdmin: boolean;
+  isAdmin: boolean;
   onNavigate?: () => void;
 }) {
+  const router = useRouter();
+  const { open } = useModal();
+  const [hovered, setHovered] = useState(false);
+
   return (
-    <Link href={`/servers/${serverId}/channels/${channel.id}`} onClick={onNavigate}>
-      <motion.div
-        whileHover={{ x: 2 }}
-        style={channelRowStyle(isActive)}
-        onMouseEnter={(e) => applyHover(e, isActive)}
-        onMouseLeave={(e) => clearHover(e, isActive)}
-      >
-        <span style={{ display: "flex", color: isActive ? "var(--accent)" : "inherit", flexShrink: 0 }}>
-          <HashIcon size={17} />
-        </span>
-        <span style={channelNameStyle}>{channel.name}</span>
-      </motion.div>
-    </Link>
+    <motion.div
+      whileHover={{ x: 2 }}
+      onClick={() => { router.push(`/servers/${serverId}/channels/${channel.id}`); onNavigate?.(); }}
+      style={{ ...channelRowStyle(isActive), cursor: "pointer" }}
+      onMouseEnter={(e) => { applyHover(e, isActive); setHovered(true); }}
+      onMouseLeave={(e) => { clearHover(e, isActive); setHovered(false); }}
+    >
+      <span style={{ display: "flex", color: isActive ? "var(--accent)" : "inherit", flexShrink: 0 }}>
+        <HashIcon size={17} />
+      </span>
+      <span style={channelNameStyle}>{channel.name}</span>
+      {isModOrAdmin && hovered && (
+        <div style={{ display: "flex", gap: "2px", marginLeft: "auto" }} onClick={(e) => e.stopPropagation()}>
+          <ChannelActionBtn
+            onClick={() => open("channelSettings", {
+              serverId,
+              channelId: channel.id,
+              channelName: channel.name,
+              channelType: "TEXT",
+              allowedRole: (channel.allowedRole ?? "GUEST") as "ADMIN" | "MODERATOR" | "GUEST",
+            })}
+          >
+            <SettingsIcon size={13} />
+          </ChannelActionBtn>
+        </div>
+      )}
+    </motion.div>
   );
 }
 
@@ -406,23 +465,29 @@ function VoiceChannelItem({
   isActive,
   isConnected,
   isJoining,
+  isModOrAdmin,
   participants,
+  speakingIdentities,
   optimisticParticipant,
   onClick,
   onWatchStream,
 }: {
-  channel: Channel;
+  channel: Channel & { allowedRole?: MemberRole };
   serverId: string;
   isActive: boolean;
   isConnected: boolean;
   isJoining: boolean;
+  isModOrAdmin: boolean;
+  isAdmin: boolean;
   participants: VoiceParticipant[];
+  speakingIdentities: Set<string>;
   optimisticParticipant?: VoiceParticipant | null;
   onClick: () => void;
   onWatchStream: () => void;
 }) {
   const { open } = useModal();
   const accentColor = isConnected ? "var(--success)" : isActive ? "var(--accent)" : "inherit";
+  const [rowHovered, setRowHovered] = useState(false);
 
   const [streamPopup, setStreamPopup] = useState<{
     participant: VoiceParticipant;
@@ -473,6 +538,7 @@ function VoiceChannelItem({
             : "none",
         }}
         onMouseEnter={(e) => {
+          setRowHovered(true);
           if (!isActive && !isConnected) {
             (e.currentTarget as HTMLElement).style.background = "rgba(139,92,246,0.10)";
             (e.currentTarget as HTMLElement).style.color = "#f0eeff";
@@ -480,6 +546,7 @@ function VoiceChannelItem({
           }
         }}
         onMouseLeave={(e) => {
+          setRowHovered(false);
           if (!isActive && !isConnected) {
             (e.currentTarget as HTMLElement).style.background = "transparent";
             (e.currentTarget as HTMLElement).style.color = "var(--text-secondary)";
@@ -493,6 +560,21 @@ function VoiceChannelItem({
         <span style={channelNameStyle}>{channel.name}</span>
         {isJoining && <JoiningIndicator />}
         {isConnected && !isJoining && <ConnectionQualityDot />}
+        {isModOrAdmin && rowHovered && !isJoining && (
+          <div style={{ display: "flex", gap: "2px", marginLeft: "auto" }} onClick={(e) => e.stopPropagation()}>
+            <ChannelActionBtn
+              onClick={() => open("channelSettings", {
+                serverId,
+                channelId: channel.id,
+                channelName: channel.name,
+                channelType: "VOICE",
+                allowedRole: (channel.allowedRole ?? "GUEST") as "ADMIN" | "MODERATOR" | "GUEST",
+              })}
+            >
+              <SettingsIcon size={13} />
+            </ChannelActionBtn>
+          </div>
+        )}
       </motion.div>
 
       {/* Participants list — visible to everyone in the server, not just those connected */}
@@ -576,33 +658,43 @@ function VoiceChannelItem({
                 if (p.isLive) scheduleHidePopup();
               }}
             >
-              {p.metadata ? (
-                <Image
-                  src={p.metadata}
-                  alt={p.name}
-                  width={22}
-                  height={22}
-                  style={{ borderRadius: "50%", flexShrink: 0 }}
-                />
-              ) : (
-                <span
-                  style={{
-                    width: 22,
-                    height: 22,
-                    borderRadius: "50%",
-                    background: "var(--surface-3)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: "0.65rem",
-                    fontWeight: 700,
-                    color: "var(--text-muted)",
-                    flexShrink: 0,
-                  }}
-                >
-                  {p.name.charAt(0).toUpperCase()}
-                </span>
-              )}
+              <span
+                style={{
+                  flexShrink: 0,
+                  borderRadius: "50%",
+                  border: `2px solid ${speakingIdentities.has(p.identity) ? "var(--success)" : "transparent"}`,
+                  boxShadow: speakingIdentities.has(p.identity) ? "0 0 6px var(--success)" : "none",
+                  transition: "border-color 0.15s, box-shadow 0.15s",
+                  display: "flex",
+                }}
+              >
+                {p.metadata ? (
+                  <Image
+                    src={p.metadata}
+                    alt={p.name}
+                    width={22}
+                    height={22}
+                    style={{ borderRadius: "50%" }}
+                  />
+                ) : (
+                  <span
+                    style={{
+                      width: 22,
+                      height: 22,
+                      borderRadius: "50%",
+                      background: "var(--surface-3)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: "0.65rem",
+                      fontWeight: 700,
+                      color: "var(--text-muted)",
+                    }}
+                  >
+                    {p.name.charAt(0).toUpperCase()}
+                  </span>
+                )}
+              </span>
               <span
                 style={{
                   fontSize: "0.88rem",
@@ -913,6 +1005,50 @@ function clearHover(e: React.MouseEvent, isActive: boolean) {
     (e.currentTarget as HTMLElement).style.border = "1px solid transparent";
   }
 }
+
+// ─── Channel action button ────────────────────────────────────────────────────
+
+function ChannelActionBtn({
+  children,
+  onClick,
+  danger = false,
+}: {
+  children: React.ReactNode;
+  onClick: () => void;
+  danger?: boolean;
+}) {
+  return (
+    <span
+      onClick={onClick}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "3px",
+        borderRadius: "4px",
+        color: danger ? "var(--danger)" : "var(--text-muted)",
+        transition: "background 0.12s, color 0.12s",
+      }}
+      onMouseEnter={(e) => {
+        (e.currentTarget as HTMLElement).style.background = danger ? "rgba(244,63,94,0.15)" : "rgba(139,92,246,0.2)";
+        (e.currentTarget as HTMLElement).style.color = danger ? "var(--danger)" : "var(--accent-bright)";
+      }}
+      onMouseLeave={(e) => {
+        (e.currentTarget as HTMLElement).style.background = "transparent";
+        (e.currentTarget as HTMLElement).style.color = danger ? "var(--danger)" : "var(--text-muted)";
+      }}
+    >
+      {children}
+    </span>
+  );
+}
+
+const catActionStyle: React.CSSProperties = {
+  display: "flex",
+  padding: "2px",
+  borderRadius: "4px",
+  color: "var(--text-muted)",
+};
 
 // ─── Dropdown menu item ───────────────────────────────────────────────────────
 

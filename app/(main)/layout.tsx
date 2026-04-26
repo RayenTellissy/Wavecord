@@ -6,6 +6,12 @@ import { CreateServerModal } from "@/components/server/CreateServerModal";
 import { JoinServerModal } from "@/components/server/JoinServerModal";
 import { InviteModal } from "@/components/server/InviteModal";
 import { CreateChannelModal } from "@/components/channel/CreateChannelModal";
+import { EditChannelModal } from "@/components/channel/EditChannelModal";
+import { DeleteChannelModal } from "@/components/channel/DeleteChannelModal";
+import { ChannelSettingsModal } from "@/components/channel/ChannelSettingsModal";
+import { CreateCategoryModal } from "@/components/channel/CreateCategoryModal";
+import { EditCategoryModal } from "@/components/channel/EditCategoryModal";
+import { DeleteCategoryModal } from "@/components/channel/DeleteCategoryModal";
 import { KickMemberModal } from "@/components/server/KickMemberModal";
 import { BanMemberModal } from "@/components/server/BanMemberModal";
 import { DeleteServerModal } from "@/components/server/DeleteServerModal";
@@ -60,6 +66,12 @@ export default async function MainLayout({
       <JoinServerModal />
       <InviteModal />
       <CreateChannelModal />
+      <EditChannelModal />
+      <DeleteChannelModal />
+      <ChannelSettingsModal />
+      <CreateCategoryModal />
+      <EditCategoryModal />
+      <DeleteCategoryModal />
       <KickMemberModal />
       <BanMemberModal />
       <DeleteServerModal />

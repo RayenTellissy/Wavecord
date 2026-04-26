@@ -12,6 +12,10 @@ export type ModalType =
   | "banMember"
   | "editChannel"
   | "deleteChannel"
+  | "channelSettings"
+  | "createCategory"
+  | "editCategory"
+  | "deleteCategory"
   | "deleteMessage"
   | "editProfile"
   | "serverSettings"
@@ -20,14 +24,17 @@ export type ModalType =
 interface ModalData {
   serverId?: string;
   channelId?: string;
+  channelName?: string;
   categoryId?: string;
+  categoryName?: string;
   memberId?: string;
   messageId?: string;
   inviteCode?: string;
   channelType?: "TEXT" | "VOICE";
-  memberName?: string;   // display name for kick/ban modals
-  targetUserId?: string; // User.id for ban operations
-  isDM?: boolean;        // routes deleteMessage to /api/direct-messages
+  allowedRole?: "ADMIN" | "MODERATOR" | "GUEST";
+  memberName?: string;
+  targetUserId?: string;
+  isDM?: boolean;
 }
 
 interface ModalState {

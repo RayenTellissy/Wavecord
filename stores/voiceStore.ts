@@ -30,6 +30,7 @@ export interface VoiceState {
   participants: VoiceParticipant[];
   /** Shown immediately when the user initiates a join, before LiveKit confirms connection. */
   optimisticParticipant: VoiceParticipant | null;
+  speakingIdentities: Set<string>;
 
   lastTextChannelId: string | null;
   lastTextServerId: string | null;
@@ -45,6 +46,7 @@ export interface VoiceState {
   leave: () => void;
   setParticipants: (participants: VoiceParticipant[]) => void;
   setOptimisticParticipant: (p: VoiceParticipant | null) => void;
+  setSpeakingIdentities: (identities: Set<string>) => void;
   setLastTextChannel: (channelId: string, serverId: string) => void;
   toggleMic: () => void;
   toggleDeafen: () => void;
@@ -69,6 +71,7 @@ export const useVoiceStore = create<VoiceState>((set) => ({
   cameraLive: false,
   participants: [],
   optimisticParticipant: null,
+  speakingIdentities: new Set(),
   lastTextChannelId: null,
   lastTextServerId: null,
 
@@ -103,12 +106,15 @@ export const useVoiceStore = create<VoiceState>((set) => ({
       cameraLive: false,
       participants: [],
       optimisticParticipant: null,
+      speakingIdentities: new Set(),
     }),
 
   // Once real participants arrive from LiveKit, the optimistic entry is no longer needed.
   setParticipants: (participants) => set({ participants, optimisticParticipant: null }),
 
   setOptimisticParticipant: (optimisticParticipant) => set({ optimisticParticipant }),
+
+  setSpeakingIdentities: (speakingIdentities) => set({ speakingIdentities }),
 
   setLastTextChannel: (lastTextChannelId, lastTextServerId) => set({ lastTextChannelId, lastTextServerId }),
 
