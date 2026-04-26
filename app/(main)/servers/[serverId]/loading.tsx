@@ -42,7 +42,9 @@ export default function ServerLoading() {
         flex: 1,
         display: "flex",
         flexDirection: "column",
-        background: "var(--surface-1)",
+        background: "rgba(10,10,14,0.18)",
+        backdropFilter: "blur(60px) saturate(2.6) brightness(1.04)",
+        WebkitBackdropFilter: "blur(60px) saturate(2.6) brightness(1.04)",
         minWidth: 0,
       }}>
         <div style={{ height: 49, borderBottom: "1px solid var(--border)", flexShrink: 0 }} />

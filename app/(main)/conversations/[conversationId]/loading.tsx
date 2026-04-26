@@ -4,7 +4,9 @@ export default function ConversationLoading() {
       flex: 1,
       display: "flex",
       flexDirection: "column",
-      background: "var(--surface-1)",
+      background: "rgba(10,10,14,0.18)",
+      backdropFilter: "blur(60px) saturate(2.6) brightness(1.04)",
+      WebkitBackdropFilter: "blur(60px) saturate(2.6) brightness(1.04)",
       minWidth: 0,
       overflow: "hidden",
     }}>
