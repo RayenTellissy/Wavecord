@@ -7,7 +7,7 @@ import type { Conversation, User } from "@prisma/client";
 type ConversationWithMembers = Conversation & {
   memberOne: Pick<User, "id" | "name" | "username" | "image">;
   memberTwo: Pick<User, "id" | "name" | "username" | "image">;
-  directMessages: { content: string; createdAt: Date; deleted: boolean }[];
+  directMessages: { content: string; createdAt: Date; deleted: boolean; senderId: string }[];
 };
 
 export default async function ConversationsLayout({
@@ -31,7 +31,7 @@ export default async function ConversationsLayout({
       directMessages: {
         orderBy: { createdAt: "desc" },
         take: 1,
-        select: { content: true, createdAt: true, deleted: true },
+        select: { content: true, createdAt: true, deleted: true, senderId: true },
       },
     },
     orderBy: { updatedAt: "desc" },

@@ -16,7 +16,7 @@ import type { Conversation, User } from "@prisma/client";
 type ConversationWithMembers = Conversation & {
   memberOne: Pick<User, "id" | "name" | "username" | "image">;
   memberTwo: Pick<User, "id" | "name" | "username" | "image">;
-  directMessages: { content: string; createdAt: Date; deleted: boolean }[];
+  directMessages: { content: string; createdAt: Date; deleted: boolean; senderId: string }[];
 };
 
 interface DMSidebarProps {
@@ -53,6 +53,7 @@ export function DMSidebar({ currentUserId, initialConversations }: DMSidebarProp
               content: message.content,
               createdAt: new Date(message.createdAt),
               deleted: message.deleted,
+              senderId: message.senderId,
             },
           ],
         };
@@ -324,7 +325,18 @@ export function DMSidebar({ currentUserId, initialConversations }: DMSidebarProp
                       textOverflow: "ellipsis",
                       whiteSpace: "nowrap",
                     }}>
-                      {lastMsg.deleted ? "Message deleted" : lastMsg.content}
+                      {lastMsg.deleted ? (
+                        "Message deleted"
+                      ) : (
+                        <>
+                          <span style={{ fontWeight: 500, color: "var(--text-secondary)" }}>
+                            {lastMsg.senderId === currentUserId 
+                              ? "You: " 
+                              : `${lastMsg.senderId === conv.memberOneId ? conv.memberOne.name ?? conv.memberOne.username : conv.memberTwo.name ?? conv.memberTwo.username}: `}
+                          </span>
+                          {lastMsg.content}
+                        </>
+                      )}
                     </p>
                   )}
                 </div>

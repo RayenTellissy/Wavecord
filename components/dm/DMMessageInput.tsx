@@ -35,6 +35,10 @@ export function DMMessageInput({ conversationId, recipientName }: DMMessageInput
   const { data: session } = useSession();
 
   useEffect(() => {
+    textareaRef.current?.focus();
+  }, [conversationId]);
+
+  useEffect(() => {
     if (!showEmojiPicker) return;
     function handleClickOutside(e: MouseEvent) {
       if (emojiPickerRef.current && !emojiPickerRef.current.contains(e.target as Node)) {

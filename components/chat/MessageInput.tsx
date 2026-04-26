@@ -41,6 +41,10 @@ export function MessageInput({ channelId, channelName, replyTo, onClearReply }: 
   }, [replyTo]);
 
   useEffect(() => {
+    textareaRef.current?.focus();
+  }, [channelId]);
+
+  useEffect(() => {
     if (!showEmojiPicker) return;
     function handleClickOutside(e: MouseEvent) {
       if (emojiPickerRef.current && !emojiPickerRef.current.contains(e.target as Node)) {

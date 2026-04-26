@@ -181,7 +181,7 @@ export function MessageList({ channelId, channelName, currentUserId, isModOrAdmi
       )}
 
       {/* Bottom anchor */}
-      <div ref={bottomRef} style={{ height: 32 }} />
+      <div ref={bottomRef} style={{ height: 16, flexShrink: 0 }} />
     </div>
   );
 }

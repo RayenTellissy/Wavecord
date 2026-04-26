@@ -34,7 +34,9 @@ export default async function HomePage() {
       flexDirection: "column",
       alignItems: "center",
       justifyContent: "center",
-      background: "var(--surface-1)",
+      background: "rgba(12,12,16,0.28)",
+      backdropFilter: "blur(80px) saturate(3) brightness(1.06)",
+      WebkitBackdropFilter: "blur(80px) saturate(3) brightness(1.06)",
       color: "var(--text-secondary)",
       gap: "1rem",
     }}>
