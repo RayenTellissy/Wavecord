@@ -1,13 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useParams, usePathname } from "next/navigation";
-import { motion } from "framer-motion";
+import { useParams, usePathname, useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
 import { Tooltip } from "@/components/ui/Tooltip";
 import { PlusIcon, FriendsIcon } from "@/components/icons";
 import { useModal } from "@/stores/modalStore";
 import { useSidebar } from "@/stores/sidebarStore";
 import { useServers, type ServerWithChannel } from "@/hooks/useServers";
+import { useDmUnreadStore } from "@/stores/dmUnreadStore";
 import Image from "next/image";
 
 interface MainSidebarProps {
@@ -18,10 +19,14 @@ export function MainSidebar({ initialServers }: MainSidebarProps) {
   const { data: servers = [] } = useServers(initialServers);
   const params = useParams();
   const pathname = usePathname();
+  const router = useRouter();
   const { open } = useModal();
   const { mobileOpen } = useSidebar();
   const activeServerId = params?.serverId as string | undefined;
   const isDMActive = pathname.startsWith("/conversations");
+  const dmUnread = useDmUnreadStore((s) => s.unread);
+  const clearUnread = useDmUnreadStore((s) => s.clear);
+  const dmUnreadList = Object.values(dmUnread);
 
   return (
     <nav
@@ -72,6 +77,96 @@ export function MainSidebar({ initialServers }: MainSidebarProps) {
           </motion.div>
         </Link>
       </Tooltip>
+
+      {/* DM Unread avatar bubbles */}
+      <AnimatePresence>
+        {dmUnreadList.map((entry) => (
+          <motion.div
+            key={entry.conversationId}
+            initial={{ opacity: 0, scale: 0.6, x: -8 }}
+            animate={{ opacity: 1, scale: 1, x: 0 }}
+            exit={{ opacity: 0, scale: 0.6, x: -8 }}
+            transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            style={{ position: "relative" }}
+          >
+            <Tooltip content={`${entry.senderName} (${entry.count})`} side="right">
+              <motion.button
+                whileHover={{ scale: 1.1, borderRadius: "18px" }}
+                whileTap={{ scale: 0.93 }}
+                onClick={() => {
+                  clearUnread(entry.conversationId);
+                  router.push(entry.href);
+                }}
+                style={{
+                  width: 48,
+                  height: 48,
+                  borderRadius: "50%",
+                  overflow: "hidden",
+                  background: "rgba(255,255,255,0.07)",
+                  border: "2px solid rgba(139,92,246,0.65)",
+                  boxShadow: "0 0 0 2px rgba(139,92,246,0.2), 0 0 16px rgba(139,92,246,0.35)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                  flexShrink: 0,
+                  transition: "border-radius 0.25s, box-shadow 0.25s",
+                  position: "relative",
+                }}
+              >
+                {entry.senderAvatar ? (
+                  <Image
+                    src={entry.senderAvatar}
+                    alt={entry.senderName}
+                    width={48}
+                    height={48}
+                    style={{ objectFit: "cover", width: "100%", height: "100%" }}
+                  />
+                ) : (
+                  <span style={{
+                    fontSize: "1rem",
+                    fontWeight: 700,
+                    color: "#a78bfa",
+                    userSelect: "none",
+                  }}>
+                    {entry.senderName.charAt(0).toUpperCase()}
+                  </span>
+                )}
+              </motion.button>
+            </Tooltip>
+
+            {/* Red count badge */}
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0 }}
+              transition={{ type: "spring", stiffness: 500, damping: 28 }}
+              style={{
+                position: "absolute",
+                bottom: 0,
+                right: 0,
+                minWidth: 18,
+                height: 18,
+                borderRadius: 9,
+                background: "#ef4444",
+                border: "2px solid rgba(12,12,16,0.9)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: "0.65rem",
+                fontWeight: 800,
+                color: "#fff",
+                padding: "0 3px",
+                pointerEvents: "none",
+                lineHeight: 1,
+                boxShadow: "0 0 8px rgba(239,68,68,0.6)",
+              }}
+            >
+              {entry.count > 99 ? "99+" : entry.count}
+            </motion.div>
+          </motion.div>
+        ))}
+      </AnimatePresence>
 
       {/* Separator */}
       <div style={{

@@ -17,10 +17,9 @@ function Toast({ toast }: { toast: NotificationToast }) {
     return () => clearTimeout(t);
   }, [toast.id, dismiss]);
 
-  const accentColor = toast.type === "dm" ? "#22d3ee" : "#a78bfa";
-  const accentGlow = toast.type === "dm"
-    ? "0 0 30px rgba(34,211,238,0.25), 0 0 60px rgba(34,211,238,0.1)"
-    : "0 0 30px rgba(139,92,246,0.3), 0 0 60px rgba(139,92,246,0.12)";
+  const accentColor = "#a78bfa";
+  const accentGlow =
+    "0 0 8px rgba(139,92,246,0.4), 0 0 20px rgba(139,92,246,0.28), 0 0 48px rgba(139,92,246,0.14)";
 
   return (
     <motion.div
@@ -40,10 +39,12 @@ function Toast({ toast }: { toast: NotificationToast }) {
         padding: "12px 14px",
         paddingLeft: 18,
         borderRadius: 14,
-        background: `linear-gradient(rgba(16,16,20,0.22), rgba(10,10,14,0.26)) padding-box, linear-gradient(135deg, rgba(255,255,255,0.22) 0%, ${accentColor}55 40%, rgba(255,255,255,0.14) 100%) border-box`,
+        background: `linear-gradient(rgba(16,10,26,0.38), rgba(10,6,18,0.44)) padding-box, linear-gradient(135deg, rgba(255,255,255,0.22) 0%, ${accentColor}66 40%, rgba(255,255,255,0.14) 100%) border-box`,
         border: "1px solid transparent",
         borderLeft: `3px solid ${accentColor}`,
-        boxShadow: `0 16px 48px rgba(0,0,0,0.65), ${accentGlow}, inset 0 2px 0 rgba(255,255,255,0.20)`,
+        boxShadow: `0 16px 48px rgba(0,0,0,0.65), ${accentGlow}, inset 0 2px 0 rgba(255,255,255,0.18)`,
+        outline: `1px solid rgba(139,92,246,0.10)`,
+        outlineOffset: "2px",
         cursor: "pointer",
         width: 320,
         maxWidth: "calc(100vw - 32px)",
@@ -60,16 +61,15 @@ function Toast({ toast }: { toast: NotificationToast }) {
           height: 36,
           borderRadius: "50%",
           overflow: "hidden",
-          background: toast.type === "dm"
-            ? "rgba(34,211,238,0.12)"
-            : "rgba(139,92,246,0.12)",
-          border: `1px solid ${accentColor}40`,
+          background: "rgba(139,92,246,0.18)",
+          border: `1px solid ${accentColor}80`,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           fontSize: 16,
           fontWeight: 600,
           color: accentColor,
+          boxShadow: `0 0 8px rgba(139,92,246,0.4), 0 0 16px rgba(139,92,246,0.18)`,
         }}
       >
         {toast.avatarUrl ? (

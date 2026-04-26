@@ -7,6 +7,7 @@ import { useSocket } from "./useSocket";
 import { SocketEvents } from "@/lib/socket";
 import { playNotificationSound } from "@/lib/sounds";
 import { useNotificationStore } from "@/stores/notificationStore";
+import { useDmUnreadStore } from "@/stores/dmUnreadStore";
 
 interface ChannelNotifyPayload {
   channelId: string;
@@ -35,6 +36,14 @@ export function useNotifications() {
   const pathnameRef = useRef(pathname);
   const mutedChannelIds = useRef<Set<string>>(new Set());
   const push = useNotificationStore((s) => s.push);
+  const incrementUnread = useDmUnreadStore((s) => s.increment);
+  const clearUnread = useDmUnreadStore((s) => s.clear);
+
+  // Clear unread badge when the user navigates to the conversation
+  useEffect(() => {
+    const match = pathname.match(/\/conversations\/([^/]+)/);
+    if (match) clearUnread(match[1]);
+  }, [pathname, clearUnread]);
 
   useEffect(() => {
     pathnameRef.current = pathname;
@@ -106,7 +115,19 @@ export function useNotifications() {
 
     const handleDmNew = (message: DirectMessage) => {
       if (message.senderId === session.user.id) return;
-      if (pathnameRef.current.includes(`/conversations/${message.conversationId}`)) return;
+      const onConvPage = pathnameRef.current.includes(`/conversations/${message.conversationId}`);
+
+      // Always increment the unread badge (sidebar indicator)
+      if (!onConvPage) {
+        incrementUnread({
+          conversationId: message.conversationId,
+          senderName: message.sender.name ?? message.sender.username,
+          senderAvatar: message.sender.image,
+          href: `/conversations/${message.conversationId}`,
+        });
+      }
+
+      if (onConvPage) return;
 
       notify(
         message.sender.username,
