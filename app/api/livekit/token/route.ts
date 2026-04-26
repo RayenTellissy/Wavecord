@@ -56,6 +56,7 @@ export async function GET(req: Request) {
     const at = new AccessToken(apiKey, apiSecret, {
       identity,
       name: displayName,
+      metadata: session?.user?.image ?? "",
       ttl: "4h",
     });
 

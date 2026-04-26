@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   useParticipants,
@@ -41,7 +41,7 @@ interface VoiceRoomProps {
 export function VoiceRoom({ channel, serverId, serverName }: VoiceRoomProps) {
   const [connecting, setConnecting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { join, leave, channelId: activeChannelId, token, lastTextChannelId, lastTextServerId } = useVoiceStore();
+  const { join, leave, channelId: activeChannelId, token } = useVoiceStore();
   const router = useRouter();
 
   const alreadyConnected = activeChannelId === channel.id && !!token;
@@ -66,14 +66,26 @@ export function VoiceRoom({ channel, serverId, serverName }: VoiceRoomProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [channel.id]);
 
+  // Navigate away whenever the voice connection to this channel is dropped,
+  // regardless of whether disconnect was triggered here or from the VoiceHUD.
+  const prevActiveRef = useRef(activeChannelId);
+  useEffect(() => {
+    const prev = prevActiveRef.current;
+    prevActiveRef.current = activeChannelId;
+    if (prev === channel.id && activeChannelId !== channel.id) {
+      const { lastTextChannelId, lastTextServerId } = useVoiceStore.getState();
+      router.push(
+        lastTextChannelId && lastTextServerId
+          ? `/servers/${lastTextServerId}/channels/${lastTextChannelId}`
+          : `/servers/${serverId}/channels`
+      );
+    }
+  }, [activeChannelId, channel.id, router, serverId]);
+
   function handleLeave() {
     import("@/lib/sounds").then(({ playLeaveSound }) => playLeaveSound());
     leave();
-    if (lastTextChannelId && lastTextServerId) {
-      router.push(`/servers/${lastTextServerId}/channels/${lastTextChannelId}`);
-    } else {
-      router.push(`/servers/${serverId}/channels`);
-    }
+    // Navigation is handled by the useEffect above watching activeChannelId.
   }
 
   // Render the room immediately — participants populate once LiveKit connects.
@@ -150,7 +162,10 @@ function VoiceRoomInner({
         flex: 1,
         display: "flex",
         flexDirection: "column",
-        background: "var(--surface-1)",
+        background: "rgba(10,10,14,0.18)",
+        backdropFilter: "blur(60px) saturate(2.6) brightness(1.04)",
+        WebkitBackdropFilter: "blur(60px) saturate(2.6) brightness(1.04)",
+        minWidth: 0,
         overflow: "hidden",
       }}
     >
@@ -508,7 +523,7 @@ function VoiceControls({
         gap: "0.5rem",
         padding: "1rem",
         borderTop: "1px solid var(--border)",
-        background: "var(--bg)",
+        background: "rgba(10,10,14,0.30)",
         flexShrink: 0,
       }}
     >
