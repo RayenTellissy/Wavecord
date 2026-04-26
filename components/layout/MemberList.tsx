@@ -122,6 +122,7 @@ export function MemberList({ server, currentUserId, currentMemberRole }: MemberL
                   isSelf={member.user.id === currentUserId}
                   canModerate={isModOrAdmin && member.user.id !== currentUserId}
                   onContextMenu={(e) => handleContextMenu(e, member)}
+                  onClick={() => open("voiceParticipantProfile", { targetUserId: member.user.id, serverId: server.id })}
                 />
               ))}
             </div>
@@ -218,12 +219,14 @@ function MemberRow({
   isSelf,
   canModerate,
   onContextMenu,
+  onClick,
 }: {
   member: MemberWithUser;
   effectiveStatus: string | null | undefined;
   isSelf: boolean;
   canModerate: boolean;
   onContextMenu: (e: React.MouseEvent) => void;
+  onClick: () => void;
 }) {
   const [hovered, setHovered] = useState(false);
   const displayName = member.user.name ?? member.user.username ?? "User";
@@ -233,6 +236,7 @@ function MemberRow({
     <div
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      onClick={onClick}
       onContextMenu={canModerate ? onContextMenu : undefined}
       style={{
         display: "flex",
@@ -243,7 +247,7 @@ function MemberRow({
         borderRadius: "6px",
         background: hovered ? "var(--surface-2)" : "transparent",
         transition: "background 0.1s",
-        cursor: canModerate ? "context-menu" : "default",
+        cursor: "pointer",
       }}
     >
       {/* Avatar + status dot */}

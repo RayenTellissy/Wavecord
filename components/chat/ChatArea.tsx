@@ -50,6 +50,7 @@ export function ChatArea({ channel, currentUserId, isModOrAdmin }: ChatAreaProps
         currentUserId={currentUserId}
         isModOrAdmin={isModOrAdmin}
         onReply={setReplyTo}
+        serverId={channel.serverId}
       />
       <MessageInput
         channelId={channel.id}

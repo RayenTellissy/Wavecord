@@ -27,6 +27,7 @@ interface MessageItemProps {
   channelId: string;
   isModOrAdmin: boolean;
   onReply: (target: ReplyTarget) => void;
+  serverId?: string;
 }
 
 function formatTimestamp(date: Date): string {
@@ -42,6 +43,7 @@ export function MessageItem({
   channelId,
   isModOrAdmin,
   onReply,
+  serverId,
 }: MessageItemProps) {
   const { open: openModal } = useModal();
   const queryClient = useQueryClient();
@@ -164,7 +166,12 @@ export function MessageItem({
       <div style={{ flex: 1, minWidth: 0 }}>
         {!isGrouped && (
           <div style={{ display: "flex", alignItems: "baseline", gap: "0.5rem", marginBottom: "0.15rem" }}>
-            <span style={{ fontWeight: 600, fontSize: "0.92rem" }}>
+            <span
+              onClick={() => openModal("voiceParticipantProfile", { targetUserId: message.author.id, serverId })}
+              style={{ fontWeight: 600, fontSize: "0.92rem", cursor: "pointer" }}
+              onMouseEnter={(e) => { (e.currentTarget.style.textDecoration = "underline"); }}
+              onMouseLeave={(e) => { (e.currentTarget.style.textDecoration = "none"); }}
+            >
               {message.author.name ?? message.author.username ?? "User"}
             </span>
             <span style={{ fontSize: "0.72rem", color: "var(--text-muted)" }}>

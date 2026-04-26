@@ -14,9 +14,10 @@ interface MessageListProps {
   currentUserId: string;
   isModOrAdmin: boolean;
   onReply: (target: ReplyTarget) => void;
+  serverId?: string;
 }
 
-export function MessageList({ channelId, channelName, currentUserId, isModOrAdmin, onReply }: MessageListProps) {
+export function MessageList({ channelId, channelName, currentUserId, isModOrAdmin, onReply, serverId }: MessageListProps) {
   const { messages, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useMessages(channelId);
   const bottomRef = useRef<HTMLDivElement>(null);
   const topRef = useRef<HTMLDivElement>(null);
@@ -160,6 +161,7 @@ export function MessageList({ channelId, channelName, currentUserId, isModOrAdmi
             channelId={channelId}
             isModOrAdmin={isModOrAdmin}
             onReply={onReply}
+            serverId={serverId}
           />
         );
       })}

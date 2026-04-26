@@ -146,7 +146,12 @@ export function DMMessageItem({
       <div style={{ flex: 1, minWidth: 0 }}>
         {!isGrouped && (
           <div style={{ display: "flex", alignItems: "baseline", gap: "0.5rem", marginBottom: "0.15rem" }}>
-            <span style={{ fontWeight: 600, fontSize: "0.92rem" }}>
+            <span
+              onClick={() => openModal("voiceParticipantProfile", { targetUserId: message.senderId })}
+              style={{ fontWeight: 600, fontSize: "0.92rem", cursor: "pointer" }}
+              onMouseEnter={(e) => { (e.currentTarget.style.textDecoration = "underline"); }}
+              onMouseLeave={(e) => { (e.currentTarget.style.textDecoration = "none"); }}
+            >
               {message.sender.name ?? message.sender.username ?? "User"}
             </span>
             <span style={{ fontSize: "0.72rem", color: "var(--text-muted)" }}>
