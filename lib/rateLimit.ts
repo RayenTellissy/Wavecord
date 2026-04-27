@@ -10,10 +10,7 @@ setInterval(() => {
   for (const [k, v] of store) if (v.resetAt < now) store.delete(k);
 }, 5 * 60_000);
 
-/**
- * Sliding-window in-memory rate limiter.
- * Returns { allowed: true } or { allowed: false, retryAfter: seconds }.
- */
+// Sliding-window in-memory rate limiter.
 export function checkRateLimit(
   key: string,
   limit: number,
@@ -38,7 +35,7 @@ export function checkRateLimit(
   return { allowed: true, retryAfter: 0 };
 }
 
-/** Extract best-effort IP from a Next.js request. */
+// Extract IP from request.
 export function getIP(req: Request): string {
   return (
     req.headers.get("x-forwarded-for")?.split(",")[0].trim() ??
@@ -47,7 +44,7 @@ export function getIP(req: Request): string {
   );
 }
 
-/** Standard 429 response with Retry-After header. */
+// Standard 429 response.
 export function tooManyRequests(retryAfter: number) {
   return NextResponse.json(
     { error: "Too many requests. Please slow down." },

@@ -2,11 +2,7 @@ import { Server, type Connection, type ConnectionContext } from "partyserver";
 import { PartyEvents, type VoiceSession } from "./types";
 import type { Env } from "./env";
 
-// One DO instance per serverId. Holds in-memory voice-channel occupancy and
-// fans out member/voice/presence events. Hibernation is disabled because the
-// voice registry only lives in memory — same model as the old Socket.io
-// server's `voiceRooms` Map.
-
+// Voice channel state and event broadcasting.
 type SocketState = {
   userId?: string;
   voice?: { channelId: string; userId: string };
@@ -14,8 +10,6 @@ type SocketState = {
 
 export class MainParty extends Server<Env> {
   static options = { hibernate: false };
-  // partyserver provides this on the base class, but its type pulls in
-  // @cloudflare/workers-types globals; redeclare here to keep main tsc happy.
   declare env: Env;
 
   private voiceRooms = new Map<string, Map<string, VoiceSession>>();

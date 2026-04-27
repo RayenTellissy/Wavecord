@@ -3,15 +3,7 @@ import { PartyEvents } from "./types";
 import type { Env } from "./env";
 import { verifySecret } from "./server";
 
-// One DO instance per userId.
-//
-// Every browser client opens a single connection to its own user-party. The
-// first connection writes status=ONLINE (via a callback to the Next.js app);
-// the last one to close writes status=OFFLINE. The Next.js side does the
-// fan-out to every server-party the user belongs to.
-//
-// Hibernation is disabled because we hold a connectionCount in memory.
-
+// Presence management for users.
 export class UserParty extends Server<Env> {
   static options = { hibernate: false };
   declare env: Env;
