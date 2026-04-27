@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { requireUserId } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { getIO, userRoom, SocketEvents } from "@/lib/socket";
+import { publishToDm, publishToUser, PartyEvents } from "@/lib/party";
 
 const EditDMSchema = z.object({
   content: z.string().min(1).max(4000),
@@ -45,10 +45,11 @@ export async function PATCH(req: Request, { params }: RouteParams) {
       },
     });
 
-    getIO()
-      ?.to(userRoom(message.conversation.memberOneId))
-      .to(userRoom(message.conversation.memberTwoId))
-      .emit(SocketEvents.DM_MESSAGE_UPDATE, updated);
+    await Promise.all([
+      publishToDm(message.conversationId, PartyEvents.DM_MESSAGE_UPDATE, updated),
+      publishToUser(message.conversation.memberOneId, PartyEvents.DM_MESSAGE_UPDATE, updated),
+      publishToUser(message.conversation.memberTwoId, PartyEvents.DM_MESSAGE_UPDATE, updated),
+    ]);
 
     return NextResponse.json(updated);
   } catch (err) {
@@ -77,10 +78,12 @@ export async function DELETE(_req: Request, { params }: RouteParams) {
 
     await db.directMessage.delete({ where: { id: messageId } });
 
-    getIO()
-      ?.to(userRoom(message.conversation.memberOneId))
-      .to(userRoom(message.conversation.memberTwoId))
-      .emit(SocketEvents.DM_MESSAGE_DELETE, { id: messageId, conversationId: message.conversationId });
+    const payload = { id: messageId, conversationId: message.conversationId };
+    await Promise.all([
+      publishToDm(message.conversationId, PartyEvents.DM_MESSAGE_DELETE, payload),
+      publishToUser(message.conversation.memberOneId, PartyEvents.DM_MESSAGE_DELETE, payload),
+      publishToUser(message.conversation.memberTwoId, PartyEvents.DM_MESSAGE_DELETE, payload),
+    ]);
 
     return NextResponse.json({ id: messageId });
   } catch (err) {

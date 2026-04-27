@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { requireUserId } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { getIO, channelRoom, userRoom, SocketEvents } from "@/lib/socket";
+import { publishToChannel, publishToUser, PartyEvents } from "@/lib/party";
 import { checkRateLimit, tooManyRequests } from "@/lib/rateLimit";
 
 const MESSAGE_BATCH = 50;
@@ -160,36 +160,34 @@ export async function POST(req: Request) {
       },
     });
 
-    const io = getIO();
-    // Emit full message to active channel viewers — keeps recipients near-instant
-    io?.to(channelRoom(channelId)).emit(SocketEvents.CHANNEL_MESSAGE_NEW, message);
+    // Broadcast the message to active channel viewers.
+    void publishToChannel(channelId, PartyEvents.CHANNEL_MESSAGE_NEW, message);
 
-    // Fan-out per-user notifications off the response critical path. The custom
-    // Node server (server.ts) keeps the process alive after the response, so the
-    // promise continues to run.
-    if (io) {
-      const notifyPayload = {
-        channelId,
-        serverId: channel.serverId,
-        channelName: channel.name,
-        message: {
-          id: message.id,
-          content: message.content,
-          authorId: message.authorId,
-          author: message.author,
-        },
-      };
-      db.serverMember
-        .findMany({
-          where: { serverId: channel.serverId },
-          select: { userId: true },
-        })
-        .then((members) => {
-          for (const { userId: memberId } of members) {
-            io.to(userRoom(memberId)).emit(SocketEvents.CHANNEL_MESSAGE_NOTIFY, notifyPayload);
-          }
-        })
-        .catch((err) => console.error("[MESSAGE_POST] notify fan-out failed", err));
+    // Fan out per-user notifications. Vercel serverless functions need to await
+    // any work we want to actually run, so we await the fan-out before returning.
+    const notifyPayload = {
+      channelId,
+      serverId: channel.serverId,
+      channelName: channel.name,
+      message: {
+        id: message.id,
+        content: message.content,
+        authorId: message.authorId,
+        author: message.author,
+      },
+    };
+    try {
+      const members = await db.serverMember.findMany({
+        where: { serverId: channel.serverId },
+        select: { userId: true },
+      });
+      await Promise.all(
+        members.map((m) =>
+          publishToUser(m.userId, PartyEvents.CHANNEL_MESSAGE_NOTIFY, notifyPayload)
+        )
+      );
+    } catch (err) {
+      console.error("[MESSAGE_POST] notify fan-out failed", err);
     }
 
     return NextResponse.json(message, { status: 201 });

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { requireUserId } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { getIO, userRoom, SocketEvents } from "@/lib/socket";
+import { publishToDm, publishToUser, PartyEvents } from "@/lib/party";
 import { checkRateLimit, tooManyRequests } from "@/lib/rateLimit";
 
 const MESSAGE_BATCH = 50;
@@ -130,13 +130,13 @@ export async function POST(req: Request) {
       .update({ where: { id: conversationId }, data: { updatedAt: new Date() } })
       .catch((err) => console.error("[DM_POST] conversation bump failed", err));
 
-    const io = getIO();
-    if (io) {
-      const rooms = [userRoom(conversation.memberOneId), userRoom(conversation.memberTwoId)];
-      io.to(rooms[0]).to(rooms[1]).emit(SocketEvents.DM_MESSAGE_NEW, message);
-    } else if (process.env.NODE_ENV === "development") {
-      console.warn("[DM emit] getIO() returned undefined — message not broadcast");
-    }
+    // Conversation party (open conversation views) + each member's user party
+    // (sidebar previews, notifications).
+    await Promise.all([
+      publishToDm(conversationId, PartyEvents.DM_MESSAGE_NEW, message),
+      publishToUser(conversation.memberOneId, PartyEvents.DM_MESSAGE_NEW, message),
+      publishToUser(conversation.memberTwoId, PartyEvents.DM_MESSAGE_NEW, message),
+    ]);
 
     return NextResponse.json(message, { status: 201 });
   } catch (err) {

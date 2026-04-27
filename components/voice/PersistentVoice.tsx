@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
 import { Room, RoomEvent, Track, type Participant, type RemoteTrackPublication, type RemoteParticipant, type LocalTrackPublication } from "livekit-client";
 import { RoomContext, RoomAudioRenderer, useParticipants, useLocalParticipant, useTracks, isTrackReference, useRoomContext } from "@livekit/components-react";
 import { useVoiceStore } from "@/stores/voiceStore";
-import { useSocket } from "@/hooks/useSocket";
+import { useParty } from "@/hooks/useParty";
 import { playUserJoinSound, playUserLeaveSound, playScreenShareSound, playScreenShareEndSound, playNotificationSound } from "@/lib/sounds";
 
 /**
@@ -61,7 +61,6 @@ export function PersistentVoice({ children }: { children: React.ReactNode }) {
  * which voice channel — without having to be connected themselves.
  */
 function VoicePresenceSync() {
-  const { socket } = useSocket();
   const { data: session } = useSession();
   const channelId = useVoiceStore((s) => s.channelId);
   const serverId = useVoiceStore((s) => s.serverId);
@@ -75,32 +74,51 @@ function VoicePresenceSync() {
   const name = user?.name ?? user?.username ?? "User";
   const image = user?.image ?? null;
 
-  // Join / leave — re-emit on (re)connect so presence survives socket resets.
+  // Join: send voice:join on (re)connect so presence survives socket resets.
+  const onOpen = useCallback((s: import("partysocket").default) => {
+    if (!userId || !channelId || !serverId) return;
+    s.send(JSON.stringify({
+      event: "voice:join",
+      payload: {
+        channelId, serverId, userId, name, image,
+        isMuted: !useVoiceStore.getState().micEnabled || useVoiceStore.getState().deafened,
+        isDeafened: useVoiceStore.getState().deafened,
+      },
+    }));
+  }, [userId, channelId, serverId, name, image]);
+
+  const socketRef = useParty({
+    party: "main",
+    room: serverId ?? undefined,
+    userId,
+    onOpen,
+  });
+
+  // Send voice:leave when the channel/server changes or the component unmounts.
   useEffect(() => {
-    if (!socket || !userId || !channelId || !serverId) return;
-    const join = () => socket.emit("voice:join", {
-      channelId, serverId, userId, name, image,
-      isMuted: !useVoiceStore.getState().micEnabled || useVoiceStore.getState().deafened,
-      isDeafened: useVoiceStore.getState().deafened,
-    });
-    join();
-    socket.on("connect", join);
     return () => {
-      socket.off("connect", join);
-      socket.emit("voice:leave");
+      const s = socketRef.current;
+      if (!s) return;
+      try { s.send(JSON.stringify({ event: "voice:leave", payload: null })); } catch {}
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [socket, channelId, serverId, userId]);
+  }, [channelId, serverId]);
 
   // State updates (mute / deafen / live)
   useEffect(() => {
-    if (!socket || !channelId) return;
-    socket.emit("voice:state", {
-      isMuted: !micEnabled || deafened,
-      isDeafened: deafened,
-      isLive: screenShareLive || cameraLive,
-    });
-  }, [socket, channelId, micEnabled, deafened, screenShareLive, cameraLive]);
+    const s = socketRef.current;
+    if (!s || !channelId) return;
+    try {
+      s.send(JSON.stringify({
+        event: "voice:state",
+        payload: {
+          isMuted: !micEnabled || deafened,
+          isDeafened: deafened,
+          isLive: screenShareLive || cameraLive,
+        },
+      }));
+    } catch {}
+  }, [channelId, micEnabled, deafened, screenShareLive, cameraLive, socketRef]);
 
   return null;
 }

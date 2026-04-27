@@ -3,7 +3,7 @@ import { z } from "zod";
 import { requireUserId } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { MemberRole } from "@prisma/client";
-import { getIO, channelRoom, SocketEvents } from "@/lib/socket";
+import { publishToChannel, PartyEvents } from "@/lib/party";
 
 const EditMessageSchema = z.object({
   content: z.string().min(1).max(4000),
@@ -43,9 +43,7 @@ export async function PATCH(req: Request, { params }: RouteParams) {
       },
     });
 
-    getIO()
-      ?.to(channelRoom(message.channelId))
-      .emit(SocketEvents.CHANNEL_MESSAGE_UPDATE, updated);
+    await publishToChannel(message.channelId, PartyEvents.CHANNEL_MESSAGE_UPDATE, updated);
 
     return NextResponse.json(updated);
   } catch (err) {
@@ -88,9 +86,10 @@ export async function DELETE(_req: Request, { params }: RouteParams) {
 
     await db.message.delete({ where: { id: messageId } });
 
-    getIO()
-      ?.to(channelRoom(message.channelId))
-      .emit(SocketEvents.CHANNEL_MESSAGE_DELETE, { id: messageId, channelId: message.channelId });
+    await publishToChannel(message.channelId, PartyEvents.CHANNEL_MESSAGE_DELETE, {
+      id: messageId,
+      channelId: message.channelId,
+    });
 
     return NextResponse.json({ id: messageId });
   } catch (err) {

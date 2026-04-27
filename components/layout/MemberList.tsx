@@ -1,11 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
+import { useSession } from "next-auth/react";
 import { PersonIcon, KickIcon, BanIcon, ShieldIcon } from "@/components/icons";
 import { useModal } from "@/stores/modalStore";
-import { useSocket } from "@/hooks/useSocket";
+import { useParty, type PartyMessage } from "@/hooks/useParty";
+import { PartyEvents } from "@/party/types";
 import type { Server, ServerMember, User } from "@prisma/client";
 
 type MemberWithUser = ServerMember & {
@@ -43,18 +45,17 @@ const ROLE_GROUPS = [
 
 export function MemberList({ server, currentUserId, currentMemberRole }: MemberListProps) {
   const { open } = useModal();
-  const { socket } = useSocket();
+  const { data: session } = useSession();
   const [contextMenu, setContextMenu] = useState<ContextMenu | null>(null);
   const [statusOverrides, setStatusOverrides] = useState<Record<string, string>>({});
 
-  useEffect(() => {
-    if (!socket) return;
-    const onUserStatus = ({ userId, status }: { userId: string; status: string }) => {
-      setStatusOverrides((prev) => ({ ...prev, [userId]: status }));
-    };
-    socket.on("user:status", onUserStatus);
-    return () => { socket.off("user:status", onUserStatus); };
-  }, [socket]);
+  const onMessage = useCallback((msg: PartyMessage) => {
+    if (msg.event !== PartyEvents.USER_STATUS) return;
+    const { userId, status } = msg.payload as { userId: string; status: string };
+    setStatusOverrides((prev) => ({ ...prev, [userId]: status }));
+  }, []);
+
+  useParty({ party: "main", room: server.id, userId: session?.user?.id, onMessage });
 
   const isModOrAdmin = currentMemberRole === "ADMIN" || currentMemberRole === "MODERATOR";
   const isAdmin = currentMemberRole === "ADMIN";

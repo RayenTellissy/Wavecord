@@ -3,7 +3,7 @@ import { z } from "zod";
 import { requireUserId } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { MemberRole } from "@prisma/client";
-import { getIO, serverRoom, SocketEvents } from "@/lib/socket";
+import { publishToServer, PartyEvents } from "@/lib/party";
 
 const RoleSchema = z.object({
   role: z.enum(["ADMIN", "MODERATOR", "GUEST"]),
@@ -45,7 +45,7 @@ export async function PATCH(req: Request, { params }: RouteParams) {
       include: { user: { select: { id: true, name: true, username: true, image: true } } },
     });
 
-    getIO()?.to(serverRoom(serverId)).emit(SocketEvents.MEMBER_UPDATE, updated);
+    await publishToServer(serverId, PartyEvents.MEMBER_UPDATE, updated);
     return NextResponse.json(updated);
   } catch (err) {
     console.error("[MEMBER_PATCH]", err);
@@ -89,9 +89,10 @@ export async function DELETE(_req: Request, { params }: RouteParams) {
 
     await db.serverMember.delete({ where: { id: memberId } });
 
-    getIO()
-      ?.to(serverRoom(serverId))
-      .emit(SocketEvents.MEMBER_REMOVE, { memberId, userId: target.userId });
+    await publishToServer(serverId, PartyEvents.MEMBER_REMOVE, {
+      memberId,
+      userId: target.userId,
+    });
 
     return NextResponse.json({ ok: true });
   } catch (err) {

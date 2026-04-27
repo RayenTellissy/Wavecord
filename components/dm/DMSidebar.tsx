@@ -1,15 +1,16 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import axios from "axios";
+import { useSession } from "next-auth/react";
 import { UserPanel } from "@/components/layout/UserPanel";
 import { PersonIcon, PlusIcon, XIcon } from "@/components/icons";
-import { useSocket } from "@/hooks/useSocket";
-import { SocketEvents } from "@/lib/socket";
+import { useParty, type PartyMessage } from "@/hooks/useParty";
+import { PartyEvents } from "@/party/types";
 import type { DMWithRelations } from "@/hooks/useDirectMessages";
 import type { Conversation, User } from "@prisma/client";
 
@@ -30,7 +31,7 @@ export function DMSidebar({ currentUserId, initialConversations }: DMSidebarProp
   const activeConversationId = params?.conversationId as string | undefined;
 
   const [conversations, setConversations] = useState(initialConversations);
-  const { socket } = useSocket();
+  const { data: session } = useSession();
   const [showNewDM, setShowNewDM] = useState(false);
   const [search, setSearch] = useState("");
   const [results, setResults] = useState<Pick<User, "id" | "name" | "username" | "image">[]>([]);
@@ -38,36 +39,36 @@ export function DMSidebar({ currentUserId, initialConversations }: DMSidebarProp
   const searchRef = useRef<HTMLInputElement>(null);
 
   // Keep sidebar in sync with incoming DMs (preview + ordering)
-  useEffect(() => {
-    if (!socket) return;
+  const onMessage = useCallback((msg: PartyMessage) => {
+    if (msg.event !== PartyEvents.DM_MESSAGE_NEW) return;
+    const message = msg.payload as DMWithRelations;
+    setConversations((prev) => {
+      const idx = prev.findIndex((c) => c.id === message.conversationId);
+      if (idx === -1) return prev;
+      const updated = {
+        ...prev[idx],
+        updatedAt: new Date(message.createdAt),
+        directMessages: [
+          {
+            content: message.content,
+            createdAt: new Date(message.createdAt),
+            deleted: message.deleted,
+            senderId: message.senderId,
+          },
+        ],
+      };
+      const next = prev.slice();
+      next.splice(idx, 1);
+      return [updated, ...next];
+    });
+  }, []);
 
-    function bumpConversation(message: DMWithRelations) {
-      setConversations((prev) => {
-        const idx = prev.findIndex((c) => c.id === message.conversationId);
-        if (idx === -1) return prev;
-        const updated = {
-          ...prev[idx],
-          updatedAt: new Date(message.createdAt),
-          directMessages: [
-            {
-              content: message.content,
-              createdAt: new Date(message.createdAt),
-              deleted: message.deleted,
-              senderId: message.senderId,
-            },
-          ],
-        };
-        const next = prev.slice();
-        next.splice(idx, 1);
-        return [updated, ...next];
-      });
-    }
-
-    socket.on(SocketEvents.DM_MESSAGE_NEW, bumpConversation);
-    return () => {
-      socket.off(SocketEvents.DM_MESSAGE_NEW, bumpConversation);
-    };
-  }, [socket]);
+  useParty({
+    party: "user",
+    room: session?.user?.id,
+    userId: session?.user?.id,
+    onMessage,
+  });
 
   // Auto-focus search input when panel opens
   useEffect(() => {

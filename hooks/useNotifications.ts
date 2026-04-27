@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
-import { useSocket } from "./useSocket";
-import { SocketEvents } from "@/lib/socket";
+import { useParty, type PartyMessage } from "./useParty";
+import { PartyEvents } from "@/party/types";
 import { playNotificationSound } from "@/lib/sounds";
 import { useNotificationStore } from "@/stores/notificationStore";
 import { useDmUnreadStore } from "@/stores/dmUnreadStore";
@@ -31,7 +31,6 @@ interface DirectMessage {
 
 export function useNotifications() {
   const { data: session } = useSession();
-  const { socket } = useSocket();
   const pathname = usePathname();
   const pathnameRef = useRef(pathname);
   const mutedChannelIds = useRef<Set<string>>(new Set());
@@ -39,25 +38,18 @@ export function useNotifications() {
   const incrementUnread = useDmUnreadStore((s) => s.increment);
   const clearUnread = useDmUnreadStore((s) => s.clear);
 
-  // Clear unread badge when the user navigates to the conversation
   useEffect(() => {
     const match = pathname.match(/\/conversations\/([^/]+)/);
     if (match) clearUnread(match[1]);
   }, [pathname, clearUnread]);
 
-  useEffect(() => {
-    pathnameRef.current = pathname;
-  });
+  useEffect(() => { pathnameRef.current = pathname; });
 
-  // Request browser notification permission once
   useEffect(() => {
     if (typeof window === "undefined" || !("Notification" in window)) return;
-    if (Notification.permission === "default") {
-      Notification.requestPermission();
-    }
+    if (Notification.permission === "default") Notification.requestPermission();
   }, []);
 
-  // Load muted channel IDs from the server once on mount
   useEffect(() => {
     fetch("/api/users/profile/notifications")
       .then((r) => r.json())
@@ -73,8 +65,8 @@ export function useNotifications() {
       .catch(() => {});
   }, []);
 
-  useEffect(() => {
-    if (!socket || !session?.user) return;
+  const onMessage = useCallback((msg: PartyMessage) => {
+    if (!session?.user) return;
 
     const notify = (
       title: string,
@@ -85,7 +77,6 @@ export function useNotifications() {
     ) => {
       playNotificationSound();
       push({ title, body, avatarUrl, href, type });
-
       if (
         typeof window !== "undefined" &&
         "Notification" in window &&
@@ -97,11 +88,11 @@ export function useNotifications() {
       }
     };
 
-    const handleChannelNotify = (payload: ChannelNotifyPayload) => {
+    if (msg.event === PartyEvents.CHANNEL_MESSAGE_NOTIFY) {
+      const payload = msg.payload as ChannelNotifyPayload;
       if (payload.message.authorId === session.user.id) return;
       if (mutedChannelIds.current.has(payload.channelId)) return;
       if (pathnameRef.current.includes(`/channels/${payload.channelId}`)) return;
-
       const { author } = payload.message;
       const body = payload.message.content || "Sent an attachment";
       notify(
@@ -111,13 +102,10 @@ export function useNotifications() {
         `/servers/${payload.serverId}/channels/${payload.channelId}`,
         "channel",
       );
-    };
-
-    const handleDmNew = (message: DirectMessage) => {
+    } else if (msg.event === PartyEvents.DM_MESSAGE_NEW) {
+      const message = msg.payload as DirectMessage;
       if (message.senderId === session.user.id) return;
       const onConvPage = pathnameRef.current.includes(`/conversations/${message.conversationId}`);
-
-      // Always increment the unread badge (sidebar indicator)
       if (!onConvPage) {
         incrementUnread({
           conversationId: message.conversationId,
@@ -126,9 +114,7 @@ export function useNotifications() {
           href: `/conversations/${message.conversationId}`,
         });
       }
-
       if (onConvPage) return;
-
       notify(
         message.sender.username,
         message.content || "Sent an attachment",
@@ -136,14 +122,8 @@ export function useNotifications() {
         `/conversations/${message.conversationId}`,
         "dm",
       );
-    };
+    }
+  }, [session, push, incrementUnread]);
 
-    socket.on(SocketEvents.CHANNEL_MESSAGE_NOTIFY, handleChannelNotify);
-    socket.on(SocketEvents.DM_MESSAGE_NEW, handleDmNew);
-
-    return () => {
-      socket.off(SocketEvents.CHANNEL_MESSAGE_NOTIFY, handleChannelNotify);
-      socket.off(SocketEvents.DM_MESSAGE_NEW, handleDmNew);
-    };
-  }, [socket, session, push]);
+  useParty({ party: "user", room: session?.user?.id, userId: session?.user?.id, onMessage });
 }

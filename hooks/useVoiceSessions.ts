@@ -1,7 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useSocket } from "./useSocket";
+import { useCallback, useState } from "react";
+import { useSession } from "next-auth/react";
+import { useParty, type PartyMessage } from "./useParty";
+import { PartyEvents } from "@/party/types";
 
 export interface VoiceSession {
   userId: string;
@@ -17,23 +19,17 @@ export interface VoiceSession {
 type ChannelUpdate = { channelId: string; serverId: string; sessions: VoiceSession[] };
 
 /**
- * Subscribes to server-wide voice-channel occupancy broadcasts for a given server.
- * Returns a map of channelId → sessions visible to every member of the server,
- * regardless of whether they are connected to the LiveKit room.
+ * Subscribes to the server party for voice-channel occupancy broadcasts.
+ * Returns a map of channelId → sessions for the given server.
  */
 export function useVoiceSessions(serverId: string | undefined): Record<string, VoiceSession[]> {
-  const { socket } = useSocket();
+  const { data: session } = useSession();
   const [sessions, setSessions] = useState<Record<string, VoiceSession[]>>({});
 
-  useEffect(() => {
-    if (!socket || !serverId) return;
-
-    const joinRoom = () => socket.emit("join-server", serverId);
-    joinRoom();
-    socket.on("connect", joinRoom);
-
-    const onUpdate = (u: ChannelUpdate) => {
-      if (u.serverId !== serverId) return;
+  const onMessage = useCallback((msg: PartyMessage) => {
+    if (msg.event === PartyEvents.VOICE_STATE_UPDATE) {
+      const u = msg.payload as ChannelUpdate;
+      if (!serverId || u.serverId !== serverId) return;
       setSessions((prev) => {
         if (u.sessions.length === 0) {
           if (!prev[u.channelId]) return prev;
@@ -43,29 +39,20 @@ export function useVoiceSessions(serverId: string | undefined): Record<string, V
         }
         return { ...prev, [u.channelId]: u.sessions };
       });
-    };
-
-    const onSnapshot = (updates: ChannelUpdate[]) => {
+    } else if (msg.event === PartyEvents.VOICE_STATE_SNAPSHOT) {
+      const updates = msg.payload as ChannelUpdate[];
       setSessions((prev) => {
         const next = { ...prev };
         for (const u of updates) {
-          if (u.serverId !== serverId) continue;
+          if (!serverId || u.serverId !== serverId) continue;
           next[u.channelId] = u.sessions;
         }
         return next;
       });
-    };
+    }
+  }, [serverId]);
 
-    socket.on("voice:state:update", onUpdate);
-    socket.on("voice:state:snapshot", onSnapshot);
-
-    return () => {
-      socket.off("connect", joinRoom);
-      socket.off("voice:state:update", onUpdate);
-      socket.off("voice:state:snapshot", onSnapshot);
-      socket.emit("leave-server", serverId);
-    };
-  }, [socket, serverId]);
+  useParty({ party: "main", room: serverId, userId: session?.user?.id, onMessage });
 
   return sessions;
 }

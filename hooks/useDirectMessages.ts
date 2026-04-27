@@ -1,9 +1,9 @@
 "use client";
 
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect } from "react";
-import { useSocket } from "./useSocket";
-import { SocketEvents } from "@/lib/socket";
+import { useCallback } from "react";
+import { useParty, type PartyMessage } from "./useParty";
+import { PartyEvents } from "@/party/types";
 import type { DirectMessage, User, Attachment } from "@prisma/client";
 
 export type DMWithRelations = DirectMessage & {
@@ -23,31 +23,23 @@ async function fetchDirectMessages(conversationId: string, cursor?: string) {
 
 export function useDirectMessages(conversationId: string) {
   const queryClient = useQueryClient();
-  const { socket } = useSocket();
   const queryKey = ["direct-messages", conversationId];
 
   const query = useInfiniteQuery({
     queryKey,
-    queryFn: ({ pageParam }) =>
-      fetchDirectMessages(conversationId, pageParam as string | undefined),
+    queryFn: ({ pageParam }) => fetchDirectMessages(conversationId, pageParam as string | undefined),
     initialPageParam: undefined as string | undefined,
     getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
   });
 
-  useEffect(() => {
-    if (!socket) return;
-
-    function onNewMessage(message: DMWithRelations) {
+  const onMessage = useCallback((msg: PartyMessage) => {
+    if (msg.event === PartyEvents.DM_MESSAGE_NEW) {
+      const message = msg.payload as DMWithRelations;
       if (message.conversationId !== conversationId) return;
       queryClient.setQueryData<DMQueryData>(queryKey, (old) => {
         if (!old) return old;
-        // Dedup in case the sender's optimistic insert already added it
-        const alreadyInCache = old.pages.some((p) =>
-          p.messages.some((m) => m.id === message.id)
-        );
+        const alreadyInCache = old.pages.some((p) => p.messages.some((m) => m.id === message.id));
         if (alreadyInCache) return old;
-        // Swap the sender's still-pending optimistic copy in place so the
-        // full-color message doesn't render alongside the grayed-out one.
         const optimisticMatch = old.pages
           .flatMap((p) => p.messages)
           .find(
@@ -61,9 +53,7 @@ export function useDirectMessages(conversationId: string) {
             ...old,
             pages: old.pages.map((page) => ({
               ...page,
-              messages: page.messages.map((m) =>
-                m.id === optimisticMatch.id ? message : m
-              ),
+              messages: page.messages.map((m) => (m.id === optimisticMatch.id ? message : m)),
             })),
           };
         }
@@ -74,9 +64,8 @@ export function useDirectMessages(conversationId: string) {
           ),
         };
       });
-    }
-
-    function onUpdateMessage(message: DMWithRelations) {
+    } else if (msg.event === PartyEvents.DM_MESSAGE_UPDATE) {
+      const message = msg.payload as DMWithRelations;
       if (message.conversationId !== conversationId) return;
       queryClient.setQueryData<DMQueryData>(queryKey, (old) => {
         if (!old) return old;
@@ -84,15 +73,12 @@ export function useDirectMessages(conversationId: string) {
           ...old,
           pages: old.pages.map((page) => ({
             ...page,
-            messages: page.messages.map((m) =>
-              m.id === message.id ? message : m
-            ),
+            messages: page.messages.map((m) => (m.id === message.id ? message : m)),
           })),
         };
       });
-    }
-
-    function onDeleteMessage(payload: { id: string; conversationId: string }) {
+    } else if (msg.event === PartyEvents.DM_MESSAGE_DELETE) {
+      const payload = msg.payload as { id: string; conversationId: string };
       if (payload.conversationId !== conversationId) return;
       queryClient.setQueryData<DMQueryData>(queryKey, (old) => {
         if (!old) return old;
@@ -105,23 +91,10 @@ export function useDirectMessages(conversationId: string) {
         };
       });
     }
+  }, [conversationId, queryClient]); // eslint-disable-line react-hooks/exhaustive-deps
 
-    socket.on(SocketEvents.DM_MESSAGE_NEW, onNewMessage);
-    socket.on(SocketEvents.DM_MESSAGE_UPDATE, onUpdateMessage);
-    socket.on(SocketEvents.DM_MESSAGE_DELETE, onDeleteMessage);
+  useParty({ party: "dm", room: conversationId, onMessage });
 
-    return () => {
-      socket.off(SocketEvents.DM_MESSAGE_NEW, onNewMessage);
-      socket.off(SocketEvents.DM_MESSAGE_UPDATE, onUpdateMessage);
-      socket.off(SocketEvents.DM_MESSAGE_DELETE, onDeleteMessage);
-    };
-  }, [socket, conversationId, queryClient]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const messages =
-    query.data?.pages
-      .flatMap((p) => p.messages)
-      .slice()
-      .reverse() ?? [];
-
+  const messages = query.data?.pages.flatMap((p) => p.messages).slice().reverse() ?? [];
   return { ...query, messages };
 }
