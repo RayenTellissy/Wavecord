@@ -77,7 +77,9 @@ export function useParty({ party, room, userId, onMessage, onOpen }: UsePartyOpt
 
     entry.socket.addEventListener("message", handleMessage);
     entry.socket.addEventListener("open", handleOpen);
-    if (entry.socket.readyState === entry.socket.OPEN) handleOpen();
+    // WebSocket.OPEN === 1. Don't read .OPEN off the instance — partysocket's
+    // wrapper doesn't reliably expose those static constants as instance props.
+    if ((entry.socket as { readyState: number }).readyState === 1) handleOpen();
 
     return () => {
       entry!.socket.removeEventListener("message", handleMessage);

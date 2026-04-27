@@ -39,6 +39,24 @@ export class MainParty extends Server<Env> {
     let parsed: { event: string; payload: unknown };
     try { parsed = JSON.parse(message); } catch { return; }
 
+    // A late-joining subscriber (e.g. <MemberList> remounting on nav) may
+    // attach to an already-open socket and miss the initial snapshot fired
+    // by onConnect. Resend on demand.
+    if (parsed.event === "voice:snapshot:request") {
+      const snapshot: { channelId: string; serverId: string; sessions: VoiceSession[] }[] = [];
+      for (const [channelId, room] of this.voiceRooms) {
+        const sessions = Array.from(room.values());
+        if (sessions.length) snapshot.push({ channelId, serverId: this.name, sessions });
+      }
+      if (snapshot.length) {
+        conn.send(JSON.stringify({ event: PartyEvents.VOICE_STATE_SNAPSHOT, payload: snapshot }));
+      } else {
+        // Empty snapshot still useful — clients can clear stale state.
+        conn.send(JSON.stringify({ event: PartyEvents.VOICE_STATE_SNAPSHOT, payload: [] }));
+      }
+      return;
+    }
+
     if (parsed.event === "voice:join") {
       const p = parsed.payload as Partial<VoiceSession> | undefined;
       if (!p?.channelId || !p?.userId || !p?.serverId) return;
