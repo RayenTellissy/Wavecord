@@ -120,7 +120,6 @@ export function MessageItem({
           : "2px solid transparent",
       }}
     >
-      {/* Avatar column */}
       <div style={{ width: 40, flexShrink: 0 }}>
         {!isGrouped ? (
           <div style={{
@@ -162,7 +161,6 @@ export function MessageItem({
         ) : null}
       </div>
 
-      {/* Content */}
       <div style={{ flex: 1, minWidth: 0 }}>
         {!isGrouped && (
           <div style={{ display: "flex", alignItems: "baseline", gap: "0.5rem", marginBottom: "0.15rem" }}>
@@ -180,7 +178,6 @@ export function MessageItem({
           </div>
         )}
 
-        {/* Reply indicator */}
         {message.replyTo && (
           <div style={{
             display: "flex",
@@ -205,7 +202,6 @@ export function MessageItem({
           </div>
         )}
 
-        {/* Message body */}
         {editing ? (
           <div>
             <textarea
@@ -286,7 +282,6 @@ export function MessageItem({
           </div>
         )}
 
-        {/* Legacy single fileUrl */}
         {message.fileUrl && !message.deleted && (
           <div style={{ marginTop: "0.5rem" }}>
             <Image
@@ -299,7 +294,6 @@ export function MessageItem({
           </div>
         )}
 
-        {/* Attachment records */}
         {!message.deleted && message.attachments.length > 0 && (
           <div style={{ display: "flex", flexDirection: "column", gap: "0.4rem", marginTop: "0.5rem" }}>
             {message.attachments.map((att) =>
@@ -375,7 +369,6 @@ export function MessageItem({
           </div>
         )}
 
-        {/* Reactions */}
         {message.reactions.length > 0 && (
           <div style={{ display: "flex", flexWrap: "wrap", gap: "0.35rem", marginTop: "0.4rem" }}>
             {Object.entries(
@@ -411,7 +404,6 @@ export function MessageItem({
         )}
       </div>
 
-      {/* Hover action buttons — hidden on pending optimistic messages */}
       <AnimatePresence>
         {hovered && !editing && !isPending && (
           <motion.div
@@ -501,7 +493,6 @@ function FileIcon({ fileType }: { fileType: string }) {
   );
 }
 
-// Import Tooltip inline to avoid circular dep issue
 function Tooltip({ content, side = "top", children }: { content: string; side?: string; children: React.ReactNode }) {
   const [v, setV] = useState(false);
   const pos: Record<string, React.CSSProperties> = {

@@ -50,7 +50,6 @@ export async function PATCH(req: Request) {
 
   const data = parsed.data;
 
-  // Username uniqueness check
   if (data.username) {
     const existing = await db.user.findUnique({ where: { username: data.username } });
     if (existing && existing.id !== userId) {

@@ -4,7 +4,6 @@ import { db } from "@/lib/db";
 import { MemberRole } from "@prisma/client";
 import { checkRateLimit, tooManyRequests } from "@/lib/rateLimit";
 
-// POST /api/join/[inviteCode] — join a server via invite
 export async function POST(
   _req: Request,
   { params }: { params: Promise<{ inviteCode: string }> }
@@ -12,7 +11,6 @@ export async function POST(
   try {
     const userId = await requireUserId();
 
-    // 10 join attempts per user per hour
     const rl = checkRateLimit(`join:${userId}`, 10, 60 * 60_000);
     if (!rl.allowed) return tooManyRequests(rl.retryAfter);
 
@@ -50,7 +48,6 @@ export async function POST(
   }
 }
 
-// GET /api/join/[inviteCode] — preview server info before joining
 export async function GET(
   _req: Request,
   { params }: { params: Promise<{ inviteCode: string }> }

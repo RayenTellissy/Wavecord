@@ -4,7 +4,6 @@ import { requireUserId } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { MemberRole } from "@prisma/client";
 
-// GET /api/servers/[serverId]/ban — list bans (mod/admin)
 export async function GET(
   _req: Request,
   { params }: { params: Promise<{ serverId: string }> }
@@ -43,7 +42,6 @@ const BanSchema = z.object({
   reason: z.string().max(500).optional(),
 });
 
-// POST /api/servers/[serverId]/ban — ban a user
 export async function POST(
   req: Request,
   { params }: { params: Promise<{ serverId: string }> }
@@ -82,7 +80,6 @@ export async function POST(
       return NextResponse.json({ error: "Cannot ban an admin" }, { status: 403 });
     }
 
-    // Create ban and remove member in transaction
     await db.$transaction([
       db.ban.upsert({
         where: { userId_serverId: { userId, serverId } },
@@ -99,7 +96,6 @@ export async function POST(
   }
 }
 
-// DELETE /api/servers/[serverId]/ban?userId=xxx — unban
 export async function DELETE(
   req: Request,
   { params }: { params: Promise<{ serverId: string }> }

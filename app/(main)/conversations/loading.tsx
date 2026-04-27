@@ -1,7 +1,6 @@
 export default function ConversationsLoading() {
   return (
     <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
-      {/* DM sidebar skeleton */}
       <div style={{
         width: 240,
         minWidth: 240,
@@ -14,7 +13,6 @@ export default function ConversationsLoading() {
         overflow: "hidden",
         boxShadow: "inset -1px 0 0 rgba(139,92,246,0.12), inset 0 2px 0 rgba(255,255,255,0.14), 4px 0 40px rgba(0,0,0,0.45)",
       }}>
-        {/* Header */}
         <div style={{
           padding: "0.9rem 1rem",
           borderBottom: "1px solid var(--border)",
@@ -38,7 +36,6 @@ export default function ConversationsLoading() {
           }} />
         </div>
 
-        {/* Conversation skeleton rows */}
         <div style={{ flex: 1, padding: "0.5rem 0" }}>
           {[1, 2, 3, 4, 5].map((i) => (
             <div key={i} style={{
@@ -80,7 +77,6 @@ export default function ConversationsLoading() {
         </div>
       </div>
 
-      {/* Main content area */}
       <div style={{ flex: 1, background: "var(--bg)" }} />
 
       <style>{`

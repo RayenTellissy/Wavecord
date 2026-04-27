@@ -28,7 +28,6 @@ export async function POST(req: Request) {
   try {
     const userId = await requireUserId();
 
-    // 15 uploads per user per hour
     const rl = checkRateLimit(`upload:${userId}`, 15, 60 * 60_000);
     if (!rl.allowed) return tooManyRequests(rl.retryAfter);
 

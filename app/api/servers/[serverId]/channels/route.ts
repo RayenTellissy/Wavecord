@@ -14,7 +14,6 @@ const CreateChannelSchema = z.object({
   categoryId: z.string().uuid().optional(),
 });
 
-// GET /api/servers/[serverId]/channels
 export async function GET(
   _req: Request,
   { params }: { params: Promise<{ serverId: string }> }
@@ -39,7 +38,6 @@ export async function GET(
   }
 }
 
-// POST /api/servers/[serverId]/channels
 export async function POST(
   req: Request,
   { params }: { params: Promise<{ serverId: string }> }
@@ -66,7 +64,6 @@ export async function POST(
 
     const { name, type, categoryId } = parsed.data;
 
-    // Position = count of existing channels of same type
     const count = await db.channel.count({ where: { serverId } });
 
     const channel = await db.channel.create({

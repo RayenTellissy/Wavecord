@@ -10,7 +10,6 @@ const UpdateCategorySchema = z.object({
 
 type RouteParams = { params: Promise<{ serverId: string; categoryId: string }> };
 
-// PATCH /api/servers/[serverId]/categories/[categoryId]
 export async function PATCH(req: Request, { params }: RouteParams) {
   try {
     const userId = await requireUserId();
@@ -42,7 +41,6 @@ export async function PATCH(req: Request, { params }: RouteParams) {
   }
 }
 
-// DELETE /api/servers/[serverId]/categories/[categoryId]
 export async function DELETE(_req: Request, { params }: RouteParams) {
   try {
     const userId = await requireUserId();
@@ -56,7 +54,6 @@ export async function DELETE(_req: Request, { params }: RouteParams) {
     const category = await db.category.findFirst({ where: { id: categoryId, serverId } });
     if (!category) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
-    // Delete all channels in the category (messages/reactions cascade via DB)
     await db.channel.deleteMany({ where: { categoryId, serverId } });
     await db.category.delete({ where: { id: categoryId } });
 

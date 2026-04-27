@@ -48,7 +48,6 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         }
       `}</style>
 
-      {/* Orb 1 — large violet, top-left */}
       <div style={{
         position: "absolute",
         top: "-10%",
@@ -62,7 +61,6 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         pointerEvents: "none",
       }} />
 
-      {/* Orb 2 — cyan, bottom-right */}
       <div style={{
         position: "absolute",
         bottom: "-12%",
@@ -76,7 +74,6 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         pointerEvents: "none",
       }} />
 
-      {/* Orb 3 — pink/rose, top-right */}
       <div style={{
         position: "absolute",
         top: "5%",
@@ -90,7 +87,6 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         pointerEvents: "none",
       }} />
 
-      {/* Orb 4 — deep purple, bottom-left */}
       <div style={{
         position: "absolute",
         bottom: "0%",
@@ -104,7 +100,6 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         pointerEvents: "none",
       }} />
 
-      {/* Subtle dot grid */}
       <div style={{
         position: "absolute",
         inset: 0,
@@ -114,7 +109,6 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         pointerEvents: "none",
       }} />
 
-      {/* Floating particles */}
       {[
         { top: "18%", left: "12%", delay: "0s",   size: 3, duration: "7s"  },
         { top: "72%", left: "22%", delay: "1.4s", size: 2, duration: "9s"  },
@@ -145,7 +139,6 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         }} />
       ))}
 
-      {/* Vignette to darken edges and focus center */}
       <div style={{
         position: "absolute",
         inset: 0,

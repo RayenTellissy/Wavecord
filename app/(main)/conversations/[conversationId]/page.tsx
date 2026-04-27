@@ -24,7 +24,6 @@ export default async function ConversationPage({ params }: PageProps) {
 
   const { memberOneId, memberTwoId, memberOne, memberTwo } = conversation;
 
-  // Verify the current user is a participant
   if (memberOneId !== session.user.id && memberTwoId !== session.user.id) {
     redirect("/conversations");
   }

@@ -8,7 +8,6 @@ const CreateConversationSchema = z.object({
   targetUserId: z.string().uuid(),
 });
 
-// GET /api/conversations — list all conversations for current user
 export async function GET() {
   try {
     const userId = await requireUserId();
@@ -39,7 +38,6 @@ export async function GET() {
   }
 }
 
-// POST /api/conversations — create or fetch existing conversation with targetUserId
 export async function POST(req: Request) {
   try {
     const userId = await requireUserId();
@@ -62,7 +60,6 @@ export async function POST(req: Request) {
     });
     if (!target) return NextResponse.json({ error: "User not found" }, { status: 404 });
 
-    // Enforce consistent ordering: memberOneId < memberTwoId (lexicographic)
     const [memberOneId, memberTwoId] =
       userId < targetUserId ? [userId, targetUserId] : [targetUserId, userId];
 

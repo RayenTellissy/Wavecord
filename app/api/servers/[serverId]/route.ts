@@ -9,7 +9,6 @@ const UpdateServerSchema = z.object({
   imageUrl: z.string().url().optional().or(z.literal("")),
 });
 
-// GET /api/servers/[serverId]
 export async function GET(
   _req: Request,
   { params }: { params: Promise<{ serverId: string }> }
@@ -48,7 +47,6 @@ export async function GET(
   }
 }
 
-// PATCH /api/servers/[serverId]
 export async function PATCH(
   req: Request,
   { params }: { params: Promise<{ serverId: string }> }
@@ -87,7 +85,6 @@ export async function PATCH(
   }
 }
 
-// DELETE /api/servers/[serverId]
 export async function DELETE(
   _req: Request,
   { params }: { params: Promise<{ serverId: string }> }

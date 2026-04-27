@@ -1,7 +1,6 @@
 export default function ServerLoading() {
   return (
     <div className="skeleton" style={{ display: "flex", flex: 1, overflow: "hidden" }}>
-      {/* Channel sidebar skeleton */}
       <div style={{
         width: 240,
         minWidth: 240,
@@ -11,7 +10,6 @@ export default function ServerLoading() {
         flexDirection: "column",
         overflow: "hidden",
       }}>
-        {/* Server header */}
         <div style={{
           height: 49,
           borderBottom: "1px solid var(--border)",
@@ -24,7 +22,6 @@ export default function ServerLoading() {
           <div style={{ flex: 1, height: 14, borderRadius: 4, background: "var(--surface-2)" }} />
         </div>
 
-        {/* Category + channels skeleton */}
         <div style={{ flex: 1, padding: "0.75rem 0.5rem", display: "flex", flexDirection: "column", gap: "0.5rem" }}>
           <div style={{ width: 80, height: 10, borderRadius: 4, background: "var(--surface-2)", margin: "0.5rem 0.25rem 0.25rem" }} />
           {[1, 2, 3].map((i) => (
@@ -37,7 +34,6 @@ export default function ServerLoading() {
         </div>
       </div>
 
-      {/* Chat area skeleton */}
       <div style={{
         flex: 1,
         display: "flex",

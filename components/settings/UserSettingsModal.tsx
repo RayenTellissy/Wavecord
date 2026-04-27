@@ -16,8 +16,6 @@ import {
 import Image from "next/image";
 import axios from "axios";
 
-// Types
-
 type UserProfile = {
   id: string;
   name: string | null;
@@ -52,8 +50,6 @@ const STATUS_OPTIONS: { value: UserProfile["status"]; label: string; color: stri
   { value: "DND", label: "Do Not Disturb", color: "var(--dnd)" },
   { value: "OFFLINE", label: "Invisible", color: "var(--offline)" },
 ];
-
-// Profile Tab
 
 function ProfileTab({ initialProfile }: { initialProfile: UserProfile }) {
   const { update: updateSession } = useSession();
@@ -390,8 +386,6 @@ function ProfileTab({ initialProfile }: { initialProfile: UserProfile }) {
     </div>
   );
 }
-
-// Notifications Tab
 
 function NotificationsTab() {
   const [servers, setServers] = useState<NotificationServer[]>([]);

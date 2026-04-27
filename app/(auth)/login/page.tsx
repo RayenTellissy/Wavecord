@@ -156,7 +156,6 @@ function LoginForm() {
           padding: "2.5rem",
         }}
       >
-        {/* Logo */}
         <div style={{ textAlign: "center", marginBottom: "2rem" }}>
           <div style={{ display: "flex", justifyContent: "center", marginBottom: "0.75rem" }}>
             <WaveLogo size={52} />
@@ -175,7 +174,6 @@ function LoginForm() {
           </p>
         </div>
 
-        {/* GitHub */}
         <button className="auth-btn-github" onClick={handleGitHub}>
           <GitHubSVG />
           Continue with GitHub

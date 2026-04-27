@@ -10,7 +10,6 @@ const EditDMSchema = z.object({
 
 type RouteParams = { params: Promise<{ messageId: string }> };
 
-// PATCH /api/direct-messages/[messageId] — edit own DM
 export async function PATCH(req: Request, { params }: RouteParams) {
   try {
     const userId = await requireUserId();
@@ -58,7 +57,6 @@ export async function PATCH(req: Request, { params }: RouteParams) {
   }
 }
 
-// DELETE /api/direct-messages/[messageId] — soft-delete (own only)
 export async function DELETE(_req: Request, { params }: RouteParams) {
   try {
     const userId = await requireUserId();

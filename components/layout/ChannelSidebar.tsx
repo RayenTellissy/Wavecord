@@ -79,14 +79,12 @@ export function ChannelSidebar({ server, currentUserId, currentMemberRole }: Cha
   }
 
   async function handleVoiceChannelClick(channel: Channel, forceNavigate = false) {
-    // Already connected to this exact channel → navigate to full room UI
     if (voiceChannelId === channel.id && voiceToken) {
       router.push(`/servers/${server.id}/channels/${channel.id}`);
       closeMobile();
       return;
     }
 
-    // Optimistically show the current user in the participant list immediately
     const currentMember = server.members.find((m) => m.user.id === currentUserId);
     if (currentMember) {
       setOptimisticParticipant({
@@ -96,7 +94,6 @@ export function ChannelSidebar({ server, currentUserId, currentMemberRole }: Cha
       });
     }
 
-    // Otherwise join (or switch) — stay on current page, audio connects in background
     setJoiningVoice(channel.id);
     try {
       const res = await fetch(`/api/livekit/token?channelId=${channel.id}`);
@@ -136,7 +133,6 @@ export function ChannelSidebar({ server, currentUserId, currentMemberRole }: Cha
         boxShadow: "inset -1px 0 0 rgba(139,92,246,0.12), inset 0 2px 0 rgba(255,255,255,0.14), inset 1px 0 0 rgba(255,255,255,0.05), 4px 0 40px rgba(0,0,0,0.45)",
       }}
     >
-      {/* Server Header */}
       <div style={{ position: "relative" }}>
         <button
           onClick={() => setServerMenuOpen(!serverMenuOpen)}
@@ -169,7 +165,6 @@ export function ChannelSidebar({ server, currentUserId, currentMemberRole }: Cha
           {serverMenuOpen && (
             <>
               <div style={{ position: "fixed", inset: 0, zIndex: 50 }} onClick={() => setServerMenuOpen(false)} />
-              {/* Outer: prismatic border wrapper */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.95, y: -4 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -188,7 +183,6 @@ export function ChannelSidebar({ server, currentUserId, currentMemberRole }: Cha
                 }}
                 onClick={() => setServerMenuOpen(false)}
               >
-                {/* Inner: dark glass fill */}
                 <div style={{
                   borderRadius: "15px",
                   background: "rgba(13,13,16,0.88)",
@@ -196,7 +190,6 @@ export function ChannelSidebar({ server, currentUserId, currentMemberRole }: Cha
                   position: "relative",
                   overflow: "hidden",
                 }}>
-                  {/* Specular highlight */}
                   <div style={{
                     position: "absolute",
                     top: 0, left: "8%", right: "8%",
@@ -228,7 +221,6 @@ export function ChannelSidebar({ server, currentUserId, currentMemberRole }: Cha
         </AnimatePresence>
       </div>
 
-      {/* Channel List */}
       <div style={{ flex: 1, overflowY: "auto", padding: "0.5rem 0" }}>
         {server.categories.map((category) => {
           const textChannels = category.channels.filter((c) => c.type === "TEXT");
@@ -236,7 +228,6 @@ export function ChannelSidebar({ server, currentUserId, currentMemberRole }: Cha
 
           return (
             <div key={category.id}>
-              {/* Category header */}
               <button
                 onClick={() => setCollapsed((c) => ({ ...c, [category.id]: !c[category.id] }))}
                 onMouseEnter={() => setHoveredCategoryId(category.id)}
@@ -308,7 +299,6 @@ export function ChannelSidebar({ server, currentUserId, currentMemberRole }: Cha
               <AnimatePresence initial={false}>
                 {!collapsed[category.id] && (
                   <motion.div variants={stagger} initial="initial" animate="animate">
-                    {/* Text channels */}
                     {textChannels.length > 0 && (
                       <>
                         {voiceChannels.length > 0 && (
@@ -329,7 +319,6 @@ export function ChannelSidebar({ server, currentUserId, currentMemberRole }: Cha
                       </>
                     )}
 
-                    {/* Voice channels */}
                     {voiceChannels.length > 0 && (
                       <>
                         {textChannels.length > 0 && (
@@ -379,14 +368,11 @@ export function ChannelSidebar({ server, currentUserId, currentMemberRole }: Cha
         })}
       </div>
 
-      {/* Spacer so UserPanel stays above the fixed VoiceHUD when connected */}
       {voiceChannelId && <div style={{ height: 80, flexShrink: 0 }} />}
       <UserPanel />
     </div>
   );
 }
-
-// Section divider label
 
 function SectionLabel({ label }: { label: string }) {
   return (
@@ -405,8 +391,6 @@ function SectionLabel({ label }: { label: string }) {
     </div>
   );
 }
-
-// Text channel item
 
 function TextChannelItem({
   channel,
@@ -456,8 +440,6 @@ function TextChannelItem({
     </motion.div>
   );
 }
-
-// Voice channel item
 
 function VoiceChannelItem({
   channel,
@@ -577,10 +559,8 @@ function VoiceChannelItem({
         )}
       </motion.div>
 
-      {/* Participants list — visible to everyone in the server, not just those connected */}
       {(participants.length > 0 || optimisticParticipant) && (
         <div style={{ paddingLeft: "1.75rem", paddingBottom: "0.25rem" }}>
-          {/* Optimistic self-entry: shown while connecting, grayed out */}
           {optimisticParticipant && !participants.find((p) => p.identity === optimisticParticipant.identity) && (
             <div
               style={{
@@ -729,7 +709,6 @@ function VoiceChannelItem({
         </div>
       )}
 
-      {/* Stream hover popup */}
       <AnimatePresence>
         {streamPopup && (
         <motion.div
@@ -755,11 +734,8 @@ function VoiceChannelItem({
             pointerEvents: "all",
           }}
         >
-          {/* Inner: dark glass fill */}
           <div style={{ borderRadius: "15px", background: "rgba(13,13,16,0.88)", overflow: "hidden", position: "relative" }}>
-          {/* Specular */}
           <div style={{ position: "absolute", top: 0, left: "8%", right: "8%", height: "1px", background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.50), rgba(255,255,255,0.65), rgba(255,255,255,0.50), transparent)", zIndex: 3 }} />
-          {/* Thumbnail */}
           <div
             style={{
               background: "#0a0a0d",
@@ -820,7 +796,6 @@ function VoiceChannelItem({
             </span>
           </div>
 
-          {/* Info + button */}
           <div style={{ padding: "0.6rem 0.75rem 0.75rem" }}>
             <div
               style={{
@@ -872,15 +847,13 @@ function VoiceChannelItem({
               Watch Stream
             </button>
           </div>
-          </div>{/* /inner */}
+          </div>
         </motion.div>
         )}
       </AnimatePresence>
     </div>
   );
 }
-
-// Per-participant mute / deafen icons
 
 function ParticipantStatusIcons({ isMuted, isDeafened }: { isMuted: boolean; isDeafened: boolean }) {
   return (
@@ -894,8 +867,6 @@ function ParticipantStatusIcons({ isMuted, isDeafened }: { isMuted: boolean; isD
     </>
   );
 }
-
-// Connection quality dot
 
 const QUALITY_CONFIG = {
   [ConnectionQuality.Excellent]: { color: "#22c55e", glow: "0 0 5px #22c55e", pulse: false },
@@ -930,8 +901,6 @@ function ConnectionQualityDot() {
   );
 }
 
-// Joining indicator: three pulsing dots
-
 function JoiningIndicator() {
   return (
     <span style={{ display: "flex", alignItems: "center", gap: "3px", flexShrink: 0 }}>
@@ -957,8 +926,6 @@ function JoiningIndicator() {
     </span>
   );
 }
-
-// Shared styles
 
 function channelRowStyle(isActive: boolean): React.CSSProperties {
   return {
@@ -1006,8 +973,6 @@ function clearHover(e: React.MouseEvent, isActive: boolean) {
   }
 }
 
-// Channel action button
-
 function ChannelActionBtn({
   children,
   onClick,
@@ -1049,8 +1014,6 @@ const catActionStyle: React.CSSProperties = {
   borderRadius: "4px",
   color: "var(--text-muted)",
 };
-
-// Dropdown menu item
 
 function MenuItem({
   icon, label, onClick, danger = false,

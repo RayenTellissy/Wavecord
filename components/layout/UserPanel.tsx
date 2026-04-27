@@ -37,7 +37,6 @@ export function UserPanel() {
       alignItems: "center",
       gap: "0.5rem",
     }}>
-      {/* Avatar */}
       <div style={{ position: "relative", flexShrink: 0 }}>
         <div style={{
           width: 34,
@@ -58,7 +57,6 @@ export function UserPanel() {
             <PersonIcon size={18} />
           )}
         </div>
-        {/* Status dot */}
         <div style={{
           position: "absolute",
           bottom: -1,
@@ -72,7 +70,6 @@ export function UserPanel() {
         }} />
       </div>
 
-      {/* Name */}
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{
           fontSize: "0.85rem",
@@ -95,7 +92,6 @@ export function UserPanel() {
         </div>
       </div>
 
-      {/* Controls */}
       <div style={{ display: "flex", gap: "0.1rem" }}>
         <Tooltip content={muted ? "Unmute" : "Mute"} side="top" adjustX={6} adjustY={-4}>
           <motion.button

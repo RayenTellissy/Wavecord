@@ -11,7 +11,6 @@ const EditMessageSchema = z.object({
 
 type RouteParams = { params: Promise<{ messageId: string }> };
 
-// PATCH /api/messages/[messageId] — edit own message
 export async function PATCH(req: Request, { params }: RouteParams) {
   try {
     const userId = await requireUserId();
@@ -52,7 +51,6 @@ export async function PATCH(req: Request, { params }: RouteParams) {
   }
 }
 
-// DELETE /api/messages/[messageId] — soft delete (own) or hard delete (mod+)
 export async function DELETE(_req: Request, { params }: RouteParams) {
   try {
     const userId = await requireUserId();
@@ -69,7 +67,6 @@ export async function DELETE(_req: Request, { params }: RouteParams) {
 
     const isAuthor = message.authorId === userId;
 
-    // Check if moderator/admin
     const member = message.channel.serverId
       ? await db.serverMember.findFirst({
           where: {

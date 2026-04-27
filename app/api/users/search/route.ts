@@ -3,12 +3,10 @@ import { requireUserId } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { checkRateLimit, tooManyRequests } from "@/lib/rateLimit";
 
-// GET /api/users/search?q=alice
 export async function GET(req: Request) {
   try {
     const userId = await requireUserId();
 
-    // 20 searches per user per minute
     const rl = checkRateLimit(`search:${userId}`, 20, 60_000);
     if (!rl.allowed) return tooManyRequests(rl.retryAfter);
 

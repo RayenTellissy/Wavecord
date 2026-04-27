@@ -5,7 +5,6 @@ const { auth } = NextAuth(authConfig);
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-// Routes that don't require authentication
 const PUBLIC_PATHS = [
   "/login",
   "/register",
@@ -29,7 +28,6 @@ export default auth((req: NextRequest & { auth: unknown }) => {
     return NextResponse.redirect(loginUrl);
   }
 
-  // Redirect authenticated users away from login/register
   if (session?.user && (pathname === "/login" || pathname === "/register")) {
     return NextResponse.redirect(new URL("/", req.url));
   }

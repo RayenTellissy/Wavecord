@@ -17,7 +17,6 @@ const RegisterSchema = z.object({
 
 export async function POST(req: Request) {
   try {
-    // 5 registrations per IP per hour
     const rl = checkRateLimit(`register:${getIP(req)}`, 5, 60 * 60_000);
     if (!rl.allowed) return tooManyRequests(rl.retryAfter);
 
@@ -33,7 +32,6 @@ export async function POST(req: Request) {
 
     const { name, username, email, password } = parsed.data;
 
-    // Check uniqueness
     const [existingEmail, existingUsername] = await Promise.all([
       db.user.findUnique({ where: { email } }),
       db.user.findUnique({ where: { username } }),

@@ -30,7 +30,6 @@ const SendMessageSchema = z
     { message: "Message must have content or an attachment" }
   );
 
-// GET /api/messages?channelId=xxx&cursor=xxx
 export async function GET(req: Request) {
   try {
     const userId = await requireUserId();
@@ -42,7 +41,6 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: "channelId required" }, { status: 400 });
     }
 
-    // Verify membership via channel → server
     const channel = await db.channel.findUnique({
       where: { id: channelId },
       select: { serverId: true },
@@ -88,12 +86,10 @@ export async function GET(req: Request) {
   }
 }
 
-// POST /api/messages
 export async function POST(req: Request) {
   try {
     const userId = await requireUserId();
 
-    // 30 messages per user per minute
     const rl = checkRateLimit(`msg:${userId}`, 30, 60_000);
     if (!rl.allowed) return tooManyRequests(rl.retryAfter);
 
@@ -106,7 +102,6 @@ export async function POST(req: Request) {
 
     const { content, channelId, fileUrl, replyToId, attachments } = parsed.data;
 
-    // Single query: fetch channel + verify membership in one round-trip
     const channel = await db.channel.findUnique({
       where: { id: channelId },
       select: {
@@ -160,11 +155,8 @@ export async function POST(req: Request) {
       },
     });
 
-    // Broadcast the message to active channel viewers.
     void publishToChannel(channelId, PartyEvents.CHANNEL_MESSAGE_NEW, message);
 
-    // Fan out per-user notifications. Vercel serverless functions need to await
-    // any work we want to actually run, so we await the fan-out before returning.
     const notifyPayload = {
       channelId,
       serverId: channel.serverId,

@@ -11,7 +11,6 @@ const CreateServerSchema = z.object({
   imageUrl: z.string().url().optional().or(z.literal("")),
 });
 
-// GET /api/servers — list servers the current user belongs to
 export async function GET() {
   try {
     const userId = await requireUserId();
@@ -35,12 +34,10 @@ export async function GET() {
   }
 }
 
-// POST /api/servers — create a new server
 export async function POST(req: Request) {
   try {
     const userId = await requireUserId();
 
-    // 5 server creations per user per hour
     const rl = checkRateLimit(`server-create:${userId}`, 5, 60 * 60_000);
     if (!rl.allowed) return tooManyRequests(rl.retryAfter);
 
@@ -53,7 +50,6 @@ export async function POST(req: Request) {
 
     const { name, imageUrl } = parsed.data;
 
-    // Create server + member in a transaction, then add default channel
     const newServer = await db.$transaction(async (tx) => {
       const srv = await tx.server.create({
         data: {

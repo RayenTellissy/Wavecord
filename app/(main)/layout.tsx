@@ -33,7 +33,6 @@ export default async function MainLayout({
   const session = await auth();
   if (!session?.user) redirect("/login");
 
-  // Fetch all servers the user belongs to (same shape as GET /api/servers)
   const memberships = await db.serverMember.findMany({
     where: { userId: session.user.id },
     include: {
@@ -61,7 +60,6 @@ export default async function MainLayout({
         <VoiceHUD />
       </PersistentVoice>
 
-      {/* Global modals */}
       <CreateServerModal />
       <JoinServerModal />
       <InviteModal />

@@ -11,7 +11,6 @@ const RoleSchema = z.object({
 
 type RouteParams = { params: Promise<{ serverId: string; memberId: string }> };
 
-// PATCH /api/servers/[serverId]/members/[memberId] — change role
 export async function PATCH(req: Request, { params }: RouteParams) {
   try {
     const userId = await requireUserId();
@@ -53,7 +52,6 @@ export async function PATCH(req: Request, { params }: RouteParams) {
   }
 }
 
-// DELETE /api/servers/[serverId]/members/[memberId] — kick member
 export async function DELETE(_req: Request, { params }: RouteParams) {
   try {
     const userId = await requireUserId();
@@ -79,7 +77,6 @@ export async function DELETE(_req: Request, { params }: RouteParams) {
       return NextResponse.json({ error: "Cannot kick yourself" }, { status: 400 });
     }
 
-    // Moderators cannot kick admins
     if (
       actor.role === MemberRole.MODERATOR &&
       target.role === MemberRole.ADMIN

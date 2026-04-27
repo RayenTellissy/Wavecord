@@ -10,7 +10,6 @@ const CreateCategorySchema = z.object({
 
 type RouteParams = { params: Promise<{ serverId: string }> };
 
-// POST /api/servers/[serverId]/categories
 export async function POST(req: Request, { params }: RouteParams) {
   try {
     const userId = await requireUserId();

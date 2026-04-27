@@ -25,7 +25,6 @@ export function MessageList({ channelId, channelName, currentUserId, isModOrAdmi
   const isInitialLoad = useRef(true);
   const prevMessageCountRef = useRef(0);
 
-  // Auto-scroll to bottom on initial load and new messages
   useEffect(() => {
     if (messages.length > 0 && isInitialLoad.current) {
       bottomRef.current?.scrollIntoView();
@@ -33,8 +32,6 @@ export function MessageList({ channelId, channelName, currentUserId, isModOrAdmi
     }
   }, [messages.length]);
 
-  // Scroll to bottom only when a genuinely new message is added (not when an
-  // optimistic message is swapped out for the real one — same count, different id).
   useEffect(() => {
     if (!containerRef.current || isInitialLoad.current) return;
     if (messages.length <= prevMessageCountRef.current) {
@@ -49,7 +46,6 @@ export function MessageList({ channelId, channelName, currentUserId, isModOrAdmi
     }
   }, [messages]);
 
-  // IntersectionObserver for infinite scroll (load older messages)
   const handleTopVisible = useCallback(
     (entries: IntersectionObserverEntry[]) => {
       if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
@@ -57,7 +53,6 @@ export function MessageList({ channelId, channelName, currentUserId, isModOrAdmi
         const prevScrollHeight = container?.scrollHeight ?? 0;
 
         fetchNextPage().then(() => {
-          // Preserve scroll position after loading older messages
           if (container) {
             const newScrollHeight = container.scrollHeight;
             container.scrollTop += newScrollHeight - prevScrollHeight;
@@ -100,7 +95,6 @@ export function MessageList({ channelId, channelName, currentUserId, isModOrAdmi
         flexDirection: "column",
       }}
     >
-      {/* Top sentinel for infinite scroll */}
       <div ref={topRef} style={{ height: 1 }} />
 
       {isFetchingNextPage && (
@@ -109,7 +103,6 @@ export function MessageList({ channelId, channelName, currentUserId, isModOrAdmi
         </div>
       )}
 
-      {/* Channel welcome header (shown when no more pages) */}
       {!hasNextPage && (
         <div style={{
           padding: "1.5rem 1rem 0.75rem",
@@ -140,7 +133,6 @@ export function MessageList({ channelId, channelName, currentUserId, isModOrAdmi
         </div>
       )}
 
-      {/* Messages */}
       {messages.map((message, i) => {
         const prev = messages[i - 1];
         const isGrouped =
@@ -180,7 +172,6 @@ export function MessageList({ channelId, channelName, currentUserId, isModOrAdmi
         </div>
       )}
 
-      {/* Bottom anchor */}
       <div ref={bottomRef} style={{ height: 16, flexShrink: 0 }} />
     </div>
   );

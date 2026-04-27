@@ -17,7 +17,6 @@ const UpdateChannelSchema = z.object({
 
 type RouteParams = { params: Promise<{ serverId: string; channelId: string }> };
 
-// PATCH /api/servers/[serverId]/channels/[channelId]
 export async function PATCH(req: Request, { params }: RouteParams) {
   try {
     const userId = await requireUserId();
@@ -55,7 +54,6 @@ export async function PATCH(req: Request, { params }: RouteParams) {
   }
 }
 
-// DELETE /api/servers/[serverId]/channels/[channelId]
 export async function DELETE(_req: Request, { params }: RouteParams) {
   try {
     const userId = await requireUserId();

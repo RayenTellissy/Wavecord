@@ -526,8 +526,6 @@ function BansTab({ serverId, onAction }: { serverId: string; onAction: () => voi
   );
 }
 
-// Helpers
-
 function ActionButton({
   icon,
   label,

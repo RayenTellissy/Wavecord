@@ -4,7 +4,6 @@ import { requireUserId } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { MemberRole } from "@prisma/client";
 
-// GET /api/servers/[serverId]/invite — get current invite code
 export async function GET(
   _req: Request,
   { params }: { params: Promise<{ serverId: string }> }
@@ -28,7 +27,6 @@ export async function GET(
   }
 }
 
-// POST /api/servers/[serverId]/invite — regenerate invite code
 export async function POST(
   _req: Request,
   { params }: { params: Promise<{ serverId: string }> }

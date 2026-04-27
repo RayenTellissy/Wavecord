@@ -27,7 +27,6 @@ export function ChatArea({ channel, currentUserId, isModOrAdmin }: ChatAreaProps
     setLastTextChannel(channel.id, channel.serverId);
   }, [channel.id, channel.serverId, setLastTextChannel]);
 
-  // Clear reply when switching channels
   useEffect(() => {
     setReplyTo(null);
   }, [channel.id]);

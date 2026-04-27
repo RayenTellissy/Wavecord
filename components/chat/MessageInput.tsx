@@ -123,7 +123,6 @@ export function MessageInput({ channelId, channelName, replyTo, onClearReply }: 
     onClearReply?.();
     if (textareaRef.current) textareaRef.current.style.height = "auto";
 
-    // Optimistic message — appears instantly while the request is in flight
     const optimisticId = `optimistic-${Date.now()}`;
     const now = new Date().toISOString();
     const optimistic = {
@@ -232,7 +231,6 @@ export function MessageInput({ channelId, channelName, replyTo, onClearReply }: 
 
   return (
     <div style={{ padding: "0 1rem 1rem", background: "transparent" }}>
-      {/* Hidden file input */}
       <input
         ref={fileInputRef}
         type="file"
@@ -241,7 +239,6 @@ export function MessageInput({ channelId, channelName, replyTo, onClearReply }: 
         onChange={handleFileSelect}
       />
 
-      {/* Reply banner */}
       <AnimatePresence>
         {replyTo && (
           <motion.div
@@ -296,7 +293,6 @@ export function MessageInput({ channelId, channelName, replyTo, onClearReply }: 
         )}
       </AnimatePresence>
 
-      {/* Pending file preview */}
       <AnimatePresence>
         {(pendingFile || uploading) && (
           <motion.div
@@ -403,7 +399,6 @@ export function MessageInput({ channelId, channelName, replyTo, onClearReply }: 
         )}
       </AnimatePresence>
 
-      {/* Input box */}
       <div
         onFocusCapture={(e) => {
           e.currentTarget.style.borderColor = "rgba(139,92,246,0.55)";
@@ -431,7 +426,6 @@ export function MessageInput({ channelId, channelName, replyTo, onClearReply }: 
           boxShadow: "inset 0 1.5px 0 rgba(255,255,255,0.16), 0 4px 24px rgba(0,0,0,0.35)",
         }}
       >
-        {/* Attach button */}
         <motion.button
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
@@ -459,7 +453,6 @@ export function MessageInput({ channelId, channelName, replyTo, onClearReply }: 
           <AttachIcon size={20} />
         </motion.button>
 
-        {/* Text area */}
         <textarea
           ref={textareaRef}
           value={content}
@@ -485,7 +478,6 @@ export function MessageInput({ channelId, channelName, replyTo, onClearReply }: 
           }}
         />
 
-        {/* Emoji button + picker */}
         <div style={{ position: "relative", flexShrink: 0, alignSelf: "flex-end" }} ref={emojiPickerRef}>
           <motion.button
             whileHover={{ scale: 1.1 }}
@@ -511,7 +503,6 @@ export function MessageInput({ channelId, channelName, replyTo, onClearReply }: 
           )}
         </div>
 
-        {/* Send button */}
         <AnimatePresence>
           {canSend && (
             <motion.button
@@ -559,8 +550,6 @@ export function MessageInput({ channelId, channelName, replyTo, onClearReply }: 
     </div>
   );
 }
-
-// Helpers
 
 function SendIcon() {
   return (

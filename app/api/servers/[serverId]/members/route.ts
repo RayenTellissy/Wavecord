@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { requireUserId } from "@/lib/auth";
 import { db } from "@/lib/db";
 
-// GET /api/servers/[serverId]/members
 export async function GET(
   _req: Request,
   { params }: { params: Promise<{ serverId: string }> }

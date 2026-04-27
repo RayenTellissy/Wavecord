@@ -7,7 +7,6 @@ const db = new PrismaClient();
 async function main() {
   console.log("🌱 Seeding database...");
 
-  // Clean slate
   await db.message.deleteMany();
   await db.channel.deleteMany();
   await db.category.deleteMany();
@@ -15,7 +14,6 @@ async function main() {
   await db.server.deleteMany();
   await db.user.deleteMany();
 
-  // Users
   const password = await bcrypt.hash("password123", 12);
 
   const alice = await db.user.create({
@@ -48,7 +46,6 @@ async function main() {
     },
   });
 
-  // Server
   const server = await db.server.create({
     data: {
       name: "Wavecord HQ",

@@ -26,7 +26,6 @@ export function Modal({ isOpen, onClose, title, children, width = 460 }: ModalPr
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* Backdrop */}
           <motion.div
             key="backdrop"
             initial={{ opacity: 0 }}
@@ -44,7 +43,6 @@ export function Modal({ isOpen, onClose, title, children, width = 460 }: ModalPr
             }}
           />
 
-          {/* Centering container */}
           <div
             style={{
               position: "fixed",
@@ -56,7 +54,6 @@ export function Modal({ isOpen, onClose, title, children, width = 460 }: ModalPr
               pointerEvents: "none",
             }}
           >
-            {/* Outer wrapper — the prismatic border + blur */}
             <motion.div
               key="modal"
               initial={{ opacity: 0, scale: 0.88, y: 20 }}
@@ -76,7 +73,6 @@ export function Modal({ isOpen, onClose, title, children, width = 460 }: ModalPr
               }}
             >
               <div>
-                {/* Header */}
                 <div style={{
                   display: "flex",
                   alignItems: "center",
@@ -122,7 +118,6 @@ export function Modal({ isOpen, onClose, title, children, width = 460 }: ModalPr
                   </button>
                 </div>
 
-                {/* Body */}
                 <div style={{ padding: "1.5rem" }}>{children}</div>
               </div>
             </motion.div>

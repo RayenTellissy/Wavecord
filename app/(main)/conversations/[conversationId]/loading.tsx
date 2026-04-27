@@ -10,7 +10,6 @@ export default function ConversationLoading() {
       minWidth: 0,
       overflow: "hidden",
     }}>
-      {/* Header skeleton */}
       <div style={{
         height: 49,
         borderBottom: "1px solid var(--border)",
@@ -24,7 +23,6 @@ export default function ConversationLoading() {
         <div style={{ width: 100, height: 14, borderRadius: 4, background: "var(--surface-2)" }} />
       </div>
 
-      {/* Messages skeleton */}
       <div style={{ flex: 1, padding: "1rem 1rem 0", display: "flex", flexDirection: "column", gap: "1.25rem", overflow: "hidden" }}>
         {[100, 160, 80, 220, 110, 140].map((w, i) => (
           <div key={i} style={{ display: "flex", gap: "0.75rem", alignItems: "flex-start" }}>
@@ -37,7 +35,6 @@ export default function ConversationLoading() {
         ))}
       </div>
 
-      {/* Input skeleton */}
       <div style={{ padding: "0 1rem 1rem", flexShrink: 0 }}>
         <div style={{ height: 44, borderRadius: 8, background: "var(--surface-2)" }} />
       </div>

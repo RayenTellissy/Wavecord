@@ -28,7 +28,6 @@ const SendDMSchema = z
     { message: "Message must have content or an attachment" }
   );
 
-// GET /api/direct-messages?conversationId=xxx&cursor=xxx
 export async function GET(req: Request) {
   try {
     const userId = await requireUserId();
@@ -73,12 +72,10 @@ export async function GET(req: Request) {
   }
 }
 
-// POST /api/direct-messages
 export async function POST(req: Request) {
   try {
     const userId = await requireUserId();
 
-    // 30 DMs per user per minute
     const rl = checkRateLimit(`dm:${userId}`, 30, 60_000);
     if (!rl.allowed) return tooManyRequests(rl.retryAfter);
 
@@ -126,7 +123,6 @@ export async function POST(req: Request) {
       },
     });
 
-    // Bump conversation updatedAt so sidebar sorts correctly — fire and forget
     db.conversation
       .update({ where: { id: conversationId }, data: { updatedAt: new Date() } })
       .catch((err) => console.error("[DM_POST] conversation bump failed", err));
@@ -134,8 +130,6 @@ export async function POST(req: Request) {
     revalidateTag(`conversations:${conversation.memberOneId}`);
     revalidateTag(`conversations:${conversation.memberTwoId}`);
 
-    // Conversation party (open conversation views) + each member's user party
-    // (sidebar previews, notifications).
     await Promise.all([
       publishToDm(conversationId, PartyEvents.DM_MESSAGE_NEW, message),
       publishToUser(conversation.memberOneId, PartyEvents.DM_MESSAGE_NEW, message),
