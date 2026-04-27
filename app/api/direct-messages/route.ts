@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidateTag } from "next/cache";
 import { z } from "zod";
 import { requireUserId } from "@/lib/auth";
 import { db } from "@/lib/db";
@@ -129,6 +130,9 @@ export async function POST(req: Request) {
     db.conversation
       .update({ where: { id: conversationId }, data: { updatedAt: new Date() } })
       .catch((err) => console.error("[DM_POST] conversation bump failed", err));
+
+    revalidateTag(`conversations:${conversation.memberOneId}`);
+    revalidateTag(`conversations:${conversation.memberTwoId}`);
 
     // Conversation party (open conversation views) + each member's user party
     // (sidebar previews, notifications).

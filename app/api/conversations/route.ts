@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidateTag } from "next/cache";
 import { z } from "zod";
 import { requireUserId } from "@/lib/auth";
 import { db } from "@/lib/db";
@@ -78,6 +79,9 @@ export async function POST(req: Request) {
         },
       },
     });
+
+    revalidateTag(`conversations:${userId}`);
+    revalidateTag(`conversations:${targetUserId}`);
 
     return NextResponse.json(conversation, { status: 201 });
   } catch (err) {
