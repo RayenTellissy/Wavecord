@@ -43,9 +43,12 @@ export class UserParty extends Server<Env> {
   private async notifyPresence(status: "ONLINE" | "OFFLINE") {
     const url = this.env.NEXT_APP_URL;
     const secret = this.env.PARTYKIT_SECRET;
-    if (!url || !secret) return;
+    if (!url || !secret) {
+      console.error("[user-party] missing env: url=%s secret=%s", !!url, !!secret);
+      return;
+    }
     try {
-      await fetch(`${url}/api/internal/presence`, {
+      const res = await fetch(`${url}/api/internal/presence`, {
         method: "POST",
         headers: {
           "content-type": "application/json",
@@ -53,6 +56,7 @@ export class UserParty extends Server<Env> {
         },
         body: JSON.stringify({ userId: this.name, status }),
       });
+      console.log("[user-party] presence %s → %d", status, res.status);
     } catch (err) {
       console.error("[user-party] presence notify failed", err);
     }
