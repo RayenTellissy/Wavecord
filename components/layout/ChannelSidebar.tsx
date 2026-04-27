@@ -136,7 +136,7 @@ export function ChannelSidebar({ server, currentUserId, currentMemberRole }: Cha
         boxShadow: "inset -1px 0 0 rgba(139,92,246,0.12), inset 0 2px 0 rgba(255,255,255,0.14), inset 1px 0 0 rgba(255,255,255,0.05), 4px 0 40px rgba(0,0,0,0.45)",
       }}
     >
-      {/* ── Server Header ── */}
+      {/* Server Header */}
       <div style={{ position: "relative" }}>
         <button
           onClick={() => setServerMenuOpen(!serverMenuOpen)}
@@ -228,7 +228,7 @@ export function ChannelSidebar({ server, currentUserId, currentMemberRole }: Cha
         </AnimatePresence>
       </div>
 
-      {/* ── Channel List ── */}
+      {/* Channel List */}
       <div style={{ flex: 1, overflowY: "auto", padding: "0.5rem 0" }}>
         {server.categories.map((category) => {
           const textChannels = category.channels.filter((c) => c.type === "TEXT");
@@ -308,7 +308,7 @@ export function ChannelSidebar({ server, currentUserId, currentMemberRole }: Cha
               <AnimatePresence initial={false}>
                 {!collapsed[category.id] && (
                   <motion.div variants={stagger} initial="initial" animate="animate">
-                    {/* ── Text channels ── */}
+                    {/* Text channels */}
                     {textChannels.length > 0 && (
                       <>
                         {voiceChannels.length > 0 && (
@@ -329,7 +329,7 @@ export function ChannelSidebar({ server, currentUserId, currentMemberRole }: Cha
                       </>
                     )}
 
-                    {/* ── Voice channels ── */}
+                    {/* Voice channels */}
                     {voiceChannels.length > 0 && (
                       <>
                         {textChannels.length > 0 && (
@@ -386,7 +386,7 @@ export function ChannelSidebar({ server, currentUserId, currentMemberRole }: Cha
   );
 }
 
-// ─── Section divider label ────────────────────────────────────────────────────
+// Section divider label
 
 function SectionLabel({ label }: { label: string }) {
   return (
@@ -406,7 +406,7 @@ function SectionLabel({ label }: { label: string }) {
   );
 }
 
-// ─── Text channel item ────────────────────────────────────────────────────────
+// Text channel item
 
 function TextChannelItem({
   channel,
@@ -457,7 +457,7 @@ function TextChannelItem({
   );
 }
 
-// ─── Voice channel item ───────────────────────────────────────────────────────
+// Voice channel item
 
 function VoiceChannelItem({
   channel,
@@ -729,7 +729,7 @@ function VoiceChannelItem({
         </div>
       )}
 
-      {/* ── Stream hover popup ── */}
+      {/* Stream hover popup */}
       <AnimatePresence>
         {streamPopup && (
         <motion.div
@@ -880,7 +880,7 @@ function VoiceChannelItem({
   );
 }
 
-// ─── Per-participant mute / deafen icons ──────────────────────────────────────
+// Per-participant mute / deafen icons
 
 function ParticipantStatusIcons({ isMuted, isDeafened }: { isMuted: boolean; isDeafened: boolean }) {
   return (
@@ -895,7 +895,7 @@ function ParticipantStatusIcons({ isMuted, isDeafened }: { isMuted: boolean; isD
   );
 }
 
-// ─── Connection quality dot ───────────────────────────────────────────────────
+// Connection quality dot
 
 const QUALITY_CONFIG = {
   [ConnectionQuality.Excellent]: { color: "#22c55e", glow: "0 0 5px #22c55e", pulse: false },
@@ -930,7 +930,7 @@ function ConnectionQualityDot() {
   );
 }
 
-// ─── Joining indicator: three pulsing dots ────────────────────────────────────
+// Joining indicator: three pulsing dots
 
 function JoiningIndicator() {
   return (
@@ -958,7 +958,7 @@ function JoiningIndicator() {
   );
 }
 
-// ─── Shared styles ────────────────────────────────────────────────────────────
+// Shared styles
 
 function channelRowStyle(isActive: boolean): React.CSSProperties {
   return {
@@ -1006,7 +1006,7 @@ function clearHover(e: React.MouseEvent, isActive: boolean) {
   }
 }
 
-// ─── Channel action button ────────────────────────────────────────────────────
+// Channel action button
 
 function ChannelActionBtn({
   children,
@@ -1050,7 +1050,7 @@ const catActionStyle: React.CSSProperties = {
   color: "var(--text-muted)",
 };
 
-// ─── Dropdown menu item ───────────────────────────────────────────────────────
+// Dropdown menu item
 
 function MenuItem({
   icon, label, onClick, danger = false,

@@ -119,7 +119,7 @@ export function ChannelSettingsModal() {
       `}</style>
 
       <form onSubmit={handleSave} style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
-        {/* ── Channel Name ── */}
+        {/* Channel Name */}
         <section>
           <label style={labelStyle}>Channel Name</label>
           <div style={{ position: "relative" }}>
@@ -145,7 +145,7 @@ export function ChannelSettingsModal() {
           </div>
         </section>
 
-        {/* ── Permissions ── */}
+        {/* Permissions */}
         <section>
           <label style={labelStyle}>Who Can Access</label>
           <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
@@ -180,7 +180,7 @@ export function ChannelSettingsModal() {
           <p style={{ color: "var(--danger)", fontSize: "0.82rem", marginTop: "-0.5rem" }}>{error}</p>
         )}
 
-        {/* ── Save ── */}
+        {/* Save */}
         <div style={{ display: "flex", gap: "0.75rem", justifyContent: "flex-end" }}>
           <button type="button" onClick={close} style={ghostBtn}>Cancel</button>
           <button
@@ -200,7 +200,7 @@ export function ChannelSettingsModal() {
           </button>
         </div>
 
-        {/* ── Danger Zone ── */}
+        {/* Danger Zone */}
         <div style={{
           borderTop: "1px solid rgba(244,63,94,0.18)",
           paddingTop: "1.25rem",

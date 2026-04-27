@@ -11,7 +11,7 @@ const base = (size: number, props: IconProps) => ({
   size: undefined,
 });
 
-// ── Text channel hash ──────────────────────────────────────────────────────
+// Text channel hash
 export function HashIcon({ size = 20, ...p }: IconProps) {
   return (
     <svg {...base(size, p)}>
@@ -21,7 +21,7 @@ export function HashIcon({ size = 20, ...p }: IconProps) {
   );
 }
 
-// ── Voice channel speaker ──────────────────────────────────────────────────
+// Voice channel speaker
 export function VolumeIcon({ size = 20, ...p }: IconProps) {
   return (
     <svg {...base(size, p)}>
@@ -35,7 +35,7 @@ export function VolumeIcon({ size = 20, ...p }: IconProps) {
   );
 }
 
-// ── Microphone ────────────────────────────────────────────────────────────
+// Microphone
 export function MicIcon({ size = 20, ...p }: IconProps) {
   return (
     <svg {...base(size, p)}>
@@ -51,7 +51,7 @@ export function MicIcon({ size = 20, ...p }: IconProps) {
   );
 }
 
-// ── Mic muted (slash) ────────────────────────────────────────────────────
+// Mic muted (slash)
 export function MicOffIcon({ size = 20, ...p }: IconProps) {
   return (
     <svg {...base(size, p)}>
@@ -73,7 +73,7 @@ export function MicOffIcon({ size = 20, ...p }: IconProps) {
   );
 }
 
-// ── Headphones (deafen) ───────────────────────────────────────────────────
+// Headphones (deafen)
 export function HeadphonesIcon({ size = 20, ...p }: IconProps) {
   return (
     <svg {...base(size, p)}>
@@ -87,7 +87,7 @@ export function HeadphonesIcon({ size = 20, ...p }: IconProps) {
   );
 }
 
-// ── Headphones muted ─────────────────────────────────────────────────────
+// Headphones muted
 export function HeadphonesOffIcon({ size = 20, ...p }: IconProps) {
   return (
     <svg {...base(size, p)}>
@@ -105,7 +105,7 @@ export function HeadphonesOffIcon({ size = 20, ...p }: IconProps) {
   );
 }
 
-// ── Camera ────────────────────────────────────────────────────────────────
+// Camera
 export function CameraIcon({ size = 20, ...p }: IconProps) {
   return (
     <svg {...base(size, p)}>
@@ -119,7 +119,7 @@ export function CameraIcon({ size = 20, ...p }: IconProps) {
   );
 }
 
-// ── Camera off ────────────────────────────────────────────────────────────
+// Camera off
 export function CameraOffIcon({ size = 20, ...p }: IconProps) {
   return (
     <svg {...base(size, p)}>
@@ -133,7 +133,7 @@ export function CameraOffIcon({ size = 20, ...p }: IconProps) {
   );
 }
 
-// ── Screen share (monitor + upload arrow) ─────────────────────────────────
+// Screen share (monitor + upload arrow)
 export function ScreenShareIcon({ size = 20, ...p }: IconProps) {
   return (
     <svg {...base(size, p)}>
@@ -149,7 +149,7 @@ export function ScreenShareIcon({ size = 20, ...p }: IconProps) {
   );
 }
 
-// ── Settings (gear) ───────────────────────────────────────────────────────
+// Settings (gear)
 export function SettingsIcon({ size = 20, ...p }: IconProps) {
   return (
     <svg {...base(size, p)}>
@@ -161,7 +161,7 @@ export function SettingsIcon({ size = 20, ...p }: IconProps) {
   );
 }
 
-// ── Plus (add) ────────────────────────────────────────────────────────────
+// Plus (add)
 export function PlusIcon({ size = 20, ...p }: IconProps) {
   return (
     <svg {...base(size, p)}>
@@ -173,7 +173,7 @@ export function PlusIcon({ size = 20, ...p }: IconProps) {
   );
 }
 
-// ── Leave (door with arrow) ───────────────────────────────────────────────
+// Leave (door with arrow)
 export function LeaveIcon({ size = 20, ...p }: IconProps) {
   return (
     <svg {...base(size, p)}>
@@ -187,7 +187,7 @@ export function LeaveIcon({ size = 20, ...p }: IconProps) {
   );
 }
 
-// ── Kick (person with minus) ──────────────────────────────────────────────
+// Kick (person with minus)
 export function KickIcon({ size = 20, ...p }: IconProps) {
   return (
     <svg {...base(size, p)}>
@@ -200,7 +200,7 @@ export function KickIcon({ size = 20, ...p }: IconProps) {
   );
 }
 
-// ── Ban (circle with diagonal) ────────────────────────────────────────────
+// Ban (circle with diagonal)
 export function BanIcon({ size = 20, ...p }: IconProps) {
   return (
     <svg {...base(size, p)}>
@@ -211,7 +211,7 @@ export function BanIcon({ size = 20, ...p }: IconProps) {
   );
 }
 
-// ── Search ────────────────────────────────────────────────────────────────
+// Search
 export function SearchIcon({ size = 20, ...p }: IconProps) {
   return (
     <svg {...base(size, p)}>
@@ -222,7 +222,7 @@ export function SearchIcon({ size = 20, ...p }: IconProps) {
   );
 }
 
-// ── Bell (notifications) ──────────────────────────────────────────────────
+// Bell (notifications)
 export function BellIcon({ size = 20, ...p }: IconProps) {
   return (
     <svg {...base(size, p)}>
@@ -234,7 +234,7 @@ export function BellIcon({ size = 20, ...p }: IconProps) {
   );
 }
 
-// ── Bell off ─────────────────────────────────────────────────────────────
+// Bell off
 export function BellOffIcon({ size = 20, ...p }: IconProps) {
   return (
     <svg {...base(size, p)}>
@@ -250,7 +250,7 @@ export function BellOffIcon({ size = 20, ...p }: IconProps) {
   );
 }
 
-// ── Friends (two people) ──────────────────────────────────────────────────
+// Friends (two people)
 export function FriendsIcon({ size = 20, ...p }: IconProps) {
   return (
     <svg {...base(size, p)}>
@@ -265,7 +265,7 @@ export function FriendsIcon({ size = 20, ...p }: IconProps) {
   );
 }
 
-// ── Inbox (tray with down arrow) ──────────────────────────────────────────
+// Inbox (tray with down arrow)
 export function InboxIcon({ size = 20, ...p }: IconProps) {
   return (
     <svg {...base(size, p)}>
@@ -277,7 +277,7 @@ export function InboxIcon({ size = 20, ...p }: IconProps) {
   );
 }
 
-// ── Chevron down ─────────────────────────────────────────────────────────
+// Chevron down
 export function ChevronDownIcon({ size = 20, ...p }: IconProps) {
   return (
     <svg {...base(size, p)}>
@@ -287,7 +287,7 @@ export function ChevronDownIcon({ size = 20, ...p }: IconProps) {
   );
 }
 
-// ── Chevron right ─────────────────────────────────────────────────────────
+// Chevron right
 export function ChevronRightIcon({ size = 20, ...p }: IconProps) {
   return (
     <svg {...base(size, p)}>
@@ -297,7 +297,7 @@ export function ChevronRightIcon({ size = 20, ...p }: IconProps) {
   );
 }
 
-// ── Edit (pencil) ─────────────────────────────────────────────────────────
+// Edit (pencil)
 export function EditIcon({ size = 20, ...p }: IconProps) {
   return (
     <svg {...base(size, p)}>
@@ -309,7 +309,7 @@ export function EditIcon({ size = 20, ...p }: IconProps) {
   );
 }
 
-// ── Trash ─────────────────────────────────────────────────────────────────
+// Trash
 export function TrashIcon({ size = 20, ...p }: IconProps) {
   return (
     <svg {...base(size, p)}>
@@ -325,7 +325,7 @@ export function TrashIcon({ size = 20, ...p }: IconProps) {
   );
 }
 
-// ── Copy ──────────────────────────────────────────────────────────────────
+// Copy
 export function CopyIcon({ size = 20, ...p }: IconProps) {
   return (
     <svg {...base(size, p)}>
@@ -337,7 +337,7 @@ export function CopyIcon({ size = 20, ...p }: IconProps) {
   );
 }
 
-// ── Check ─────────────────────────────────────────────────────────────────
+// Check
 export function CheckIcon({ size = 20, ...p }: IconProps) {
   return (
     <svg {...base(size, p)}>
@@ -347,7 +347,7 @@ export function CheckIcon({ size = 20, ...p }: IconProps) {
   );
 }
 
-// ── X (close) ─────────────────────────────────────────────────────────────
+// X (close)
 export function XIcon({ size = 20, ...p }: IconProps) {
   return (
     <svg {...base(size, p)}>
@@ -359,7 +359,7 @@ export function XIcon({ size = 20, ...p }: IconProps) {
   );
 }
 
-// ── Crown (admin) ──────────────────────────────────────────────────────────
+// Crown (admin)
 export function CrownIcon({ size = 20, ...p }: IconProps) {
   return (
     <svg {...base(size, p)}>
@@ -369,7 +369,7 @@ export function CrownIcon({ size = 20, ...p }: IconProps) {
   );
 }
 
-// ── Shield (moderator) ────────────────────────────────────────────────────
+// Shield (moderator)
 export function ShieldIcon({ size = 20, ...p }: IconProps) {
   return (
     <svg {...base(size, p)}>
@@ -381,7 +381,7 @@ export function ShieldIcon({ size = 20, ...p }: IconProps) {
   );
 }
 
-// ── Emoji / smile ─────────────────────────────────────────────────────────
+// Emoji / smile
 export function EmojiIcon({ size = 20, ...p }: IconProps) {
   return (
     <svg {...base(size, p)}>
@@ -394,7 +394,7 @@ export function EmojiIcon({ size = 20, ...p }: IconProps) {
   );
 }
 
-// ── Paperclip (attach file) ───────────────────────────────────────────────
+// Paperclip (attach file)
 export function AttachIcon({ size = 20, ...p }: IconProps) {
   return (
     <svg {...base(size, p)}>
@@ -404,7 +404,7 @@ export function AttachIcon({ size = 20, ...p }: IconProps) {
   );
 }
 
-// ── Reply arrow ───────────────────────────────────────────────────────────
+// Reply arrow
 export function ReplyIcon({ size = 20, ...p }: IconProps) {
   return (
     <svg {...base(size, p)}>
@@ -416,7 +416,7 @@ export function ReplyIcon({ size = 20, ...p }: IconProps) {
   );
 }
 
-// ── More (three dots horizontal) ──────────────────────────────────────────
+// More (three dots horizontal)
 export function MoreIcon({ size = 20, ...p }: IconProps) {
   return (
     <svg {...base(size, p)}>
@@ -427,7 +427,7 @@ export function MoreIcon({ size = 20, ...p }: IconProps) {
   );
 }
 
-// ── Server rack ───────────────────────────────────────────────────────────
+// Server rack
 export function ServerIcon({ size = 20, ...p }: IconProps) {
   return (
     <svg {...base(size, p)}>
@@ -441,7 +441,7 @@ export function ServerIcon({ size = 20, ...p }: IconProps) {
   );
 }
 
-// ── Link / invite ──────────────────────────────────────────────────────────
+// Link / invite
 export function LinkIcon({ size = 20, ...p }: IconProps) {
   return (
     <svg {...base(size, p)}>
@@ -453,7 +453,7 @@ export function LinkIcon({ size = 20, ...p }: IconProps) {
   );
 }
 
-// ── Image ──────────────────────────────────────────────────────────────────
+// Image
 export function ImageIcon({ size = 20, ...p }: IconProps) {
   return (
     <svg {...base(size, p)}>
@@ -466,7 +466,7 @@ export function ImageIcon({ size = 20, ...p }: IconProps) {
   );
 }
 
-// ── Hamburger menu ────────────────────────────────────────────────────────
+// Hamburger menu
 export function MenuIcon({ size = 20, ...p }: IconProps) {
   return (
     <svg {...base(size, p)}>
@@ -480,7 +480,7 @@ export function MenuIcon({ size = 20, ...p }: IconProps) {
   );
 }
 
-// ── Person (user avatar placeholder) ──────────────────────────────────────
+// Person (user avatar placeholder)
 export function PersonIcon({ size = 20, ...p }: IconProps) {
   return (
     <svg {...base(size, p)}>

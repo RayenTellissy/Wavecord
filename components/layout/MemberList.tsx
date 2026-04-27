@@ -212,7 +212,7 @@ export function MemberList({ server, currentUserId, currentMemberRole }: MemberL
   );
 }
 
-// ── Member row ────────────────────────────────────────────────────────────────
+// Member row
 
 function MemberRow({
   member,
@@ -326,7 +326,7 @@ function MemberRow({
   );
 }
 
-// ── Context menu item ─────────────────────────────────────────────────────────
+// Context menu item
 
 function ContextMenuItem({
   icon,

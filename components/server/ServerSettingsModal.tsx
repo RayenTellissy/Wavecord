@@ -10,7 +10,7 @@ import { PersonIcon, KickIcon, BanIcon, ShieldIcon, CheckIcon } from "@/componen
 import Image from "next/image";
 import axios from "axios";
 
-// ── Types ─────────────────────────────────────────────────────────────────────
+// Types
 
 type MemberUser = {
   id: string;
@@ -45,7 +45,7 @@ const ROLE_COLORS: Record<string, string> = {
   GUEST: "var(--text-muted)",
 };
 
-// ── Main Modal ────────────────────────────────────────────────────────────────
+// Main Modal
 
 export function ServerSettingsModal() {
   const { isOpen, type, data, close } = useModal();
@@ -119,7 +119,7 @@ export function ServerSettingsModal() {
   );
 }
 
-// ── General Tab ───────────────────────────────────────────────────────────────
+// General Tab
 
 function GeneralTab({ serverId, onSave }: { serverId: string; onSave: () => void }) {
   const [name, setName] = useState("");
@@ -258,7 +258,7 @@ function GeneralTab({ serverId, onSave }: { serverId: string; onSave: () => void
   );
 }
 
-// ── Members Tab ───────────────────────────────────────────────────────────────
+// Members Tab
 
 function MembersTab({ serverId, onAction }: { serverId: string; onAction: () => void }) {
   const { open: openModal } = useModal();
@@ -400,7 +400,7 @@ function MembersTab({ serverId, onAction }: { serverId: string; onAction: () => 
   );
 }
 
-// ── Bans Tab ──────────────────────────────────────────────────────────────────
+// Bans Tab
 
 function BansTab({ serverId, onAction }: { serverId: string; onAction: () => void }) {
   const { data: session } = useSession();
@@ -526,7 +526,7 @@ function BansTab({ serverId, onAction }: { serverId: string; onAction: () => voi
   );
 }
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
+// Helpers
 
 function ActionButton({
   icon,

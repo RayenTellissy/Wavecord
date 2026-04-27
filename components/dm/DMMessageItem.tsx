@@ -346,7 +346,7 @@ export function DMMessageItem({
   );
 }
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
+// Helpers
 
 function ActionButton({
   icon,

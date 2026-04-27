@@ -93,7 +93,7 @@ export function VoiceRoom({ channel, serverId, serverName }: VoiceRoomProps) {
   return <VoiceRoomInner channel={channel} onLeave={handleLeave} connecting={connecting} error={error} />;
 }
 
-// ─── Inner UI (uses LiveKit context from PersistentVoice) ─────────────────────
+// Inner UI (uses LiveKit context from PersistentVoice)
 
 function VoiceRoomInner({
   channel,
@@ -169,7 +169,7 @@ function VoiceRoomInner({
         overflow: "hidden",
       }}
     >
-      {/* ── Header ── */}
+      {/* Header */}
       <div
         style={{
           display: "flex",
@@ -233,7 +233,7 @@ function VoiceRoomInner({
         </span>
       </div>
 
-      {/* ── Participants / Video Grid ── */}
+      {/* Participants / Video Grid */}
       <div style={{ flex: 1, overflowY: "auto", padding: "1.5rem" }}>
         {hasVideo ? (
           <div
@@ -337,7 +337,7 @@ function VoiceRoomInner({
         )}
       </div>
 
-      {/* ── Media permission error banner ── */}
+      {/* Media permission error banner */}
       {mediaError && (
         <div
           style={{
@@ -363,7 +363,7 @@ function VoiceRoomInner({
         </div>
       )}
 
-      {/* ── Controls bar ── */}
+      {/* Controls bar */}
       <VoiceControls
         micEnabled={micEnabled}
         deafened={deafened}
@@ -381,7 +381,7 @@ function VoiceRoomInner({
   );
 }
 
-// ─── Participant card ─────────────────────────────────────────────────────────
+// Participant card
 
 function ParticipantCard({ participant, isSpeaking }: { participant: Participant; isSpeaking: boolean }) {
   const isMicOn = participant.isMicrophoneEnabled;
@@ -458,7 +458,7 @@ function ParticipantCard({ participant, isSpeaking }: { participant: Participant
   );
 }
 
-// ─── Controls bar ─────────────────────────────────────────────────────────────
+// Controls bar
 
 interface VoiceControlsProps {
   micEnabled: boolean;
@@ -593,7 +593,7 @@ function VoiceControls({
   );
 }
 
-// ─── Expand-on-hover hint overlay ────────────────────────────────────────────
+// Expand-on-hover hint overlay
 
 function ExpandHint() {
   const [hovered, setHovered] = useState(false);
@@ -623,7 +623,7 @@ function ExpandHint() {
   );
 }
 
-// ─── Fullscreen overlay ───────────────────────────────────────────────────────
+// Fullscreen overlay
 
 function FullscreenOverlay({
   trackRef,

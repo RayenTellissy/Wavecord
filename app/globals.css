@@ -35,10 +35,10 @@
 }
 
 :root {
-  /* ── Base ─────────────────────────────────────────────── */
+  /* Base */
   --bg:  #080809;
 
-  /* ── Liquid glass surfaces (ultra-translucent, neutral dark) */
+  /* Liquid glass surfaces (ultra-translucent, neutral dark) */
   --glass-dark:    rgba(18, 18, 22, 0.22);
   --glass-mid:     rgba(15, 15, 18, 0.18);
   --glass-light:   rgba(12, 12, 15, 0.14);
@@ -52,7 +52,7 @@
   --surface-solid-2: #0e0e12;
   --surface-solid-3: #161619;
 
-  /* ── Liquid glass system ──────────────────────────────── */
+  /* Liquid glass system */
   --glass-specular:   rgba(255,255,255,0.26);
   --glass-blur:       blur(80px) saturate(3) brightness(1.08);
   --glass-blur-heavy: blur(100px) saturate(3.2) brightness(1.12);
@@ -70,7 +70,7 @@
     rgba(255,255,255,0.20) 100%
   );
 
-  /* ── Shadows ──────────────────────────────────────────── */
+  /* Shadows */
   --shadow-liquid:
     inset 0 2px 0 rgba(255,255,255,0.26),
     inset 0 -1.5px 0 rgba(0,0,0,0.18),
@@ -88,12 +88,12 @@
     0 6px 20px rgba(0,0,0,0.25),
     0 0 0 1px rgba(139,92,246,0.10);
 
-  /* ── Glass borders ────────────────────────────────────── */
+  /* Glass borders */
   --border:      rgba(255,255,255,0.12);
   --border-2:    rgba(255,255,255,0.18);
   --border-glow: rgba(139,92,246,0.35);
 
-  /* ── Primary: electric violet ────────────────────────── */
+  /* Primary: electric violet */
   --accent:         #8b5cf6;
   --accent-bright:  #c4b5fd;
   --accent-dim:     #6d28d9;
@@ -103,19 +103,19 @@
   --accent-glow-sm: 0 0 12px rgba(139,92,246,0.55), 0 0 30px rgba(139,92,246,0.18);
   --accent-glow-xs: 0 0 8px rgba(139,92,246,0.5);
 
-  /* ── Cyan ─────────────────────────────────────────────── */
+  /* Cyan */
   --cyan:        #22d3ee;
   --cyan-bright: #67e8f9;
   --cyan-muted:  rgba(34,211,238,0.15);
   --cyan-glow:   0 0 16px rgba(34,211,238,0.55), 0 0 40px rgba(34,211,238,0.2);
 
-  /* ── Danger ───────────────────────────────────────────── */
+  /* Danger */
   --danger:       #f43f5e;
   --danger-hover: #e11d48;
   --danger-muted: rgba(244,63,94,0.15);
   --danger-glow:  0 0 14px rgba(244,63,94,0.55);
 
-  /* ── Status ───────────────────────────────────────────── */
+  /* Status */
   --success: #22c55e;
   --warning: #f59e0b;
   --online:  #22c55e;
@@ -123,7 +123,7 @@
   --dnd:     #f43f5e;
   --offline: #475569;
 
-  /* ── Text ─────────────────────────────────────────────── */
+  /* Text */
   --text-primary:   #f0eeff;
   --text-secondary: #a89ec0;
   --text-muted:     #5b5278;
@@ -171,7 +171,7 @@ input, textarea {
   color: inherit;
 }
 
-/* ── Scene background — neutral dark, no color ─────────── */
+/* Scene background — neutral dark, no color */
 body::before {
   content: "";
   position: fixed;
@@ -181,7 +181,7 @@ body::before {
     radial-gradient(ellipse 80% 60% at 50% 25%, #0f0f14 0%, #080809 70%);
 }
 
-/* ── Scrollbars ───────────────────────────────────────── */
+/* Scrollbars */
 ::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
@@ -192,10 +192,10 @@ body::before {
   background: rgba(139,92,246,0.40);
 }
 
-/* ── Selection ────────────────────────────────────────── */
+/* Selection */
 ::selection { background: rgba(139,92,246,0.4); }
 
-/* ── Utilities ────────────────────────────────────────── */
+/* Utilities */
 .sr-only {
   position: absolute;
   width: 1px; height: 1px;
@@ -206,10 +206,10 @@ body::before {
   border-width: 0;
 }
 
-/* ── Skeleton ─────────────────────────────────────────── */
+/* Skeleton */
 .skeleton { animation: skeleton-pulse 1.4s ease-in-out infinite; }
 
-/* ── Liquid glass panel (sidebar/surface grade) ───────── */
+/* Liquid glass panel (sidebar/surface grade) */
 .glass-panel {
   background: var(--glass-dark);
   backdrop-filter: var(--glass-blur);
@@ -218,7 +218,7 @@ body::before {
   box-shadow: var(--shadow-liquid);
 }
 
-/* ── Liquid glass utility (cards, popovers) ───────────── */
+/* Liquid glass utility (cards, popovers) */
 .liquid-glass {
   background:
     linear-gradient(rgba(18,18,22,0.20), rgba(12,12,16,0.24)) padding-box,
@@ -229,7 +229,7 @@ body::before {
   box-shadow: var(--shadow-liquid);
 }
 
-/* ── Liquid glass modal (strongest effect) ────────────── */
+/* Liquid glass modal (strongest effect) */
 .liquid-glass-modal {
   background:
     linear-gradient(rgba(16,16,20,0.18), rgba(10,10,14,0.22)) padding-box,
@@ -240,7 +240,7 @@ body::before {
   box-shadow: var(--shadow-modal);
 }
 
-/* ── Mobile Sidebar Drawer ────────────────────────────── */
+/* Mobile Sidebar Drawer */
 .hamburger-btn { display: none; }
 
 .mobile-overlay {

@@ -16,7 +16,7 @@ import {
 import Image from "next/image";
 import axios from "axios";
 
-// ── Types ─────────────────────────────────────────────────────────────────────
+// Types
 
 type UserProfile = {
   id: string;
@@ -53,7 +53,7 @@ const STATUS_OPTIONS: { value: UserProfile["status"]; label: string; color: stri
   { value: "OFFLINE", label: "Invisible", color: "var(--offline)" },
 ];
 
-// ── Profile Tab ───────────────────────────────────────────────────────────────
+// Profile Tab
 
 function ProfileTab({ initialProfile }: { initialProfile: UserProfile }) {
   const { update: updateSession } = useSession();
@@ -391,7 +391,7 @@ function ProfileTab({ initialProfile }: { initialProfile: UserProfile }) {
   );
 }
 
-// ── Notifications Tab ─────────────────────────────────────────────────────────
+// Notifications Tab
 
 function NotificationsTab() {
   const [servers, setServers] = useState<NotificationServer[]>([]);
@@ -552,7 +552,7 @@ function NotificationsTab() {
   );
 }
 
-// ── Main Modal ────────────────────────────────────────────────────────────────
+// Main Modal
 
 export function UserSettingsModal() {
   const { isOpen, type, close } = useModal();

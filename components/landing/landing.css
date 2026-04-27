@@ -1,4 +1,4 @@
-/* ─────────────────────────────────────────────────────────
+/*
    Wavecord — Landing Page
    Dark glassmorphism · neon glow · cinematic
    ───────────────────────────────────────────────────────── */
@@ -32,7 +32,7 @@
   font-weight: 700;
 }
 
-/* ── Background mesh + grain ────────────────────────────── */
+/* Background mesh + grain */
 .lp__bg {
   position: fixed;
   inset: 0;
@@ -55,7 +55,7 @@
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
 }
 
-/* ── Layout container ───────────────────────────────────── */
+/* Layout container */
 .lp__container {
   width: 100%;
   max-width: 1240px;
@@ -63,7 +63,7 @@
   padding: 0 32px;
 }
 
-/* ─────────────────────────────────────────────────────────
+/*
    NAV
    ───────────────────────────────────────────────────────── */
 .lp__nav {
@@ -163,7 +163,7 @@
 
 .lp__nav-links a:hover { color: var(--text); }
 
-/* ── Buttons ────────────────────────────────────────────── */
+/* Buttons */
 .lp__btn {
   position: relative;
   display: inline-flex;
@@ -231,7 +231,7 @@
 
 .lp__btn--lg { padding: 15px 28px; font-size: 15px; border-radius: 14px; }
 
-/* ─────────────────────────────────────────────────────────
+/*
    HERO
    ───────────────────────────────────────────────────────── */
 .lp__hero {
@@ -333,7 +333,7 @@
 .lp__hero-meta-dots span:nth-child(3){ background: linear-gradient(135deg,#b388ff,#4fc3f7); }
 .lp__hero-meta-dots span:nth-child(4){ background: linear-gradient(135deg,#69ff8c,#4fc3f7); }
 
-/* ── Floating chat mockup ────────────────────────────────── */
+/* Floating chat mockup */
 .lp__mockup-wrap {
   position: relative;
   perspective: 1400px;
@@ -589,7 +589,7 @@
 }
 @keyframes lp-blink { 50% { opacity: 0; } }
 
-/* ─────────────────────────────────────────────────────────
+/*
    FEATURES
    ───────────────────────────────────────────────────────── */
 .lp__section {
@@ -711,7 +711,7 @@
   margin: 0;
 }
 
-/* ─────────────────────────────────────────────────────────
+/*
    SOCIAL PROOF
    ───────────────────────────────────────────────────────── */
 .lp__proof {
@@ -749,7 +749,7 @@
 }
 .lp__proof-logo--script { font-style: italic; letter-spacing: -0.02em; text-transform: none; }
 
-/* ─────────────────────────────────────────────────────────
+/*
    TESTIMONIALS
    ───────────────────────────────────────────────────────── */
 .lp__testimonials {
@@ -822,7 +822,7 @@
   color: var(--muted);
 }
 
-/* ─────────────────────────────────────────────────────────
+/*
    CTA
    ───────────────────────────────────────────────────────── */
 .lp__cta-wrap {
@@ -869,7 +869,7 @@
   line-height: 1.55;
 }
 
-/* ─────────────────────────────────────────────────────────
+/*
    FOOTER
    ───────────────────────────────────────────────────────── */
 .lp__footer {
@@ -931,7 +931,7 @@
   font-size: 12.5px;
 }
 
-/* ─────────────────────────────────────────────────────────
+/*
    RESPONSIVE
    ───────────────────────────────────────────────────────── */
 @media (max-width: 1024px) {

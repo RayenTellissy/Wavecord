@@ -15,7 +15,7 @@ async function main() {
   await db.server.deleteMany();
   await db.user.deleteMany();
 
-  // ── Users ────────────────────────────────────────────────────────────────
+  // Users
   const password = await bcrypt.hash("password123", 12);
 
   const alice = await db.user.create({
@@ -48,7 +48,7 @@ async function main() {
     },
   });
 
-  // ── Server ───────────────────────────────────────────────────────────────
+  // Server
   const server = await db.server.create({
     data: {
       name: "Wavecord HQ",
@@ -57,7 +57,7 @@ async function main() {
     },
   });
 
-  // ── Members ──────────────────────────────────────────────────────────────
+  // Members
   await db.serverMember.createMany({
     data: [
       { userId: alice.id, serverId: server.id, role: MemberRole.ADMIN },
@@ -66,7 +66,7 @@ async function main() {
     ],
   });
 
-  // ── Categories ───────────────────────────────────────────────────────────
+  // Categories
   const textCategory = await db.category.create({
     data: { name: "TEXT CHANNELS", serverId: server.id, position: 0 },
   });
@@ -75,7 +75,7 @@ async function main() {
     data: { name: "VOICE CHANNELS", serverId: server.id, position: 1 },
   });
 
-  // ── Channels ─────────────────────────────────────────────────────────────
+  // Channels
   const general = await db.channel.create({
     data: {
       name: "general",
@@ -106,7 +106,7 @@ async function main() {
     },
   });
 
-  // ── Seed Messages ────────────────────────────────────────────────────────
+  // Messages
   await db.message.createMany({
     data: [
       {

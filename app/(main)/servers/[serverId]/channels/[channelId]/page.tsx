@@ -27,7 +27,7 @@ export default async function ChannelPage({
   if (!channel) notFound();
   if (!member) redirect("/");
 
-  // ── Voice channel ──
+  // Voice channel
   if (channel.type === "VOICE") {
     const server = await db.server.findUnique({
       where: { id: serverId },
@@ -44,7 +44,7 @@ export default async function ChannelPage({
     );
   }
 
-  // ── Text channel ──
+  // Text channel
   const isModOrAdmin =
     member.role === MemberRole.ADMIN || member.role === MemberRole.MODERATOR;
 

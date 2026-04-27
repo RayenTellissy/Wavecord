@@ -560,7 +560,7 @@ export function MessageInput({ channelId, channelName, replyTo, onClearReply }: 
   );
 }
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
+// Helpers
 
 function SendIcon() {
   return (

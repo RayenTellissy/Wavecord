@@ -81,7 +81,7 @@ export function LandingPage() {
                 <div className="lp__hero-meta-dots" aria-hidden>
                   <span /><span /><span /><span />
                 </div>
-                {/* TODO: replace with real number */}
+
                 <span>Trusted by 40,000+ communities worldwide</span>
               </div>
             </div>
@@ -237,7 +237,7 @@ export function LandingPage() {
       <section className="lp__proof">
         <div className="lp__container">
           <div className="lp__proof-row">
-            {/* TODO: replace with real number */}
+
             <div className="lp__proof-label">Trusted by 40,000+ communities</div>
             <div className="lp__proof-logos" aria-hidden>
               <div className="lp__proof-logo">NORTHWAVE</div>
