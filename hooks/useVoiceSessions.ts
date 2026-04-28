@@ -59,11 +59,6 @@ export function useVoiceSessions(serverId: string | undefined): Record<string, V
     onMessage,
   });
 
-  // On mount / serverId change, clear stale state and ask the server for a
-  // fresh snapshot. The server-party's onConnect snapshot only fires for the
-  // first subscriber on a given socket; later subscribers (e.g. when the user
-  // navigates back to the server while PersistentVoice is still holding the
-  // socket open) need to request explicitly.
   useEffect(() => {
     if (!serverId) return;
     setSessions({});

@@ -54,7 +54,6 @@ async function main() {
     },
   });
 
-  // Members
   await db.serverMember.createMany({
     data: [
       { userId: alice.id, serverId: server.id, role: MemberRole.ADMIN },
@@ -63,7 +62,6 @@ async function main() {
     ],
   });
 
-  // Categories
   const textCategory = await db.category.create({
     data: { name: "TEXT CHANNELS", serverId: server.id, position: 0 },
   });
@@ -72,7 +70,6 @@ async function main() {
     data: { name: "VOICE CHANNELS", serverId: server.id, position: 1 },
   });
 
-  // Channels
   const general = await db.channel.create({
     data: {
       name: "general",
@@ -103,7 +100,6 @@ async function main() {
     },
   });
 
-  // Messages
   await db.message.createMany({
     data: [
       {

@@ -26,7 +26,6 @@ export function ChatHeader({ channel }: ChatHeaderProps) {
       boxShadow: "0 1px 0 rgba(139,92,246,0.18), 0 4px 24px rgba(0,0,0,0.28), inset 0 1.5px 0 rgba(255,255,255,0.16)",
       zIndex: 5,
     }}>
-      {/* Hamburger — only shown on mobile via CSS */}
       <button
         className="hamburger-btn"
         onClick={toggleMobile}
@@ -61,7 +60,6 @@ export function ChatHeader({ channel }: ChatHeaderProps) {
 
       <div style={{ flex: 1 }} />
 
-      {/* Search */}
       <button
         style={{
           display: "flex",

@@ -63,7 +63,6 @@ export function MemberList({ server, currentUserId, currentMemberRole }: MemberL
   function handleContextMenu(e: React.MouseEvent, member: MemberWithUser) {
     if (!isModOrAdmin || member.user.id === currentUserId) return;
     e.preventDefault();
-    // Clamp to viewport
     const x = Math.min(e.clientX, window.innerWidth - 200);
     const y = Math.min(e.clientY, window.innerHeight - 160);
     setContextMenu({ member, x, y });
@@ -131,7 +130,6 @@ export function MemberList({ server, currentUserId, currentMemberRole }: MemberL
         })}
       </div>
 
-      {/* Context menu (portal-like, fixed position) */}
       <AnimatePresence>
         {contextMenu && (
           <>
@@ -157,7 +155,6 @@ export function MemberList({ server, currentUserId, currentMemberRole }: MemberL
                 minWidth: 180,
               }}
             >
-              {/* Member name header */}
               <p
                 style={{
                   fontSize: "0.72rem",
@@ -212,7 +209,6 @@ export function MemberList({ server, currentUserId, currentMemberRole }: MemberL
   );
 }
 
-// Member row
 
 function MemberRow({
   member,
@@ -251,7 +247,6 @@ function MemberRow({
         cursor: "pointer",
       }}
     >
-      {/* Avatar + status dot */}
       <div style={{ position: "relative", flexShrink: 0 }}>
         <div
           style={{
@@ -291,7 +286,6 @@ function MemberRow({
         />
       </div>
 
-      {/* Name */}
       <span
         style={{
           flex: 1,
@@ -312,7 +306,6 @@ function MemberRow({
         )}
       </span>
 
-      {/* Right-click hint on hover (for moderatable members) */}
       {hovered && canModerate && (
         <motion.span
           initial={{ opacity: 0 }}
@@ -326,7 +319,6 @@ function MemberRow({
   );
 }
 
-// Context menu item
 
 function ContextMenuItem({
   icon,

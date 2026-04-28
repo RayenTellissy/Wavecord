@@ -49,7 +49,6 @@ export function MainSidebar({ initialServers }: MainSidebarProps) {
         boxShadow: "inset -1px 0 0 rgba(139,92,246,0.12), inset 0 2px 0 rgba(255,255,255,0.14), inset 1px 0 0 rgba(255,255,255,0.06), 4px 0 40px rgba(0,0,0,0.45)",
       }}
     >
-      {/* Home / DMs */}
       <Tooltip content="Direct Messages" side="right">
         <Link href="/conversations">
           <motion.div
@@ -78,7 +77,6 @@ export function MainSidebar({ initialServers }: MainSidebarProps) {
         </Link>
       </Tooltip>
 
-      {/* DM Unread avatar bubbles */}
       <AnimatePresence>
         {dmUnreadList.map((entry) => (
           <motion.div
@@ -135,7 +133,6 @@ export function MainSidebar({ initialServers }: MainSidebarProps) {
               </motion.button>
             </Tooltip>
 
-            {/* Red count badge */}
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
@@ -168,14 +165,12 @@ export function MainSidebar({ initialServers }: MainSidebarProps) {
         ))}
       </AnimatePresence>
 
-      {/* Separator */}
       <div style={{
         width: 36, height: 1,
         background: "linear-gradient(90deg, transparent, rgba(139,92,246,0.4), transparent)",
         margin: "0.25rem 0",
       }} />
 
-      {/* Server Icons */}
       {servers.map((server) => {
         const isActive = activeServerId === server.id;
         return (
@@ -232,14 +227,12 @@ export function MainSidebar({ initialServers }: MainSidebarProps) {
         );
       })}
 
-      {/* Separator */}
       <div style={{
         width: 36, height: 1,
         background: "linear-gradient(90deg, transparent, rgba(139,92,246,0.4), transparent)",
         margin: "0.25rem 0",
       }} />
 
-      {/* Create Server */}
       <Tooltip content="Create Server" side="right">
         <motion.button
           whileHover={{ scale: 1.12, borderRadius: "18px" }}
@@ -271,7 +264,6 @@ export function MainSidebar({ initialServers }: MainSidebarProps) {
         </motion.button>
       </Tooltip>
 
-      {/* Join Server */}
       <Tooltip content="Join Server" side="right">
         <motion.button
           whileHover={{ scale: 1.12, borderRadius: "18px" }}

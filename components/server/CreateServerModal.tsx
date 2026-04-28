@@ -24,7 +24,6 @@ export function CreateServerModal() {
     setError("");
     try {
       const { data } = await axios.post<ServerWithChannel>("/api/servers", { name });
-      // Immediately add to client cache so sidebar updates without router.refresh()
       queryClient.setQueryData<ServerWithChannel[]>(SERVERS_QUERY_KEY, (old = []) => [...old, data]);
       close();
       setName("");
@@ -45,7 +44,6 @@ export function CreateServerModal() {
         Give your server a name to get started. You can always change it later.
       </p>
 
-      {/* Server icon placeholder */}
       <motion.div
         whileHover={{ scale: 1.05 }}
         style={{

@@ -109,7 +109,6 @@ export const useVoiceStore = create<VoiceState>((set) => ({
       speakingIdentities: new Set(),
     }),
 
-  // Once real participants arrive from LiveKit, the optimistic entry is no longer needed.
   setParticipants: (participants) => set({ participants, optimisticParticipant: null }),
 
   setOptimisticParticipant: (optimisticParticipant) => set({ optimisticParticipant }),

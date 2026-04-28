@@ -101,7 +101,6 @@ export function DMMessageItem({
         transition: "background 0.1s",
       }}
     >
-      {/* Avatar column */}
       <div style={{ width: 40, flexShrink: 0 }}>
         {!isGrouped ? (
           <div style={{
@@ -142,7 +141,6 @@ export function DMMessageItem({
         ) : null}
       </div>
 
-      {/* Content */}
       <div style={{ flex: 1, minWidth: 0 }}>
         {!isGrouped && (
           <div style={{ display: "flex", alignItems: "baseline", gap: "0.5rem", marginBottom: "0.15rem" }}>
@@ -160,7 +158,6 @@ export function DMMessageItem({
           </div>
         )}
 
-        {/* Message body */}
         {editing ? (
           <div>
             <textarea
@@ -242,7 +239,6 @@ export function DMMessageItem({
           </div>
         )}
 
-        {/* Attachments */}
         {!message.deleted && message.attachments.length > 0 && (
           <div style={{ display: "flex", flexDirection: "column", gap: "0.4rem", marginTop: "0.5rem" }}>
             {message.attachments.map((att) =>
@@ -312,7 +308,6 @@ export function DMMessageItem({
         )}
       </div>
 
-      {/* Hover action buttons */}
       <AnimatePresence>
         {hovered && !editing && (canEdit || canDelete) && (
           <motion.div

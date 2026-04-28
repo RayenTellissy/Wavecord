@@ -99,7 +99,6 @@ function ProfileTab({ initialProfile }: { initialProfile: UserProfile }) {
         image: imageUrl,
         status,
       });
-      // Refresh the NextAuth session so UserPanel reflects changes immediately
       await updateSession({
         name: res.data.name,
         image: res.data.image,
@@ -143,7 +142,6 @@ function ProfileTab({ initialProfile }: { initialProfile: UserProfile }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
 
-      {/* Avatar */}
       <div style={{ display: "flex", alignItems: "center", gap: "1.25rem" }}>
         <div style={{ position: "relative", flexShrink: 0 }}>
           <div
@@ -173,7 +171,6 @@ function ProfileTab({ initialProfile }: { initialProfile: UserProfile }) {
             ) : (
               <PersonIcon size={32} style={{ color: "var(--text-muted)" }} />
             )}
-            {/* Hover / upload overlay */}
             <div style={{
               position: "absolute",
               inset: 0,
@@ -238,7 +235,6 @@ function ProfileTab({ initialProfile }: { initialProfile: UserProfile }) {
         </div>
       </div>
 
-      {/* Display name */}
       <div>
         <label style={labelStyle}>Display Name</label>
         <input
@@ -252,7 +248,6 @@ function ProfileTab({ initialProfile }: { initialProfile: UserProfile }) {
         />
       </div>
 
-      {/* Username */}
       <div>
         <label style={labelStyle}>Username</label>
         <div style={{ position: "relative" }}>
@@ -280,7 +275,6 @@ function ProfileTab({ initialProfile }: { initialProfile: UserProfile }) {
         </div>
       </div>
 
-      {/* Status */}
       <div>
         <label style={labelStyle}>Status</label>
         <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
@@ -319,7 +313,6 @@ function ProfileTab({ initialProfile }: { initialProfile: UserProfile }) {
         </div>
       </div>
 
-      {/* Bio */}
       <div>
         <label style={labelStyle}>Bio</label>
         <textarea
@@ -343,7 +336,6 @@ function ProfileTab({ initialProfile }: { initialProfile: UserProfile }) {
         </div>
       </div>
 
-      {/* Error */}
       {error && (
         <div style={{
           padding: "0.6rem 0.9rem",
@@ -357,7 +349,6 @@ function ProfileTab({ initialProfile }: { initialProfile: UserProfile }) {
         </div>
       )}
 
-      {/* Save */}
       <div style={{ display: "flex", justifyContent: "flex-end" }}>
         <motion.button
           whileHover={{ scale: 1.02 }}
@@ -445,7 +436,6 @@ function NotificationsTab() {
       </p>
       {servers.map((server) => (
         <div key={server.id}>
-          {/* Server header */}
           <div style={{
             display: "flex",
             alignItems: "center",
@@ -481,7 +471,6 @@ function NotificationsTab() {
             </span>
           </div>
 
-          {/* Channels */}
           <div style={{
             display: "flex",
             flexDirection: "column",
@@ -546,7 +535,6 @@ function NotificationsTab() {
   );
 }
 
-// Main Modal
 
 export function UserSettingsModal() {
   const { isOpen, type, close } = useModal();
@@ -569,7 +557,6 @@ export function UserSettingsModal() {
   return (
     <Modal isOpen={open} onClose={close} title="User Settings" width={660}>
       <div style={{ display: "flex", gap: "1.5rem", minHeight: 440 }}>
-        {/* Sidebar tabs */}
         <div style={{ display: "flex", flexDirection: "column", gap: "0.15rem", width: 140, flexShrink: 0 }}>
           {TABS.map((tab) => (
             <button
@@ -620,10 +607,8 @@ export function UserSettingsModal() {
           </div>
         </div>
 
-        {/* Divider */}
         <div style={{ width: 1, background: "var(--border)", flexShrink: 0 }} />
 
-        {/* Tab content */}
         <div style={{ flex: 1, minWidth: 0, overflowY: "auto", maxHeight: 520, paddingRight: "0.25rem" }}>
           <AnimatePresence mode="wait">
             <motion.div

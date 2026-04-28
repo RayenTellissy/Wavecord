@@ -53,7 +53,6 @@ function Toast({ toast }: { toast: NotificationToast }) {
         WebkitBackdropFilter: "blur(80px) saturate(3) brightness(1.08)",
       }}
     >
-      {/* Avatar */}
       <div
         style={{
           flexShrink: 0,
@@ -85,7 +84,6 @@ function Toast({ toast }: { toast: NotificationToast }) {
         )}
       </div>
 
-      {/* Text */}
       <div style={{ flex: 1, minWidth: 0 }}>
         <div
           style={{
@@ -113,7 +111,6 @@ function Toast({ toast }: { toast: NotificationToast }) {
         </div>
       </div>
 
-      {/* Dismiss */}
       <button
         onClick={(e) => {
           e.stopPropagation();

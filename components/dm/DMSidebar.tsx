@@ -38,7 +38,6 @@ export function DMSidebar({ currentUserId, initialConversations }: DMSidebarProp
   const [searching, setSearching] = useState(false);
   const searchRef = useRef<HTMLInputElement>(null);
 
-  // Keep sidebar in sync with incoming DMs (preview + ordering)
   const onMessage = useCallback((msg: PartyMessage) => {
     if (msg.event !== PartyEvents.DM_MESSAGE_NEW) return;
     const message = msg.payload as DMWithRelations;
@@ -70,7 +69,6 @@ export function DMSidebar({ currentUserId, initialConversations }: DMSidebarProp
     onMessage,
   });
 
-  // Auto-focus search input when panel opens
   useEffect(() => {
     if (showNewDM) {
       setTimeout(() => searchRef.current?.focus(), 50);
@@ -80,7 +78,6 @@ export function DMSidebar({ currentUserId, initialConversations }: DMSidebarProp
     }
   }, [showNewDM]);
 
-  // Debounced user search
   useEffect(() => {
     if (!search.trim()) {
       setResults([]);
@@ -94,7 +91,6 @@ export function DMSidebar({ currentUserId, initialConversations }: DMSidebarProp
         );
         setResults(res.data.filter((u) => u.id !== currentUserId));
       } catch {
-        // ignore
       } finally {
         setSearching(false);
       }
@@ -107,7 +103,6 @@ export function DMSidebar({ currentUserId, initialConversations }: DMSidebarProp
       const res = await axios.post<ConversationWithMembers>("/api/conversations", { targetUserId });
       const conv = res.data;
 
-      // Add to local list if not already present
       setConversations((prev) => {
         if (prev.find((c) => c.id === conv.id)) return prev;
         return [conv, ...prev];
@@ -116,7 +111,6 @@ export function DMSidebar({ currentUserId, initialConversations }: DMSidebarProp
       setShowNewDM(false);
       router.push(`/conversations/${conv.id}`);
     } catch {
-      // ignore
     }
   }
 
@@ -133,7 +127,6 @@ export function DMSidebar({ currentUserId, initialConversations }: DMSidebarProp
       overflow: "hidden",
       boxShadow: "inset -1px 0 0 rgba(139,92,246,0.12), inset 0 2px 0 rgba(255,255,255,0.14), 4px 0 40px rgba(0,0,0,0.45)",
     }}>
-      {/* Header */}
       <div style={{
         padding: "0.9rem 1rem",
         borderBottom: "1px solid var(--border)",
@@ -166,7 +159,6 @@ export function DMSidebar({ currentUserId, initialConversations }: DMSidebarProp
         </button>
       </div>
 
-      {/* New DM search panel */}
       <AnimatePresence>
         {showNewDM && (
           <motion.div
@@ -208,7 +200,6 @@ export function DMSidebar({ currentUserId, initialConversations }: DMSidebarProp
                 </button>
               </div>
 
-              {/* Search results */}
               {searching && (
                 <p style={{ fontSize: "0.78rem", color: "var(--text-muted)", padding: "0.5rem 0.25rem" }}>
                   Searching…
@@ -265,7 +256,6 @@ export function DMSidebar({ currentUserId, initialConversations }: DMSidebarProp
         )}
       </AnimatePresence>
 
-      {/* Conversation list */}
       <div style={{ flex: 1, overflowY: "auto", padding: "0.5rem 0" }}>
         {conversations.length === 0 && (
           <p style={{

@@ -50,7 +50,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   ],
   events: {
     async createUser({ user }) {
-      // Auto-generate a unique username from the user's name or email
       const base =
         user.name?.toLowerCase().replace(/\s+/g, "") ??
         user.email?.split("@")[0] ??

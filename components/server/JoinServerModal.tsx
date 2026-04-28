@@ -17,7 +17,6 @@ export function JoinServerModal() {
 
   const open = isOpen && type === "joinServer";
 
-  // Extract invite code from full URL or raw code
   function parseCode(input: string) {
     const match = input.match(/\/invite\/([a-zA-Z0-9_-]+)/);
     return match ? match[1] : input.trim();
@@ -31,7 +30,6 @@ export function JoinServerModal() {
     setError("");
     try {
       const { data } = await axios.post(`/api/join/${inviteCode}`);
-      // Invalidate so sidebar refetches the joined server in the background
       queryClient.invalidateQueries({ queryKey: SERVERS_QUERY_KEY });
       close();
       setCode("");

@@ -4,13 +4,11 @@ type Entry = { count: number; resetAt: number };
 
 const store = new Map<string, Entry>();
 
-// Prune expired entries every 5 minutes to keep memory lean
 setInterval(() => {
   const now = Date.now();
   for (const [k, v] of store) if (v.resetAt < now) store.delete(k);
 }, 5 * 60_000);
 
-// Sliding-window in-memory rate limiter.
 export function checkRateLimit(
   key: string,
   limit: number,
@@ -35,7 +33,6 @@ export function checkRateLimit(
   return { allowed: true, retryAfter: 0 };
 }
 
-// Extract IP from request.
 export function getIP(req: Request): string {
   return (
     req.headers.get("x-forwarded-for")?.split(",")[0].trim() ??
@@ -44,7 +41,6 @@ export function getIP(req: Request): string {
   );
 }
 
-// Standard 429 response.
 export function tooManyRequests(retryAfter: number) {
   return NextResponse.json(
     { error: "Too many requests. Please slow down." },

@@ -1,5 +1,3 @@
-// Server-side helper for publishing events into PartyKit rooms.
-// Used by API routes after a DB write to broadcast to connected clients.
 
 import { PartyEvents } from "@/party/types";
 
@@ -8,8 +6,6 @@ export { PartyEvents };
 type PartyName = "main" | "channel" | "dm" | "user";
 
 function host(): string | null {
-  // Server-only env. PARTYKIT_HOST should be like "wavecord.<account>.workers.dev"
-  // (no protocol). Locally with `wrangler dev` it's "127.0.0.1:8787".
   return process.env.PARTYKIT_HOST ?? null;
 }
 
@@ -48,7 +44,6 @@ export async function publish(
   }
 }
 
-// Convenience wrappers — the room IDs match the old Socket.io rooms.
 export const publishToServer = (serverId: string, event: string, payload: unknown) =>
   publish("main", serverId, event, payload);
 export const publishToChannel = (channelId: string, event: string, payload: unknown) =>

@@ -61,13 +61,9 @@ export function VoiceRoom({ channel, serverId, serverName }: VoiceRoomProps) {
       .catch((e: Error) => setError(e.message))
       .finally(() => setConnecting(false));
 
-    // Intentionally no cleanup — navigating away keeps the voice connection alive.
-    // The user must click Disconnect to leave the channel.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [channel.id]);
 
-  // Navigate away whenever the voice connection to this channel is dropped,
-  // regardless of whether disconnect was triggered here or from the VoiceHUD.
   const prevActiveRef = useRef(activeChannelId);
   useEffect(() => {
     const prev = prevActiveRef.current;
@@ -85,15 +81,11 @@ export function VoiceRoom({ channel, serverId, serverName }: VoiceRoomProps) {
   function handleLeave() {
     import("@/lib/sounds").then(({ playLeaveSound }) => playLeaveSound());
     leave();
-    // Navigation is handled by the useEffect above watching activeChannelId.
   }
 
-  // Render the room immediately — participants populate once LiveKit connects.
-  // A subtle header indicator communicates the connecting state.
   return <VoiceRoomInner channel={channel} onLeave={handleLeave} connecting={connecting} error={error} />;
 }
 
-// Inner UI (uses LiveKit context from PersistentVoice)
 
 function VoiceRoomInner({
   channel,
@@ -114,9 +106,6 @@ function VoiceRoomInner({
     useVoiceStore();
   const [mediaError, setMediaError] = useState<string | null>(null);
 
-  // Camera and screen share must be triggered directly from the click handler —
-  // not via useEffect — so the browser's transient user activation is still active
-  // when getUserMedia / getDisplayMedia is called.
   function handleToggleCamera() {
     const next = !cameraEnabled;
     toggleCamera();
@@ -169,7 +158,6 @@ function VoiceRoomInner({
         overflow: "hidden",
       }}
     >
-      {/* Header */}
       <div
         style={{
           display: "flex",
@@ -233,7 +221,6 @@ function VoiceRoomInner({
         </span>
       </div>
 
-      {/* Participants / Video Grid */}
       <div style={{ flex: 1, overflowY: "auto", padding: "1.5rem" }}>
         {hasVideo ? (
           <div
@@ -276,7 +263,6 @@ function VoiceRoomInner({
                   {trackRef.participant.name ?? trackRef.participant.identity}
                   {trackRef.source === Track.Source.ScreenShare && " (screen)"}
                 </div>
-                {/* expand hint on hover */}
                 <ExpandHint />
               </div>
             ))}
@@ -337,7 +323,6 @@ function VoiceRoomInner({
         )}
       </div>
 
-      {/* Media permission error banner */}
       {mediaError && (
         <div
           style={{
@@ -363,7 +348,6 @@ function VoiceRoomInner({
         </div>
       )}
 
-      {/* Controls bar */}
       <VoiceControls
         micEnabled={micEnabled}
         deafened={deafened}
@@ -381,7 +365,6 @@ function VoiceRoomInner({
   );
 }
 
-// Participant card
 
 function ParticipantCard({ participant, isSpeaking }: { participant: Participant; isSpeaking: boolean }) {
   const isMicOn = participant.isMicrophoneEnabled;
@@ -401,7 +384,6 @@ function ParticipantCard({ participant, isSpeaking }: { participant: Participant
         border: "2px solid transparent",
       }}
     >
-      {/* Speaking ring wraps the avatar */}
       <div
         style={{
           padding: 3,
@@ -458,7 +440,6 @@ function ParticipantCard({ participant, isSpeaking }: { participant: Participant
   );
 }
 
-// Controls bar
 
 interface VoiceControlsProps {
   micEnabled: boolean;
@@ -593,7 +574,6 @@ function VoiceControls({
   );
 }
 
-// Expand-on-hover hint overlay
 
 function ExpandHint() {
   const [hovered, setHovered] = useState(false);
@@ -623,7 +603,6 @@ function ExpandHint() {
   );
 }
 
-// Fullscreen overlay
 
 function FullscreenOverlay({
   trackRef,
@@ -632,7 +611,6 @@ function FullscreenOverlay({
   trackRef: TrackReference | null;
   onClose: () => void;
 }) {
-  // Close on Escape
   useEffect(() => {
     if (!trackRef) return;
     const handler = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
@@ -661,7 +639,6 @@ function FullscreenOverlay({
             gap: "0.75rem",
           }}
         >
-          {/* Video fills available space, click-through blocked so video events don't bubble */}
           <div
             onClick={(e) => e.stopPropagation()}
             style={{
@@ -678,7 +655,6 @@ function FullscreenOverlay({
               trackRef={trackRef}
               style={{ width: "100%", height: "100%", objectFit: "contain" }}
             />
-            {/* Name badge */}
             <div
               style={{
                 position: "absolute",
@@ -697,7 +673,6 @@ function FullscreenOverlay({
             </div>
           </div>
 
-          {/* Dismiss hint */}
           <span style={{ color: "rgba(255,255,255,0.45)", fontSize: "0.8rem" }}>
             Click anywhere or press Esc to close
           </span>

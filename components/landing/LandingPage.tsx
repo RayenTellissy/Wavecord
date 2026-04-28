@@ -37,7 +37,6 @@ export function LandingPage() {
       <div className="lp__bg" aria-hidden />
       <div className="lp__grain" aria-hidden />
 
-      {/* Nav */}
       <nav className="lp__nav" aria-label="Primary">
         <Link href="/" className="lp__nav-brand">
           <span className="lp__nav-logo" aria-hidden>
@@ -55,7 +54,6 @@ export function LandingPage() {
         </Link>
       </nav>
 
-      {/* Hero */}
       <section className="lp__hero">
         <div className="lp__container">
           <div className="lp__hero-grid">
@@ -86,7 +84,6 @@ export function LandingPage() {
               </div>
             </div>
 
-            {/* Mockup */}
             <div className="lp__mockup-wrap">
               <div className="lp__mockup-glow" aria-hidden />
               <div className="lp__mockup" aria-hidden>
@@ -190,7 +187,6 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* Features */}
       <section className="lp__section" id="features">
         <div className="lp__container">
           <div className="lp__section-eyebrow">What&apos;s inside</div>
@@ -233,7 +229,6 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* Proof */}
       <section className="lp__proof">
         <div className="lp__container">
           <div className="lp__proof-row">
@@ -250,7 +245,6 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* Testimonials */}
       <section className="lp__section" id="testimonials" style={{ paddingTop: 80 }}>
         <div className="lp__container">
           <div className="lp__section-eyebrow">From the rooms</div>
@@ -305,7 +299,6 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* CTA */}
       <section className="lp__section" id="cta" style={{ paddingTop: 40 }}>
         <div className="lp__container">
           <div className="lp__cta-wrap">
@@ -326,7 +319,6 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* Footer */}
       <footer className="lp__footer">
         <div className="lp__container">
           <div className="lp__footer-grid">

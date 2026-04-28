@@ -94,7 +94,6 @@ function VoicePresenceSync() {
     onOpen,
   });
 
-  // Send voice:leave when the channel/server changes or the component unmounts.
   useEffect(() => {
     return () => {
       const s = socketRef.current;
@@ -104,7 +103,6 @@ function VoicePresenceSync() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [channelId, serverId]);
 
-  // State updates (mute / deafen / live)
   useEffect(() => {
     const s = socketRef.current;
     if (!s || !channelId) return;
@@ -141,7 +139,6 @@ function SoundSync() {
     const onParticipantConnected = () => playUserJoinSound();
     const onParticipantDisconnected = () => playUserLeaveSound();
 
-    // Remote participants starting screen share or camera
     const onTrackPublished = (publication: RemoteTrackPublication, participant: RemoteParticipant) => {
       if (participant.identity === localParticipant?.identity) return;
       if (Date.now() - connectedAt.current < 1000) return;
@@ -229,7 +226,6 @@ function ParticipantSync() {
     localParticipant.setAttributes({ deafened: deafened ? "1" : "0" }).catch(() => {});
   }, [deafened, localParticipant]);
 
-  // Re-render when any participant's attributes change (deafened broadcast).
   useEffect(() => {
     const bump = () => setAttrTick((t) => t + 1);
     room.on(RoomEvent.ParticipantAttributesChanged, bump);

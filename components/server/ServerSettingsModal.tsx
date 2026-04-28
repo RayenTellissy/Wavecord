@@ -10,7 +10,6 @@ import { PersonIcon, KickIcon, BanIcon, ShieldIcon, CheckIcon } from "@/componen
 import Image from "next/image";
 import axios from "axios";
 
-// Types
 
 type MemberUser = {
   id: string;
@@ -45,7 +44,6 @@ const ROLE_COLORS: Record<string, string> = {
   GUEST: "var(--text-muted)",
 };
 
-// Main Modal
 
 export function ServerSettingsModal() {
   const { isOpen, type, data, close } = useModal();
@@ -56,7 +54,6 @@ export function ServerSettingsModal() {
 
   const [activeTab, setActiveTab] = useState<Tab>("General");
 
-  // Reset tab on open
   useEffect(() => {
     if (open) setActiveTab("General");
   }, [open]);
@@ -64,7 +61,6 @@ export function ServerSettingsModal() {
   return (
     <Modal isOpen={open} onClose={close} title="Server Settings" width={700}>
       <div style={{ display: "flex", gap: "1.5rem", minHeight: 400 }}>
-        {/* Sidebar tabs */}
         <div style={{ display: "flex", flexDirection: "column", gap: "0.15rem", width: 140, flexShrink: 0 }}>
           {TABS.map((tab) => (
             <button
@@ -89,10 +85,8 @@ export function ServerSettingsModal() {
           ))}
         </div>
 
-        {/* Divider */}
         <div style={{ width: 1, background: "var(--border)", flexShrink: 0 }} />
 
-        {/* Tab content */}
         <div style={{ flex: 1, minWidth: 0 }}>
           <AnimatePresence mode="wait">
             <motion.div
@@ -119,7 +113,6 @@ export function ServerSettingsModal() {
   );
 }
 
-// General Tab
 
 function GeneralTab({ serverId, onSave }: { serverId: string; onSave: () => void }) {
   const [name, setName] = useState("");
@@ -185,7 +178,6 @@ function GeneralTab({ serverId, onSave }: { serverId: string; onSave: () => void
         Overview
       </h3>
 
-      {/* Server icon */}
       <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
         <div
           style={{
@@ -230,7 +222,6 @@ function GeneralTab({ serverId, onSave }: { serverId: string; onSave: () => void
         </div>
       </div>
 
-      {/* Server name */}
       <div>
         <label style={labelStyle}>Server Name</label>
         <input
@@ -258,7 +249,6 @@ function GeneralTab({ serverId, onSave }: { serverId: string; onSave: () => void
   );
 }
 
-// Members Tab
 
 function MembersTab({ serverId, onAction }: { serverId: string; onAction: () => void }) {
   const { open: openModal } = useModal();
@@ -322,7 +312,6 @@ function MembersTab({ serverId, onAction }: { serverId: string; onAction: () => 
                 border: "1px solid var(--border)",
               }}
             >
-              {/* Avatar */}
               <div style={{ width: 36, height: 36, borderRadius: "50%", overflow: "hidden", background: "var(--surface-2)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                 {member.user.image ? (
                   <Image src={member.user.image} alt={displayName} width={36} height={36} style={{ objectFit: "cover" }} />
@@ -331,7 +320,6 @@ function MembersTab({ serverId, onAction }: { serverId: string; onAction: () => 
                 )}
               </div>
 
-              {/* Name + role */}
               <div style={{ flex: 1, minWidth: 0 }}>
                 <p style={{ fontSize: "0.88rem", fontWeight: 600, color: "var(--text-primary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                   {displayName}
@@ -342,7 +330,6 @@ function MembersTab({ serverId, onAction }: { serverId: string; onAction: () => 
                 </p>
               </div>
 
-              {/* Role selector (admin only, not self) */}
               {isAdmin && !isSelf && (
                 <div style={{ position: "relative" }}>
                   <select
@@ -373,7 +360,6 @@ function MembersTab({ serverId, onAction }: { serverId: string; onAction: () => 
                 </div>
               )}
 
-              {/* Kick / Ban (mod+admin, not self) */}
               {isModOrAdmin && !isSelf && (
                 <div style={{ display: "flex", gap: "0.25rem" }}>
                   <ActionButton
@@ -400,7 +386,6 @@ function MembersTab({ serverId, onAction }: { serverId: string; onAction: () => 
   );
 }
 
-// Bans Tab
 
 function BansTab({ serverId, onAction }: { serverId: string; onAction: () => void }) {
   const { data: session } = useSession();
@@ -469,7 +454,6 @@ function BansTab({ serverId, onAction }: { serverId: string; onAction: () => voi
                   border: "1px solid var(--border)",
                 }}
               >
-                {/* Avatar */}
                 <div style={{ width: 36, height: 36, borderRadius: "50%", overflow: "hidden", background: "var(--surface-2)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                   {ban.user.image ? (
                     <Image src={ban.user.image} alt={displayName} width={36} height={36} style={{ objectFit: "cover" }} />
@@ -478,7 +462,6 @@ function BansTab({ serverId, onAction }: { serverId: string; onAction: () => voi
                   )}
                 </div>
 
-                {/* Info */}
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <p style={{ fontSize: "0.88rem", fontWeight: 600, color: "var(--text-primary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                     {displayName}
@@ -493,7 +476,6 @@ function BansTab({ serverId, onAction }: { serverId: string; onAction: () => voi
                   </p>
                 </div>
 
-                {/* Unban (admin only) */}
                 {isAdmin && (
                   <button
                     onClick={() => handleUnban(ban.user.id)}
