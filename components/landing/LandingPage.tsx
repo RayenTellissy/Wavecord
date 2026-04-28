@@ -299,21 +299,63 @@ export function LandingPage() {
         </div>
       </section>
 
-      <section className="lp__section" id="cta" style={{ paddingTop: 40 }}>
+      <section className="lp__section lp__section--cta" id="cta">
         <div className="lp__container">
           <div className="lp__cta-wrap">
-            <div className="lp__cta-glow" aria-hidden />
-            <div className="lp__cta">
-              <h2>
-                Your community is one <span className="lp__neon-text">click</span> away.
-              </h2>
-              <p>
-                Spin up a server in under a minute. Invite your people. Talk,
-                type, share — the way it should feel.
-              </p>
-              <Link href="/register" className="lp__btn lp__btn--neon lp__btn--lg">
-                Create your free server
-              </Link>
+            <div className="lp__cta-blob lp__cta-blob--a" aria-hidden />
+            <div className="lp__cta-blob lp__cta-blob--b" aria-hidden />
+
+            <div className="lp__cta-body">
+              <div className="lp__cta-left">
+                <div className="lp__cta-eyebrow">Free to start</div>
+                <h2>
+                  Your community is one{" "}
+                  <span className="lp__neon-text">click</span> away.
+                </h2>
+                <p>
+                  Spin up a server in under a minute. Invite your people. Talk,
+                  type, share — the way it should feel.
+                </p>
+                <Link href="/register" className="lp__btn lp__btn--neon lp__btn--lg">
+                  Create your free server
+                </Link>
+              </div>
+
+              <div className="lp__cta-right" aria-hidden>
+                <div className="lp__cta-card lp__cta-card--server">
+                  <div className="lp__cta-server-icon">🎮</div>
+                  <div className="lp__cta-server-info">
+                    <span className="lp__cta-server-name">Late Night Crew</span>
+                    <span className="lp__cta-server-meta">12 online · 3 in voice</span>
+                  </div>
+                  <div className="lp__cta-live-dot" />
+                </div>
+
+                <div className="lp__cta-card lp__cta-card--msg">
+                  <div className="lp__cta-avatar lp__cta-avatar--g">A</div>
+                  <div className="lp__cta-bubble">
+                    <span className="lp__cta-bubble-name">alex</span>
+                    yo who's on tonight?
+                  </div>
+                </div>
+
+                <div className="lp__cta-card lp__cta-card--msg lp__cta-card--msg-reply">
+                  <div className="lp__cta-avatar lp__cta-avatar--p">J</div>
+                  <div className="lp__cta-bubble">
+                    <span className="lp__cta-bubble-name">jess</span>
+                    me!! give me 5 mins 🙏
+                  </div>
+                </div>
+
+                <div className="lp__cta-joinbadge">
+                  <div className="lp__cta-avatar-stack">
+                    <span className="lp__cta-avatar lp__cta-avatar--r">M</span>
+                    <span className="lp__cta-avatar lp__cta-avatar--g">K</span>
+                    <span className="lp__cta-avatar lp__cta-avatar--p">T</span>
+                  </div>
+                  <span>+3 joined today</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
