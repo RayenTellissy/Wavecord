@@ -55,6 +55,7 @@ export function MessageItem({
   const isOwn = message.authorId === currentUserId;
   const canDelete = isOwn || isModOrAdmin;
   const canEdit = isOwn && !message.deleted && !isPending;
+  const isMentioned = !message.deleted && !isPending && containsMention(message.content, currentUserId);
 
   async function handleEdit() {
     const newContent = editContent.trim();
@@ -111,13 +112,19 @@ export function MessageItem({
         gap: "0.75rem",
         padding: `${isGrouped ? "0.1rem" : "0.75rem"} 1rem 0.1rem`,
         position: "relative",
-        background: hovered && !isPending
-          ? "rgba(139,92,246,0.055)"
-          : "transparent",
+        background: isMentioned
+          ? hovered
+            ? "rgba(250,166,26,0.1)"
+            : "rgba(250,166,26,0.06)"
+          : hovered && !isPending
+            ? "rgba(139,92,246,0.055)"
+            : "transparent",
         transition: "background 0.15s",
-        borderLeft: hovered && !isPending
-          ? "2px solid rgba(139,92,246,0.3)"
-          : "2px solid transparent",
+        borderLeft: isMentioned
+          ? "2px solid rgba(250,166,26,0.65)"
+          : hovered && !isPending
+            ? "2px solid rgba(139,92,246,0.3)"
+            : "2px solid transparent",
       }}
     >
       <div style={{ width: 40, flexShrink: 0 }}>
@@ -462,6 +469,15 @@ const MD_COMPONENTS: any = {
     }}>{children}</pre>
   ),
 };
+
+function containsMention(content: string, userId: string): boolean {
+  const re = /@\[([^\]]+)\]\(([^)]+)\)/g;
+  let m;
+  while ((m = re.exec(content)) !== null) {
+    if (m[2] === userId) return true;
+  }
+  return false;
+}
 
 const MENTION_RE = /@\[([^\]]+)\]\(([^)]+)\)/g;
 

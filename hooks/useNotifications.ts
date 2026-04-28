@@ -94,7 +94,7 @@ export function useNotifications() {
       if (mutedChannelIds.current.has(payload.channelId)) return;
       if (pathnameRef.current.includes(`/channels/${payload.channelId}`)) return;
       const { author } = payload.message;
-      const body = payload.message.content || "Sent an attachment";
+      const body = stripMentionTokens(payload.message.content) || "Sent an attachment";
       notify(
         `#${payload.channelName}`,
         `${author.username}: ${body}`,
@@ -117,7 +117,7 @@ export function useNotifications() {
       if (onConvPage) return;
       notify(
         message.sender.username,
-        message.content || "Sent an attachment",
+        stripMentionTokens(message.content) || "Sent an attachment",
         message.sender.image,
         `/conversations/${message.conversationId}`,
         "dm",
@@ -126,4 +126,8 @@ export function useNotifications() {
   }, [session, push, incrementUnread]);
 
   useParty({ party: "user", room: session?.user?.id, userId: session?.user?.id, onMessage });
+}
+
+function stripMentionTokens(text: string): string {
+  return text.replace(/@\[([^\]]+)\]\([^)]+\)/g, "@$1");
 }

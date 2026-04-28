@@ -103,8 +103,8 @@ export function MessageInput({ channelId, channelName, serverId, replyTo, onClea
   }
 
   function selectMention(member: MemberWithUser) {
-    const displayName = member.user.name ?? member.user.username ?? "User";
-    const token = `@[${displayName}](${member.user.id})`;
+    const username = member.user.username ?? member.user.name ?? "user";
+    const token = `@${username}`;
     const cursor = textareaRef.current?.selectionStart ?? content.length;
     const newContent = content.slice(0, mentionStart) + token + " " + content.slice(cursor);
     setContent(newContent);
@@ -175,7 +175,7 @@ export function MessageInput({ channelId, channelName, serverId, replyTo, onClea
   async function handleSend() {
     if (!canSend) return;
 
-    const text = content.trim();
+    const text = applyMentionTokens(content.trim(), members);
     const fileSnapshot = pendingFile;
     const replySnapshot = replyTo ?? null;
 
@@ -718,6 +718,20 @@ export function MessageInput({ channelId, channelName, serverId, replyTo, onClea
       </p>
     </div>
   );
+}
+
+function applyMentionTokens(text: string, members: MemberWithUser[]): string {
+  if (!members.length) return text;
+  const map = new Map<string, MemberWithUser>();
+  for (const m of members) {
+    if (m.user.username) map.set(m.user.username.toLowerCase(), m);
+  }
+  return text.replace(/(^|[\s\n])@(\w+)/g, (match, prefix, username) => {
+    const member = map.get(username.toLowerCase());
+    if (!member) return match;
+    const displayName = member.user.name ?? member.user.username ?? "User";
+    return `${prefix}@[${displayName}](${member.user.id})`;
+  });
 }
 
 function SendIcon() {
