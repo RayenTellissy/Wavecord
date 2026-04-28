@@ -21,7 +21,7 @@ export type ModalType =
   | "serverSettings"
   | "voiceParticipantProfile";
 
-interface ModalData {
+export interface ModalData {
   serverId?: string;
   channelId?: string;
   channelName?: string;

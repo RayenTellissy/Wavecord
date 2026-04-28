@@ -2,7 +2,7 @@
 
 import { useState, useRef, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { AttachIcon, EmojiIcon, XIcon, ImageIcon, ReplyIcon } from "@/components/icons";
+import { AttachIcon, EmojiIcon, XIcon, ImageIcon, ReplyIcon, PersonIcon } from "@/components/icons";
 import Image from "next/image";
 import axios from "axios";
 import { useQueryClient } from "@tanstack/react-query";
@@ -17,19 +17,36 @@ interface PendingFile {
   fileSize: number;
 }
 
+type MemberWithUser = {
+  id: string;
+  role: string;
+  userId: string;
+  user: {
+    id: string;
+    name: string | null;
+    username: string | null;
+    image: string | null;
+  };
+};
+
 interface MessageInputProps {
   channelId: string;
   channelName: string;
+  serverId?: string;
   replyTo?: ReplyTarget | null;
   onClearReply?: () => void;
 }
 
-export function MessageInput({ channelId, channelName, replyTo, onClearReply }: MessageInputProps) {
+export function MessageInput({ channelId, channelName, serverId, replyTo, onClearReply }: MessageInputProps) {
   const [content, setContent] = useState("");
   const [sending, setSending] = useState(false);
   const [pendingFile, setPendingFile] = useState<PendingFile | null>(null);
   const [uploading, setUploading] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [members, setMembers] = useState<MemberWithUser[]>([]);
+  const [mentionQuery, setMentionQuery] = useState<string | null>(null);
+  const [mentionStart, setMentionStart] = useState(0);
+  const [mentionIndex, setMentionIndex] = useState(0);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const emojiPickerRef = useRef<HTMLDivElement>(null);
@@ -54,6 +71,51 @@ export function MessageInput({ channelId, channelName, replyTo, onClearReply }: 
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [showEmojiPicker]);
+
+  useEffect(() => {
+    if (!serverId) return;
+    fetch(`/api/servers/${serverId}/members`)
+      .then((r) => r.json())
+      .then((data) => { if (Array.isArray(data)) setMembers(data); })
+      .catch(() => {});
+  }, [serverId]);
+
+  const filteredMembers = mentionQuery !== null
+    ? members.filter((m) => {
+        const q = mentionQuery.toLowerCase();
+        const name = (m.user.name ?? "").toLowerCase();
+        const uname = (m.user.username ?? "").toLowerCase();
+        return name.includes(q) || uname.includes(q);
+      }).slice(0, 8)
+    : [];
+
+  function detectMention(text: string, cursor: number) {
+    const before = text.slice(0, cursor);
+    const match = before.match(/(^|[\s\n])@(\w*)$/);
+    if (match) {
+      const atIdx = before.lastIndexOf("@");
+      setMentionQuery(match[2]);
+      setMentionStart(atIdx);
+      setMentionIndex(0);
+    } else {
+      setMentionQuery(null);
+    }
+  }
+
+  function selectMention(member: MemberWithUser) {
+    const displayName = member.user.name ?? member.user.username ?? "User";
+    const token = `@[${displayName}](${member.user.id})`;
+    const cursor = textareaRef.current?.selectionStart ?? content.length;
+    const newContent = content.slice(0, mentionStart) + token + " " + content.slice(cursor);
+    setContent(newContent);
+    setMentionQuery(null);
+    setTimeout(() => {
+      const pos = mentionStart + token.length + 1;
+      textareaRef.current?.focus();
+      textareaRef.current?.setSelectionRange(pos, pos);
+      autoResize();
+    }, 0);
+  }
 
   function handleEmojiClick(emojiData: EmojiClickData) {
     const textarea = textareaRef.current;
@@ -120,6 +182,7 @@ export function MessageInput({ channelId, channelName, replyTo, onClearReply }: 
     setSending(true);
     setContent("");
     setPendingFile(null);
+    setMentionQuery(null);
     onClearReply?.();
     if (textareaRef.current) textareaRef.current.style.height = "auto";
 
@@ -221,6 +284,27 @@ export function MessageInput({ channelId, channelName, replyTo, onClearReply }: 
   }
 
   function handleKeyDown(e: React.KeyboardEvent) {
+    if (mentionQuery !== null && filteredMembers.length > 0) {
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        setMentionIndex((i) => Math.min(i + 1, filteredMembers.length - 1));
+        return;
+      }
+      if (e.key === "ArrowUp") {
+        e.preventDefault();
+        setMentionIndex((i) => Math.max(i - 1, 0));
+        return;
+      }
+      if (e.key === "Enter") {
+        e.preventDefault();
+        selectMention(filteredMembers[mentionIndex]);
+        return;
+      }
+      if (e.key === "Escape") {
+        setMentionQuery(null);
+        return;
+      }
+    }
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSend();
@@ -399,33 +483,116 @@ export function MessageInput({ channelId, channelName, replyTo, onClearReply }: 
         )}
       </AnimatePresence>
 
-      <div
-        onFocusCapture={(e) => {
-          e.currentTarget.style.borderColor = "rgba(139,92,246,0.55)";
-          e.currentTarget.style.boxShadow = "0 0 0 3px rgba(139,92,246,0.14), 0 0 24px rgba(139,92,246,0.08)";
-          e.currentTarget.style.background = "rgba(255,255,255,0.07)";
-        }}
-        onBlurCapture={(e) => {
-          if (!e.currentTarget.contains(e.relatedTarget as Node)) {
-            e.currentTarget.style.borderColor = "rgba(255,255,255,0.10)";
-            e.currentTarget.style.boxShadow = "none";
-            e.currentTarget.style.background = "rgba(255,255,255,0.05)";
-          }
-        }}
-        style={{
-          display: "flex",
-          alignItems: "flex-end",
-          gap: "0.5rem",
-          background: "rgba(14,14,18,0.22)",
-          border: "1px solid rgba(255,255,255,0.12)",
-          borderRadius: "14px",
-          padding: "0.5rem",
-          transition: "border-color 0.2s, box-shadow 0.2s, background 0.2s",
-          backdropFilter: "blur(72px) saturate(2.8) brightness(1.06)",
-          WebkitBackdropFilter: "blur(72px) saturate(2.8) brightness(1.06)",
-          boxShadow: "inset 0 1.5px 0 rgba(255,255,255,0.16), 0 4px 24px rgba(0,0,0,0.35)",
-        }}
-      >
+      <div style={{ position: "relative" }}>
+        <AnimatePresence>
+          {mentionQuery !== null && filteredMembers.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 6 }}
+              transition={{ duration: 0.12 }}
+              style={{
+                position: "absolute",
+                bottom: "calc(100% + 8px)",
+                left: 0,
+                right: 0,
+                background: "rgba(14,14,20,0.96)",
+                border: "1px solid rgba(139,92,246,0.3)",
+                borderRadius: "12px",
+                overflow: "hidden",
+                zIndex: 100,
+                backdropFilter: "blur(40px) saturate(2)",
+                boxShadow: "0 8px 32px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.08)",
+                maxHeight: 280,
+                overflowY: "auto",
+              }}
+            >
+              <div style={{
+                padding: "0.35rem 0.75rem",
+                fontSize: "0.68rem",
+                fontWeight: 700,
+                color: "var(--text-muted)",
+                letterSpacing: "0.07em",
+                borderBottom: "1px solid rgba(255,255,255,0.06)",
+              }}>
+                MEMBERS — {mentionQuery ? `"${mentionQuery}"` : "all"}
+              </div>
+              {filteredMembers.map((member, idx) => (
+                <div
+                  key={member.id}
+                  onMouseDown={(e) => { e.preventDefault(); selectMention(member); }}
+                  onMouseEnter={() => setMentionIndex(idx)}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.6rem",
+                    padding: "0.45rem 0.75rem",
+                    cursor: "pointer",
+                    background: idx === mentionIndex ? "rgba(139,92,246,0.15)" : "transparent",
+                    transition: "background 0.1s",
+                  }}
+                >
+                  <div style={{
+                    width: 28,
+                    height: 28,
+                    borderRadius: "50%",
+                    overflow: "hidden",
+                    background: "rgba(139,92,246,0.12)",
+                    flexShrink: 0,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    color: "var(--text-muted)",
+                  }}>
+                    {member.user.image ? (
+                      <Image src={member.user.image} alt="" width={28} height={28} style={{ objectFit: "cover" }} />
+                    ) : (
+                      <PersonIcon size={14} />
+                    )}
+                  </div>
+                  <div>
+                    <div style={{ fontSize: "0.88rem", fontWeight: 600, color: "var(--text-primary)", lineHeight: 1.2 }}>
+                      {member.user.name ?? member.user.username ?? "User"}
+                    </div>
+                    {member.user.username && member.user.name && (
+                      <div style={{ fontSize: "0.71rem", color: "var(--text-muted)" }}>
+                        @{member.user.username}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <div
+          onFocusCapture={(e) => {
+            e.currentTarget.style.borderColor = "rgba(139,92,246,0.55)";
+            e.currentTarget.style.boxShadow = "0 0 0 3px rgba(139,92,246,0.14), 0 0 24px rgba(139,92,246,0.08)";
+            e.currentTarget.style.background = "rgba(255,255,255,0.07)";
+          }}
+          onBlurCapture={(e) => {
+            if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+              e.currentTarget.style.borderColor = "rgba(255,255,255,0.10)";
+              e.currentTarget.style.boxShadow = "none";
+              e.currentTarget.style.background = "rgba(255,255,255,0.05)";
+            }
+          }}
+          style={{
+            display: "flex",
+            alignItems: "flex-end",
+            gap: "0.5rem",
+            background: "rgba(14,14,18,0.22)",
+            border: "1px solid rgba(255,255,255,0.12)",
+            borderRadius: "14px",
+            padding: "0.5rem",
+            transition: "border-color 0.2s, box-shadow 0.2s, background 0.2s",
+            backdropFilter: "blur(72px) saturate(2.8) brightness(1.06)",
+            WebkitBackdropFilter: "blur(72px) saturate(2.8) brightness(1.06)",
+            boxShadow: "inset 0 1.5px 0 rgba(255,255,255,0.16), 0 4px 24px rgba(0,0,0,0.35)",
+          }}
+        >
         <motion.button
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
@@ -459,6 +626,7 @@ export function MessageInput({ channelId, channelName, replyTo, onClearReply }: 
           onChange={(e) => {
             setContent(e.target.value);
             autoResize();
+            detectMention(e.target.value, e.target.selectionStart ?? e.target.value.length);
           }}
           onKeyDown={handleKeyDown}
           placeholder={`Message #${channelName}`}
@@ -534,6 +702,7 @@ export function MessageInput({ channelId, channelName, replyTo, onClearReply }: 
             </motion.button>
           )}
         </AnimatePresence>
+        </div>
       </div>
 
       <p

@@ -243,37 +243,7 @@ export function MessageItem({
             lineHeight: 1.5,
             fontStyle: message.deleted ? "italic" : "normal",
           }}>
-            <ReactMarkdown
-              remarkPlugins={[remarkGfm]}
-              components={{
-                p: ({ children }) => <span>{children}</span>,
-                code: ({ children }) => (
-                  <code style={{
-                    background: "rgba(139,92,246,0.1)",
-                    border: "1px solid rgba(139,92,246,0.2)",
-                    padding: "0.1em 0.35em",
-                    borderRadius: "4px",
-                    fontSize: "0.85em",
-                    fontFamily: "monospace",
-                    color: "var(--accent-bright)",
-                  }}>{children}</code>
-                ),
-                pre: ({ children }) => (
-                  <pre style={{
-                    background: "rgba(10,10,15,0.8)",
-                    border: "1px solid rgba(255,255,255,0.08)",
-                    borderRadius: "8px",
-                    padding: "0.75rem",
-                    overflow: "auto",
-                    fontSize: "0.85em",
-                    marginTop: "0.35rem",
-                    backdropFilter: "blur(8px)",
-                  }}>{children}</pre>
-                ),
-              }}
-            >
-              {message.content}
-            </ReactMarkdown>
+            {renderContent(message.content, openModal, serverId)}
             {message.updatedAt !== message.createdAt && !message.deleted && (
               <span style={{ fontSize: "0.7rem", color: "var(--text-muted)", marginLeft: "0.35rem" }}>
                 (edited)
@@ -462,6 +432,116 @@ export function MessageItem({
         )}
       </AnimatePresence>
     </motion.div>
+  );
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const MD_COMPONENTS: any = {
+  p: ({ children }: { children: React.ReactNode }) => <span>{children}</span>,
+  code: ({ children }: { children: React.ReactNode }) => (
+    <code style={{
+      background: "rgba(139,92,246,0.1)",
+      border: "1px solid rgba(139,92,246,0.2)",
+      padding: "0.1em 0.35em",
+      borderRadius: "4px",
+      fontSize: "0.85em",
+      fontFamily: "monospace",
+      color: "var(--accent-bright)",
+    }}>{children}</code>
+  ),
+  pre: ({ children }: { children: React.ReactNode }) => (
+    <pre style={{
+      background: "rgba(10,10,15,0.8)",
+      border: "1px solid rgba(255,255,255,0.08)",
+      borderRadius: "8px",
+      padding: "0.75rem",
+      overflow: "auto",
+      fontSize: "0.85em",
+      marginTop: "0.35rem",
+      backdropFilter: "blur(8px)",
+    }}>{children}</pre>
+  ),
+};
+
+const MENTION_RE = /@\[([^\]]+)\]\(([^)]+)\)/g;
+
+function renderContent(
+  content: string,
+  openModal: (type: import("@/stores/modalStore").ModalType, data?: import("@/stores/modalStore").ModalData) => void,
+  serverId?: string,
+) {
+  const segments: Array<{ type: "text"; text: string } | { type: "mention"; name: string; userId: string }> = [];
+  let last = 0;
+  let m: RegExpExecArray | null;
+  MENTION_RE.lastIndex = 0;
+  while ((m = MENTION_RE.exec(content)) !== null) {
+    if (m.index > last) segments.push({ type: "text", text: content.slice(last, m.index) });
+    segments.push({ type: "mention", name: m[1], userId: m[2] });
+    last = m.index + m[0].length;
+  }
+  if (last < content.length) segments.push({ type: "text", text: content.slice(last) });
+
+  if (segments.length === 1 && segments[0].type === "text") {
+    return (
+      <ReactMarkdown remarkPlugins={[remarkGfm]} components={MD_COMPONENTS}>
+        {content}
+      </ReactMarkdown>
+    );
+  }
+
+  return (
+    <span>
+      {segments.map((seg, i) =>
+        seg.type === "mention" ? (
+          <MentionChip
+            key={i}
+            name={seg.name}
+            userId={seg.userId}
+            openModal={openModal}
+            serverId={serverId}
+          />
+        ) : (
+          <ReactMarkdown key={i} remarkPlugins={[remarkGfm]} components={MD_COMPONENTS}>
+            {seg.text}
+          </ReactMarkdown>
+        )
+      )}
+    </span>
+  );
+}
+
+function MentionChip({
+  name,
+  userId,
+  openModal,
+  serverId,
+}: {
+  name: string;
+  userId: string;
+  openModal: (type: import("@/stores/modalStore").ModalType, data?: import("@/stores/modalStore").ModalData) => void;
+  serverId?: string;
+}) {
+  return (
+    <span
+      onClick={() => openModal("voiceParticipantProfile", { targetUserId: userId, serverId })}
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        background: "rgba(139,92,246,0.18)",
+        color: "var(--accent-bright)",
+        borderRadius: "4px",
+        padding: "0 4px",
+        fontWeight: 600,
+        cursor: "pointer",
+        fontSize: "0.9em",
+        transition: "background 0.12s",
+        userSelect: "none",
+      }}
+      onMouseEnter={(e) => { (e.currentTarget.style.background = "rgba(139,92,246,0.32)"); }}
+      onMouseLeave={(e) => { (e.currentTarget.style.background = "rgba(139,92,246,0.18)"); }}
+    >
+      @{name}
+    </span>
   );
 }
 

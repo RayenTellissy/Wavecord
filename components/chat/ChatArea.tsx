@@ -54,6 +54,7 @@ export function ChatArea({ channel, currentUserId, isModOrAdmin }: ChatAreaProps
       <MessageInput
         channelId={channel.id}
         channelName={channel.name}
+        serverId={channel.serverId}
         replyTo={replyTo}
         onClearReply={() => setReplyTo(null)}
       />
